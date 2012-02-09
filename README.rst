@@ -17,11 +17,10 @@ If you are primarily interested in quickly trying some Kodo examples, we have tr
 
 1. Checkout this repository
 2. Build an example
-
- ::
-    cd kodo/examples/encode_decode_simple
-    python waf --bundle=ALL
-    python waf configure build
+::
+  cd kodo/examples/encode_decode_simple
+  python waf --bundle=ALL
+  python waf configure build
 
 3. Run the executable produced in the build/*platform*/
 
