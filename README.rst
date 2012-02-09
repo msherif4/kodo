@@ -6,9 +6,9 @@ Introduction
 Tools Needed
 ------------
 In order to build and work with Kodo you need the following tools:
-1. Python
-2. Git
-3. C++ compiler
+ 1. Python
+ 2. Git
+ 3. C++ compiler
 
 
 Getting Started (Quick)
