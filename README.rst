@@ -16,7 +16,8 @@ Getting Started (Quick)
 If you are primarily interested in quickly trying some Kodo examples, we have tried to make that really easy. What you have to do is the following:
 
 1. Checkout this repository
-2. Build an example::
+2. Build an example
+::
         cd kodo/examples/encode_decode_simple
         python waf --bundle=ALL
         python waf configure build
