@@ -1,6 +1,3 @@
-KODO Library
-============
-
 Introduction
 ------------
 
