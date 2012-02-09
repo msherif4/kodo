@@ -1,0 +1,83 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+import os
+
+# Necessary since we override different Contexts 
+import waflib.extras.wurftools
+
+APPNAME = 'kodo_encode_decode_simple'
+VERSION = '0.1'
+
+# @todo: fix so that dependencies can be inherieted.. currently to compile
+# ./waf configure --kodo-path=../../ --sak-path=../sak/ --boost-path=../external-waf-boost --gtest-path=../external-waf-gtest --fifi-path=../fifi
+
+def options(opt):
+    opt.load('wurftools')
+
+    opt.add_dependency('kodo', 'git://github.com/steinwurf/kodo.git')
+    opt.add_dependency('sak', 'git://github.com/steinwurf/sak.git')
+    opt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git')
+    opt.add_dependency('boost', 'git://github.com/steinwurf/external-waf-boost.git')
+    opt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git', 'v1.6.0')
+
+    if not opt.bundle_dependency('kodo'):
+        opt.add_option('--kodo-path')
+    else:
+        opt.recurse_dependency('kodo')
+
+    if not opt.bundle_dependency('sak'):
+        opt.add_option('--sak-path')
+    else:
+        opt.recurse_dependency('sak')
+
+    if not opt.bundle_dependency('fifi'):
+        opt.add_option('--fifi-path')
+    else:
+        opt.recurse_dependency('fifi')
+
+    if not opt.bundle_dependency('gtest'):
+        opt.add_option('--gtest-path')
+    else:
+        opt.recurse_dependency('gtest')
+
+    if not opt.bundle_dependency('boost'):
+        opt.add_option('--boost-path')
+    else:
+        opt.recurse_dependency('boost')
+
+
+def configure(conf):
+
+    conf.load('wurftools')
+
+    # Kodo
+    if not conf.bundle_dependency('kodo'):
+        if not conf.options.kodo_path:
+            conf.fatal('Either bundle kodo of specify its path')
+        else:
+            conf.recurse(conf.options.kodo_path)
+            conf.env.KODO_PATH = conf.options.kodo_path
+    else:
+        conf.recurse_dependency('kodo')
+
+ 
+def build(bld):
+
+    bld.load('wurftools')
+
+    # Kodo
+    if not bld.bundle_dependency('kodo'):
+        if not bld.env.KODO_PATH: bld.fatal('Either bundle kodo of specify'
+                                           'its path during "./waf configure"')
+        else: bld.recurse(bld.env.KODO_PATH)
+    else:
+        bld.recurse_dependency('kodo')
+
+    
+    bld.program(features = 'cxx',
+                source   = 'encode_decode_simple.cpp',
+                target   = 'encode_decode_simple',
+                use      = ['kodo_includes', 'boost_includes',
+                            'fifi_includes', 'sak_includes']) 
+

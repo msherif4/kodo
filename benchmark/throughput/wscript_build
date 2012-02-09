@@ -1,0 +1,22 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+import glob
+
+from os.path import abspath
+kodo_dev = abspath('.')
+
+bld.program(
+    features = 'cxx',
+    source   = ['main.cpp'],
+    target   = 'kodo_new_throughput',
+    includes = kodo_dev,
+    use      = ['BOOST',
+                'PLATY',
+                'KODO',
+                'FIFI',
+                'RMT',
+                'SPEEDY'],
+    install_path = 'bin'+bld.env['TOOLCHAIN']
+)
+
