@@ -6,21 +6,21 @@ Introduction
 Tools Needed
 ------------
 In order to build and work with Kodo you need the following tools:
-    1. Python
-    2. Git
-    3. C++ compiler
+1. Python
+2. Git
+3. C++ compiler
 
 
 Getting Started (Quick)
 -----------------------
 If you are primarily interested in quickly trying some Kodo examples, we have tried to make that really easy. What you have to do is the following:
 
-    1. Checkout this repository
-    2. Build an example::
+1. Checkout this repository
+2. Build an example::
         cd kodo/examples/encode_decode_simple
         python waf --bundle=ALL
         python waf configure build
-    3. Run the executable produced in the build/*platform*/
+3. Run the executable produced in the build/*platform*/
 
 Note, this requires that you have the `Tools Needed`_ installed.
 
@@ -28,9 +28,9 @@ Getting Started
 ---------------
 Kodo is a header only library which essentially means that all you have to do to use it in your applications it to set the right include path. However, Kodo itself also has a couple dependencies of its own:
 
-    1. Boost C++: Kodo depends on a number of headers from the Boost C++ libraries (this dependency will most likely be removed once we switch to C++11, however we need to ensure compiler support on all our target platforms first).
-    2. Sak: The Sak library is a small header only C++ collection of functionality. 
-    3. Fifi: The Fifi C++ library provides Finite Field arithmetics needed by the encoding and decoding algorithms in Kodo.
+1. Boost C++: Kodo depends on a number of headers from the Boost C++ libraries (this dependency will most likely be removed once we switch to C++11, however we need to ensure compiler support on all our target platforms first).
+2. Sak: The Sak library is a small header only C++ collection of functionality. 
+3. Fifi: The Fifi C++ library provides Finite Field arithmetics needed by the encoding and decoding algorithms in Kodo.
 
 Note, that all dependencies are available as separate repositories on the Steinwurf GitHub page.
 
@@ -41,14 +41,4 @@ Before starting to use Kodo it is a good idea to run the unit tests in order to 
 
 
 
-Building
---------
-Run::
-    ./waf configure
-    ./waf build
-
-Examples
-........
-
-Some examples of the use of Kodo is provided in the 'example/' dir.
 
