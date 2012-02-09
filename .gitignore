@@ -1,0 +1,5 @@
+.dep_store
+.lock*
+build
+bundle_dependencies
+.waf*
