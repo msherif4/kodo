@@ -13,6 +13,7 @@ wt.add_dependency('sak', 'git://github.com/steinwurf/sak.git')
 wt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git')
 wt.add_dependency('kodo', 'git://github.com/steinwurf/kodo.git')
 wt.add_dependency('boost', 'git://github.com/steinwurf/external-waf-boost.git')
+wt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git', 'v1.6.0')
 
 def load_helper(ctx, name):
     if ctx.is_system_dependency(name):
@@ -27,6 +28,7 @@ def options(opt):
     load_helper(opt, 'fifi')
     load_helper(opt, 'boost')
     load_helper(opt, 'kodo')
+    load_helper(opt, 'gtest')
 
 def configure(conf):
 
@@ -36,13 +38,14 @@ def configure(conf):
     load_helper(conf, 'fifi')
     load_helper(conf, 'boost')
     load_helper(conf, 'kodo')
-
+    load_helper(conf, 'gtest')
  
 def build(bld):
 
     load_helper(bld, 'sak')
     load_helper(bld, 'fifi')
     load_helper(bld, 'boost')
+    load_helper(bld, 'kodo')
     load_helper(bld, 'gtest')
     
     bld.program(features = 'cxx',
