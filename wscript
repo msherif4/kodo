@@ -12,7 +12,7 @@ VERSION = '0.9'
 wt.add_dependency('sak', 'git://github.com/steinwurf/sak.git')
 wt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git')
 wt.add_dependency('boost', 'git://github.com/steinwurf/external-waf-boost.git')
-wt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git', 'v1.6.0')
+wt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git')
 
 
 def load_helper(ctx, name):
