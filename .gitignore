@@ -1,4 +1,4 @@
-.dep_store
+.dependency_config
 .lock*
 build
 bundle_dependencies
