@@ -40,6 +40,7 @@ def configure(conf):
     load_helper(conf, 'boost')
     load_helper(conf, 'gtest')
 
+    conf.env.append_value('CXXFLAGS', ['-O2', '-g', '-ftree-vectorize', '-Wextra', '-Wall'])
 
 
 def build(bld):
