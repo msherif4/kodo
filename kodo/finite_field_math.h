@@ -59,7 +59,7 @@ namespace kodo
                     return coder;
                 }
 
-        private:
+        protected:
 
             // The field implementation
             field_pointer m_field;
