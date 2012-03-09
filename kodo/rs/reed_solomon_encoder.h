@@ -118,6 +118,12 @@ namespace kodo
                 m_count = 0;
             }
 
+        // Returns the coder 'count' i.e. the number of symbols already encoded
+        uint32_t count() const
+            {
+                return m_count;
+            }
+
         // Using this function we may "encode" an uncoded symbol.
         // This function basically copies a specific symbol to the
         // symbol buffer unmodified, no headers or similar are added
