@@ -60,11 +60,14 @@ namespace kodo
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder = SuperCoder::factory::build(symbols, symbol_size);
+
+                    if(m_cache.find(symbols) == m_cache.end())
+                    {
+                        m_cache[symbols] =
+                            boost::make_shared<generator_matrix>(false, symbols, m_field);
+                    }
                     
-                    boost::shared_ptr<generator_matrix> matrix =
-                        boost::make_shared<generator_matrix>(false, symbols, m_field);
-                    
-                    coder->m_matrix = matrix;
+                    coder->m_matrix = m_cache[symbols];
                     
                     return coder;
                 }
@@ -74,6 +77,11 @@ namespace kodo
                 {
                     return sizeof(value_type);
                 }
+
+        private:
+            
+            // map for blocks
+            std::map<uint32_t, boost::shared_ptr<generator_matrix> > m_cache;
         };
 
         
