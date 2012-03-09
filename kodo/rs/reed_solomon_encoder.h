@@ -109,7 +109,14 @@ namespace kodo
 
                 
                 return sizeof(value_type);
-            }        
+            }
+
+        // Resets the internal count - which will make the encoder start from
+        // the beginning of th generator matrix
+        void reset_count()
+            {
+                m_count = 0;
+            }
 
         // Using this function we may "encode" an uncoded symbol.
         // This function basically copies a specific symbol to the
