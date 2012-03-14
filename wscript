@@ -45,7 +45,13 @@ def configure(conf):
     load_helper(conf, 'boost')
     load_helper(conf, 'gtest')
 
-    conf.env.append_value('CXXFLAGS', ['-O2', '-g', '-ftree-vectorize', '-Wextra', '-Wall'])
+    if bld.env.TOOLCHAIN == 'linux':
+        conf.env.append_value('CXXFLAGS', ['-O2', '-g', '-ftree-vectorize',
+                                           '-Wextra', '-Wall'])
+
+    if bld.env.TOOLCHAIN == 'win32':
+        bld.env.CXXFLAGS_GTEST_FLAGS = ['/O2', '/Ob2', '/W3', '/EHs']
+
 
 
 def build(bld):
