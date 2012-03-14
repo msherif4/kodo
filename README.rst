@@ -35,6 +35,7 @@ Running Tests
 Before starting to use Kodo you should build and run the unit tests in order to ensure that everything is working correctly.
 
    ::
+
       ./waf configure --bundle=ALL 
       ./waf
       ./build/linux/test/kodo_tests
