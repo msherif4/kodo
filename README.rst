@@ -32,7 +32,13 @@ If you are primarily interested in quickly trying some Kodo examples, we have tr
 
 Running Tests
 -------------
-Before starting to use Kodo you should run the unit tests in order to ensure that everything is working correctly.
+Before starting to use Kodo you should build and run the unit tests in order to ensure that everything is working correctly.
+
+   ::
+      ./waf configure --bundle=ALL 
+      ./waf
+      ./build/linux/test/kodo_tests
+
 
 Using Kodo
 ----------
