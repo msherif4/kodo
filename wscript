@@ -46,11 +46,11 @@ def configure(conf):
     load_helper(conf, 'gtest')
 
     if conf.env.TOOLCHAIN == 'linux':
-        conf.env.append_value('CXXFLAGS', ['-O2', '-g', '-ftree-vectorize',
-                                           '-Wextra', '-Wall'])
+        conf.env.CXXFLAGS_KODO_FLAGS = ['-O2', '-g', '-ftree-vectorize',
+                                        '-Wextra', '-Wall']
 
     if conf.env.TOOLCHAIN == 'win32':
-        bld.env.CXXFLAGS_GTEST_FLAGS = ['/O2', '/Ob2', '/W3', '/EHs']
+        conf.env.CXXFLAGS_KODO_FLAGS = ['/O2', '/Ob2', '/W3', '/EHs']
 
 
 
