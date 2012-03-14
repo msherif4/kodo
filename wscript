@@ -7,12 +7,17 @@ import os
 import waflib.extras.wurftools as wt
 
 APPNAME = 'kodo'
-VERSION = '0.9'
+VERSION = '1.0.0'
 
-wt.add_dependency('sak', 'git://github.com/steinwurf/sak.git')
-wt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git')
-wt.add_dependency('boost', 'git://github.com/steinwurf/external-waf-boost.git')
-wt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git')
+wt.add_dependency('sak', 'git://github.com/steinwurf/sak.git', '1.0.0')
+
+wt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git' '1.0.1')
+
+wt.add_dependency('boost', 'git://github.com/steinwurf/external-waf-boost.git',
+                  '1.1.0-boost_1_48_0')
+
+wt.add_dependency('gtest', 'git://github.com/steinwurf/external-waf-gtest.git',
+                  '1.0.1-gtest_1_6_0')
 
 
 def load_helper(ctx, name):
