@@ -31,7 +31,7 @@ If you are primarily interested in quickly trying some Kodo examples, we have tr
 3. Run the executable produced in the *build/platform/* directory
 
 Running Tests
-~~~~~~~~~~~~~
+-------------
 Before starting to use Kodo you should run the unit tests in order to ensure that everything is working correctly.
 
 Using Kodo
