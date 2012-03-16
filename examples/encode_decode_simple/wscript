@@ -46,6 +46,7 @@ def configure(conf):
     load_helper(conf, 'boost')
     load_helper(conf, 'kodo')
     load_helper(conf, 'gtest')
+   
  
 def build(bld):
 
@@ -54,10 +55,20 @@ def build(bld):
     load_helper(bld, 'boost')
     load_helper(bld, 'kodo')
     load_helper(bld, 'gtest')
-    
+
+    cxxflags = []
+
+    if bld.env.TOOLCHAIN == 'linux':
+        cxxflags += ['-O2', '-g', '-ftree-vectorize',
+                     '-Wextra', '-Wall']
+
+    if bld.env.TOOLCHAIN == 'win32':
+        cxxflags += ['/O2', '/Ob2', '/W3', '/EHsc']
+
     bld.program(features = 'cxx',
                 source   = 'encode_decode_simple.cpp',
                 target   = 'encode_decode_simple',
+                cxxflags = cxxflags,
                 use      = ['kodo_includes', 'boost_includes',
                             'fifi_includes', 'sak_includes']) 
 
