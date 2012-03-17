@@ -38,13 +38,13 @@ TEST(TestRlncFullVectorCodes, basic_api)
 {
     test_coders(32, 1600);
     test_coders(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_coders(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_coders(symbols, symbol_size);
 }
 
 
@@ -75,13 +75,13 @@ TEST(TestRlncFullVectorCodes, systematic)
 {
     test_coders_systematic(32, 1600);
     test_coders_systematic(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_coders_systematic(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_coders_systematic(symbols, symbol_size);
 }
 
 
@@ -112,13 +112,13 @@ TEST(TestRlncFullVectorCodes, raw)
 {
     test_coders_raw(32, 1600);
     test_coders_raw(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_coders_raw(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_coders_raw(symbols, symbol_size);
 }
 
 //
@@ -127,11 +127,11 @@ TEST(TestRlncFullVectorCodes, raw)
 template<class Encoder, class Decoder>
 inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 {
-    
+
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
     typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
-        
+
     typename Decoder::factory decoder_factory(symbols, symbol_size);
     typename Decoder::pointer decoder_one = decoder_factory.build(symbols, symbol_size);
     typename Decoder::pointer decoder_two = decoder_factory.build(symbols, symbol_size);
@@ -141,12 +141,12 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 
     kodo::random_uniform<uint8_t> fill_data;
     fill_data.generate(&data_in[0], data_in.size());
-    
+
     kodo::set_symbols(kodo::storage(data_in), encoder);
 
     // Set the encoder non-systematic
     encoder->systematic_off();
-    
+
     while( !decoder_two->is_complete() )
     {
         encoder->encode( &payload[0] );
@@ -156,12 +156,12 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
         decoder_two->decode( &payload[0] );
 
     }
-    
+
     std::vector<uint8_t> data_out_one(decoder_one->block_size(), '\0');
     std::vector<uint8_t> data_out_two(decoder_two->block_size(), '\0');
     kodo::copy_symbols(kodo::storage(data_out_one), decoder_one);
-    kodo::copy_symbols(kodo::storage(data_out_two), decoder_two); 
-    
+    kodo::copy_symbols(kodo::storage(data_out_two), decoder_two);
+
     EXPECT_TRUE(std::equal(data_out_one.begin(), data_out_one.end(), data_in.begin()));
     EXPECT_TRUE(std::equal(data_out_two.begin(), data_out_two.end(), data_in.begin()));
 }
@@ -194,13 +194,13 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
 {
     test_recoders(32, 1600);
     test_recoders(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_recoders(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_recoders(symbols, symbol_size);
 }
 
 
