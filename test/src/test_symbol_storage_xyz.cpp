@@ -48,7 +48,7 @@ namespace kodo
                  final_coder_factory<shallow_partial_coder<Field>, Field>
                      > >
     {};
-    
+
 }
 
 // Creates a random value
@@ -62,14 +62,14 @@ DataType rand_value()
 template<class CoderType, class DataType>
 void test_std_vector(CoderType coder)
 {
-    
+
     // Make the vector the full size of a coder block
     uint32_t vector_size = coder->block_size() / sizeof(DataType);
-    DataType fill_value  = rand_value<DataType>(); 
-    
+    DataType fill_value  = rand_value<DataType>();
+
     {
         std::vector<DataType> v_in(vector_size, fill_value);
-                
+
         kodo::set_symbols(kodo::storage(v_in), coder);
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
@@ -96,15 +96,15 @@ void test_std_vector(CoderType coder)
         {
             coder->set_symbol(i, storage_sequence[i]);
         }
-        
+
         std::vector<DataType> v_out(vector_size);
 
         kodo::copy_symbols(kodo::storage(v_out), coder);
 
         EXPECT_TRUE( std::equal(v_in.begin(), v_in.end(), v_out.begin()));
-        
+
     }
-        
+
 }
 
 // Test helper, creates a storage objected based on a pointer
@@ -115,12 +115,12 @@ void test_pointer_to_data(CoderType coder)
     {
         // Make the vector the full size of a coder block
         uint32_t vector_size = coder->block_size() / sizeof(DataType);
-        DataType fill_value  = rand_value<DataType>(); 
-        
+        DataType fill_value  = rand_value<DataType>();
+
         boost::shared_array<DataType> d_in(new DataType[vector_size]);
 
         std::fill_n(d_in.get(), vector_size, fill_value);
-                
+
         coder->set_symbols(kodo::storage(d_in.get(), vector_size*sizeof(DataType)));
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
@@ -132,21 +132,21 @@ void test_pointer_to_data(CoderType coder)
         coder->copy_symbols(kodo::storage(d_out.get(), vector_size*sizeof(DataType)));
 
         EXPECT_TRUE( std::equal(d_in.get(), d_in.get() + vector_size, d_out.get()) );
-        
+
     }
 }
 
-// Creates a coder and invokes the test helpers 
+// Creates a coder and invokes the test helpers
 template<class Coder>
 void test_coder(uint32_t symbols, uint32_t symbol_size)
 {
-    
+
     typename Coder::factory f(symbols, symbol_size);
-    typename Coder::pointer coder = f.build(symbols, symbol_size);    
+    typename Coder::pointer coder = f.build(symbols, symbol_size);
 
     test_std_vector<typename Coder::pointer, char>(coder);
     test_std_vector<typename Coder::pointer, int>(coder);
-    test_std_vector<typename Coder::pointer, short>(coder); 
+    test_std_vector<typename Coder::pointer, short>(coder);
     test_std_vector<typename Coder::pointer, uint8_t>(coder);
     test_std_vector<typename Coder::pointer, uint16_t>(coder);
     test_std_vector<typename Coder::pointer, uint32_t>(coder);
@@ -154,19 +154,19 @@ void test_coder(uint32_t symbols, uint32_t symbol_size)
 
     test_pointer_to_data<typename Coder::pointer, char>(coder);
     test_pointer_to_data<typename Coder::pointer, int>(coder);
-    test_pointer_to_data<typename Coder::pointer, short>(coder); 
+    test_pointer_to_data<typename Coder::pointer, short>(coder);
     test_pointer_to_data<typename Coder::pointer, uint8_t>(coder);
     test_pointer_to_data<typename Coder::pointer, uint16_t>(coder);
     test_pointer_to_data<typename Coder::pointer, uint32_t>(coder);
     test_pointer_to_data<typename Coder::pointer, uint64_t>(coder);
-    
+
 }
 
 
 TEST(TestSymbolStorage, test_set_storage_function)
 {
-    srand(time(0));
-    
+    srand(static_cast<uint32_t>(time(0)));
+
     uint32_t symbols = (rand() % 512) + 1;
     uint32_t symbol_size = ((rand() % 1000) + 1) * 16;
 
@@ -177,7 +177,7 @@ TEST(TestSymbolStorage, test_set_storage_function)
         test_coder<kodo::shallow_const_coder<fifi::binary> >(symbols, symbol_size);
         test_coder<kodo::shallow_const_coder<fifi::binary8> >(symbols, symbol_size);
         test_coder<kodo::shallow_const_coder<fifi::binary16> >(symbols, symbol_size);
-        
+
         test_coder<kodo::shallow_mutable_coder<fifi::binary> >(symbols, symbol_size);
         test_coder<kodo::shallow_mutable_coder<fifi::binary8> >(symbols, symbol_size);
         test_coder<kodo::shallow_mutable_coder<fifi::binary16> >(symbols, symbol_size);
@@ -190,9 +190,9 @@ TEST(TestSymbolStorage, test_set_storage_function)
         test_coder<kodo::shallow_partial_coder<fifi::binary8> >(symbols, symbol_size);
         test_coder<kodo::shallow_partial_coder<fifi::binary16> >(symbols, symbol_size);
 
-        
+
     }
-    
+
 }
 
 
@@ -235,11 +235,11 @@ void test_partial_std_vector(CoderType coder)
     // Make it partial
     uint32_t partial_vector_length = vector_length - (rand() % vector_length);
 
-    DataType fill_value  = rand_value<DataType>(); 
-    
+    DataType fill_value  = rand_value<DataType>();
+
     {
         std::vector<DataType> v_in(partial_vector_length, fill_value);
-        
+
         kodo::set_symbols(kodo::storage(v_in), coder);
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
@@ -250,13 +250,13 @@ void test_partial_std_vector(CoderType coder)
         std::vector<DataType> v_out(vector_length, 0);
 
         kodo::mutable_storage ms = kodo::storage(v_out);
-        
+
         kodo::copy_symbols(ms, coder);
-        
+
         // Check whether the beginning of the partial vector
         // is now in the beginning at the output vector
         EXPECT_TRUE( std::equal(v_in.begin(), v_in.end(), v_out.begin()));
-        
+
         // And that the remaining part is zero
         for(uint32_t i = partial_vector_length; i < vector_length; ++i)
         {
@@ -264,43 +264,43 @@ void test_partial_std_vector(CoderType coder)
             EXPECT_TRUE(ok);
         }
     }
-        
+
 }
 
 
-// Creates a coder and invokes the test helpers 
+// Creates a coder and invokes the test helpers
 template<class Coder>
 void test_partial_coder(uint32_t symbols, uint32_t symbol_size)
 {
-    
+
     typename Coder::factory f(symbols, symbol_size);
 
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, char>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, int>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, short>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, uint8_t>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, uint16_t>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, uint32_t>(coder);
     }
     {
-        typename Coder::pointer coder = f.build(symbols, symbol_size);    
+        typename Coder::pointer coder = f.build(symbols, symbol_size);
         test_partial_std_vector<typename Coder::pointer, uint64_t>(coder);
     }
 }
@@ -309,18 +309,18 @@ void test_partial_coder(uint32_t symbols, uint32_t symbol_size)
 
 TEST(TestSymbolStorage, test_set_partial_storage_function)
 {
-    srand(time(0));
-    
+    srand(static_cast<uint32_t>(time(0)));
+
     uint32_t symbols = (rand() % 512) + 1;
     uint32_t symbol_size = ((rand() % 1000) + 1) * 16;
-    
+
     {
         test_partial_coder<kodo::shallow_partial_coder<fifi::binary> >(
             symbols, symbol_size);
 
         test_partial_coder<kodo::shallow_partial_coder<fifi::binary8> >(
             symbols, symbol_size);
-        
+
         test_partial_coder<kodo::shallow_partial_coder<fifi::binary16> >(
             symbols, symbol_size);
     }
@@ -349,7 +349,7 @@ TEST(TestSymbolStorage, test_set_partial_storage_function)
 //         ASSERT_TRUE(s10000.m_size == 0);
 
 //     }
- 
+
 // }
 
 // TEST(TestSymbolStorage, test_set_storage_arithmetics)
