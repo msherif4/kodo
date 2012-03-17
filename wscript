@@ -3,7 +3,7 @@
 
 import os
 
-# Necessary since we override different Contexts 
+# Necessary since we override different Contexts
 import waflib.extras.wurftools as wt
 
 APPNAME = 'kodo'
@@ -50,7 +50,7 @@ def configure(conf):
                                         '-Wextra', '-Wall']
 
     if conf.env.TOOLCHAIN == 'win32':
-        conf.env.CXXFLAGS_KODO_FLAGS = ['/O2', '/Ob2', '/W3', '/EHs']
+        conf.env.CXXFLAGS_KODO_FLAGS = ['/O2', '/Ob2', '/W3', '/EHsc']
 
 
 
@@ -67,10 +67,10 @@ def build(bld):
     bld(includes = '.',
         export_includes = '.',
         name = 'kodo_includes')
-    
+
     bld.recurse('test')
     #bld.recurse('benchmark/throughput')
 
 
-    
-        
+
+
