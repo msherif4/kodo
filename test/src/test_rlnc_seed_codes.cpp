@@ -38,13 +38,13 @@ TEST(TestRlncSeedCodes, basic_api)
 {
     test_coders(32, 1600);
     test_coders(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_coders(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_coders(symbols, symbol_size);
 }
 
 
@@ -75,13 +75,13 @@ TEST(TestRlncSeedCodes, systematic)
 {
     test_coders_systematic(32, 1600);
     test_coders_systematic(1, 1600);
-    
-    srand(time(0));
+
+    srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2; 
-    
-    test_coders_systematic(symbols, symbol_size);    
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_coders_systematic(symbols, symbol_size);
 }
 
 
