@@ -19,10 +19,10 @@ void print_matrix(const kodo::vandermonde_matrix<Field> &matrix)
 {
     for(uint32_t i = 0; i < Field::order - 1; ++i)
         {
-            const typename Field::value_type *v = matrix.coefficients(i); 
+            const typename Field::value_type *v = matrix.coefficients(i);
 
             std::cout << "COL " << i << ": ";
-            
+
             for(uint32_t j = 0; j < matrix.symbols(); ++j)
             {
                 std::cout << (uint32_t)v[j] << " ";
@@ -39,21 +39,21 @@ TEST(TestVandermondeMatrix, test_construct)
 
     // The random generator
     boost::random::mt19937 random_generator;
-    random_generator.seed(time(0));
+    random_generator.seed(static_cast<uint32_t>(time(0)));
 
     {
         typedef fifi::binary8 field_type;
 
         uniform_int choose_symbols
-            = uniform_int(1, field_type::order - 1); 
+            = uniform_int(1, field_type::order - 1);
 
         uint32_t symbols = choose_symbols(random_generator);
-        
+
         typedef fifi::full_table<field_type> field_impl;
         boost::shared_ptr<field_impl> field = boost::make_shared<field_impl>();
 
         kodo::vandermonde_matrix<fifi::binary8> matrix(false, symbols, field);
-        
+
     }
 }
 
@@ -66,7 +66,7 @@ TEST(TestVandermondeMatrix, test_matrix_values)
         typedef fifi::binary8 field_type;
 
         uint32_t symbols = 10;
-        
+
         typedef fifi::full_table<field_type> field_impl;
         boost::shared_ptr<field_impl> field = boost::make_shared<field_impl>();
 
@@ -76,16 +76,16 @@ TEST(TestVandermondeMatrix, test_matrix_values)
         for(uint32_t i = 0; i < field_type::order - 1; ++i)
         {
             const field_type::value_type *v = matrix.coefficients(i);
-            
+
             for(uint32_t j = 0; j < symbols; ++j)
             {
                 uint32_t expected = test_values[i * symbols + j];
                 uint32_t actual = v[j];
-                
+
                 EXPECT_EQ(expected, actual);
             }
         }
-        
+
     }
 }
 
