@@ -42,12 +42,15 @@ namespace kodo
         public:
             
             // Constructor
-            // @param max_symbols, the maximum symbols this coder can expect
-            // @param max_symbol_size, the maximum size of a symbol in bytes
+            // @param max_symbols, the maximum symbols this coder 
+            //        can expect
+            // @param max_symbol_size, the maximum size of a symbol 
+            //        in bytes
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
                   m_max_symbol_size(max_symbol_size),
-                  m_pool(boost::bind(&factory::make_coder, this))
+	          m_pool(boost::bind(&factory::make_coder, max_symbols, 
+                                     max_symbol_size))
                 {
                     assert(m_max_symbols > 0);
                     assert(m_max_symbol_size > 0);
@@ -78,13 +81,14 @@ namespace kodo
         private:
 
             // Creates a new coder if non is stored in the pool
-            pointer make_coder()
+            static pointer make_coder(uint32_t max_symbols,
+                                      uint32_t max_symbol_size)
                 {
-                    assert(m_max_symbols > 0);
-                    assert(m_max_symbol_size > 0);
+                    assert(max_symbols > 0);
+                    assert(max_symbol_size > 0);
                     
                     pointer coder = boost::make_shared<FINAL>();
-                    coder->construct(m_max_symbols, m_max_symbol_size);
+                    coder->construct(max_symbols, max_symbol_size);
                     
                     return coder;
                 }
