@@ -12,13 +12,13 @@
 
 TEST(TestStorageFunction, test_storage_function)
 {
-    srand(time(0));
+    srand(static_cast<uint32_t>(time(0)));
 
     {
         uint32_t size = 500;
-        
+
         std::vector<uint8_t> v(size);
-        
+
         kodo::const_storage cs = kodo::storage(v);
         EXPECT_TRUE(cs.m_size == size);
         EXPECT_TRUE(cs.m_data == &v[0]);
@@ -27,7 +27,7 @@ TEST(TestStorageFunction, test_storage_function)
         EXPECT_TRUE(ms.m_size == size);
         EXPECT_TRUE(ms.m_data == &v[0]);
     }
-    
+
 }
 
 
