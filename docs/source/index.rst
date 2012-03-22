@@ -6,11 +6,12 @@
 Welcome to Kodo's documentation!
 ================================
 
-Contents:
+.. Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   nc_glossary
 
 
 Indices and tables
