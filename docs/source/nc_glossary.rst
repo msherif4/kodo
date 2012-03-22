@@ -69,6 +69,14 @@ Networking
  +---------------+--------------+
  | Vector        | Coded Symbol |
  +---------------+--------------+
+
+ +------------------------------+
+ |            Packet            |
+ +---------------+--------------+
+ | Vector        | Coded Symbol |
+ +---------------+--------------+
+
+
    
 **Packet Size**
  Is equal to the size of the vector and symbol.
