@@ -90,7 +90,3 @@ Underlying Math
 **Field Degree**
 
 
-
-
-
-
