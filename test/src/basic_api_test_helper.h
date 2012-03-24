@@ -1,7 +1,7 @@
 // Copyright Steinwurf APS 2011-2012.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
-// See accompanying file LICENSE_1_0.txt or
-// http://www.steinwurf.dk/licensing
+// See accompanying file LICENSE.rst or
+// http://www.steinwurf.com/licensing
 
 #ifndef KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER
 #define KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER
