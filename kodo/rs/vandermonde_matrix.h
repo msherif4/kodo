@@ -1,7 +1,7 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf APS 2011-2012.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
-// See accompanying file LICENSE_1_0.txt or
-// http://www.steinwurf.dk/licensing
+// See accompanying file LICENSE.rst or
+// http://www.steinwurf.com/licensing
 
 #ifndef KODO_RS_VANDERMONDE_MATRIX_H
 #define KODO_RS_VANDERMONDE_MATRIX_H
