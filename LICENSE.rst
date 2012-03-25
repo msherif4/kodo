@@ -2,25 +2,25 @@ STEINWURF RESEARCH LICENSE
 ==========================
 
 Version 1.0
-Copyright (c) Steinwurf APS and its licensors. 2011-2012. All rights reserved.
+Copyright (c) Steinwurf ApS and its licensors. 2011-2012. All rights reserved.
 
 I. DEFINITIONS
 --------------
 
 "You" refers to the individual executing this License or the legal entity or entities represented by the individual executing this License.
 
-"Software" is the object code and source code of the product provided by Steinwurf APS and its licensors.
+"Software" is the object code and source code of the product provided by Steinwurf ApS and its licensors.
 
-"Research and Educational Use" means use for non-profit, non-commercial research and educational purposes only. Commercial use, including use for internal business purposes, is not permitted under this license. Contact Steinwurf APS if you wish to obtain a commercial license.
+"Research and Educational Use" means use for non-profit, non-commercial research and educational purposes only. Commercial use, including use for internal business purposes, is not permitted under this license. Contact Steinwurf ApS if you wish to obtain a commercial license.
 
 II. RESEARCH AND EDUCATIONAL USE RIGHTS
 ---------------------------------------
 
-You may use, copy, reproduce, and distribute the Software for Research and Educational Use only, subject to the restrictions in this license; provided, however, that any party to whom you distribute the Software may use it only for Research and Educational Use and only pursuant to a license from Steinwurf APS and its licensors. Pursuant to such license, you may include parts or all of the software, including your modifications, in scientific publications such as books, papers, and teaching material for non-profit, non-commercial, academic purposes.
+You may use, copy, reproduce, and distribute the Software for Research and Educational Use only, subject to the restrictions in this license; provided, however, that any party to whom you distribute the Software may use it only for Research and Educational Use and only pursuant to a license from Steinwurf ApS and its licensors. Pursuant to such license, you may include parts or all of the software, including your modifications, in scientific publications such as books, papers, and teaching material for non-profit, non-commercial, academic purposes.
 
 You may modify the Software, but you may use any modified software only under the terms and conditions that apply to the Software, including the restriction to use the Software for Research and Educational Use only.
 
-Other than the rights granted herein, Steinwurf APS and its licensors retain all ownership rights to the Software, and you retain all rights to modifications made exclusively by you to the Software; provided, however, that you agree to grant a worldwide license under any rights you may have to such modifications to Steinwurf APS, its licensors, and their respective licensees on fair, reasonable and non-discriminatory terms.
+Other than the rights granted herein, Steinwurf ApS and its licensors retain all ownership rights to the Software, and you retain all rights to modifications made exclusively by you to the Software; provided, however, that you agree to grant a worldwide license under any rights you may have to such modifications to Steinwurf ApS, its licensors, and their respective licensees on fair, reasonable and non-discriminatory terms.
 
 III. LICENSE RESTRICTIONS
 -------------------------
@@ -44,7 +44,7 @@ IV. GENERAL TERMS
 
  You may terminate this license at any time.
 
- Steinwurf APS may terminate this license at any time, including, without limitation, if you bring or assist any third party in bringing any challenge to the validity, patentability, enforceability and/or non-infringement of, or otherwise oppose, any patent rights controlled by Steinwurf APS or licensed to Steinwurf APS.
+ Steinwurf ApS may terminate this license at any time, including, without limitation, if you bring or assist any third party in bringing any challenge to the validity, patentability, enforceability and/or non-infringement of, or otherwise oppose, any patent rights controlled by Steinwurf ApS or licensed to Steinwurf ApS.
  
  Upon termination, you must discontinue using and distributing the Software under this agreement, and delete all versions of the Software in your possession, both original and derived versions.
 

@@ -6,10 +6,33 @@
 Welcome to Kodo's documentation!
 ================================
 
-Contents:
+.. Contents:
 
 .. toctree::
    :maxdepth: 2
+
+
+Documentation for the Code
+==========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
