@@ -3,20 +3,26 @@ Network Coding Glossary
 
 Here follows a list of terms that is often used in connection with Network Coding. These terms are used in Kodo and it is assumed in both the documentation and the sources that the reader is familiar with these terms.
 
-Coding
-------
 
-**Encoding**
- Is performed at source(s) where the data to be send is combined in a way that is beneficial for transmission over a packet network.
+Finite Field
+------------
 
-**Decoding**
- Is performed at sink(s) where the coded data is decode in order to recreate the original data from the source(s).
+**Finite Field Element**
+ An element in the finite field over which coding operations are performed. Kodo supports several different fields and extension fields.
 
-**Recoding**
- Can be performed in the network at relay node(s) between the source and the sink. A sink that has not fully decoded the data can also recode.
+**Field Size** / Order
+
+**Field Degree**
+
+
+Basic Coding
+------------
+
+**Linear**
+All codes that Kodo support are linear and coding operations are performed over some finite field.
 
 **Generation**
- The data of size *B* that is to be transferred from a source to one or more sinks is divided into generations, of size *g\*m*. Each generation constitutes *g* symbols, each of size *m*. As the data within generations (generally) are independent, they are encoded, decode and recoded seperately.
+ The data of size *B* that is to be transferred from a source to one or more sinks is divided into generations, of size :math:`g \cdot m`. Each generation constitutes *g* symbols, each of size *m*. The data from each generation is encoded, decode and recoded seperately.
 
  ====  ====  =====  ====
  Generation
@@ -29,23 +35,30 @@ Coding
 **Generation Size**
  Is the number of symbols in each generation, and denoted *g*.
 
-**Symbol** /Data
- Each symbol, with size *m*, is one element or a concatenation of elements within some specified finite field.
-
- A symbol is sometimes also simply referred to as *data*.
+**Symbol**
+ Each symbol, is one finite field element or a concatenation of finite field elements. The symbol represent a part of the original data in the generation.
 
 **Symbol Size**
- The size of a symbol is defined as the number of elements it contains.
+ The size of a symbol, *m*, is defined as the number of elements it contains.
 
-**Element**
- Is defined by a finite field. E.g. the operations (+,-,*,%) that can be performed on the symbol, and the size of the element is defined by the field.
+**Coding Vector**
+ A coding vector is a vector of *g* field elements, where each element defines the coding operations performed on the corresponding element in the generation.
+
+**Encoding**
+ Is performed at source(s) where the original data to be send is encoded and packetized and transmitted via the network.
+
+**Decoding**
+ Is performed at sink(s) where the coded data is decode in order to recreate the original data from the source(s).
+
+**Recoding**
+ Can be performed in the network at relay node(s) between the source and the sink. Such a node can combine received coded packets in order to create new coded packets. A sink that has not fully decoded the data can also recode.
 
 
-**Vector**
- A vector or coding vector is a vector of *g* field elements, where each element describes the coding operations performed on the corresponding element in the symbol. The number of elements in the vector is equal to the generation size *g*.
+Other Coding
+------------
 
 **Density**
- The density of a vector is the ratio of non-zero elements or the number of total elements 
+ The density of a vector is the ratio of non-zero elements
  :math:`d(h) = \frac{\sum_{k=1}^g h_k \neq 0}{g}`.
 
  where:
@@ -64,38 +77,20 @@ Networking
 **Packet**
  Contains a vector-data pair.
 
- +------------------------------+
- |            Packet            |
- +---------------+--------------+
- | Vector        | Coded Symbol |
- +---------------+--------------+
-
- +------------------------------+
- |            Packet            |
- +---------------+--------------+
- | Vector        | Coded Symbol |
- +---------------+--------------+
-
-
+ ===============  ===============
+              Packet            
+ --------------------------------
+   Vector          Coded Symbol 
+ ===============  ===============
    
 **Packet Size**
- Is equal to the size of the vector and symbol.
+ Is the total size of the coding vector and coded symbol.
 
 **Bulk Data**
  When bulk data is coded the file is split into one or more parts of a resonable size, each of these parts is denoted a generation.
 
 **Streaming Data**
  When streaming data is coded some amount of data is accumulated and this data is denoted a generation.
-
-Underlying Math
----------------
-
-**Finite Field**
- A field is the mathematical construct over which coding operations are performed. Kodo supports several different fields and extension fields.
-
-**Field Size** / Order
-
-**Field Degree**
 
 
 
