@@ -13,6 +13,34 @@ Welcome to Kodo's documentation!
 
    nc_glossary
 
+Documentation for the Code
+==========================
+
+.. include:: ../../kodo/payload_decoder.h
+
+.. cpp:function:: bool namespaced::theclass::method(int arg1, std::string arg2)
+
+   Describes a method with parameters and types.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Indices and tables
 ==================
