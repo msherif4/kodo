@@ -39,7 +39,6 @@
 #include "reed_solomon_encoder.h"
 #include "reed_solomon_decoder.h"
 
-
 namespace kodo
 {
 
@@ -69,16 +68,15 @@ namespace kodo
                      > > > > > > >
     {};
 
-    // Common typedefs
+    /// Common typedefs
     typedef rs_encoder<fifi::binary8> rs8_encoder;
     typedef rs_decoder<fifi::binary8> rs8_decoder;
-    //typedef full_rlnc_decoder<fifi::binary8> full_rlnc8_decoder;
 
-//    typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
-//    typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
+    //typedef full_rlnc_decoder<fifi::binary8> full_rlnc8_decoder;
+    //typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
+    //typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
     
 }
-
 
 #endif
 
