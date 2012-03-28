@@ -19,7 +19,8 @@ namespace kodo
         
         /// memsets the incoming payload and forwards the
         /// call.
-        /// @param payload, the encoding payload
+        /// @param symbol_data symbol storage
+        /// @param symbol_id symbol id storage
         /// @return the number of byes used by the underlying coding layers
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {

@@ -117,9 +117,9 @@ namespace kodo
     public:
 
         /// Constructs a new random annex decoder
-        /// @param annex_size, the number of symbols used for the random annex
-        /// @param factory, the decoder factory to use
-        /// @param object_size, the size in bytes of the object that should be
+        /// @param annex_size the number of symbols used for the random annex
+        /// @param factory the decoder factory to use
+        /// @param object_size the size in bytes of the object that should be
         ///        decoded
         random_annex_decoder(uint32_t annex_size, factory_type &factory,
                              uint32_t object_size)
@@ -157,7 +157,7 @@ namespace kodo
             }
         
         /// Builds a specific decoder
-        /// @param decoder_id, specifies the decoder to build
+        /// @param decoder_id specifies the decoder to build
         /// @return the initialized decoder
         pointer_type build(uint32_t decoder_id)
             {
@@ -268,7 +268,7 @@ namespace kodo
             }
         
         /// Builds a specific decoder
-        /// @param decoder_id, specifies the decoder to build
+        /// @param decoder_id specifies the decoder to build
         /// @return the initialized decoder
         void build_decoders()
             {

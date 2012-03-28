@@ -120,7 +120,7 @@ namespace kodo
             }
                 
         /// Sets the storage
-        /// @param storage, a const storage container
+        /// @param symbol_storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =

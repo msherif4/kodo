@@ -28,8 +28,8 @@ namespace kodo
     public:
 
         /// Creates a new basic encoding vector
-        /// @param vector, pointer to the encoding vector data
-        /// @param symbols, the number of field symbols i.e. the
+        /// @param vector pointer to the encoding vector data
+        /// @param symbols the number of field symbols i.e. the
         ///        generation size 
         full_vector(value_type *vector, uint32_t symbols)
             : m_vector(vector),
@@ -43,8 +43,8 @@ namespace kodo
         value_type coefficient(uint32_t index) const;
 
         /// Sets the coefficient for a specific symbol index
-        /// @param index, the index of the symbol coefficient
-        /// @param coefficient, the coefficient to assign
+        /// @param index the index of the symbol coefficient
+        /// @param coefficient the coefficient to assign
         void set_coefficient(uint32_t index, value_type coefficient);
         
         /// @return pointer to the stored encoding vector data
