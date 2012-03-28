@@ -20,15 +20,15 @@
 namespace kodo
 {
 
-    // For a given selection of object partitioning
-    // parameters this function returns the maximum
-    // allowed annex size.
+    /// For a given selection of object partitioning
+    /// parameters this function returns the maximum
+    /// allowed annex size.
     //
-    // The result returned from this function is
-    // guaranteed to work for any partitioning scheme
-    // as long as the maximum symbol size is not changed
-    // and maximum number of symbols per block is not
-    // increased.
+    /// The result returned from this function is
+    /// guaranteed to work for any partitioning scheme
+    /// as long as the maximum symbol size is not changed
+    /// and maximum number of symbols per block is not
+    /// increased.
     uint32_t max_annex_size(uint32_t max_symbols,
                             uint32_t max_symbol_size,
                             uint32_t object_size)
@@ -37,36 +37,35 @@ namespace kodo
         assert(max_symbol_size > 0);
         assert(object_size > 0);
         
-        // The minimum number of total symbols we can have
-        // for the given maximum_symbol_size and object_size
-        // ceil(x/y) = ((x - 1) / y) + 1
+        /// The minimum number of total symbols we can have
+        /// for the given maximum_symbol_size and object_size
+        /// ceil(x/y) = ((x - 1) / y) + 1
         uint32_t min_total_symbols = ((object_size - 1) / max_symbol_size) + 1;
 
-        // Out of that we have a our maximum block size and
-        // since we select the annex overlap
-        // randomly without replacement there is no way we
-        // can have an annex bigger than the number of
-        // available symbols in the surrounding blocks
-        // i.e. the total number of surrounding symbols minus the
-        // maximum block
+        /// Out of that we have a our maximum block size and
+        /// since we select the annex overlap
+        /// randomly without replacement there is no way we
+        /// can have an annex bigger than the number of
+        /// available symbols in the surrounding blocks
+        /// i.e. the total number of surrounding symbols minus the
+        /// maximum block
         if(max_symbols > min_total_symbols)
         {
-            // Everything fits into one block
+            /// Everything fits into one block
             return 0;
         }
         else
         {
-            // We know how many symbols are outside the
-            // maximum block. Additionally since the annex
-            // is contained within a single block it cannot
-            // be larger than the max_symbols - 1. If we allow
-            // the annex to be == max_symbols the blocks could
-            // end up begin pure annex in which case no blocks
-            // contain actual symbols.
+            /// We know how many symbols are outside the
+            /// maximum block. Additionally since the annex
+            /// is contained within a single block it cannot
+            /// be larger than the max_symbols - 1. If we allow
+            /// the annex to be == max_symbols the blocks could
+            /// end up begin pure annex in which case no blocks
+            /// contain actual symbols.
             return std::min(min_total_symbols - max_symbols, max_symbols - 1);
         }
-    }
-    
+    }    
 
     struct annex_info
     {
@@ -79,93 +78,92 @@ namespace kodo
             : m_coder_id(coder_id),
               m_symbol_id(symbol_id)
             { }
-               
-        
+                       
         uint32_t m_coder_id;
         uint32_t m_symbol_id;
         
     };
 
-    // Allows our annex info class to be used in e.g. a std::set
+    /// Allows our annex info class to be used in e.g. a std::set
     inline bool operator<(const annex_info &a, const annex_info &b)
     { 
         return a.m_coder_id < b.m_coder_id || 
             (!(b.m_coder_id < a.m_coder_id) && a.m_symbol_id < b.m_symbol_id); 
     }
         
-    // A random annex base
+    /// A random annex base
     template<class BlockPartitioning>
     class random_annex_base : boost::noncopyable
     {
     public:
 
-        // The block partitioning scheme used
+        /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;
 
-        // Convenient typedef to make the Standard Libary insert
-        // ugly'ness a bit more nicer
+        /// Convenient typedef to make the Standard Libary insert
+        /// ugly'ness a bit more nicer
         typedef std::pair<std::set<annex_info>::iterator,bool> annex_return;
         
-        // The uniform int distribution
+        /// The uniform int distribution
         typedef boost::random::uniform_int_distribution<uint32_t>
             uniform_int;
         
     public:
 
-        // Builds the random annex according to the given annex size and
-        // partitioning scheme
+        /// Builds the random annex according to the given annex size and
+        /// partitioning scheme
         void build_annex(uint32_t annex_size, const block_partitioning &partitioning)
             {
-                // Get the number of blocks for this object
+                /// Get the number of blocks for this object
                 uint32_t blocks = partitioning.blocks();
 
-                // Prepare annex
+                /// Prepare annex
                 m_annex.resize(blocks);
 
-                // Prepare reverse annex
+                /// Prepare reverse annex
                 m_reverse_annex.resize(blocks);
 
                 if(annex_size == 0 || blocks < 2)
                 {
-                    // No need to continue - we leave the resize
-                    // since then the algorithms operating on the
-                    // data structures (m_annex or m_reverse_annex)
-                    // does not have to perform the check for
-                    // annex_size == 0 or blocks < 2
+                    /// No need to continue - we leave the resize
+                    /// since then the algorithms operating on the
+                    /// data structures (m_annex or m_reverse_annex)
+                    /// does not have to perform the check for
+                    /// annex_size == 0 or blocks < 2
                     return;
                 }
 
                 for(uint32_t i = 0; i < blocks; ++i)
                     m_reverse_annex[i].resize(blocks);
 
-                // For 5 blocks generate between [0,..,3]
-                // since 1 block is always excluded only 4 values
-                // are suitable. When block 1 is excluded we select
-                // between {0, 2, 3, 4} and so forth.
+                /// For 5 blocks generate between [0,..,3]
+                /// since 1 block is always excluded only 4 values
+                /// are suitable. When block 1 is excluded we select
+                /// between {0, 2, 3, 4} and so forth.
                 m_block_distribution
                     = uniform_int(0, blocks - 2); 
 
-                // std::cout << "Total blocks " << blocks << std::endl;
-                // std::cout << "Annex " << annex_size << std::endl;
+                /// std::cout << "Total blocks " << blocks << std::endl;
+                /// std::cout << "Annex " << annex_size << std::endl;
                 
-                // for(uint32_t i = 0; i < blocks; ++i)
-                // {
-                //     std::cout << "Block " << i << " symbols "
-                //               << partitioning.symbols(i) << std::endl;
+                /// for(uint32_t i = 0; i < blocks; ++i)
+                /// {
+                ///     std::cout << "Block " << i << " symbols "
+                ///               << partitioning.symbols(i) << std::endl;
 
-                // }
+                /// }
 
                 
                 
                 for(uint32_t i = 0; i < blocks; ++i)
                 {
-//                                       std::cout << "Block " << i << " has "
-//                         << partitioning.symbols(i) << " symbols" << std::endl;
+                    //std::cout << "Block " << i << " has "
+                    //<< partitioning.symbols(i) << " symbols" << std::endl;
 
-                    // Safety check -- since we select the annex overlap
-                    // randomly without replacement there is no way we
-                    // can have an annex bigger than the number of
-                    // available symbols in the surrounding blocks                    
+                    /// Safety check -- since we select the annex overlap
+                    /// randomly without replacement there is no way we
+                    /// can have an annex bigger than the number of
+                    /// available symbols in the surrounding blocks                    
                     assert(annex_size < (partitioning.total_symbols() -
                                          partitioning.symbols(i))); 
                     
@@ -173,17 +171,16 @@ namespace kodo
                     {
                         uint32_t block_id = select_block(i);
 
-//                        std::cout << "Select Block " << block_id << std::endl;
+                        //std::cout << "Select Block " << block_id << std::endl;
                         
                         uint32_t symbol_id = select_symbol(partitioning.symbols(block_id));
 
-                        //
                         //std::cout << "Select Symbol " << symbol_id << std::endl;
                         
                         annex_info annex(block_id, symbol_id);
 
-                        // Here we rely on the fact that the set will
-                        // not insert the element if it already exists
+                        /// Here we rely on the fact that the set will
+                        /// not insert the element if it already exists
                         annex_return ret = m_annex[i].insert(annex);
 
                         if(ret.second == true)
@@ -192,7 +189,7 @@ namespace kodo
                         }
                         else
                         {
-                            //  std::cout << "Could not insert " << std::endl;
+                            //std::cout << "Could not insert " << std::endl;
                         }
                     }
                 }
@@ -215,14 +212,13 @@ namespace kodo
                 //         std::cout << m_reverse_annex[i][j] << " ";
                 //     }
                 //     std::cout << std::endl;
-                    
                 // }
             }
 
     protected:
 
-        // Selects a block from the block distribution, however
-        // with a certain block excluded
+        /// Selects a block from the block distribution, however
+        /// with a certain block excluded
         uint32_t select_block(uint32_t exclude_block)
             {
                 uint32_t block_id = m_block_distribution(m_random_generator);
@@ -237,15 +233,15 @@ namespace kodo
                 }
             }
 
-        // Selects a symbol id
+        /// Selects a symbol id
         uint32_t select_symbol(uint32_t block_symbols)
             {
-                // Looking at the boost::random::uniform_int_distribution
-                // constructor it seems quite cheap to construct. So
-                // for simplicity we create on here base on the
-                // block symbols parameter. If this can be shown to be
-                // too inefficient we should switch to another approach
-                // e.g. caching the distributions for reuse or something
+                /// Looking at the boost::random::uniform_int_distribution
+                /// constructor it seems quite cheap to construct. So
+                /// for simplicity we create on here base on the
+                /// block symbols parameter. If this can be shown to be
+                /// too inefficient we should switch to another approach
+                /// e.g. caching the distributions for reuse or something
                 uniform_int symbol_generator(0, block_symbols - 1);
                 
                 return symbol_generator(m_random_generator);
@@ -253,19 +249,18 @@ namespace kodo
 
     protected:
 
-        // The distribution wrapping the random generator
+        /// The distribution wrapping the random generator
         uniform_int m_block_distribution;
         
-        // The random generator
+        /// The random generator
         boost::random::mt19937 m_random_generator;
 
-        // Stores the annex for every block
+        /// Stores the annex for every block
         std::vector< std::set<annex_info> > m_annex;        
 
-        // Stores the reverse annex
+        /// Stores the reverse annex
         std::vector< boost::dynamic_bitset<> > m_reverse_annex;
     };
-
 }        
 
 #endif

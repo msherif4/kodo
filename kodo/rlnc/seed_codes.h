@@ -66,7 +66,7 @@ namespace kodo
                      > > > > > > > >
     {};
 
-    // Common typedefs
+    /// Common typedefs
     typedef seed_rlnc_encoder<fifi::binary> seed_rlnc2_encoder;
     typedef seed_rlnc_decoder<fifi::binary> seed_rlnc2_decoder;
 
@@ -77,7 +77,6 @@ namespace kodo
     typedef seed_rlnc_decoder<fifi::binary16> seed_rlnc16_decoder;
     
 }
-
 
 #endif
 

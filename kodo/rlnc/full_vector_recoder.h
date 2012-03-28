@@ -17,32 +17,32 @@
 namespace kodo
 {
 
-    // Implementes a simple uniform random encoding scheme
-    // where the payload_id carries all coding coefficients
-    // i.e. the "encoding vector"
+    /// Implementes a simple uniform random encoding scheme
+    /// where the payload_id carries all coding coefficients
+    /// i.e. the "encoding vector"
     template< template <class> class RandomGenerator, class SuperCoder>
     class full_vector_recoder : public SuperCoder
     {
     public:
 
-        // The field we use
+        /// The field we use
         typedef typename SuperCoder::field_type field_type;
 
-        // The value_type used to store the field elements
+        /// The value_type used to store the field elements
         typedef typename field_type::value_type value_type;
 
-        // The encoding vector
+        /// The encoding vector
         typedef typename SuperCoder::vector_type vector_type;
 
-        // The random generator used
+        /// The random generator used
         typedef RandomGenerator<value_type> random_generator;
 
-        // The rank of the current decoder
+        /// The rank of the current decoder
         using SuperCoder::m_rank;
         
     public:
 
-        // @see final_coder::construct(...)
+        /// @see final_coder::construct(...)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -51,8 +51,8 @@ namespace kodo
                 m_recoding_vector.resize(max_vector_length);
             }
 
-        // The recode function is special for Network Coding
-        // algorithms. It
+        /// The recode function is special for Network Coding
+        /// algorithms.
         uint32_t recode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -63,9 +63,9 @@ namespace kodo
 
                 if(m_rank == 0)
                 {
-                    // We do not have any symbols in our buffer
-                    // we have to simply output a zero encoding vector
-                    // and symbol
+                    /// We do not have any symbols in our buffer
+                    /// we have to simply output a zero encoding vector
+                    /// and symbol
                     return SuperCoder::vector_size();
                 }
 

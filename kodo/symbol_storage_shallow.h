@@ -18,7 +18,7 @@
 namespace kodo
 {
 
-    // Storage traits class for the const storage
+    /// Storage traits class for the const storage
     template<class ValueType>
     class shallow_const_trait
     {
@@ -29,7 +29,7 @@ namespace kodo
 
     };
 
-    // Storage traits class for the mutable storage
+    /// Storage traits class for the mutable storage
     template<class ValueType>
     class shallow_mutable_trait
     {
@@ -40,35 +40,35 @@ namespace kodo
 
     };
 
-    // The shallow storage implementation. In this context shallow
-    // means that the symbol storage only contains pointers to some
-    // external data structure. This is useful in cases where data to
-    // be encoded already has been read into memory or if a user requires
-    // incoming data to be directly decoded into a specific buffer.
+    /// The shallow storage implementation. In this context shallow
+    /// means that the symbol storage only contains pointers to some
+    /// external data structure. This is useful in cases where data to
+    /// be encoded already has been read into memory or if a user requires
+    /// incoming data to be directly decoded into a specific buffer.
     template<template <class> class StorageTraits, class SuperCoder>
     class symbol_storage_shallow : public SuperCoder
     {
     public:
 
-        // The value type used
+        /// The value type used
         typedef typename SuperCoder::value_type value_type;
 
-        // The storage traits
+        /// The storage traits
         typedef StorageTraits<value_type> storage_trait;
         
-        // The pointer used
+        /// The pointer used
         typedef typename storage_trait::value_ptr value_ptr;
 
-        // The storage type used
+        /// The storage type used
         typedef typename storage_trait::storage_type storage_type;
 
-        // A sequence of storage types
+        /// A sequence of storage types
         typedef typename storage_sequence<storage_type>::type
             storage_sequence_type;
 
     public:
 
-        // @see final_coder::construct(...)
+        /// @see final_coder::construct(...)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -76,7 +76,7 @@ namespace kodo
                 m_mapping.resize(max_symbols, 0);
             }
 
-        // @see final_coder::initialize(...)
+        /// @see final_coder::initialize(...)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -84,14 +84,14 @@ namespace kodo
                 std::fill(m_mapping.begin(), m_mapping.end(), (value_ptr) 0);
             }
 
-        // @return uint8_t pointer to the symbol
+        /// @return uint8_t pointer to the symbol
         const uint8_t* raw_symbol(uint32_t index) const
             {
                 return reinterpret_cast<const uint8_t*>(
                     symbol(index));
             }   
         
-        // @return value_type pointer to the symbol
+        /// @return value_type pointer to the symbol
         value_ptr symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
@@ -99,8 +99,8 @@ namespace kodo
                 return m_mapping[index];
             }        
         
-        // Sets the storage
-        // @param storage, a const storage container
+        /// Sets the storage
+        /// @param storage, a const storage container
         void set_symbols(const storage_type &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =
@@ -115,9 +115,9 @@ namespace kodo
                 }
             }
 
-        // Sets a symbol -> data mapping
-        // @param index, the index of the symbol into the coding block
-        // @param symbol, the actual data of that symbol
+        /// Sets a symbol -> data mapping
+        /// @param index, the index of the symbol into the coding block
+        /// @param symbol, the actual data of that symbol
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
@@ -127,8 +127,8 @@ namespace kodo
                 m_mapping[index] = cast_storage<value_type>(symbol);
             }
 
-        // Create an overload of the copy_storage(...) function for this symbol
-        // storage. 
+        /// Create an overload of the copy_storage(...) function for this symbol
+        /// storage. 
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);
@@ -160,29 +160,27 @@ namespace kodo
         
     protected:
         
-        // Symbol mapping
+        /// Symbol mapping
         std::vector<value_ptr> m_mapping;
 
     };
     
-    // Defines a coding layer for 'const' symbol storage. Only useful
-    // for encoders since these to modify the buffers / data they
-    // operate on.
+    /// Defines a coding layer for 'const' symbol storage. Only useful
+    /// for encoders since these to modify the buffers / data they
+    /// operate on.
     template<class SuperCoder>
     class symbol_storage_shallow_const
         : public symbol_storage_shallow<shallow_const_trait, SuperCoder>
     {};
 
-    // Defines a coding layer for 'mutable' symbol storage. Allows the
-    // buffer data to be modified i.e. useful in decoders which need to
-    // access and modify the incoming symbols
+    /// Defines a coding layer for 'mutable' symbol storage. Allows the
+    /// buffer data to be modified i.e. useful in decoders which need to
+    /// access and modify the incoming symbols
     template<class SuperCoder>
     class symbol_storage_shallow_mutable
         : public symbol_storage_shallow<shallow_mutable_trait, SuperCoder>
-    {};    
-    
+    {};        
 }
-
 
 #endif
 

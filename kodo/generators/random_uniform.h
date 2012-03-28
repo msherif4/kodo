@@ -12,8 +12,8 @@
 
 namespace kodo
 {
-    // Generates full encoding vectors where every coding coefficient
-    // is chosen uniformly random.
+    /// Generates full encoding vectors where every coding coefficient
+    /// is chosen uniformly random.
     template<class ValueType>
     class random_uniform
     {
@@ -21,7 +21,7 @@ namespace kodo
 
         typedef ValueType value_type;
 
-        // Fills the vector buffer with random bytes
+        /// Fills the vector buffer with random bytes
         void generate(value_type *buffer, uint32_t length)
             {
                 assert(buffer != 0);
@@ -33,7 +33,7 @@ namespace kodo
                 }
             }
 
-        // Fills the vector buffer with random bytes
+        /// Fills the vector buffer with random bytes
         value_type generate()
             {
                 return m_distribution(m_random_generator);
@@ -46,10 +46,10 @@ namespace kodo
         
     private:
 
-        // The distribution wrapping the random generator
+        /// The distribution wrapping the random generator
         boost::random::uniform_int_distribution<value_type> m_distribution;
         
-        // The random generator
+        /// The random generator
         boost::random::mt19937 m_random_generator;
     };
 }

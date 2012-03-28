@@ -17,35 +17,35 @@
 namespace kodo
 {
 
-    // Random annex decoder
+    /// Random annex decoder
     template<class DecoderType, class BlockPartitioning>
     class random_annex_decoder : random_annex_base<BlockPartitioning>
     {
     public:
 
-        // The type of factory used to build decoders
+        /// The type of factory used to build decoders
         typedef typename DecoderType::factory factory_type;
 
-        // Pointer to a decoder
+        /// Pointer to a decoder
         typedef typename DecoderType::pointer internal_pointer_type;
 
-        // The block partitioning scheme used
+        /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;
 
-        // The base
+        /// The base
         typedef random_annex_base<BlockPartitioning> Base;
 
-        // Pull up the annex
+        /// Pull up the annex
         using Base::m_annex;
 
-        // Pull up the reverse annex
+        /// Pull up the reverse annex
         using Base::m_reverse_annex;
         
-        // The annex iterator type
+        /// The annex iterator type
         typedef typename std::set<annex_info>::iterator annex_iterator;
         
-        // The callback function to invoke when a decoder
-        // completes
+        /// The callback function to invoke when a decoder
+        /// completes
         typedef boost::function<void ()> is_complete_handler;
         
     public:
@@ -83,7 +83,6 @@ namespace kodo
             is_complete_handler m_h;
             
         };
-
        
         class wrap_coder
         {
@@ -117,11 +116,11 @@ namespace kodo
         
     public:
 
-        // Constructs a new random annex decoder
-        // @param annex_size, the number of symbols used for the random annex
-        // @param factory, the decoder factory to use
-        // @param object_size, the size in bytes of the object that should be
-        //        decoded
+        /// Constructs a new random annex decoder
+        /// @param annex_size, the number of symbols used for the random annex
+        /// @param factory, the decoder factory to use
+        /// @param object_size, the size in bytes of the object that should be
+        ///        decoded
         random_annex_decoder(uint32_t annex_size, factory_type &factory,
                              uint32_t object_size)
             : m_annex_size(annex_size),
@@ -131,10 +130,10 @@ namespace kodo
                 assert(m_object_size > 0);
 
                 
-                // In the random annex code part of the "encoding block"
-                // consist of the random annex. We therefore ask the
-                // partitioning scheme to make the base block smaller so
-                // we may accommodate the annex when building the encoders.
+                /// In the random annex code part of the "encoding block"
+                /// consist of the random annex. We therefore ask the
+                /// partitioning scheme to make the base block smaller so
+                /// we may accommodate the annex when building the encoders.
                 assert(m_annex_size < m_factory.max_symbols());
                 m_base_size = m_factory.max_symbols() - m_annex_size;
 
@@ -142,24 +141,24 @@ namespace kodo
                                                     m_factory.max_symbol_size(),
                                                     m_object_size);
 
-                // Build the annex
+                /// Build the annex
                 Base::build_annex(m_annex_size, m_partitioning);
 
-                // Build decoders
+                /// Build decoders
                 build_decoders();
                 
             }
         
-        // @return the number of decoders which may be created for
-        //         this object
+        /// @return the number of decoders which may be created for
+        ///         this object
         uint32_t decoders() const
             {
                 return m_decoders.size();
             }
         
-        // Builds a specific decoder
-        // @param decoder_id, specifies the decoder to build
-        // @return the initialized decoder
+        /// Builds a specific decoder
+        /// @param decoder_id, specifies the decoder to build
+        /// @return the initialized decoder
         pointer_type build(uint32_t decoder_id)
             {
                 assert(decoder_id < m_decoders.size());
@@ -167,7 +166,7 @@ namespace kodo
                 return m_decoders[decoder_id];
             }
 
-        // @return the total size of the object to encode in bytes
+        /// @return the total size of the object to encode in bytes
         uint32_t object_size() const
             {
                 return m_object_size;
@@ -180,20 +179,20 @@ namespace kodo
                 assert(from_decoder < m_decoders.size());
                 assert(from_decoder < m_annex.size());
                                 
-                // Where does the annex start
+                /// Where does the annex start
                 uint32_t from_symbol =
                     m_decoders[from_decoder]->symbols() - m_annex_size;
                 
-                // Fetch the annex for the decoder
+                /// Fetch the annex for the decoder
                 std::set<annex_info> &annex = m_annex[from_decoder];
                 
-                // For every entry in the annex
+                /// For every entry in the annex
                 for(annex_iterator it = annex.begin(); it != annex.end(); ++it)
                 {
                     forward_symbol(from_symbol, from_decoder,
                                    it->m_symbol_id, it->m_coder_id);
 
-                    // Next entry in the annex
+                    /// Next entry in the annex
                     ++from_symbol;
                 }
             }
@@ -209,18 +208,17 @@ namespace kodo
                 if(m_decoders[to_decoder]->is_complete())
                     return;
 
-                // Get the symbol data
+                /// Get the symbol data
                 const uint8_t *symbol_data =
                     m_decoders[from_decoder]->raw_symbol(from_symbol);
 
-                // Pass it to the other decoder
+                /// Pass it to the other decoder
                 m_decoders[to_decoder]->decode_raw(to_symbol, symbol_data);
-            }
-                
+            }                
         
         void decoder_complete(uint32_t decoder_id)
             {
-                // @todo: can this check be done better
+                /// @todo: can this check be done better
                 //assert(m_annex_size != 0);
                 //assert(m_partitioning.blocks() > 1);
                 
@@ -234,24 +232,23 @@ namespace kodo
                 assert(from_decoder < m_annex.size());
                 assert(from_decoder < m_reverse_annex.size());
                 
-                // Now we use the reverse annex info to further pass
-                // symbols to decoders with our decoded block in their
-                // annex
+                /// Now we use the reverse annex info to further pass
+                /// symbols to decoders with our decoded block in their
+                /// annex
                 uint32_t reverse_annex_size = m_reverse_annex[from_decoder].size();
                 
                 for(uint32_t to_decoder = 0; to_decoder < reverse_annex_size; ++to_decoder)
-                {
-                   
+                {                   
                     if(!m_reverse_annex[from_decoder][to_decoder])
                         continue;
 
                     if(m_decoders[to_decoder]->is_complete())
                         continue;
                     
-                    // Decoder 'to_decoder' has 'from_decoder' in the annex -
-                    // we need to inspect the annex of 'to_decoder' to see
-                    // which symbols it is.
-                    // Fetch the annex for the decoder
+                    /// Decoder 'to_decoder' has 'from_decoder' in the annex -
+                    /// we need to inspect the annex of 'to_decoder' to see
+                    /// which symbols it is.
+                    /// Fetch the annex for the decoder
                     std::set<annex_info> &annex = m_annex[to_decoder];
                     
                     for(annex_iterator it = annex.begin(); it != annex.end(); ++it)
@@ -266,15 +263,13 @@ namespace kodo
                         
                         forward_symbol(from_symbol, from_decoder,
                                        to_symbol, to_decoder);
-                    }
-                    
+                    }                    
                 }
             }
         
-        
-        // Builds a specific decoder
-        // @param decoder_id, specifies the decoder to build
-        // @return the initialized decoder
+        /// Builds a specific decoder
+        /// @param decoder_id, specifies the decoder to build
+        /// @return the initialized decoder
         void build_decoders()
             {
                 uint32_t decoders_needed = m_partitioning.blocks();
@@ -292,7 +287,7 @@ namespace kodo
                     internal_pointer_type decoder =
                         m_factory.build(symbols, symbol_size);
                     
-                    // Set bytes used
+                    /// Set bytes used
                     uint32_t bytes_used =
                         m_partitioning.bytes_used(i);
                     
@@ -304,35 +299,32 @@ namespace kodo
                     
                     wrap_coder wrap(decoder, handler);
 
-                    // Save the decoder
+                    /// Save the decoder
                     m_decoders[i] = wrap;
-                    
-                }
-                                 
+                }                                 
             }
         
     private:
 
-        // Annex size
+        /// Annex size
         uint32_t m_annex_size;
 
-        // The base block size
+        /// The base block size
         uint32_t m_base_size;
         
-        // The decoder factory
+        /// The decoder factory
         factory_type &m_factory;
 
-        // The block partitioning scheme used
+        /// The block partitioning scheme used
         block_partitioning m_partitioning;
 
-        // Store the total object size in bytes
+        /// Store the total object size in bytes
         uint32_t m_object_size;
 
-        // Vector for all the decoders
+        /// Vector for all the decoders
         std::vector<wrap_coder> m_decoders;
         
     };
-
 }        
 
 #endif

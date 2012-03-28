@@ -77,7 +77,7 @@ namespace kodo
                      > > > > > > > > > > >
     {};
 
-    // Common typedefs
+    /// Common typedefs
     typedef full_rlnc_encoder<fifi::binary> full_rlnc2_encoder;
     typedef full_rlnc_decoder<fifi::binary> full_rlnc2_decoder;
 
@@ -99,12 +99,8 @@ namespace kodo
                  has_block_info<
                  final_coder_factory_pool<opt_full_rlnc_encoder<Field>, Field>
                      > > > > > > >
-    {};
-
-
-    
+    {};    
 }
-
 
 #endif
 
