@@ -78,7 +78,7 @@ namespace kodo
             }        
         
         /// Sets the storage
-        /// @param storage, a const storage container
+        /// @param storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
             {
                 assert(symbol_storage.m_size > 0);
@@ -89,8 +89,8 @@ namespace kodo
             }
 
         /// Sets a symbol - by copying it into the right location in the buffer
-        /// @param index, the index of the symbol into the coding block
-        /// @param symbol, the actual data of that symbol
+        /// @param index the index of the symbol into the coding block
+        /// @param symbol the actual data of that symbol
         void set_symbol(uint32_t index, const const_storage &symbol)
             {
                 assert(symbol.m_data != 0);

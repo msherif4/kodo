@@ -54,10 +54,10 @@ namespace kodo
     public:
 
         /// Constructs a new random annex encoder
-        /// @param annex_size, the number of symbols used for the random annex
-        /// @param factory, the encoder factory to use
-        /// @param object, the object to encode
-        /// @param make_reader, functor supplying the make() and size() functions
+        /// @param annex_size the number of symbols used for the random annex
+        /// @param factory the encoder factory to use
+        /// @param object the object to encode
+        /// @param make_reader functor supplying the make() and size() functions
         ///                     to allow access to arbitrary objects
         template<class ObjectType>
         random_annex_encoder(uint32_t annex_size, factory_type &factory,

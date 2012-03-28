@@ -31,8 +31,8 @@ namespace kodo
             { }
 
         /// Create an initialized mutable storage object
-        /// @param size, the size of the buffer in bytes
-        /// @param data, pointer to the storage buffer
+        /// @param size the size of the buffer in bytes
+        /// @param data pointer to the storage buffer
         mutable_storage(uint32_t size, value_ptr data)
             : m_size(size),
               m_data(data)
@@ -76,15 +76,15 @@ namespace kodo
             { }
 
         /// Create an initialized const storage object
-        /// @param size, the size of the buffer in bytes
-        /// @param data, pointer to the storage buffer
+        /// @param size the size of the buffer in bytes
+        /// @param data pointer to the storage buffer
         const_storage(uint32_t size, value_ptr data)
             : m_size(size),
               m_data(data)
             { }
 
         /// Creates and const storage object from a mutable
-        /// @param s, the mutable storage object
+        /// @param s the mutable storage object
         const_storage(const mutable_storage &s)
             : m_size(s.m_size),
               m_data(s.m_data)
@@ -92,7 +92,7 @@ namespace kodo
 
         /// Assigns and converts a mutable storage buffer
         /// into a const storage buffer
-        /// @param s, the mutable storage object
+        /// @param s the mutable storage object
         const_storage& operator=(const mutable_storage &s)
             {
                 m_size = s.m_size;
@@ -204,7 +204,7 @@ namespace kodo
 
     /// Zeros the memory pointed to by a mutable storage
     /// object
-    /// @param storage, the mutable storage buffer
+    /// @param storage the mutable storage buffer
     inline void zero_storage(mutable_storage &storage)
     {
         std::fill_n(storage.m_data, storage.m_size, 0);

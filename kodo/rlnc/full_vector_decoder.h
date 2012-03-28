@@ -90,7 +90,7 @@ namespace kodo
             }
 
         /// The decode function which consumes the payload
-        /// @param payload, the input payload
+        /// @param payload the input payload
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -167,8 +167,8 @@ namespace kodo
     protected:
         
         /// Decodes a symbol based on the vector
-        /// @param symbol_data, buffer containing the encoding symbol
-        /// @param vector_data, buffer containing the encoding vector
+        /// @param symbol_data buffer containing the encoding symbol
+        /// @param vector_data buffer containing the encoding vector
         void decode_with_vector(value_type *vector_data, value_type *symbol_data)
             {
                 assert(symbol_data != 0);
@@ -210,8 +210,8 @@ namespace kodo
         /// When adding a raw symbol (i.e. uncoded) with a specific pivot id and
         /// the decoder already contains a coded symbol in that position this
         /// function performs the proper swap between the two symbols.
-        /// @param pivot_id, the pivot position of the raw symbol
-        /// @param symbol_data, the data for the raw symbol
+        /// @param pivot_id the pivot position of the raw symbol
+        /// @param symbol_data the data for the raw symbol
         void swap_decode(uint32_t pivot_id, const value_type *symbol_data)
             {
                 assert(m_coded[pivot_id] == true);
@@ -251,9 +251,9 @@ namespace kodo
         
         /// Iterates the encoding vector from where a pivot has been identified
         /// and subtracts existing symbols
-        /// @param pivot_id, the index of the found pivot element
-        /// @param vector_data, the data constituting the encoding vector
-        /// @param symbol_data, the data of the encoded symbol
+        /// @param pivot_id the index of the found pivot element
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
         void normalize(uint32_t pivot_id,
                        value_type *vector_data,
                        value_type *symbol_data)
@@ -286,8 +286,8 @@ namespace kodo
         
         /// Iterates the encoding vector and subtracts existing symbols until
         /// a pivot element is found.
-        /// @param vector_data, the data constituting the encoding vector
-        /// @param symbol_data, the data of the encoded symbol
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
         /// @return the pivot index if found.
         boost::optional<uint32_t> forward_substitute_to_pivot(value_type *vector_data,
                                                               value_type *symbol_data)
@@ -342,9 +342,9 @@ namespace kodo
 
         /// Iterates the encoding vector from where a pivot has been identified
         /// and subtracts existing symbols
-        /// @param pivot_id, the index of the found pivot element
-        /// @param vector_data, the data constituting the encoding vector
-        /// @param symbol_data, the data of the encoded symbol
+        /// @param pivot_id the index of the found pivot element
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
         void forward_substitute_from_pivot(uint32_t pivot_id,
                                            value_type *vector_data,
                                            value_type *symbol_data)
@@ -406,10 +406,10 @@ namespace kodo
 
         /// Backward substitute the found symbol into the
         /// existing symbols.
-        /// @param pivot_id, the pivot index of the symbol in the
+        /// @param pivot_id the pivot index of the symbol in the
         ///        buffers vector_data and symbol_data
-        /// @param vector_data, buffer containing the encoding vector
-        /// @param symbol_data, buffer containing the encoding symbol
+        /// @param vector_data buffer containing the encoding vector
+        /// @param symbol_data buffer containing the encoding symbol
         void backward_substitute(uint32_t pivot_id,
                                  const value_type *vector_data,
                                  const value_type *symbol_data)
@@ -472,9 +472,9 @@ namespace kodo
 
         /// Store an encoded symbol and encoding vector with the specified
         /// pivot found.
-        /// @param pivot_id, the pivot index
-        /// @param vector_data, buffer containing the encoding vector
-        /// @param symbol_data, buffer containing the encoding symbol
+        /// @param pivot_id the pivot index
+        /// @param vector_data buffer containing the encoding vector
+        /// @param symbol_data buffer containing the encoding symbol
         void store_coded_symbol(uint32_t pivot_id,
                                 const value_type *vector_data,
                                 const value_type *symbol_data)
@@ -509,8 +509,8 @@ namespace kodo
             }
 
         /// Stores an uncoded or fully decoded symbol
-        /// @param pivot_id, the pivot index of the symbol
-        /// @param symbol_data, the data for the symbol 
+        /// @param pivot_id the pivot index of the symbol
+        /// @param symbol_data the data for the symbol 
         void store_uncoded_symbol(uint32_t pivot_id,
                                   const value_type *symbol_data)
             {

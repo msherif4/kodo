@@ -168,8 +168,8 @@ namespace kodo
     protected:
 
         /// Encodes a symbol according to the encoding vector
-        /// @param symbol_data, the destination buffer for the encoded symbol
-        /// @param encoding_id, the encoding id - this corresponds to a set of
+        /// @param symbol_data the destination buffer for the encoded symbol
+        /// @param encoding_id the encoding id - this corresponds to a set of
         ///                     coefficients from the generator matrix
         void encode_with_id(value_type *symbol_data, uint32_t encoding_id)
             {

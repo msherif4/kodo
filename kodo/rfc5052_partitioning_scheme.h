@@ -24,9 +24,9 @@ namespace kodo
         rfc5052_partitioning_scheme();
         
         /// Constructor
-        /// @param max_block_length, the maximum number of symbols in a block
-        /// @param symbol_size, the size in bytes of a symbol
-        /// @param transfer_length, the size in bytes of the whole object
+        /// @param max_block_length the maximum number of symbols in a block
+        /// @param symbol_size the size in bytes of a symbol
+        /// @param transfer_length the size in bytes of the whole object
         rfc5052_partitioning_scheme(uint32_t max_symbols,
                                     uint32_t max_symbol_size,
                                     uint32_t object_size);

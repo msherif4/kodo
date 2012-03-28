@@ -40,8 +40,8 @@ namespace kodo
         public:
 
             /// Constructor
-            /// @param max_symbols, the maximum symbols this coder can expect
-            /// @param max_symbol_size, the maximum size of a symbol in bytes
+            /// @param max_symbols the maximum symbols this coder can expect
+            /// @param max_symbol_size the maximum size of a symbol in bytes
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -49,8 +49,8 @@ namespace kodo
                 }
 
             /// Forwards the build function and sets the finite field
-            /// @param max_symbols, the maximum symbols this coder can expect
-            /// @param max_symbol_size, the maximum size of a symbol in bytes
+            /// @param max_symbols the maximum symbols this coder can expect
+            /// @param max_symbol_size the maximum size of a symbol in bytes
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder = SuperCoder::factory::build(symbols, symbol_size);
@@ -70,9 +70,9 @@ namespace kodo
         /// Multiplies the symbol with the coefficient
         ///     symbol_dest = symbol_dest * coefficient
         //
-        /// @param symbol_dest, the destination buffer for the source symbol
-        /// @param coefficient, the multiplicative constant
-        /// @param symbol_length, the length of the symbol in value_type elements
+        /// @param symbol_dest the destination buffer for the source symbol
+        /// @param coefficient the multiplicative constant
+        /// @param symbol_length the length of the symbol in value_type elements
         void multiply(value_type *symbol_dest, value_type coefficient,
                       uint32_t symbol_length)
             {
@@ -88,10 +88,10 @@ namespace kodo
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest + symbol_src * coefficient
         //
-        /// @param symbol_dest, the destination buffer for the source symbol
-        /// @param symbol_src, the source buffer for the 
-        /// @param coefficient, the multiplicative constant
-        /// @param symbol_length, the length of the symbol in value_type elements
+        /// @param symbol_dest the destination buffer for the source symbol
+        /// @param symbol_src the source buffer for the 
+        /// @param coefficient the multiplicative constant
+        /// @param symbol_length the length of the symbol in value_type elements
         void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length) const
             {
@@ -107,9 +107,9 @@ namespace kodo
         /// Adds the source symbol adds to the destination symbol i.e.:
         ///     symbol_dest = symbol_dest + symbol_src
         //
-        /// @param symbol_dest, the destination buffer holding the resulting symbol
-        /// @param symbol_src, the source symbol
-        /// @param symbol_length, the length of the symbol in value_type elements
+        /// @param symbol_dest the destination buffer holding the resulting symbol
+        /// @param symbol_src the source symbol
+        /// @param symbol_length the length of the symbol in value_type elements
         void add(value_type *symbol_dest, const value_type *symbol_src,
                  uint32_t symbol_length) const
             {
@@ -125,10 +125,10 @@ namespace kodo
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
         //
-        /// @param symbol_dest, the destination buffer for the source symbol
-        /// @param symbol_src, the source buffer for the 
-        /// @param coefficient, the multiplicative constant
-        /// @param symbol_length, the length of the symbol in value_type elements
+        /// @param symbol_dest the destination buffer for the source symbol
+        /// @param symbol_src the source buffer for the 
+        /// @param coefficient the multiplicative constant
+        /// @param symbol_length the length of the symbol in value_type elements
         void multiply_subtract(value_type *symbol_dest, const value_type *symbol_src,
                                value_type coefficient, uint32_t symbol_length) const
             {
@@ -144,9 +144,9 @@ namespace kodo
         /// Subtracts the source symbol from the destination symbol i.e.:
         ///     symbol_dest = symbol_dest - symbol_src
         //
-        /// @param symbol_dest, the destination buffer holding the resulting symbol
-        /// @param symbol_src, the source symbol
-        /// @param symbol_length, the length of the symbol in value_type elements
+        /// @param symbol_dest the destination buffer holding the resulting symbol
+        /// @param symbol_src the source symbol
+        /// @param symbol_length the length of the symbol in value_type elements
         void subtract(value_type *symbol_dest, const value_type *symbol_src,
                       uint32_t symbol_length) const
             {
@@ -159,7 +159,7 @@ namespace kodo
             }
         
         /// Inverts the field element 
-        /// @param value, the finite field vale to be inverted.
+        /// @param value the finite field vale to be inverted.
         value_type invert(value_type value) const
             {
                 assert(m_field);

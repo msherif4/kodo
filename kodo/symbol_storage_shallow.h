@@ -100,7 +100,7 @@ namespace kodo
             }        
         
         /// Sets the storage
-        /// @param storage, a const storage container
+        /// @param symbol_storage a const storage container
         void set_symbols(const storage_type &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =
@@ -116,8 +116,8 @@ namespace kodo
             }
 
         /// Sets a symbol -> data mapping
-        /// @param index, the index of the symbol into the coding block
-        /// @param symbol, the actual data of that symbol
+        /// @param index the index of the symbol into the coding block
+        /// @param symbol the actual data of that symbol
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);

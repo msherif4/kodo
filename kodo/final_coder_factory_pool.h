@@ -42,9 +42,9 @@ namespace kodo
         public:
             
             /// Constructor
-            /// @param max_symbols, the maximum symbols this coder 
+            /// @param max_symbols the maximum symbols this coder 
             ///        can expect
-            /// @param max_symbol_size, the maximum size of a symbol 
+            /// @param max_symbol_size the maximum size of a symbol 
             ///        in bytes
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
@@ -57,8 +57,8 @@ namespace kodo
                 }
         
             /// Builds the actual coder
-            /// @param symbols, the symbols this coder will use
-            /// @param symbol_size, the size of a symbol in bytes
+            /// @param symbols the symbols this coder will use
+            /// @param symbol_size the size of a symbol in bytes
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
@@ -113,16 +113,16 @@ namespace kodo
         /// see. A coder may only be constructed ONCE, but initialized many
         /// times.
         //
-        /// @param max_symbols, the maximum symbols this coder can expect
-        /// @param max_symbol_size, the maximum size of a symbol in bytes
+        /// @param max_symbols the maximum symbols this coder can expect
+        /// @param max_symbol_size the maximum size of a symbol in bytes
         void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
             {
                 /// This is just the factory layer so we do nothing
             }
 
         /// Initializes the coder
-        /// @param symbols, the number of symbols the coder should store
-        /// @param symbol_size, the size of each symbol in bytes
+        /// @param symbols the number of symbols the coder should store
+        /// @param symbol_size the size of each symbol in bytes
         void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
             {
                 /// This is just the factory layer so we do nothing

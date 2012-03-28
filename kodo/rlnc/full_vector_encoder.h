@@ -158,8 +158,8 @@ namespace kodo
     protected:
 
         /// Encodes a symbol according to the encoding vector
-        /// @param symbol_data, the destination buffer for the encoded symbol
-        /// @param vector_data, the encoding vector - note at this point the
+        /// @param symbol_data the destination buffer for the encoded symbol
+        /// @param vector_data the encoding vector - note at this point the
         ///        encoding vector should already be initialized with coding
         ///        coefficients.
         void encode_with_vector(value_type *symbol_data, value_type *vector_data)
