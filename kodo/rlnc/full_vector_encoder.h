@@ -100,17 +100,17 @@ namespace kodo
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
 
-                /// Get the data for the encoding vector
+                // Get the data for the encoding vector
                 value_type *vector
                     = reinterpret_cast<value_type*>(symbol_id);
 
-                /// Fill the encoding vector
+                // Fill the encoding vector
                 assert(m_generator);
 
                 m_generator->fill(m_count, vector); 
                 ++m_count;
 
-                /// Cast the symbol to the correct field value_type
+                // Cast the symbol to the correct field value_type
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
@@ -139,7 +139,7 @@ namespace kodo
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                /// Did you forget to set the data on the encoder?
+                // Did you forget to set the data on the encoder?
                 assert(SuperCoder::symbol(symbol_index) != 0);
                 
                 std::copy(SuperCoder::symbol(symbol_index),
@@ -175,7 +175,7 @@ namespace kodo
                     {
                         const value_type *symbol_i = SuperCoder::symbol( i );
 
-                        /// Did you forget to set the data on the encoder?
+                        // Did you forget to set the data on the encoder?
                         assert(symbol_i != 0);
                         
                         if(fifi::is_binary<field_type>::value)
