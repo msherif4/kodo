@@ -70,10 +70,10 @@ namespace kodo
             {
                 assert(m_object_size > 0);
 
-                /// In the random annex code part of the "encoding block"
-                /// consist of the random annex. We therefore ask the
-                /// partitioning scheme to make the base block smaller so
-                /// we may accommodate the annex when building the encoders.
+                // In the random annex code part of the "encoding block"
+                // consist of the random annex. We therefore ask the
+                // partitioning scheme to make the base block smaller so
+                // we may accommodate the annex when building the encoders.
                 assert(m_annex_size < m_factory.max_symbols());
                 m_base_size = m_factory.max_symbols() - m_annex_size;
                 
@@ -82,17 +82,17 @@ namespace kodo
                                                     m_object_size);
 
                 //std::cout << "Partitioning blocks " << m_partitioning.blocks()
-                ///          << std::endl;
+                //          << std::endl;
                 
-                /// Build the annex
+                // Build the annex
                 Base::build_annex(m_annex_size, m_partitioning);
 
                 //std::cout << "Build annex" << std::endl;
                 
-                /// First initialize all encoders with the data in the base blocks
+                // First initialize all encoders with the data in the base blocks
                 map_base();
 
-                /// Now initialize the annex
+                // Now initialize the annex
                 map_annex();
             }
 
@@ -130,7 +130,7 @@ namespace kodo
                 for(uint32_t i = 0; i < encoders_needed; ++i)
                 {
 
-                    /// Build the encoder
+                    // Build the encoder
                     uint32_t symbols =
                         m_partitioning.symbols(i) + m_annex_size;
                     
@@ -140,7 +140,7 @@ namespace kodo
                     pointer_type encoder =
                         m_factory.build(symbols, symbol_size);
                     
-                    /// Initialize encoder with data
+                    // Initialize encoder with data
                     uint32_t offset =
                         m_partitioning.byte_offset(i);
                     
@@ -149,7 +149,7 @@ namespace kodo
                     
                     m_object_reader(offset, bytes_used, encoder);
 
-                    /// Save the encoder
+                    // Save the encoder
                     m_encoders[i] = encoder;
                 }
             }
@@ -218,8 +218,7 @@ namespace kodo
         uint32_t m_object_size;
 
         /// Vector for all the encoders
-        std::vector<pointer_type> m_encoders;
-        
+        std::vector<pointer_type> m_encoders;        
     };
 }        
 

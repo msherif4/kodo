@@ -112,12 +112,12 @@ namespace kodo
         /// Constructs the coder with the maximum parameters it will ever
         /// see. A coder may only be constructed ONCE, but initialized many
         /// times.
-        //
+        /// 
         /// @param max_symbols the maximum symbols this coder can expect
         /// @param max_symbol_size the maximum size of a symbol in bytes
         void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
             {
-                /// This is just the factory layer so we do nothing
+                // This is just the factory layer so we do nothing
             }
 
         /// Initializes the coder
@@ -125,7 +125,7 @@ namespace kodo
         /// @param symbol_size the size of each symbol in bytes
         void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
             {
-                /// This is just the factory layer so we do nothing
+                // This is just the factory layer so we do nothing
             }                
     };
 }

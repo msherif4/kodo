@@ -120,7 +120,7 @@ namespace kodo
                                                     fifi::binary::value_type coefficient)
     {
         assert(m_vector != 0);
-        assert(coefficient < 2); /// only {0,1} allowed
+        assert(coefficient < 2); // only {0,1} allowed
 
         uint32_t array_index = index / std::numeric_limits<fifi::binary::value_type>::digits;
         uint32_t offset = index % std::numeric_limits<fifi::binary::value_type>::digits;
@@ -152,10 +152,10 @@ namespace kodo
     {
         assert(symbols > 0);
         
-        /// Note: std::numeric_limits<value_type>::digits
-        /// returns the number of bits in the template parameter
+        // Note: std::numeric_limits<value_type>::digits
+        // returns the number of bits in the template parameter
         
-        /// ceil(x/y) = ((x - 1) / y) + 1
+        // ceil(x/y) = ((x - 1) / y) + 1
         return ((symbols - 1) / std::numeric_limits<fifi::binary::value_type>::digits) + 1;
     }
 }        

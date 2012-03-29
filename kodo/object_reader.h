@@ -52,8 +52,8 @@ namespace kodo
 
         kodo::set_symbols(encoder_storage, encoder);
 
-        /// We require that encoders includes the has_bytes_used
-        /// layer to support partially filled encoders
+        // We require that encoders includes the has_bytes_used
+        // layer to support partially filled encoders
         encoder->set_bytes_used(size);
     }
                 

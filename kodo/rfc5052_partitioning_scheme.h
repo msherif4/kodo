@@ -110,7 +110,7 @@ namespace kodo
         assert(m_max_symbol_size > 0);
         assert(m_object_size > 0);
 
-        /// ceil(x/y) = ((x - 1) / y) + 1
+        // ceil(x/y) = ((x - 1) / y) + 1
         m_total_symbols = ((m_object_size - 1) / m_max_symbol_size) + 1;
         m_total_blocks  = ((m_total_symbols - 1) / m_max_symbols) + 1;
 
@@ -147,10 +147,10 @@ namespace kodo
             return block_id * m_large_block_symbols * m_max_symbol_size;
         }
 
-        /// Calculating the largeblock offset
+        // Calculating the largeblock offset
         uint32_t offset = m_large_blocks*m_large_block_symbols*m_max_symbol_size;
 
-        /// Calculating the smallblock offset
+        // Calculating the smallblock offset
         offset += (block_id - m_large_blocks) * m_small_block_symbols * m_max_symbol_size;
 
         return offset;

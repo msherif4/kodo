@@ -71,7 +71,7 @@ namespace kodo
 
                 pointer_type decoder = m_factory.build(symbols, symbol_size);
                 
-                /// Set bytes used
+                // Set bytes used
                 uint32_t bytes_used =
                     m_partitioning.bytes_used(decoder_id);
 

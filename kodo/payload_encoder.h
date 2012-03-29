@@ -41,11 +41,11 @@ namespace kodo
 
         /// Encodes a symbol into the provided payload buffer using the
         /// following layout:
-        //
+        /// 
         ///   +-------------------+---------------+
         ///   |    symbol data    |   symbol id   |
         ///   +-------------------+---------------+
-        //
+        /// 
         /// The reason the symbol data is placed first in the payload buffer
         /// is to enable 16 byte-alignment of the symbol data. If the variable
         /// length id would be place in front of the symbol it would

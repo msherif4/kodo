@@ -69,7 +69,7 @@ namespace kodo
 
         /// Multiplies the symbol with the coefficient
         ///     symbol_dest = symbol_dest * coefficient
-        //
+        /// 
         /// @param symbol_dest the destination buffer for the source symbol
         /// @param coefficient the multiplicative constant
         /// @param symbol_length the length of the symbol in value_type elements
@@ -87,7 +87,7 @@ namespace kodo
         /// Multiplies the source symbol with the coefficient and adds it to the
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest + symbol_src * coefficient
-        //
+        /// 
         /// @param symbol_dest the destination buffer for the source symbol
         /// @param symbol_src the source buffer for the 
         /// @param coefficient the multiplicative constant
@@ -106,7 +106,7 @@ namespace kodo
 
         /// Adds the source symbol adds to the destination symbol i.e.:
         ///     symbol_dest = symbol_dest + symbol_src
-        //
+        ///
         /// @param symbol_dest the destination buffer holding the resulting symbol
         /// @param symbol_src the source symbol
         /// @param symbol_length the length of the symbol in value_type elements
@@ -124,7 +124,7 @@ namespace kodo
         /// Multiplies the source symbol with the coefficient and subtracts it from the
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
-        //
+        /// 
         /// @param symbol_dest the destination buffer for the source symbol
         /// @param symbol_src the source buffer for the 
         /// @param coefficient the multiplicative constant
@@ -143,7 +143,7 @@ namespace kodo
 
         /// Subtracts the source symbol from the destination symbol i.e.:
         ///     symbol_dest = symbol_dest - symbol_src
-        //
+        /// 
         /// @param symbol_dest the destination buffer holding the resulting symbol
         /// @param symbol_src the source symbol
         /// @param symbol_length the length of the symbol in value_type elements

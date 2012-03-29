@@ -19,11 +19,11 @@ namespace kodo
 
     /// Object encoder, allows easy encoding of objects too
     /// large for a single block encoder.
-    //
+    /// 
     /// The following diagram tries to explain how the object encoder
     /// uses its dependencies to wrap an build encoders for arbitrary
     /// objects.
-    //
+    /// 
     /// +---------------+       +---------------+       +---------------+
     /// | partitioning  |       |encoder factory|       |  object data  |
     /// |---------------|       |---------------|       |---------------|
@@ -111,7 +111,7 @@ namespace kodo
             {
                 assert(encoder_id < m_partitioning.blocks());
 
-                /// Build the encoder
+                // Build the encoder
                 uint32_t symbols =
                     m_partitioning.symbols(encoder_id);
 
@@ -121,7 +121,7 @@ namespace kodo
                 pointer_type encoder =
                     m_factory.build(symbols, symbol_size);
 
-                /// Initialize encoder with data
+                // Initialize encoder with data
                 uint32_t offset =
                     m_partitioning.byte_offset(encoder_id);
 
@@ -153,7 +153,6 @@ namespace kodo
         
         /// The block partitioning scheme used
         block_partitioning m_partitioning;
-        
     };
 }        
 
