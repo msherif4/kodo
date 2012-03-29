@@ -48,9 +48,9 @@ namespace kodo
                 // symbol would be located disjoint in memory.
                 // Memory access will be very inefficient if coefficients
                 // are not in major row order.
-                ///
+                //
                 // a is the primitive element (alpha)
-                ///
+                //
                 // [a^(0), a^(0)  , a^(0), ... , a^(0)      ]
                 // [a^(0), a^(1)  , a^(2), ... , a^(k-1)    ]
                 // [a^(0), a^(2)  , a^(4), ... , a^(2*(k-1))]
