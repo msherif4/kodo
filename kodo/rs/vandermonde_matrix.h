@@ -41,28 +41,28 @@ namespace kodo
                 /// The maximum number of encoding symbols
                 uint32_t max_symbols = Field::order - 1;
 
-                /// Create the Vandermonde matrix as suggested in
-                /// RFC 5510.
-                /// Excepts we transpose it, if used as suggested the
-                /// k coefficients needed when producing a new encoded
-                /// symbol would be located disjoint in memory.
-                /// Memory access will be very inefficient if coefficients
-                /// are not in major row order.
+                // Create the Vandermonde matrix as suggested in
+                // RFC 5510.
+                // Excepts we transpose it, if used as suggested the
+                // k coefficients needed when producing a new encoded
+                // symbol would be located disjoint in memory.
+                // Memory access will be very inefficient if coefficients
+                // are not in major row order.
                 ///
-                /// a is the primitive element (alpha)
+                // a is the primitive element (alpha)
                 ///
-                /// [a^(0), a^(0)  , a^(0), ... , a^(0)      ]
-                /// [a^(0), a^(1)  , a^(2), ... , a^(k-1)    ]
-                /// [a^(0), a^(2)  , a^(4), ... , a^(2*(k-1))]
-                /// [a^(0), a^(3)  , a^(6), ... , a^(3*(k-1))]
-                /// [a^(0), a^(4)  , a^(8), ... , a^(4*(k-1))]
-                ///                   .
-                ///                   .
-                ///                   .
-                /// [a^(0), a^(n-1), a^(2*(n-1)), ... , a^((n-1)*(k-1))]
+                // [a^(0), a^(0)  , a^(0), ... , a^(0)      ]
+                // [a^(0), a^(1)  , a^(2), ... , a^(k-1)    ]
+                // [a^(0), a^(2)  , a^(4), ... , a^(2*(k-1))]
+                // [a^(0), a^(3)  , a^(6), ... , a^(3*(k-1))]
+                // [a^(0), a^(4)  , a^(8), ... , a^(4*(k-1))]
+                //                   .
+                //                   .
+                //                   .
+                // [a^(0), a^(n-1), a^(2*(n-1)), ... , a^((n-1)*(k-1))]
                 m_matrix.resize(symbols * max_symbols, '\0');
                 
-                /// Follows the progress of alpha along the rows
+                // Follows the progress of alpha along the rows
                 value_type a_row = 1U; 
                 
                 for(uint32_t j = 0; j < max_symbols; ++j)
@@ -77,14 +77,14 @@ namespace kodo
                         a_column = field->multiply(a_row, a_column);
                     }
 
-                    /// Multiplying with 2U corresponds to multiplying with x
+                    // Multiplying with 2U corresponds to multiplying with x
                     a_row = field->multiply(a_row, 2U);
                 }
 
-                /// if(m_systematic)
-                /// {
-                ///     set_systematic();
-                /// }
+                // if(m_systematic)
+                // {
+                //     set_systematic();
+                // }
             }
 
         /// @return true if the matrix is in systematic form
@@ -117,8 +117,8 @@ namespace kodo
                 return &m_matrix[index * m_symbols];
             }
 
-        // /// Performs row operations and puts the matrix on systematic
-        // /// form
+        // Performs row operations and puts the matrix on systematic
+        // form
         // void set_systematic()
         //     {
                 
@@ -163,8 +163,7 @@ namespace kodo
         uint32_t m_symbols;
                     
         /// The actual Vandermonde matrix
-        std::vector<value_type> m_matrix;
-        
+        std::vector<value_type> m_matrix;       
     };
 }
 
