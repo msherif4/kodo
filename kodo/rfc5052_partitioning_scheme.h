@@ -11,81 +11,80 @@
 namespace kodo
 {
 
-    // RFC5052 partitioning scheme.
-    // Takes as input the number of symbols the symbol size
-    // and the total length of an object and returns the number
-    // the number blocks to use and the symbols and symbol size
-    // needed to encode/decode an object of the given size
+    /// RFC5052 partitioning scheme.
+    /// Takes as input the number of symbols the symbol size
+    /// and the total length of an object and returns the number
+    /// the number blocks to use and the symbols and symbol size
+    /// needed to encode/decode an object of the given size
     class rfc5052_partitioning_scheme
     {
     public:
 
-        // Create an uninitialized partitioning scheme
+        /// Create an uninitialized partitioning scheme
         rfc5052_partitioning_scheme();
         
-        // Constructor
-        // @param max_block_length, the maximum number of symbols in a block
-        // @param symbol_size, the size in bytes of a symbol
-        // @param transfer_length, the size in bytes of the whole object
+        /// Constructor
+        /// @param max_block_length the maximum number of symbols in a block
+        /// @param symbol_size the size in bytes of a symbol
+        /// @param transfer_length the size in bytes of the whole object
         rfc5052_partitioning_scheme(uint32_t max_symbols,
                                     uint32_t max_symbol_size,
                                     uint32_t object_size);
 
-        // @return the number of symbols in a specific block
+        /// @return the number of symbols in a specific block
         uint32_t symbols(uint32_t block_id) const;
 
-        // @return the size of a symbol in a specific block
+        /// @return the size of a symbol in a specific block
         uint32_t symbol_size(uint32_t block_id) const;
 
-        // @return the size of a specific block in bytes
+        /// @return the size of a specific block in bytes
         uint32_t block_size(uint32_t block_id) const;
 
-        // @return the offset in bytes to the start of a
-        //         specific block
+        /// @return the offset in bytes to the start of a
+        ///         specific block
     	uint32_t byte_offset(uint32_t block_id) const;
 
-        // @return the number of bytes used in a specific block
+        /// @return the number of bytes used in a specific block
         uint32_t bytes_used(uint32_t block_id) const;
         
-        // @return the total number of blocks in the object
+        /// @return the total number of blocks in the object
         uint32_t blocks() const;
 
-        // @return the size of the object being partitioned
+        /// @return the size of the object being partitioned
         uint32_t object_size() const;
 
-        // @return the total number of symbols in the entire object
+        /// @return the total number of symbols in the entire object
         uint32_t total_symbols() const;
         
     private:
 
-        // The maximum number of symbols per block
+        /// The maximum number of symbols per block
         uint32_t m_max_symbols;
 
-        // The maximum size of a symbol in bytes
+        /// The maximum size of a symbol in bytes
         uint32_t m_max_symbol_size;
 
-        // The size of the object to transfer in bytes
+        /// The size of the object to transfer in bytes
         uint32_t m_object_size;
 
-        // The total number of symbols in the object
+        /// The total number of symbols in the object
         uint32_t m_total_symbols;
 
-        // The total number of blocks in the object
+        /// The total number of blocks in the object
         uint32_t m_total_blocks;
 
-        // The number of large blocks in the object
+        /// The number of large blocks in the object
         uint32_t m_large_blocks;
 
-        // The number of small blocks in the object
+        /// The number of small blocks in the object
         uint32_t m_small_blocks;
 
-        // The number of symbols in a large block
+        /// The number of symbols in a large block
         uint32_t m_large_block_symbols;
 
-        // The number of symbols in a small block
+        /// The number of symbols in a small block
         uint32_t m_small_block_symbols;
     };
-
 
     inline rfc5052_partitioning_scheme::rfc5052_partitioning_scheme()
         : m_max_symbols(0),
@@ -98,7 +97,6 @@ namespace kodo
           m_large_block_symbols(0),
           m_small_block_symbols(0)
     { }
-
     
     inline rfc5052_partitioning_scheme::rfc5052_partitioning_scheme(
         uint32_t max_symbols,
@@ -112,7 +110,7 @@ namespace kodo
         assert(m_max_symbol_size > 0);
         assert(m_object_size > 0);
 
-        // ceil(x/y) = ((x - 1) / y) + 1
+        /// ceil(x/y) = ((x - 1) / y) + 1
         m_total_symbols = ((m_object_size - 1) / m_max_symbol_size) + 1;
         m_total_blocks  = ((m_total_symbols - 1) / m_max_symbols) + 1;
 
@@ -149,10 +147,10 @@ namespace kodo
             return block_id * m_large_block_symbols * m_max_symbol_size;
         }
 
-        // Calculating the largeblock offset
+        /// Calculating the largeblock offset
         uint32_t offset = m_large_blocks*m_large_block_symbols*m_max_symbol_size;
 
-        // Calculating the smallblock offset
+        /// Calculating the smallblock offset
         offset += (block_id - m_large_blocks) * m_small_block_symbols * m_max_symbol_size;
 
         return offset;
@@ -187,8 +185,8 @@ namespace kodo
     {
         assert(m_total_symbols > 0);
         return m_total_symbols;
-    }
-    
+    }    
 }
 
 #endif
+

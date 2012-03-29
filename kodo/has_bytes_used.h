@@ -11,28 +11,28 @@
 namespace kodo
 {
 
-    // Provides access to the number of bytes used out of the
-    // total size of the coders storage
+    /// Provides access to the number of bytes used out of the
+    /// total size of the coders storage
     template<class SuperCoder>
     class has_bytes_used : public SuperCoder
     {
     public:
 
-        // Constructor
+        /// Constructor
         has_bytes_used()
             : m_bytes_used(0)
             {}
 
-        // @see final_coder::initialize(...)
+        /// @see final_coder::initialize(...)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
                 m_bytes_used = 0;
             }
         
-        // Sets the number of bytes used
-        // @param bytes_used, then number of bytes used out of the total
-        //        coders block size
+        /// Sets the number of bytes used
+        /// @param bytes_used, then number of bytes used out of the total
+        ///        coders block size
         void set_bytes_used(uint32_t bytes_used)
             {
                 assert(bytes_used > 0);
@@ -41,7 +41,7 @@ namespace kodo
                 m_bytes_used = bytes_used;
             }
         
-        // @return the number of bytes used
+        /// @return the number of bytes used
         uint32_t bytes_used() const
             {
                 return m_bytes_used;
@@ -49,11 +49,10 @@ namespace kodo
                 
     private:
 
-        // The number of bytes used
+        /// The number of bytes used
         uint32_t m_bytes_used;
         
-    };
-    
+    };    
 }
 
 #endif

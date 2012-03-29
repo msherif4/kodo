@@ -13,6 +13,10 @@ Welcome to Kodo's documentation!
 
    nc_glossary
 
+Documentation for the Code
+==========================
+
+
 
 Indices and tables
 ==================

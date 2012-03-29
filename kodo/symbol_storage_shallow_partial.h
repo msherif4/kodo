@@ -18,58 +18,58 @@
 namespace kodo
 {
 
-    // The shallow storage _partial_ implementation.
-    // Essentially the same as the shallow storage however the
-    // shallow storage only allows buffers which are exactly the
-    // size of symbols * symbol_size. The partial buffer allows
-    // blocks of data smaller. I.e. of a block is 10000 bytes and
-    // the data you want to encode is in a 9995 byte buffer you can
-    // use it with the partial symbol storage without having to move
-    // it to a 10000 byte temp. buffer.
+    /// The shallow storage _partial_ implementation.
+    /// Essentially the same as the shallow storage however the
+    /// shallow storage only allows buffers which are exactly the
+    /// size of symbols * symbol_size. The partial buffer allows
+    /// blocks of data smaller. I.e. of a block is 10000 bytes and
+    /// the data you want to encode is in a 9995 byte buffer you can
+    /// use it with the partial symbol storage without having to move
+    /// it to a 10000 byte temp. buffer.
     template<class SuperCoder>
     class symbol_storage_shallow_partial
         : public symbol_storage_shallow_const<SuperCoder>
     {
     public:
 
-        // Easy access to SuperCoder
+        /// Easy access to SuperCoder
         typedef symbol_storage_shallow_const<SuperCoder> Super;
 
-        // The field we are in
+        /// The field we are in
         typedef typename Super::field_type field_type;
         
-        // The value type used
+        /// The value type used
         typedef typename Super::value_type value_type;
 
-        // Pointer to the value_type elements
+        /// Pointer to the value_type elements
         typedef typename Super::value_ptr value_ptr;
 
-        // The sequence of storage elements used
+        /// The sequence of storage elements used
         typedef typename Super::storage_sequence_type
             storage_sequence_type;
 
-        // Pointer produced by the factory
+        /// Pointer produced by the factory
         typedef typename Super::pointer pointer;
         
-        // Partial and zero symbol types
+        /// Partial and zero symbol types
         typedef std::vector<value_type> symbol_type;
 
-        // Symbol data wrapped in smart ptr
+        /// Symbol data wrapped in smart ptr
         typedef boost::shared_ptr<symbol_type> symbol_ptr;
 
-        // Access to the SuperCoder mapping variable
+        /// Access to the SuperCoder mapping variable
         using Super::m_mapping;
         
     public:
 
-        // The factory layer associated with this coder. We create
-        // a zero symbol which may be shared with all the
-        // symbol storage partial
+        /// The factory layer associated with this coder. We create
+        /// a zero symbol which may be shared with all the
+        /// symbol storage partial
         class factory : public Super::factory
         {
         public:
 
-            // @see Super::factory(...)
+            /// @see Super::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -82,7 +82,7 @@ namespace kodo
                     m_zero_symbol->resize(max_symbol_length, 0);
                 }
 
-            // @see Super::factory::build(...)
+            /// @see Super::factory::build(...)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder = Super::factory::build(symbols, symbol_size);
@@ -93,14 +93,14 @@ namespace kodo
 
         private:
 
-            // The zero symbol
+            /// The zero symbol
             symbol_ptr m_zero_symbol;
             
         };
 
     public:
 
-        // @see SuperCoder::construct(...)
+        /// @see SuperCoder::construct(...)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 Super::construct(max_symbols, max_symbol_size);
@@ -112,16 +112,15 @@ namespace kodo
                 m_partial_symbol->resize(max_symbol_length, 0);
             }
 
-        // @see SuperCoder::initialize(...)
+        /// @see SuperCoder::initialize(...)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 Super::initialize(symbols, symbol_size);
                 std::fill(m_partial_symbol->begin(), m_partial_symbol->end(), 0);
             }
-        
-        
-        // Sets the storage
-        // @param storage, a const storage container
+                
+        /// Sets the storage
+        /// @param symbol_storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =
@@ -158,16 +157,14 @@ namespace kodo
 
     protected:
 
-        // The zero symbol
+        /// The zero symbol
         symbol_ptr m_zero_symbol;
 
-        // The partial symbol
+        /// The partial symbol
         symbol_ptr m_partial_symbol;
                 
-    };
-        
+    };        
 }
-
 
 #endif
 

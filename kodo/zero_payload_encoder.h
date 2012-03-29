@@ -11,16 +11,17 @@
 namespace kodo
 {
 
-    // Zeros the incoming payload buffer
+    /// Zeros the incoming payload buffer
     template<class SuperCoder>
     class zero_payload_encoder : public SuperCoder
     {
     public:
         
-        // memsets the incoming payload and forwards the
-        // call.
-        // @param payload, the encoding payload
-        // @return the number of byes used by the underlying coding layers
+        /// memsets the incoming payload and forwards the
+        /// call.
+        /// @param symbol_data symbol storage
+        /// @param symbol_id symbol id storage
+        /// @return the number of byes used by the underlying coding layers
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -31,9 +32,7 @@ namespace kodo
 
                 return SuperCoder::encode(symbol_data, symbol_id);
             }
-
     };
-
 }        
 
 #endif
