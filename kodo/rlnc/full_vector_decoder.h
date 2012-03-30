@@ -17,38 +17,38 @@
 namespace kodo
 {
 
-    // Implementes a simple uniform random encoding scheme
-    // where the payload_id carries all coding coefficients
-    // i.e. the "encoding vector"
+    /// Implementes a simple uniform random encoding scheme
+    /// where the payload_id carries all coding coefficients
+    /// i.e. the "encoding vector"
     template<class SuperCoder>
     class full_vector_decoder : public SuperCoder
     {
     public:
 
-        // The field we use
+        /// The field we use
         typedef typename SuperCoder::field_type field_type;
 
-        // The value_type used to store the field elements
+        /// The value_type used to store the field elements
         typedef typename field_type::value_type value_type;
 
-        // The encoding vector
+        /// The encoding vector
         typedef full_vector<field_type> vector_type;
         
     public:
 
-        // The factory layer associated with this coder.
-        // In this case only needed to provide the max_payload_size()
-        // function.
+        /// The factory layer associated with this coder.
+        /// In this case only needed to provide the max_payload_size()
+        /// function.
         class factory : public SuperCoder::factory
         {
         public:
             
-            // @see final_coder_factory::factory(...)
+            /// @see final_coder_factory::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            // @return the required symbol id buffer size in bytes
+            /// @return the required symbol id buffer size in bytes
             uint32_t max_symbol_id_size() const
                 {
                     uint32_t max_vector_size =
@@ -62,13 +62,13 @@ namespace kodo
 
     public:
 
-        // Constructor
+        /// Constructor
         full_vector_decoder()
             : m_rank(0),
               m_maximum_pivot(0)
             { }
 
-        // @see final_coder::construct(...)
+        /// @see final_coder::construct(...)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -77,7 +77,7 @@ namespace kodo
                 m_coded.resize(max_symbols, false);
             }
 
-        // @see final_coder::initialize(...)
+        /// @see final_coder::initialize(...)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -89,8 +89,8 @@ namespace kodo
                 m_maximum_pivot = 0;
             }
 
-        // The decode function which consumes the payload
-        // @param payload, the input payload
+        /// The decode function which consumes the payload
+        /// @param payload the input payload
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -105,8 +105,8 @@ namespace kodo
                 decode_with_vector(vector, symbol);
             }
 
-        // The decode function for systematic packets i.e.
-        // specific uncoded symbols.
+        /// The decode function for systematic packets i.e.
+        /// specific uncoded symbols.
         void decode_raw(uint32_t symbol_index, const uint8_t *symbol_data)
             {
                 assert(symbol_index < SuperCoder::symbols());
@@ -146,19 +146,19 @@ namespace kodo
                 }
             }
 
-        // @return true if the decoding is complete
+        /// @return true if the decoding is complete
         bool is_complete() const
             {
                 return m_rank == SuperCoder::symbols();
             }
 
-        // @return the rank of the decoder
+        /// @return the rank of the decoder
         uint32_t rank() const
             {
                 return m_rank;
             }
 
-        // @return the required payload buffer size in bytes
+        /// @return the required payload buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 return SuperCoder::vector_size();
@@ -166,9 +166,9 @@ namespace kodo
         
     protected:
         
-        // Decodes a symbol based on the vector
-        // @param symbol_data, buffer containing the encoding symbol
-        // @param vector_data, buffer containing the encoding vector
+        /// Decodes a symbol based on the vector
+        /// @param symbol_data buffer containing the encoding symbol
+        /// @param vector_data buffer containing the encoding vector
         void decode_with_vector(value_type *vector_data, value_type *symbol_data)
             {
                 assert(symbol_data != 0);
@@ -205,14 +205,13 @@ namespace kodo
                 {
                     m_maximum_pivot = *pivot_id;
                 }
-
             }
 
-        // When adding a raw symbol (i.e. uncoded) with a specific pivot id and
-        // the decoder already contains a coded symbol in that position this
-        // function performs the proper swap between the two symbols.
-        // @param pivot_id, the pivot position of the raw symbol
-        // @param symbol_data, the data for the raw symbol
+        /// When adding a raw symbol (i.e. uncoded) with a specific pivot id and
+        /// the decoder already contains a coded symbol in that position this
+        /// function performs the proper swap between the two symbols.
+        /// @param pivot_id the pivot position of the raw symbol
+        /// @param symbol_data the data for the raw symbol
         void swap_decode(uint32_t pivot_id, const value_type *symbol_data)
             {
                 assert(m_coded[pivot_id] == true);
@@ -249,13 +248,12 @@ namespace kodo
                 // replacing an existing symbol. I.e. backwards
                 // substitution must already have been done.
             }
-
         
-        // Iterates the encoding vector from where a pivot has been identified
-        // and subtracts existing symbols
-        // @param pivot_id, the index of the found pivot element
-        // @param vector_data, the data constituting the encoding vector
-        // @param symbol_data, the data of the encoded symbol
+        /// Iterates the encoding vector from where a pivot has been identified
+        /// and subtracts existing symbols
+        /// @param pivot_id the index of the found pivot element
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
         void normalize(uint32_t pivot_id,
                        value_type *vector_data,
                        value_type *symbol_data)
@@ -286,11 +284,11 @@ namespace kodo
                 
             }
         
-        // Iterates the encoding vector and subtracts existing symbols until
-        // a pivot element is found.
-        // @param vector_data, the data constituting the encoding vector
-        // @param symbol_data, the data of the encoded symbol
-        // @return the pivot index if found.
+        /// Iterates the encoding vector and subtracts existing symbols until
+        /// a pivot element is found.
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
+        /// @return the pivot index if found.
         boost::optional<uint32_t> forward_substitute_to_pivot(value_type *vector_data,
                                                               value_type *symbol_data)
             {
@@ -342,11 +340,11 @@ namespace kodo
                 return boost::none;
             }
 
-        // Iterates the encoding vector from where a pivot has been identified
-        // and subtracts existing symbols
-        // @param pivot_id, the index of the found pivot element
-        // @param vector_data, the data constituting the encoding vector
-        // @param symbol_data, the data of the encoded symbol
+        /// Iterates the encoding vector from where a pivot has been identified
+        /// and subtracts existing symbols
+        /// @param pivot_id the index of the found pivot element
+        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_data the data of the encoded symbol
         void forward_substitute_from_pivot(uint32_t pivot_id,
                                            value_type *vector_data,
                                            value_type *symbol_data)
@@ -365,9 +363,9 @@ namespace kodo
 
                 vector_type encoding_vector(vector_data, SuperCoder::symbols());
                 
-                // If this pivot was smaller than the maximum pivot we have
-                // we also need to potentially backward substitute the higher
-                // pivot values into the new packet
+                /// If this pivot was smaller than the maximum pivot we have
+                /// we also need to potentially backward substitute the higher
+                /// pivot values into the new packet
                 for(uint32_t i = pivot_id + 1; i <= m_maximum_pivot; ++i)
                 {
                     // Do we have a non-zero value here?
@@ -400,18 +398,17 @@ namespace kodo
                             SuperCoder::multiply_subtract(symbol_data, symbol_i,
                                                           value,
                                                           SuperCoder::symbol_length());
-                            
                         }
                     }
                 }
             }
 
-        // Backward substitute the found symbol into the
-        // existing symbols.
-        // @param pivot_id, the pivot index of the symbol in the
-        //        buffers vector_data and symbol_data
-        // @param vector_data, buffer containing the encoding vector
-        // @param symbol_data, buffer containing the encoding symbol
+        /// Backward substitute the found symbol into the
+        /// existing symbols.
+        /// @param pivot_id the pivot index of the symbol in the
+        ///        buffers vector_data and symbol_data
+        /// @param vector_data buffer containing the encoding vector
+        /// @param symbol_data buffer containing the encoding symbol
         void backward_substitute(uint32_t pivot_id,
                                  const value_type *vector_data,
                                  const value_type *symbol_data)
@@ -424,8 +421,9 @@ namespace kodo
                 assert(m_uncoded[pivot_id] == false);
                 assert(m_coded[pivot_id] == false);
                 
-                // We found a "1" that nobody else had as pivot, we now substract this packet
-                // from other coded packets - if they have a "1" on our pivot place
+                // We found a "1" that nobody else had as pivot, we now
+                // substract this packet from other coded packets
+                // - if they have a "1" on our pivot place
                 for(uint32_t i = 0; i <= m_maximum_pivot; ++i)
                 {
                     if( m_uncoded[i] )
@@ -471,11 +469,11 @@ namespace kodo
                 }                
             }
 
-        // Store an encoded symbol and encoding vector with the specified
-        // pivot found.
-        // @param pivot_id, the pivot index
-        // @param vector_data, buffer containing the encoding vector
-        // @param symbol_data, buffer containing the encoding symbol
+        /// Store an encoded symbol and encoding vector with the specified
+        /// pivot found.
+        /// @param pivot_id the pivot index
+        /// @param vector_data buffer containing the encoding vector
+        /// @param symbol_data buffer containing the encoding symbol
         void store_coded_symbol(uint32_t pivot_id,
                                 const value_type *vector_data,
                                 const value_type *symbol_data)
@@ -497,8 +495,8 @@ namespace kodo
                           symbol_data + SuperCoder::symbol_length(),
                           symbol_dest);
 
-                // // We have increased the rank if we have finished do the
-                // // backwards substitution
+                // We have increased the rank if we have finished do the
+                // backwards substitution
                 // ++m_rank;
 
                 // m_coded[ pivot_id ] = true;
@@ -509,9 +507,9 @@ namespace kodo
                 // }
             }
 
-        // Stores an uncoded or fully decoded symbol
-        // @param pivot_id, the pivot index of the symbol
-        // @param symbol_data, the data for the symbol 
+        /// Stores an uncoded or fully decoded symbol
+        /// @param pivot_id the pivot index of the symbol
+        /// @param symbol_data the data for the symbol 
         void store_uncoded_symbol(uint32_t pivot_id,
                                   const value_type *symbol_data)
             {
@@ -532,10 +530,9 @@ namespace kodo
                 encoding_vector.set_coefficient(pivot_id, 1);
 
                 
-                // // We have increased the rank
+                // We have increased the rank
                 // ++m_rank;
-
-//                m_uncoded[ pivot_id ] = true;
+                // m_uncoded[ pivot_id ] = true;
                 
                 // if(pivot_id > m_maximum_pivot)
                 // {
@@ -543,8 +540,8 @@ namespace kodo
                 // }
             }
 
-        // @return true if the symbol with the specified id
-        //         has already been received in the decoder
+        /// @return true if the symbol with the specified id
+        ///         has already been received in the decoder
         bool symbol_exists(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
@@ -553,25 +550,21 @@ namespace kodo
         
     protected:
 
-        // The current rank of the decoder
+        /// The current rank of the decoder
         uint32_t m_rank;
         
-        // Stores the current maximum pivot index
+        /// Stores the current maximum pivot index
         uint32_t m_maximum_pivot;
                 
-        // Tracks whether a symbol is contained which
-        // is fully decoded
+        /// Tracks whether a symbol is contained which
+        /// is fully decoded
         std::vector<bool> m_uncoded;
         
-        // Tracks whether a symbol is partially decoded
+        /// Tracks whether a symbol is partially decoded
         std::vector<bool> m_coded;
         
     };
-    
-
-    
 }
-
 
 #endif
 

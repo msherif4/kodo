@@ -13,25 +13,25 @@
 namespace kodo
 {
 
-    // Systematic encoder layer
+    /// Systematic encoder layer
     template<class SuperCoder>
     class payload_decoder : public SuperCoder
     {
     public:
 
-        // The factory layer associated with this coder.
-        // In this case only needed to provide the max_payload_size()
-        // function.
+        /// The factory layer associated with this coder.
+        /// In this case only needed to provide the max_payload_size()
+        /// function.
         class factory : public SuperCoder::factory
         {
         public:
             
-            // @see final_coder_factory::factory(...)
+            /// @see final_coder_factory::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            // @return the required payload buffer size in bytes
+            /// @return the required payload buffer size in bytes
             uint32_t max_payload_size() const
                 {
                     return SuperCoder::factory::max_symbol_size() +
@@ -41,9 +41,9 @@ namespace kodo
 
     public:
                 
-        // Unpacks the symbol data and symbol id from the payload
-        // buffer. @see payload_encoder::encode(...) for memory layout.
-        // @param payload, the buffer from which we take the data and id
+        /// Unpacks the symbol data and symbol id from the payload
+        /// buffer. @see payload_encoder::encode(...) for memory layout.
+        /// @param payload, the buffer from which we take the data and id
         void decode(uint8_t *payload)
             {
                 assert(payload != 0);
@@ -54,17 +54,14 @@ namespace kodo
                 return SuperCoder::decode(symbol_data, symbol_id);
             }
 
-        // @return the required payload buffer size in bytes
+        /// @return the required payload buffer size in bytes
         uint32_t payload_size() const
             {
                 return SuperCoder::symbol_size() +
                     SuperCoder::symbol_id_size();
             }
-        
-    };    
-    
+    };        
 }
 
 #endif
-            
-            
+

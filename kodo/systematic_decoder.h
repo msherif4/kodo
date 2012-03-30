@@ -14,41 +14,41 @@
 namespace kodo
 {
 
-    // Systematic encoder layer
+    /// Systematic encoder layer
     template<class SuperCoder>
     class systematic_decoder : public SuperCoder
     {
     public:
         
-        // The field type
+        /// The field type
         typedef typename SuperCoder::field_type field_type;
         
-        // The value type
+        /// The value type
         typedef typename field_type::value_type value_type;
 
-        // The symbol count type
+        /// The symbol count type
         typedef typename systematic_base_coder::counter_type
             counter_type;
 
-        // The flag type
+        /// The flag type
         typedef typename systematic_base_coder::flag_type
             flag_type;
         
     public:
 
-        // The factory layer associated with this coder.
-        // In this case only needed to provide the max_payload_size()
-        // function.
+        /// The factory layer associated with this coder.
+        /// In this case only needed to provide the max_payload_size()
+        /// function.
         class factory : public SuperCoder::factory
         {
         public:
             
-            // @see final_coder_factory::factory(...)
+            /// @see final_coder_factory::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            // @return the required payload buffer size in bytes
+            /// @return the required payload buffer size in bytes
             uint32_t max_symbol_id_size() const
                 {
                     return SuperCoder::factory::max_symbol_id_size() +
@@ -58,8 +58,8 @@ namespace kodo
 
     public:
                 
-        // Iterates over the symbols stored in the encoding symbol id part
-        // of the payload id, and calls the encode_symbol function.
+        /// Iterates over the symbols stored in the encoding symbol id part
+        /// of the payload id, and calls the encode_symbol function.
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -72,7 +72,7 @@ namespace kodo
 
                 if(flag == systematic_base_coder::systematic_flag)
                 {
-                    // Get symbol index and copy the symbol
+                    /// Get symbol index and copy the symbol
                     counter_type symbol_index =
                         sak::big_endian::get<counter_type>(symbol_id);
                     
@@ -84,17 +84,14 @@ namespace kodo
                 }
             }
 
-        // @return the required payload buffer size in bytes
+        /// @return the required payload buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 return SuperCoder::symbol_id_size() +
                     sizeof(flag_type) + sizeof(counter_type);
-            }
-        
+            }        
     };    
-    
 }
 
 #endif
-            
-            
+

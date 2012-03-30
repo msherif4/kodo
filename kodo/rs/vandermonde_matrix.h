@@ -11,18 +11,17 @@
 
 namespace kodo
 {
-
     
-    // The full vector encoder 
+    /// The full vector encoder 
     template<class Field>
     class vandermonde_matrix
     {
     public:
 
-        // The field type
+        /// The field type
         typedef Field field_type;
 
-        // The value type
+        /// The value type
         typedef typename field_type::value_type value_type;
 
     public:
@@ -39,7 +38,7 @@ namespace kodo
                 BOOST_STATIC_ASSERT((boost::is_same<field_type,
                                      typename FieldImpl::field_type>::value));
 
-                // The maximum number of encoding symbols
+                /// The maximum number of encoding symbols
                 uint32_t max_symbols = Field::order - 1;
 
                 // Create the Vandermonde matrix as suggested in
@@ -88,22 +87,22 @@ namespace kodo
                 // }
             }
 
-        // @return true if the matrix is in systematic form
+        /// @return true if the matrix is in systematic form
         bool is_systematic() const
             {
                 return m_systematic;
             }
 
-        // @return the number of source symbols specified for this matrix
+        /// @return the number of source symbols specified for this matrix
         uint32_t symbols() const
             {
                 return m_symbols;
             }
         
-        // Returns the coefficients for a specific index
-        // i.e. corresponds to the column in the Vandermonde
-        // matrix.
-        // @return array of coefficients
+        /// Returns the coefficients for a specific index
+        /// i.e. corresponds to the column in the Vandermonde
+        /// matrix.
+        /// @return array of coefficients
         const value_type* coefficients(uint32_t index) const
             {
                 assert(index < field_type::order);
@@ -118,8 +117,8 @@ namespace kodo
                 return &m_matrix[index * m_symbols];
             }
 
-        // // Performs row operations and puts the matrix on systematic
-        // // form
+        // Performs row operations and puts the matrix on systematic
+        // form
         // void set_systematic()
         //     {
                 
@@ -155,21 +154,17 @@ namespace kodo
         //         field->multiply(row, inverted_coefficient, m_symbols);
         //     }
                 
-                
-        
     protected:
 
-        // True if the matrix is systematic
+        /// True if the matrix is systematic
         bool m_systematic;
         
-        // The number of original source symbols
+        /// The number of original source symbols
         uint32_t m_symbols;
                     
-        // The actual Vandermonde matrix
-        std::vector<value_type> m_matrix;
-        
+        /// The actual Vandermonde matrix
+        std::vector<value_type> m_matrix;       
     };
-
 }
 
 #endif

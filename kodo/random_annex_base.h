@@ -20,15 +20,15 @@
 namespace kodo
 {
 
-    // For a given selection of object partitioning
-    // parameters this function returns the maximum
-    // allowed annex size.
-    //
-    // The result returned from this function is
-    // guaranteed to work for any partitioning scheme
-    // as long as the maximum symbol size is not changed
-    // and maximum number of symbols per block is not
-    // increased.
+    /// For a given selection of object partitioning
+    /// parameters this function returns the maximum
+    /// allowed annex size.
+    /// 
+    /// The result returned from this function is
+    /// guaranteed to work for any partitioning scheme
+    /// as long as the maximum symbol size is not changed
+    /// and maximum number of symbols per block is not
+    /// increased.
     uint32_t max_annex_size(uint32_t max_symbols,
                             uint32_t max_symbol_size,
                             uint32_t object_size)
@@ -65,8 +65,7 @@ namespace kodo
             // contain actual symbols.
             return std::min(min_total_symbols - max_symbols, max_symbols - 1);
         }
-    }
-    
+    }    
 
     struct annex_info
     {
@@ -79,41 +78,40 @@ namespace kodo
             : m_coder_id(coder_id),
               m_symbol_id(symbol_id)
             { }
-               
-        
+                       
         uint32_t m_coder_id;
         uint32_t m_symbol_id;
         
     };
 
-    // Allows our annex info class to be used in e.g. a std::set
+    /// Allows our annex info class to be used in e.g. a std::set
     inline bool operator<(const annex_info &a, const annex_info &b)
     { 
         return a.m_coder_id < b.m_coder_id || 
             (!(b.m_coder_id < a.m_coder_id) && a.m_symbol_id < b.m_symbol_id); 
     }
         
-    // A random annex base
+    /// A random annex base
     template<class BlockPartitioning>
     class random_annex_base : boost::noncopyable
     {
     public:
 
-        // The block partitioning scheme used
+        /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;
 
-        // Convenient typedef to make the Standard Libary insert
-        // ugly'ness a bit more nicer
+        /// Convenient typedef to make the Standard Libary insert
+        /// ugly'ness a bit more nicer
         typedef std::pair<std::set<annex_info>::iterator,bool> annex_return;
         
-        // The uniform int distribution
+        /// The uniform int distribution
         typedef boost::random::uniform_int_distribution<uint32_t>
             uniform_int;
         
     public:
 
-        // Builds the random annex according to the given annex size and
-        // partitioning scheme
+        /// Builds the random annex according to the given annex size and
+        /// partitioning scheme
         void build_annex(uint32_t annex_size, const block_partitioning &partitioning)
             {
                 // Get the number of blocks for this object
@@ -147,20 +145,18 @@ namespace kodo
 
                 // std::cout << "Total blocks " << blocks << std::endl;
                 // std::cout << "Annex " << annex_size << std::endl;
-                
                 // for(uint32_t i = 0; i < blocks; ++i)
                 // {
                 //     std::cout << "Block " << i << " symbols "
                 //               << partitioning.symbols(i) << std::endl;
-
                 // }
 
                 
                 
                 for(uint32_t i = 0; i < blocks; ++i)
                 {
-//                                       std::cout << "Block " << i << " has "
-//                         << partitioning.symbols(i) << " symbols" << std::endl;
+                    //std::cout << "Block " << i << " has "
+                    //<< partitioning.symbols(i) << " symbols" << std::endl;
 
                     // Safety check -- since we select the annex overlap
                     // randomly without replacement there is no way we
@@ -173,11 +169,10 @@ namespace kodo
                     {
                         uint32_t block_id = select_block(i);
 
-//                        std::cout << "Select Block " << block_id << std::endl;
+                        //std::cout << "Select Block " << block_id << std::endl;
                         
                         uint32_t symbol_id = select_symbol(partitioning.symbols(block_id));
 
-                        //
                         //std::cout << "Select Symbol " << symbol_id << std::endl;
                         
                         annex_info annex(block_id, symbol_id);
@@ -192,7 +187,7 @@ namespace kodo
                         }
                         else
                         {
-                            //  std::cout << "Could not insert " << std::endl;
+                            //std::cout << "Could not insert " << std::endl;
                         }
                     }
                 }
@@ -215,14 +210,13 @@ namespace kodo
                 //         std::cout << m_reverse_annex[i][j] << " ";
                 //     }
                 //     std::cout << std::endl;
-                    
                 // }
             }
 
     protected:
 
-        // Selects a block from the block distribution, however
-        // with a certain block excluded
+        /// Selects a block from the block distribution, however
+        /// with a certain block excluded
         uint32_t select_block(uint32_t exclude_block)
             {
                 uint32_t block_id = m_block_distribution(m_random_generator);
@@ -237,7 +231,7 @@ namespace kodo
                 }
             }
 
-        // Selects a symbol id
+        /// Selects a symbol id
         uint32_t select_symbol(uint32_t block_symbols)
             {
                 // Looking at the boost::random::uniform_int_distribution
@@ -253,19 +247,18 @@ namespace kodo
 
     protected:
 
-        // The distribution wrapping the random generator
+        /// The distribution wrapping the random generator
         uniform_int m_block_distribution;
         
-        // The random generator
+        /// The random generator
         boost::random::mt19937 m_random_generator;
 
-        // Stores the annex for every block
+        /// Stores the annex for every block
         std::vector< std::set<annex_info> > m_annex;        
 
-        // Stores the reverse annex
+        /// Stores the reverse annex
         std::vector< boost::dynamic_bitset<> > m_reverse_annex;
     };
-
 }        
 
 #endif

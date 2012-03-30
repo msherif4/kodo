@@ -13,8 +13,8 @@
 namespace kodo
 {
 
-    // The mutable storage class contains a pointer
-    // and size of a modifiable/mutable buffer
+    /// The mutable storage class contains a pointer
+    /// and size of a modifiable/mutable buffer
     struct mutable_storage
     {
     public:
@@ -24,15 +24,15 @@ namespace kodo
 
     public:
         
-        // Create an empty storage object
+        /// Create an empty storage object
         mutable_storage()
             : m_size(0),
               m_data(0)
             { }
 
-        // Create an initialized mutable storage object
-        // @param size, the size of the buffer in bytes
-        // @param data, pointer to the storage buffer
+        /// Create an initialized mutable storage object
+        /// @param size the size of the buffer in bytes
+        /// @param data pointer to the storage buffer
         mutable_storage(uint32_t size, value_ptr data)
             : m_size(size),
               m_data(data)
@@ -41,7 +41,7 @@ namespace kodo
                 assert(m_data != 0);
             }
 
-        // Offset the storage
+        /// Offset the storage
         mutable_storage& operator+=(uint32_t offset)
             {
                 assert(offset <= m_size);
@@ -50,16 +50,16 @@ namespace kodo
                 return *this;
             }
         
-        // The size of the mutable buffer
+        /// The size of the mutable buffer
         uint32_t m_size;
 
-        // Pointer to the mutable buffer storage
+        /// Pointer to the mutable buffer storage
         value_ptr m_data;
         
     };
 
-    // The const storage class contains a pointer and
-    // size of a non-modifiable/const buffer
+    /// The const storage class contains a pointer and
+    /// size of a non-modifiable/const buffer
     struct const_storage
     {
     public:
@@ -69,30 +69,30 @@ namespace kodo
 
     public:
 
-        // Create an empty storage object
+        /// Create an empty storage object
         const_storage()
             : m_size(0),
               m_data(0)
             { }
 
-        // Create an initialized const storage object
-        // @param size, the size of the buffer in bytes
-        // @param data, pointer to the storage buffer
+        /// Create an initialized const storage object
+        /// @param size the size of the buffer in bytes
+        /// @param data pointer to the storage buffer
         const_storage(uint32_t size, value_ptr data)
             : m_size(size),
               m_data(data)
             { }
 
-        // Creates and const storage object from a mutable
-        // @param s, the mutable storage object
+        /// Creates and const storage object from a mutable
+        /// @param s the mutable storage object
         const_storage(const mutable_storage &s)
             : m_size(s.m_size),
               m_data(s.m_data)
             { }
 
-        // Assigns and converts a mutable storage buffer
-        // into a const storage buffer
-        // @param s, the mutable storage object
+        /// Assigns and converts a mutable storage buffer
+        /// into a const storage buffer
+        /// @param s the mutable storage object
         const_storage& operator=(const mutable_storage &s)
             {
                 m_size = s.m_size;
@@ -100,10 +100,10 @@ namespace kodo
                 return *this;
             }
 
-        // The size of the mutable buffer
+        /// The size of the mutable buffer
         uint32_t m_size;
 
-        // Pointer to the non-mutable buffer storage
+        /// Pointer to the non-mutable buffer storage
         value_ptr m_data;
         
     };
@@ -134,8 +134,8 @@ namespace kodo
     // }
 
     
-    // Defines a storage sequence i.e. a storage mapping where
-    // buffers may be in disjoint memory locations
+    /// Defines a storage sequence i.e. a storage mapping where
+    /// buffers may be in disjoint memory locations
     template<class Storage>
     struct storage_sequence;
 
@@ -151,17 +151,16 @@ namespace kodo
         typedef std::vector<mutable_storage> type;
     };
 
-    // Typedefs for the sequences
+    /// Typedefs for the sequences
     typedef storage_sequence<const_storage>::type
         const_storage_sequence;
     
     typedef storage_sequence<mutable_storage>::type
         mutable_storage_sequence;
-
     
-    // Splits a continues storage buffer into a sequence of
-    // storage buffers where the continues buffer is split at
-    // a specified number of bytes
+    /// Splits a continues storage buffer into a sequence of
+    /// storage buffers where the continues buffer is split at
+    /// a specified number of bytes
     template<class StorageType>
     inline typename storage_sequence<StorageType>::type
     split_storage(const StorageType &storage, uint32_t split)
@@ -190,7 +189,7 @@ namespace kodo
         return sequence;
     }
 
-    // Returns the size of all the buffers in a storage sequence
+    /// Returns the size of all the buffers in a storage sequence
     template<class StorageIterator>
     inline uint32_t storage_sequence_size(StorageIterator first, StorageIterator last)
     {
@@ -199,20 +198,19 @@ namespace kodo
         {
             size += first->m_size;
             ++first;
-        }
-        
+        }        
         return size;
     }
 
-    // Zeros the memory pointed to by a mutable storage
-    // object
-    // @param storage, the mutable storage buffer
+    /// Zeros the memory pointed to by a mutable storage
+    /// object
+    /// @param storage the mutable storage buffer
     inline void zero_storage(mutable_storage &storage)
     {
         std::fill_n(storage.m_data, storage.m_size, 0);
     }
 
-    // Copies the source storage into the destination storage buffer 
+    /// Copies the source storage into the destination storage buffer 
     inline void copy_storage(const mutable_storage &dest, const const_storage &src)
     {
         assert(dest.m_size > 0);
@@ -241,7 +239,7 @@ namespace kodo
     }
 
     
-    // Casts the stored pointer to a different data type
+    /// Casts the stored pointer to a different data type
     template<class ValueType>
     inline ValueType* cast_storage(const mutable_storage &s)
     {
@@ -254,7 +252,7 @@ namespace kodo
         return reinterpret_cast<const ValueType*>(s.m_data);
     }
     
-    // Storage function for std::vector<T>
+    /// Storage function for std::vector<T>
     template<class PodType, class Allocator>
     inline const_storage storage(const std::vector<PodType, Allocator> &v)
     {
@@ -273,7 +271,7 @@ namespace kodo
         return mutable_storage(size, data);
     }
 
-    // Storage function for pointers to data
+    /// Storage function for pointers to data
     inline const_storage storage(const void *data, uint32_t size)
     {
         const uint8_t *ptr = reinterpret_cast<const uint8_t*>(data);
@@ -285,7 +283,6 @@ namespace kodo
         uint8_t *ptr = reinterpret_cast<uint8_t*>(data);
         return mutable_storage(size, ptr);
     }
-
 }        
 
 #endif
