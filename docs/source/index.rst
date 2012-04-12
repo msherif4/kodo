@@ -11,10 +11,13 @@ Welcome to Kodo's documentation!
 .. toctree::
    :maxdepth: 2
 
+   intro
    nc_glossary
 
-Documentation for the Code
-==========================
+   contribution/contribution
+
+Code Documentation
+==================
 
 
 
