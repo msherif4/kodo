@@ -5,7 +5,7 @@ Introduction
 
 License
 -------
-Kodo is available under a research and educational friendly licensee, see the details in the LICENSE.txt file.
+Kodo is available under a research and educational friendly licensee, see the details in the LICENSE.rst file.
 
 Documentation
 -------------
