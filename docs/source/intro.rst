@@ -53,6 +53,4 @@ Kodo is a header only library which essentially means that all you have to do to
 
 
 
-.. include::   contribution/contribution
-
 

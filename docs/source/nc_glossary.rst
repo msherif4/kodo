@@ -16,7 +16,7 @@ Field Size / Order
  A finite field element can take a number of values which is specified by the field size. Typically these values are the range from 0 to the size minus 1, which is also the case througout Kodo.
 
 .. Extension field
-
+   
 .. Field Degree
 
 
