@@ -1,5 +1,6 @@
-Developer's Copyright Assignment 1.0
-====================================
+DEVELOPER COPYRIGHT ASSIGNMENT
+==============================
+Version 1.0
 
 By making a contribution to this project, I certify that:
 
