@@ -15,13 +15,14 @@ If you wish to be acknowledged for your contribution you can add yourselves to t
 
 The copyright assignment is the permanent solution if you which to contribute current and future changes to one or multiple of our projects. 
 
-a. Carefully read the content of the **ASSIGNMENT.rst** file, 
-b. Fill out the relevant information in the file
-c. Convert it into a pdf (use rst2pdf)
-d. Print
-e. Sign (remember the date)
+a. Carefully read the content of the **ASSIGNMENT.rst** file.
+b. Fill out the relevant information in the file.
+c. Convert it into a pdf (use rst2pdf).
+d. Print.
+e. Sign (remember the date).
 f. Scan
-g. email to copyright@steinwurf.com.
+g. Email to copyright@steinwurf.com.
+h. Store the returned signed document for your records.
 
 
 .. include:: SIGNOFF.rst
@@ -33,7 +34,7 @@ g. email to copyright@steinwurf.com.
 The copyright signoff is intended for a per pull copyright sign-off, and as such is a more temporary solution and/or better suited for developers who for whatever reason do not which to sign a copyright assignment. It is based on this signoff_ procedure. 
 
 a. Carefully read our signoff statement in **SIGNOFF.rst**.
-b. Whenever you make a pull request you must add a signoff line as the last line of your commit message saying. 
+b. Whenever you make a pull request you must add a signoff line as the last line of your commit message saying.
 
 ::
 
