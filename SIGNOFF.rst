@@ -1,5 +1,5 @@
-DEVELOPER COPYRIGHT ASSIGNMENT
-==============================
+DEVELOPER COPYRIGHT SIGNOFF
+===========================
 Version 1.0
 
 By making a contribution to this project, I certify that:
