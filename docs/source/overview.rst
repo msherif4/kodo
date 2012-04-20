@@ -1,4 +1,8 @@
+Kodo Organization
+=================
 
+This page describes how the Kodo library is organized and how the different
+featur
 
 
 Layers
@@ -45,7 +49,7 @@ Memory management
  Provides convinient and reusable **storage** for symbols and symbol id's.
 
 
-Utilities 
+Utilities
  Remove ?
 
 
