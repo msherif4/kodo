@@ -31,6 +31,8 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
             kodo::full_rlnc_encoder<fifi::binary16>,
             kodo::full_rlnc_decoder<fifi::binary16>
             >(symbols, symbol_size);
+
+
 }
 
 
@@ -45,6 +47,44 @@ TEST(TestRlncFullVectorCodes, basic_api)
     uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
 
     test_coders(symbols, symbol_size);
+}
+
+
+void test_initialize(uint32_t symbols, uint32_t symbol_size)
+{
+
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary>,
+            kodo::full_rlnc_decoder<fifi::binary>
+            >(symbols, symbol_size);
+
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary8>,
+            kodo::full_rlnc_decoder<fifi::binary8>
+            >(symbols, symbol_size);
+
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary16>,
+            kodo::full_rlnc_decoder<fifi::binary16>
+            >(symbols, symbol_size);
+
+}
+
+
+TEST(TestRlncFullVectorCodes, initialize_function)
+{
+    test_coders(32, 1600);
+    test_coders(1, 1600);
+
+    srand(static_cast<uint32_t>(time(0)));
+
+    uint32_t symbols = (rand() % 256) + 1;
+    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+
+    test_initialize(symbols, symbol_size);
 }
 
 
