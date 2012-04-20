@@ -8,8 +8,9 @@
 
 #include <stdint.h>
 #include <sak/convert_endian.h>
+#include <boost/type_traits/is_base_of.hpp>
 
-#include "systematic_base_coder.h" 
+#include "systematic_base_coder.h"
 
 namespace kodo
 {
@@ -19,10 +20,10 @@ namespace kodo
     class systematic_encoder : public SuperCoder
     {
     public:
-        
+
         /// The field type
         typedef typename SuperCoder::field_type field_type;
-        
+
         /// The value type
         typedef typename field_type::value_type value_type;
 
@@ -33,7 +34,10 @@ namespace kodo
         /// The flag type
         typedef typename systematic_base_coder::flag_type
             flag_type;
-        
+
+        /// Tag for this layer
+        struct is_systematic_encoder_tag {};
+
     public:
 
         /// The factory layer associated with this coder.
@@ -42,7 +46,7 @@ namespace kodo
         class factory : public SuperCoder::factory
         {
         public:
-            
+
             /// @see final_coder_factory::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
@@ -57,7 +61,7 @@ namespace kodo
         };
 
     public:
-        
+
         /// Constructor
         systematic_encoder()
             : m_count(0),
@@ -68,19 +72,19 @@ namespace kodo
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
-                
+
                 /// Reset the state
                 m_count = 0;
                 m_systematic = true;
             }
-        
+
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
-                
+
                 if(m_systematic && ( m_count < SuperCoder::symbols() ))
                 {
                     return encode_systematic(symbol_data,
@@ -89,7 +93,7 @@ namespace kodo
                 else
                 {
                     return encode_non_systematic(symbol_data,
-                                                 symbol_id);                       
+                                                 symbol_id);
                 }
             }
 
@@ -125,11 +129,11 @@ namespace kodo
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
-                
+
                 /// Flag systematic packet
                 sak::big_endian::put<flag_type>(
                     systematic_base_coder::systematic_flag, symbol_id);
-                
+
                 /// Set the symbol id
                 sak::big_endian::put<counter_type>(
                     m_count, symbol_id + sizeof(flag_type));
@@ -148,13 +152,13 @@ namespace kodo
                 /// Flag non_systematic packet
                 sak::big_endian::put<flag_type>(
                     systematic_base_coder::non_systematic_flag, symbol_id);
-                
+
                 uint32_t bytes_consumed =
                     SuperCoder::encode(symbol_data, symbol_id + sizeof(flag_type));
-                
+
                 return bytes_consumed + sizeof(flag_type);
             }
-        
+
     private:
 
         /// Keeps track of the number of symbol sent
@@ -166,8 +170,35 @@ namespace kodo
         /// Allows the systematic mode to be disabled
         /// at runtime
         bool m_systematic;
-        
-    };    
+
+    };
+
+
+    template<typename T>
+    class is_systematic_encoder
+    {
+
+        typedef char true_type;
+
+        struct false_type{ true_type _[2]; };
+
+        typedef char (&yes)[1];
+        typedef char (&no)[2];
+
+
+        template <typename U>
+        static yes has_systematic_tag(typename U::is_systematic_encoder_tag *);
+
+        template <typename U>
+        static no has_systematic_tag(...);
+
+    public:
+
+        enum { value = (sizeof(has_systematic_tag<T>(0)) == sizeof(yes)) };
+
+    };
+
+
 }
 
 #endif
