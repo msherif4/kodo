@@ -1,12 +1,21 @@
 Kodo Organization
 =================
 
-This page describes how the Kodo library is organized and how the different
-featur
+This page describes how the Kodo library is organized and how the FEC codes
+are constructed.
+
+Background
+----------
+Kodo utilizes a C++ design technique called mixin-layers. Mixin-layers are
+different from traditional C++ Mixins and
+
+You may find more information about mixin-layers in the following papers:
 
 
-Layers
-======
+Kodo Layers
+===========
+
+
 
 ..
    +--+-------------------------------+-----------------------------------+
