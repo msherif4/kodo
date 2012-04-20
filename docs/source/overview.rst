@@ -26,34 +26,27 @@ Layers
 | 1| Utilities                                                         |
 +--+-------------------------------------------------------------------+
 
-6. Coder interface
+Coder interface
+ Provides a convinient interface to application developers. It allows for encoding over an object with a specified code and build and hold all needed encoders. Similar decoding and recoding over an object.
 
-   Provides a convinient interface to application developers. It allows for encoding over an object with a specified code and build and hold all needed encoders. Similar decoding and recoding over an object.
-
-5. Code specialization
-
-   Provides multiple specializations for the *basic* code. **Systematic** specialization where all data is first send uncoded. Cached specialiatation where coding vectors are reused between generations. **Random Annex** specilatation where a random annex partitioning scheme is overlayed on the code.
+Code specialization
+ Provides multiple specializations for the *basic* code. **Systematic** specialization where all data is first send uncoded. Cached specialiatation where coding vectors are reused between generations. **Random Annex** specilatation where a random annex partitioning scheme is overlayed on the code.
 
 
-4. Code implementation
-
-   Implement multiple codes, such as **Random Linear Netork Coding** (RLNC), Sparse RLNC (S-RLNC), and **Reed-Solomon** (RS). Each code uses a generator to generate symbol id's (called coding vectors, for NC codes), an encoder to encode data, a decoder to decode data, and if a NC code a recode that can recode data based on data in a decoder.
-
-
-3. Finite fields
-
-   Implement multiple Finite Fields, each field provide the basic operations (+ - % \*).
-   Currently there is support for **binary extensition fields** (of the commonly used sizes 2, 2^8, 2^16, 2^32) and a couple of large **prime fields**. To ensure high performance on all platforms for all fields, most of the fields are implemented using multiple techniques.
+Code implementation
+ Implement multiple codes, such as **Random Linear Netork Coding** (RLNC), Sparse RLNC (S-RLNC), and **Reed-Solomon** (RS). Each code uses a generator to generate symbol id's (called coding vectors, for NC codes), an encoder to encode data, a decoder to decode data, and if a NC code a recode that can recode data based on data in a decoder.
 
 
-2. Memory management
+Finite fields
+ Implement multiple Finite Fields, each field provide the basic operations (+ - % \*). Currently there is support for **binary extensition fields** (of the commonly used sizes 2, 2^8, 2^16, 2^32) and a couple of large **prime fields**. To ensure high performance on all platforms for all fields, most of the fields are implemented using multiple techniques.
 
-   Provides convinient and reusable **storage** for symbols and symbol id's.
+
+Memory management
+ Provides convinient and reusable **storage** for symbols and symbol id's.
 
 
-1. Utilities 
-
-   Remove ?
+Utilities 
+ Remove ?
 
 
 
