@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-#include "full_vector.h"
+#include "linear_block_vector.h"
 
 namespace kodo
 {
@@ -28,28 +28,38 @@ namespace kodo
         typedef typename field_type::value_type value_type;
 
         /// The coefficient vector
-        typedef full_vector<field_type> vector_type;
+        typedef linear_block_vector<field_type> vector_type;
 
     public:
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
-        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// Using this function we may "encode" an uncoded symbol.
+        /// This function basically copies a specific symbol to the
+        /// symbol buffer unmodified, no headers or similar are added
+        /// to the payload buffer. I.e. the user must track which symbol is
+        /// fetched him/her-self. Can be used in special cases
+        /// where a specific symbols data is needed.
+        /// If an actual systematic encoder/decoder is needed check
+        /// the kodo/systematic_encoder.h and kodo/systematic_decoder.h
+        /// For this function the user provides the buffer alternatively
+        /// if one simply wants to access the raw data of a symbol
+        /// the symbol storage classes contains the raw_symbol(..) function
+        /// which returns the buffer of a symbol.
+        uint32_t encode_raw(uint32_t symbol_index, uint8_t *symbol_data)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_index < SuperCoder::symbols());
 
-                // Get the data for the encoding vector
-                value_type *vector
-                    = reinterpret_cast<value_type*>(symbol_id);
-
-                // Cast the symbol to the correct field value_type
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                encode_with_vector(symbol, vector);
+                // Did you forget to set the data on the encoder?
+                assert(SuperCoder::symbol(symbol_index) != 0);
 
-                return m_vector_size;
+                std::copy(SuperCoder::symbol(symbol_index),
+                          SuperCoder::symbol(symbol_index) + SuperCoder::symbol_length(),
+                          symbol);
+
+                return 0;
             }
 
     protected:
@@ -59,16 +69,18 @@ namespace kodo
         /// @param vector_data the encoding vector - note at this point the
         ///        encoding vector should already be initialized with coding
         ///        coefficients.
-        void encode_with_vector(value_type *symbol_data, value_type *vector_data)
+        void encode_with_vector(value_type *symbol_data,
+                                const value_type *vector_data)
             {
                 assert(symbol_data != 0);
                 assert(vector_data != 0);
 
-                vector_type encoding_vector(vector_data, SuperCoder::symbols());
-
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    if(value_type coefficient = encoding_vector.coefficient(i))
+                    value_type coefficient =
+                        vector_type::coefficient(i, vector_data);
+
+                    if(coefficient)
                     {
                         const value_type *symbol_i = SuperCoder::symbol( i );
 

@@ -16,7 +16,7 @@ namespace kodo
     /// corresponding to a specific encoded symbol.
     /// This representation assumes that each original
     /// symbol used to produce one encoded symbol is
-    /// represetned by an coding coefficient.
+    /// represented by a coding coefficient.
     template<class Field>
     class linear_block_vector
     {
@@ -27,43 +27,19 @@ namespace kodo
 
     public:
 
-        /// Creates a new coefficient vector
-        /// @param vector pointer to the vector data
-        /// @param symbols the number of field symbols i.e. the
-        ///        generation size
-        linear_block_vector(value_type *vector, uint32_t symbols)
-            : m_vector(vector),
-              m_symbols(symbols)
-            {
-                assert(m_vector != 0);
-                assert(m_symbols > 0);
-            }
-
+        /// @param index the index of the coffecient to return
+        /// @param vector buffer where the coefficients are stored
         /// @return the coefficient for a specific symbol index
-        value_type coefficient(uint32_t index) const;
+        static value_type coefficient(uint32_t index,
+                                      const value_type *vector);
 
         /// Sets the coefficient for a specific symbol index
         /// @param index the index of the symbol coefficient
-        /// @param coefficient the coefficient to assign
-        void set_coefficient(uint32_t index, value_type coefficient);
-
-        /// @return pointer to the stored encoding vector data
-        value_type* data()
-            {
-                return m_vector;
-            }
-
-        /// @return pointer to the stored encoding vector data
-        const value_type* data() const
-            {
-                return m_vector;
-            }
-
-        /// @return the number of symbols represented by the vector
-        uint32_t symbols() const
-            {
-                return m_symbols;
-            }
+        /// @param vector buffer where the coefficient should be set
+        /// @param coefficient to assign
+        static void set_coefficient(uint32_t index,
+                                    value_type *vector,
+                                    value_type coefficient);
 
         /// @return the size of vector in value_type elements
         /// Needed to store the encoding vector for a certain number
@@ -74,53 +50,50 @@ namespace kodo
         static uint32_t length(uint32_t symbols);
 
         /// @return the size of a vector in bytes
-        static uint32_t size(uint32_t symbols)
-            {
-                return length(symbols) * sizeof(value_type);
-            }
-
-    private:
-
-        /// The vector data
-        value_type *m_vector;
-
-        /// The number of symbols in the encoding vector
-        uint32_t m_symbols;
+        static uint32_t size(uint32_t symbols);
 
     };
 
     template<class Field>
     inline typename Field::value_type
-    linear_block_vector<Field>::coefficient(uint32_t index) const
+    linear_block_vector<Field>::coefficient(uint32_t index,
+                                            const value_type *vector)
     {
-        return m_vector[index];
+        assert(vector != 0);
+        return vector[index];
     }
 
     template<>
     inline fifi::binary::value_type
-    linear_block_vector<fifi::binary>::coefficient(uint32_t index) const
+    linear_block_vector<fifi::binary>::coefficient(uint32_t index,
+                                                   const value_type *vector)
     {
+        assert(vector != 0);
+
         typedef fifi::binary::value_type value_type;
 
         uint32_t array_index = index / std::numeric_limits<value_type>::digits;
         uint32_t offset = index % std::numeric_limits<value_type>::digits;
 
-        return (m_vector[array_index] >> offset) & 0x1;
+        return (vector[array_index] >> offset) & 0x1;
     }
 
     template<class Field>
     inline void
     linear_block_vector<Field>::set_coefficient(uint32_t index,
-                                                      typename Field::value_type coefficient)
+                                                value_type *vector,
+                                                typename Field::value_type coefficient)
     {
-        m_vector[index] = coefficient;
+        assert(vector != 0);
+        vector[index] = coefficient;
     }
 
     template<>
     inline void linear_block_vector<fifi::binary>::set_coefficient(uint32_t index,
+                                                                   value_type *vector,
                                                     fifi::binary::value_type coefficient)
     {
-        assert(m_vector != 0);
+        assert(vector != 0);
         assert(coefficient < 2); // only {0,1} allowed
 
         uint32_t array_index = index / std::numeric_limits<fifi::binary::value_type>::digits;
@@ -130,14 +103,15 @@ namespace kodo
 
         if(coefficient)
         {
-            m_vector[array_index] |= mask;
+            vector[array_index] |= mask;
         }
         else
         {
-            m_vector[array_index] &= ~mask;
+            vector[array_index] &= ~mask;
         }
 
     }
+
 
 
     template<class Field>
@@ -159,6 +133,14 @@ namespace kodo
         // ceil(x/y) = ((x - 1) / y) + 1
         return ((symbols - 1) / std::numeric_limits<fifi::binary::value_type>::digits) + 1;
     }
+
+    template<class Field>
+    uint32_t
+    linear_block_vector<Field>::size(uint32_t symbols)
+    {
+        return length(symbols) * sizeof(value_type);
+    }
+
 }
 
 #endif

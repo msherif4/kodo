@@ -30,6 +30,9 @@
 #include "../generators/block.h"
 #include "../payload_encoder.h"
 #include "../payload_decoder.h"
+#include "../linear_block_encoder.h"
+#include "../linear_block_decoder.h"
+#include "../linear_block_vector_generator.h"
 
 #include "full_vector_storage.h"
 #include "seed_encoder.h"
@@ -43,27 +46,31 @@ namespace kodo
         : public payload_encoder<
                  systematic_encoder<
                  zero_payload_encoder<
-                 seed_encoder<block_uniform,
+                 seed_encoder<
+                 linear_block_vector_generator<block_uniform,
+                 linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_shallow_partial<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<seed_rlnc_encoder<Field>, Field>
-                     > > > > > > > >
+                     > > > > > > > > > >
     {};
-    
+
     template<class Field>
     class seed_rlnc_decoder
         : public payload_decoder<
                  systematic_decoder<
-                 seed_decoder<block_uniform,
+                 seed_decoder<
+                 linear_block_vector_generator<block_uniform,
+                 linear_block_decoder<
                  full_vector_storage<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_deep<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<seed_rlnc_decoder<Field>, Field>
-                     > > > > > > > >
+                     > > > > > > > > > >
     {};
 
     /// Common typedefs
@@ -75,7 +82,7 @@ namespace kodo
 
     typedef seed_rlnc_encoder<fifi::binary16> seed_rlnc16_encoder;
     typedef seed_rlnc_decoder<fifi::binary16> seed_rlnc16_decoder;
-    
+
 }
 
 #endif

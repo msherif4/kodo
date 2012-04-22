@@ -40,8 +40,9 @@
 #include "full_vector_systematic_recoder.h"
 #include "full_vector_storage.h"
 
-#include "seed_encoder.h"
-#include "seed_decoder.h"
+#include "../linear_block_encoder.h"
+#include "../linear_block_vector_generator.h"
+
 
 namespace kodo
 {
@@ -51,15 +52,17 @@ namespace kodo
         : public payload_encoder<
                  systematic_encoder<
                  zero_payload_encoder<
-                 full_vector_encoder<block_uniform,
+                 full_vector_encoder<
+                 linear_block_vector_generator<block_uniform,
+                 linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_shallow_partial<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_encoder<Field>, Field>
-                     > > > > > > > >
+                     > > > > > > > > > >
     {};
-    
+
     template<class Field>
     class full_rlnc_decoder
         : public payload_decoder<
@@ -87,19 +90,6 @@ namespace kodo
     typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
     typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
 
-
-    template<class Field>
-    class opt_full_rlnc_encoder
-        : public systematic_encoder<
-                 zero_payload_encoder<
-                 full_vector_encoder<block_cache_lookup_uniform,
-                 finite_field_math<fifi::default_field_impl,
-                 symbol_storage_shallow_partial<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<opt_full_rlnc_encoder<Field>, Field>
-                     > > > > > > >
-    {};    
 }
 
 #endif

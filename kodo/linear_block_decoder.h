@@ -227,13 +227,13 @@ namespace kodo
                 value_type *symbol_i = SuperCoder::symbol(pivot_id);
                 value_type *vector_i = SuperCoder::vector(pivot_id);
 
-                vector_type encoding_vector(vector_i, SuperCoder::symbols());
-                value_type value = encoding_vector.coefficient( pivot_id );
+                value_type value =
+                    vector_type::coefficient(pivot_id, vector_i);
 
                 assert(value == 1);
 
                 // Subtract the new pivot symbol
-                encoding_vector.set_coefficient(pivot_id, 0);
+                vector_type::set_coefficient(pivot_id, vector_i, 0);
 
                 SuperCoder::subtract(symbol_i, symbol_data,
                                      SuperCoder::symbol_length());
@@ -272,9 +272,8 @@ namespace kodo
                 assert(m_uncoded[pivot_id] == false);
                 assert(m_coded[pivot_id] == false);
 
-                vector_type encoding_vector(vector_data, SuperCoder::symbols());
-
-                value_type coefficient = encoding_vector.coefficient( pivot_id );
+                value_type coefficient =
+                    vector_type::coefficient( pivot_id, vector_data );
 
                 assert(coefficient > 0);
 
@@ -300,13 +299,11 @@ namespace kodo
                 assert(vector_data != 0);
                 assert(symbol_data != 0);
 
-                vector_type encoding_vector(vector_data, SuperCoder::symbols());
-
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
 
                     value_type current_coefficient
-                        = encoding_vector.coefficient( i );
+                        = vector_type::coefficient( i, vector_data );
 
                     if( current_coefficient )
                     {
@@ -366,15 +363,13 @@ namespace kodo
                 assert(m_uncoded[pivot_id] == false);
                 assert(m_coded[pivot_id] == false);
 
-                vector_type encoding_vector(vector_data, SuperCoder::symbols());
-
                 /// If this pivot was smaller than the maximum pivot we have
                 /// we also need to potentially backward substitute the higher
                 /// pivot values into the new packet
                 for(uint32_t i = pivot_id + 1; i <= m_maximum_pivot; ++i)
                 {
                     // Do we have a non-zero value here?
-                    value_type value = encoding_vector.coefficient(i);
+                    value_type value = vector_type::coefficient(i, vector_data);
 
                     if( !value )
                     {
@@ -441,9 +436,9 @@ namespace kodo
                     if( m_coded[i] )
                     {
                         value_type *vector_i = SuperCoder::vector(i);
-                        vector_type encoding_vector(vector_i, SuperCoder::symbols());
 
-                        value_type value = encoding_vector.coefficient( pivot_id );
+                        value_type value =
+                            vector_type::coefficient( pivot_id, vector_i );
 
                         if( value )
                         {
@@ -521,8 +516,7 @@ namespace kodo
                           symbol_dest);
 
                 // Update the corresponding vector
-                vector_type encoding_vector(vector_dest, SuperCoder::symbols());
-                encoding_vector.set_coefficient(pivot_id, 1);
+                vector_type::set_coefficient(pivot_id, vector_dest, 1);
 
             }
 
