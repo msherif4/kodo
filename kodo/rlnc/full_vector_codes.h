@@ -20,6 +20,7 @@
 #include "../finite_field_math.h"
 #include "../zero_symbol_encoder.h"
 #include "../systematic_encoder.h"
+#include "../non_systematic_encoder.h"
 #include "../systematic_decoder.h"
 #include "../has_bytes_used.h"
 #include "../has_block_info.h"
