@@ -137,6 +137,14 @@ namespace kodo
                 return m_rank;
             }
 
+        /// @return true if the symbol with the specified id
+        ///         has already been received in the decoder
+        bool symbol_exists(uint32_t index) const
+            {
+                assert(index < SuperCoder::symbols());
+                return m_coded[ index ] || m_uncoded[ index ];
+            }
+
     protected:
 
         /// Decodes a symbol based on the vector
@@ -486,14 +494,6 @@ namespace kodo
                 // Update the corresponding vector
                 vector_type::set_coefficient(pivot_id, vector_dest, 1);
 
-            }
-
-        /// @return true if the symbol with the specified id
-        ///         has already been received in the decoder
-        bool symbol_exists(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return m_coded[ index ] || m_uncoded[ index ];
             }
 
     protected:

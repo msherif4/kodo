@@ -164,17 +164,28 @@ TEST(TestRlncFullVectorCodes, raw)
 //
 // Testing recoding
 //
-template<class Encoder, class Decoder>
+template<class Encoder, class Decoder, class Recoder>
 inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 {
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
-
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder_one = decoder_factory.build(symbols, symbol_size);
-    typename Decoder::pointer decoder_two = decoder_factory.build(symbols, symbol_size);
+    typename Recoder::factory recoder_factory(symbols, symbol_size);
+
+    typename Encoder::pointer encoder =
+        encoder_factory.build(symbols, symbol_size);
+
+    typename Decoder::pointer decoder_one =
+        decoder_factory.build(symbols, symbol_size);
+
+    typename Decoder::pointer decoder_two =
+        decoder_factory.build(symbols, symbol_size);
+
+    typename Recoder::pointer recoder =
+        recoder_factory.build(symbols, symbol_size);
+
+    recoder->set_decoder(decoder_one);
 
     std::vector<uint8_t> payload(encoder->payload_size());
     std::vector<uint8_t> data_in(encoder->block_size(), 'a');
@@ -192,7 +203,8 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
         encoder->encode( &payload[0] );
         decoder_one->decode( &payload[0] );
 
-        decoder_one->recode( &payload[0] );
+
+        recoder->encode( &payload[0] );
         decoder_two->decode( &payload[0] );
 
     }
@@ -207,14 +219,15 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 }
 
 
-void test_recoders(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+void test_recoders(uint32_t symbols, uint32_t symbol_size)
 {
 
-    // invoke_recoding
-    //     <
-    //         kodo::full_rlnc_encoder<fifi::binary>,
-    //         kodo::full_rlnc_decoder<fifi::binary>
-    //         >(symbols, symbol_size);
+    invoke_recoding
+        <
+            kodo::full_rlnc_encoder<fifi::binary>,
+            kodo::full_rlnc_decoder<fifi::binary>,
+            kodo::full_rlnc_recoder<fifi::binary>
+            >(symbols, symbol_size);
 
     // invoke_recoding
     //     <

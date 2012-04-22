@@ -83,16 +83,17 @@ namespace kodo
     template<class Field>
     class full_rlnc_recoder
         : public payload_encoder<
-                     //systematic_decoder<
+                 non_systematic_encoder<
+                     //zero_symbol_encoder<
                      //full_vector_payload_recoder<
                      //full_vector_systematic_recoder<
-                     //full_vector_recoder<random_uniform,
+                 full_vector_recoder<random_uniform, full_rlnc_decoder,
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_deep<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_recoder<Field>, Field>
-                     > > > > > //> > > > //> > >
+                     > > > > > > >// > //> //> > >
     {};
 
     /// Common typedefs
