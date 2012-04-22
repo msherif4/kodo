@@ -12,7 +12,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 
-#include "full_vector.h"
+#include "../linear_block_vector.h"
 
 namespace kodo
 {
@@ -39,7 +39,7 @@ namespace kodo
 
         /// The rank of the current decoder
         using SuperCoder::m_rank;
-        
+
     public:
 
         /// @see final_coder::construct(...)
@@ -79,14 +79,14 @@ namespace kodo
                 m_random.generate(&m_recoding_vector[0], recode_vector_length);
 
                 vector_type recoding_vector(&m_recoding_vector[0], m_rank);
-                
+
                 //
                 uint32_t coefficient_index = 0;
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
                     if(!SuperCoder::symbol_exists(i))
                         continue;
-                    
+
                     value_type coefficient =
                         recoding_vector.coefficient(coefficient_index);
 
@@ -100,7 +100,7 @@ namespace kodo
                         {
                             SuperCoder::add(vector, vector_i,
                                             SuperCoder::vector_length());
-                                
+
                             SuperCoder::add(symbol, symbol_i,
                                             SuperCoder::symbol_length());
                         }
@@ -109,28 +109,28 @@ namespace kodo
                             SuperCoder::multiply_add(vector, vector_i,
                                                      coefficient,
                                                      SuperCoder::vector_length());
-                                
+
                             SuperCoder::multiply_add(symbol, symbol_i,
                                                      coefficient,
                                                      SuperCoder::symbol_length());
                         }
                     }
-                    
+
                     ++coefficient_index;
                     if(coefficient_index == m_rank)
                         break;
 
                 }
-                
+
                 return SuperCoder::vector_size();
-                
+
             }
     private:
-        
+
         std::vector<value_type> m_recoding_vector;
         random_generator m_random;
-               
-    };    
+
+    };
 }
 
 #endif

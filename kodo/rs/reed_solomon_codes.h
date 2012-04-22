@@ -18,7 +18,7 @@
 #include "../final_coder_factory_pool.h"
 #include "../final_coder_factory.h"
 #include "../finite_field_math.h"
-#include "../zero_payload_encoder.h"
+#include "../zero_symbol_encoder.h"
 #include "../systematic_encoder.h"
 #include "../systematic_decoder.h"
 #include "../has_bytes_used.h"
@@ -47,7 +47,7 @@ namespace kodo
     template<class Field>
     class rs_encoder
         : public payload_encoder<
-                 zero_payload_encoder<
+                 zero_symbol_encoder<
                  reed_solomon_encoder<vandermonde_matrix,
                  linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,

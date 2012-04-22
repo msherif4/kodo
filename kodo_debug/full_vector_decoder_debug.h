@@ -8,8 +8,10 @@
 
 #include <stdint.h>
 
-#include "../kodo/rlnc/full_vector.h"
-#include "../kodo/rlnc/full_vector_decoder.h"
+
+
+//#include "../kodo/rlnc/full_vector.h"
+//#include "../kodo/rlnc/full_vector_decoder.h"
 
 namespace kodo
 {
@@ -28,12 +30,12 @@ namespace kodo
         typedef typename field_type::value_type value_type;
 
         // The encoding vector
-        typedef full_vector<field_type> vector_type;
+        typedef linear_block_vector<field_type> vector_type;
 
         // Access to different variables
         using SuperCoder::m_uncoded;
         using SuperCoder::m_coded;
-        
+
     public:
 
         // @param out, the output stream
@@ -53,13 +55,13 @@ namespace kodo
                     {
                         out << i << " ?:\t";
                     }
-                    
+
                     value_type *vector_i = SuperCoder::vector(i);
                     vector_type encoding_vector(vector_i, SuperCoder::symbols());
-                    
+
                     for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
                     {
-                        
+
                         value_type value = encoding_vector.coefficient( j );
                         std::cout << (uint32_t)value << " ";
                     }
@@ -68,7 +70,7 @@ namespace kodo
                 std::cout << std::endl;
             }
     };
-    
+
 }
 
 #endif

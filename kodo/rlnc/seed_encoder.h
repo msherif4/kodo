@@ -9,8 +9,7 @@
 #include <stdint.h>
 #include <sak/convert_endian.h>
 
-#include "full_vector.h"
-#include "full_vector_encoder.h"
+
 
 namespace kodo
 {

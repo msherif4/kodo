@@ -37,32 +37,6 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder.
-        /// In this case only needed to provide the max_payload_size()
-        /// function.
-        class factory : public SuperCoder::factory
-        {
-        public:
-
-            /// @see final_coder_factory::factory(...)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
-
-            /// @return the required symbol id buffer size in bytes
-            uint32_t max_symbol_id_size() const
-                {
-                    uint32_t max_vector_size =
-                        vector_type::size( SuperCoder::factory::max_symbols() );
-
-                    assert(max_vector_size > 0);
-
-                    return  max_vector_size;
-                }
-        };
-
-    public:
-
         /// Constructor
         linear_block_decoder()
             : m_rank(0),
@@ -161,12 +135,6 @@ namespace kodo
         uint32_t rank() const
             {
                 return m_rank;
-            }
-
-        /// @return the required buffer size in bytes needed for the symbol id
-        uint32_t symbol_id_size() const
-            {
-                return SuperCoder::vector_size();
             }
 
     protected:

@@ -13,9 +13,6 @@
 #include <boost/optional.hpp>
 #include <sak/convert_endian.h>
 
-#include "full_vector.h"
-#include "full_vector_decoder.h"
-
 namespace kodo
 {
 

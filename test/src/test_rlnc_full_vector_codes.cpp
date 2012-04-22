@@ -207,26 +207,26 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 }
 
 
-void test_recoders(uint32_t symbols, uint32_t symbol_size)
+void test_recoders(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
 {
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
+    // invoke_recoding
+    //     <
+    //         kodo::full_rlnc_encoder<fifi::binary>,
+    //         kodo::full_rlnc_decoder<fifi::binary>
+    //         >(symbols, symbol_size);
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
+    // invoke_recoding
+    //     <
+    //         kodo::full_rlnc_encoder<fifi::binary8>,
+    //         kodo::full_rlnc_decoder<fifi::binary8>
+    //         >(symbols, symbol_size);
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+    // invoke_recoding
+    //     <
+    //         kodo::full_rlnc_encoder<fifi::binary16>,
+    //         kodo::full_rlnc_decoder<fifi::binary16>
+    //         >(symbols, symbol_size);
 
 }
 

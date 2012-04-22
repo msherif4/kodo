@@ -18,7 +18,7 @@
 #include "../final_coder_factory_pool.h"
 #include "../final_coder_factory.h"
 #include "../finite_field_math.h"
-#include "../zero_payload_encoder.h"
+#include "../zero_symbol_encoder.h"
 #include "../systematic_encoder.h"
 #include "../systematic_decoder.h"
 #include "../has_bytes_used.h"
@@ -38,9 +38,10 @@
 #include "full_vector_recoder.h"
 #include "full_vector_payload_recoder.h"
 #include "full_vector_systematic_recoder.h"
-#include "full_vector_storage.h"
 
 #include "../linear_block_encoder.h"
+#include "../linear_block_decoder.h"
+#include "../linear_block_vector_storage.h"
 #include "../linear_block_vector_generator.h"
 
 
@@ -51,7 +52,7 @@ namespace kodo
     class full_rlnc_encoder
         : public payload_encoder<
                  systematic_encoder<
-                 zero_payload_encoder<
+                 zero_symbol_encoder<
                  full_vector_encoder<
                  linear_block_vector_generator<block_uniform,
                  linear_block_encoder<
@@ -67,17 +68,30 @@ namespace kodo
     class full_rlnc_decoder
         : public payload_decoder<
                  systematic_decoder<
-                 full_vector_payload_recoder<
-                 full_vector_systematic_recoder<
-                 full_vector_recoder<random_uniform,
                  full_vector_decoder<
-                 full_vector_storage<
+                 linear_block_decoder<
+                 linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_deep<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > >
+                     > > > > > > > > > //> > >
+    {};
+
+    template<class Field>
+    class full_rlnc_recoder
+        : public payload_encoder<
+                     //systematic_decoder<
+                     //full_vector_payload_recoder<
+                     //full_vector_systematic_recoder<
+                     //full_vector_recoder<random_uniform,
+                 finite_field_math<fifi::default_field_impl,
+                 symbol_storage_deep<
+                 has_bytes_used<
+                 has_block_info<
+                 final_coder_factory_pool<full_rlnc_recoder<Field>, Field>
+                     > > > > > //> > > > //> > >
     {};
 
     /// Common typedefs
