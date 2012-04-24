@@ -6,7 +6,8 @@ of every change, see the Git log.
 
 Latest (head of the master branch)
 ----------------------------------
-* TBD.
+* Created linear_block_xyz codes as a building block for future and existing
+  block code implementations.
 
 2.0.0
 -----
