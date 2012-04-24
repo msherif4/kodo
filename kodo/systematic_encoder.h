@@ -139,7 +139,7 @@ namespace kodo
                     m_count, symbol_id + sizeof(flag_type));
 
                 /// Copy the symbol
-                SuperCoder::encode_raw(m_count, symbol_data);
+                SuperCoder::encode_raw(symbol_data, m_count);
 
                 ++m_count;
 

@@ -84,9 +84,9 @@ namespace kodo
 
         /// The decode function for systematic packets i.e.
         /// specific uncoded symbols.
-        /// @param symbol_index the index of this uncoded symbol
         /// @param symbol_data the uncoded symbol
-        void decode_raw(uint32_t symbol_index, const uint8_t *symbol_data)
+        /// @param symbol_index the index of this uncoded symbol
+        void decode_raw(const uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);

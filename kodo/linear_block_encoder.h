@@ -44,7 +44,7 @@ namespace kodo
         /// if one simply wants to access the raw data of a symbol
         /// the symbol storage classes contains the raw_symbol(..) function
         /// which returns the buffer of a symbol.
-        uint32_t encode_raw(uint32_t symbol_index, uint8_t *symbol_data)
+        uint32_t encode_raw(uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_data != 0);
                 assert(symbol_index < SuperCoder::symbols());

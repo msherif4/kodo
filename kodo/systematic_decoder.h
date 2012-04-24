@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <sak/convert_endian.h>
 
-#include "systematic_base_coder.h" 
+#include "systematic_base_coder.h"
 
 namespace kodo
 {
@@ -19,10 +19,10 @@ namespace kodo
     class systematic_decoder : public SuperCoder
     {
     public:
-        
+
         /// The field type
         typedef typename SuperCoder::field_type field_type;
-        
+
         /// The value type
         typedef typename field_type::value_type value_type;
 
@@ -33,7 +33,7 @@ namespace kodo
         /// The flag type
         typedef typename systematic_base_coder::flag_type
             flag_type;
-        
+
     public:
 
         /// The factory layer associated with this coder.
@@ -42,7 +42,7 @@ namespace kodo
         class factory : public SuperCoder::factory
         {
         public:
-            
+
             /// @see final_coder_factory::factory(...)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
@@ -57,7 +57,7 @@ namespace kodo
         };
 
     public:
-                
+
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
@@ -75,8 +75,8 @@ namespace kodo
                     /// Get symbol index and copy the symbol
                     counter_type symbol_index =
                         sak::big_endian::get<counter_type>(symbol_id);
-                    
-                    SuperCoder::decode_raw(symbol_index, symbol_data);
+
+                    SuperCoder::decode_raw(symbol_data, symbol_index);
                 }
                 else
                 {
@@ -89,8 +89,8 @@ namespace kodo
             {
                 return SuperCoder::symbol_id_size() +
                     sizeof(flag_type) + sizeof(counter_type);
-            }        
-    };    
+            }
+    };
 }
 
 #endif

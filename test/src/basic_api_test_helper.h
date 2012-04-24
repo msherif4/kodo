@@ -104,8 +104,8 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
         {
             uint32_t symbol_id = rand() % encoder->symbols();
 
-            encoder->encode_raw(symbol_id, &payload[0]);
-            decoder->decode_raw(symbol_id, &payload[0]);
+            encoder->encode_raw(&payload[0], symbol_id);
+            decoder->decode_raw(&payload[0], symbol_id);
 
         }
     }
