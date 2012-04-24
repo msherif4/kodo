@@ -67,7 +67,7 @@ namespace kodo
 
         /// The recode functionality is special for Network Coding
         /// algorithms.
-        uint32_t encode(uint8_t *s)
+        uint32_t recode(uint8_t *s)
             {
                 return m_proxy.encode(s);
             }

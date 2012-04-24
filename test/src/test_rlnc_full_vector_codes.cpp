@@ -192,7 +192,7 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
         encoder->encode( &payload[0] );
         decoder_one->decode( &payload[0] );
 
-        decoder_one->encode( &payload[0] );
+        decoder_one->recode( &payload[0] );
         decoder_two->decode( &payload[0] );
 
     }
