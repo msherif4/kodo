@@ -49,6 +49,10 @@
 namespace kodo
 {
 
+    /// A basic RLNC encoder. This type of RLNC encoder
+    /// transmits the entire encoding vector as part of the
+    /// encoded payload. It therefore allows recoding at
+    /// intermediate nodes in a network.
     template<class Field>
     class full_rlnc_encoder
         : public payload_encoder<
@@ -65,9 +69,24 @@ namespace kodo
                      > > > > > > > > > >
     {};
 
+
+    /// Intermediate layer utilized by the re-coding functionality
+    /// of a RLNC decoder. This allows us to re-use layers from the
+    /// RLNC encoder to build a RLNC recoder
+    template<class SuperCoder>
+    class recode_proxy
+        : public payload_encoder<
+                 non_systematic_encoder<
+                 zero_symbol_encoder<SuperCoder
+                     > > >
+    {};
+
+    /// A RLNC decoder. The decoder decodes according to a
+    /// full encoding vector.
     template<class Field>
     class full_rlnc_decoder
-        : public payload_decoder<
+        : public full_vector_recoder<recode_proxy, random_uniform,
+                 payload_decoder<
                  systematic_decoder<
                  full_vector_decoder<
                  linear_block_decoder<
@@ -77,23 +96,7 @@ namespace kodo
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > //> > >
-    {};
-
-    template<class Field>
-    class full_rlnc_recoder
-        : public payload_encoder<
-                 non_systematic_encoder<
-                     //zero_symbol_encoder<
-                     //full_vector_payload_recoder<
-                     //full_vector_systematic_recoder<
-                 full_vector_recoder<random_uniform, full_rlnc_decoder,
-                 finite_field_math<fifi::default_field_impl,
-                 symbol_storage_deep<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<full_rlnc_recoder<Field>, Field>
-                     > > > > > > >// > //> //> > >
+                     > > > > > > > > > >
     {};
 
     /// Common typedefs

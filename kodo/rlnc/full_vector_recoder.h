@@ -13,38 +13,44 @@
 #include <boost/optional.hpp>
 
 #include "../linear_block_vector.h"
+#include "../proxy_encoder.h"
 
 namespace kodo
 {
 
-    /// Implementes a simple uniform random encoding scheme
-    /// where the payload_id carries all coding coefficients
-    /// i.e. the "encoding vector"
-    template< template <class> class RandomGenerator,
-              template <class> class Decoder,
-              class SuperCoder>
+
+    /// Implements a simple recoding scheme for RLNC. Based on the
+    /// random generator we re-combine previously received symbols
+    /// to produce new re-encoded symbols.
+    template<template <class> class ProxyCoder,
+             template <class> class RandomGenerator,
+             class SuperCoder>
     class full_vector_recoder : public SuperCoder
     {
     public:
+
+        class proxy
+            : public ProxyCoder<
+                     proxy_encoder<
+                     full_vector_recoder<ProxyCoder, RandomGenerator, SuperCoder
+                         > > >
+        {};
+
 
         /// The field we use
         typedef typename SuperCoder::field_type field_type;
 
         /// The value_type used to store the field elements
-        typedef typename field_type::value_type value_type;
+        typedef typename SuperCoder::value_type value_type;
+
+        /// The encoding vector
+        typedef typename SuperCoder::vector_type vector_type;
 
         /// The random generator used
         typedef RandomGenerator<value_type> random_generator;
 
-        /// The decoder type
-        typedef Decoder<field_type> decoder_type;
-
-        /// The decoder that is used during recoding
-        typedef typename decoder_type::pointer decoder_ptr;
-
-        /// The encoding vector
-        typedef typename decoder_type::vector_type vector_type;
-
+        /// The rank of the current decoder
+        using SuperCoder::m_rank;
 
     public:
 
@@ -55,36 +61,38 @@ namespace kodo
 
                 uint32_t max_vector_length = vector_type::length(max_symbols);
                 m_recoding_vector.resize(max_vector_length);
+
+                m_proxy.set_proxy(this);
             }
 
-        void set_decoder(decoder_ptr decoder)
-            {
-                assert(decoder);
-                m_decoder = decoder;
-
-                m_symbols = m_decoder->symbols();
-                m_vector_size = vector_type::size(m_symbols);
-            }
-
-        /// The recode function is special for Network Coding
+        /// The recode functionality is special for Network Coding
         /// algorithms.
-        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+        uint32_t encode(uint8_t *s)
+            {
+                return m_proxy.encode(s);
+            }
+
+        uint32_t proxy_symbol_id_size()
+            {
+                return SuperCoder::symbol_id_size();
+            }
+
+        uint32_t proxy_symbol_size()
+            {
+                return SuperCoder::symbol_size();
+            }
+
+        uint32_t proxy_encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
-                assert(m_decoder);
 
-                std::fill_n(symbol_data, m_decoder->symbol_size(), 0);
-                std::fill_n(symbol_id, m_decoder->vector_size(), 0);
-
-                uint32_t rank = m_decoder->rank();
-
-                if(rank == 0)
+                if(m_rank == 0)
                 {
                     /// We do not have any symbols in our buffer
                     /// we have to simply output a zero encoding vector
                     /// and symbol
-                    return m_vector_size;
+                    return SuperCoder::vector_size();
                 }
 
                 value_type *symbol
@@ -93,14 +101,13 @@ namespace kodo
                 value_type *vector
                     = reinterpret_cast<value_type*>(symbol_id);
 
-                uint32_t recode_vector_length = vector_type::length(rank);
+                uint32_t recode_vector_length = vector_type::length(m_rank);
                 m_random.generate(&m_recoding_vector[0], recode_vector_length);
 
                 uint32_t coefficient_index = 0;
-
-                for(uint32_t i = 0; i < m_symbols; ++i)
+                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    if(!m_decoder->symbol_exists(i))
+                    if(!SuperCoder::symbol_exists(i))
                         continue;
 
                     value_type coefficient =
@@ -109,56 +116,53 @@ namespace kodo
 
                     if(coefficient)
                     {
-                        value_type *vector_i = m_decoder->vector( i );
-                        value_type *symbol_i = m_decoder->symbol( i );
+                        value_type *vector_i = SuperCoder::vector( i );
+                        value_type *symbol_i = SuperCoder::symbol( i );
 
                         if(fifi::is_binary<field_type>::value)
                         {
                             SuperCoder::add(vector, vector_i,
-                                            m_decoder->vector_length());
+                                            SuperCoder::vector_length());
 
                             SuperCoder::add(symbol, symbol_i,
-                                            m_decoder->symbol_length());
+                                            SuperCoder::symbol_length());
                         }
                         else
                         {
                             SuperCoder::multiply_add(vector, vector_i,
                                                      coefficient,
-                                                     m_decoder->vector_length());
+                                                     SuperCoder::vector_length());
 
                             SuperCoder::multiply_add(symbol, symbol_i,
                                                      coefficient,
-                                                     m_decoder->symbol_length());
+                                                     SuperCoder::symbol_length());
                         }
                     }
 
                     ++coefficient_index;
-                    if(coefficient_index == rank)
+                    if(coefficient_index == m_rank)
                         break;
 
                 }
 
-                return m_vector_size;
+                return SuperCoder::vector_size();
 
             }
+
     private:
 
-        /// Temporary buffer storing the recoding vector (or in
-        /// RLNC termonology the local encoding vector)
+        /// Buffer storing the RLNC "local encoding vector"
         std::vector<value_type> m_recoding_vector;
 
-        /// Random generator use to produce random coefficients
+        /// Random generator producing coefficients for the local
+        /// encoding vector
         random_generator m_random;
 
-        uint32_t m_symbols;
-
-        ///
-        uint32_t m_vector_size;
-
-        /// Decoder
-        decoder_ptr m_decoder;
+        /// The proxy
+        proxy m_proxy;
 
     };
+
 }
 
 #endif

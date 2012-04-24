@@ -27,12 +27,6 @@ namespace kodo
     {
     public:
 
-        /// The field type
-        typedef typename SuperCoder::field_type field_type;
-
-        /// The value type
-        typedef typename field_type::value_type value_type;
-
         /// The flag type
         typedef typename systematic_base_coder::flag_type
             flag_type;

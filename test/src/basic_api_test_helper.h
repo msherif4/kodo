@@ -41,7 +41,7 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder_factory.max_payload_size(), decoder_factory.max_payload_size());
 
     // Encode/decode operations
-    EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
+    EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
     std::vector<uint8_t> data_in(encoder->block_size(), 'a');
