@@ -40,6 +40,13 @@ Before starting to use Kodo you should build and run the unit tests in order to 
       ./waf
       ./build/linux/test/kodo_tests
 
+If you wish to use several of our project you might want to specify a common path to where bundles should be located, this way you avoid cloning each repository multiple times
+
+   ::
+
+      ./waf configure --bundle=ALL --bundle-path=../../bundles
+
+
 
 Using Kodo
 ..........
