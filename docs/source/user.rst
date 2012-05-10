@@ -3,6 +3,8 @@ Introduction
 This part of the documentation introduces how Kodo may be use in your
 own projects.
 
+Before we start you may want to run the Kodo unit tests, see @todo here how.
+
 Dependencies of Kodo
 --------------------
 Kodo relies on two external libraries which you must download in order
