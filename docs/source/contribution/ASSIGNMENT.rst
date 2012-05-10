@@ -1,13 +1,13 @@
 .. |ORGANIZATION_FULL| replace:: Steinwurf ApS
 .. |ORGANIZATION| replace:: Steinwurf
-.. |DEVELOPER_NAME| replace:: NAME OF DEVELOPER
-.. |PROGRAM_NAME| replace:: NAME OF PROGRAM
+.. |DEVELOPER_NAME| replace:: DEVELOPER NAME
+.. |PROGRAM_NAME| replace:: PROJECT NAME
 
 STEINWURF COPYRIGHT ASSIGNMENT
 ==============================
 Version 1.0
 
-For receipt of which I acknowledge, I, |DEVELOPER_NAME|, hereby transfer to |ORGANIZATION_FULL| (herafter "|ORGANIZATION|") my entire right (including all rights under copyright) in my changes and enhancements to the program |PROGRAM_NAME|, subject to the conditions below. These changes and enhancements are herein called the "Work.". The work hereby assigned shall also include any future revisions of these changes and enhancements hereafter made by me.
+For receipt of which I acknowledge, I, |DEVELOPER_NAME|, hereby transfer to |ORGANIZATION_FULL| (herafter "|ORGANIZATION|") my entire right (including all rights under copyright) in my changes and enhancements to the program "|PROGRAM_NAME|", subject to the conditions below. These changes and enhancements are herein called the "Work.". The work hereby assigned shall also include any future revisions of these changes and enhancements hereafter made by me.
 
 1. I am the sole copyright holder and I have the right to submit the work under the license indicated in the file.
 
@@ -22,6 +22,8 @@ For receipt of which I acknowledge, I, |DEVELOPER_NAME|, hereby transfer to |ORG
 
 \
 \
+\
+\
 
 |DEVELOPER_NAME|
 
@@ -34,6 +36,6 @@ For |ORGANIZATION_FULL|
 
 CEO Janus Heide
 
----- 
+----
 
 \
