@@ -10,6 +10,7 @@ Latest (head of the master branch)
   block code implementations.
 * Refactored RLNC recoding functionality to utilize allow a larger re-use of 
   existing code. 
+* Added initial version of throughput benchmarks.
 
 2.0.0
 -----
