@@ -9,7 +9,7 @@ Latest (head of the master branch)
 * Created linear_block_xyz codes as a building block for future and existing
   block code implementations.
 * Refactored RLNC recoding functionality to utilize allow a larger re-use of 
-  existing code. 
+  existing code.
 * Added initial version of encoding/decoding throughput benchmarks.
 
 2.0.0
