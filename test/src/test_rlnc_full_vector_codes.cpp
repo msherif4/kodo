@@ -176,6 +176,9 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     typename Decoder::pointer decoder_one = decoder_factory.build(symbols, symbol_size);
     typename Decoder::pointer decoder_two = decoder_factory.build(symbols, symbol_size);
 
+    EXPECT_EQ(encoder->payload_size(), decoder_one->payload_size());
+    EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
+
     std::vector<uint8_t> payload(encoder->payload_size());
     std::vector<uint8_t> data_in(encoder->block_size(), 'a');
 
