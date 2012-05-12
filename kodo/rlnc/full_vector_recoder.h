@@ -22,6 +22,13 @@ namespace kodo
     /// Implements a simple recoding scheme for RLNC. Based on the
     /// random generator we re-combine previously received symbols
     /// to produce new re-encoded symbols.
+    ///
+    /// Note about sizes the proxy coder "bypasses" the existing
+    /// coding layers. Thus to ensure correct behaviour the
+    /// proxy coders symbol_id_size should be smaller than or
+    /// equal to the "parent" coders. There is in principle nothing
+    /// wrong with the proxy coder to need more space than the
+    /// parent coder, but currently we do not support this.
     template<template <class> class ProxyCoder,
              template <class> class RandomGenerator,
              class SuperCoder>
@@ -35,7 +42,6 @@ namespace kodo
                      full_vector_recoder<ProxyCoder, RandomGenerator, SuperCoder
                          > > >
         {};
-
 
         /// The field we use
         typedef typename SuperCoder::field_type field_type;
@@ -63,6 +69,10 @@ namespace kodo
                 m_recoding_vector.resize(max_vector_length);
 
                 m_proxy.set_proxy(this);
+
+                // Se note in class description
+                assert(m_proxy.symbol_size() == SuperCoder::symbol_size());
+                assert(m_proxy.symbol_id_size() <= SuperCoder::symbol_id_size());
             }
 
         /// The recode functionality is special for Network Coding
@@ -74,7 +84,7 @@ namespace kodo
 
         uint32_t proxy_symbol_id_size()
             {
-                return SuperCoder::symbol_id_size();
+                return SuperCoder::vector_size();
             }
 
         uint32_t proxy_symbol_size()
