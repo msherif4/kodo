@@ -31,7 +31,6 @@ namespace kodo
 
     public:
 
-
         /// The decode function which consumes an incomming symbol and
         /// the corresponding symbol_id
         /// @param symbol_data the encoded symbol
@@ -50,12 +49,57 @@ namespace kodo
                 decode_with_vector(vector, symbol);
             }
 
+        /// decode raw takes systematic packets inserts them into the decoder
+        /// for this specific coder no backwards substitution are performed
+        /// until the decoder reaches full rank.
+        void decode_raw(const uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                assert(symbol_index < SuperCoder::symbols());
+                assert(symbol_data != 0);
+
+                if(m_uncoded[symbol_index])
+                    return;
+
+                const value_type *symbol
+                    = reinterpret_cast<const value_type*>( symbol_data );
+
+                if(m_coded[symbol_index])
+                {
+                    SuperCoder::swap_decode(symbol_index, symbol);
+                }
+                else
+                {
+                    // Stores the symbol and updates the corresponding
+                    // encoding vector
+                    store_uncoded_symbol(symbol_index, symbol);
+
+                    // We have increased the rank
+                    ++m_rank;
+
+                    m_uncoded[ symbol_index ] = true;
+
+                    if(symbol_index > m_maximum_pivot)
+                    {
+                        m_maximum_pivot = symbol_index;
+                    }
+
+                }
+
+                if(SuperCoder::is_complete())
+                {
+                    final_backward_substitute();
+                }
+
+            }
+
+
     protected:
 
         // Fetch the variables needed
         using SuperCoder::m_rank;
         using SuperCoder::m_maximum_pivot;
         using SuperCoder::m_coded;
+        using SuperCoder::m_uncoded;
 
     protected:
 
@@ -96,17 +140,27 @@ namespace kodo
 
                 if(SuperCoder::is_complete())
                 {
-                    uint32_t symbols = SuperCoder::symbols();
-
-                    for(uint32_t i = symbols; i--> 0;)
-                    {
-                        value_type *vector_i = SuperCoder::vector(i);
-                        value_type *symbol_i = SuperCoder::symbol(i);
-
-                        SuperCoder::backward_substitute(
-                            i, vector_i, symbol_i);
-                    }
+                    final_backward_substitute();
                 }
+            }
+
+    protected:
+
+        void final_backward_substitute()
+            {
+                assert(SuperCoder::is_complete());
+
+                uint32_t symbols = SuperCoder::symbols();
+
+                for(uint32_t i = symbols; i --> 0;)
+                {
+                    value_type *vector_i = SuperCoder::vector(i);
+                    value_type *symbol_i = SuperCoder::symbol(i);
+
+                    SuperCoder::backward_substitute(
+                        i, vector_i, symbol_i);
+                }
+
             }
 
     };

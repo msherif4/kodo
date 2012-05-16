@@ -101,7 +101,7 @@ TEST(TestRlncFullVectorCodesDelayed, encoding_matrix)
         uint32_t payload_used = encoder->encode( &payload[0] );
 
         decoder->decode( &payload[0] );
-        decoder->print_encoding_vectors(std::cout);
+//        decoder->print_encoding_vectors(std::cout);
     }
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
@@ -132,6 +132,26 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
             kodo::full_rlnc_decoder<fifi::binary16>
             >(symbols, symbol_size);
 
+    // The delayed decoders
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary>
+            >(symbols, symbol_size);
+
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary8>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary8>
+            >(symbols, symbol_size);
+
+    invoke_initialize
+        <
+            kodo::full_rlnc_encoder<fifi::binary16>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary16>
+            >(symbols, symbol_size);
+
+
 }
 
 
@@ -148,27 +168,39 @@ TEST(TestRlncFullVectorCodes, initialize_function)
     test_initialize(symbols, symbol_size);
 }
 
+template<template <class> class Encoder,
+         template <class> class Decoder>
+void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
+{
+    invoke_systematic<
+        Encoder<fifi::binary>,
+        Decoder<fifi::binary>
+        >(symbols, symbol_size);
+
+    invoke_systematic<
+        Encoder<fifi::binary8>,
+        Decoder<fifi::binary8>
+        >(symbols, symbol_size);
+
+    invoke_systematic<
+        Encoder<fifi::binary16>,
+        Decoder<fifi::binary16>
+        >(symbols, symbol_size);
+
+}
 
 void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
 {
+    test_coders_systematic<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
 
-    invoke_systematic
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_systematic
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_systematic
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+    // The delayed decoders
+    test_coders_systematic<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
 
 }
 
@@ -185,29 +217,87 @@ TEST(TestRlncFullVectorCodes, systematic)
     test_coders_systematic(symbols, symbol_size);
 }
 
+template<template <class> class Encoder,
+         template <class> class Decoder>
+void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
+{
+    invoke_out_of_order_raw<
+        Encoder<fifi::binary>,
+        Decoder<fifi::binary>
+        >(symbols, symbol_size);
+
+    invoke_out_of_order_raw<
+        Encoder<fifi::binary8>,
+        Decoder<fifi::binary8>
+        >(symbols, symbol_size);
+
+    invoke_out_of_order_raw<
+        Encoder<fifi::binary16>,
+        Decoder<fifi::binary16>
+        >(symbols, symbol_size);
+
+}
 
 void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
 {
+    test_coders_raw<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
 
-    invoke_out_of_order_raw
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
+    // The delayed decoders
+    test_coders_raw<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
+}
 
-    invoke_out_of_order_raw
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
+TEST(TestDelayedRull, raw)
+{
+    uint32_t symbols = 32;
+    uint32_t symbol_size = 1400;
 
-    invoke_out_of_order_raw
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+    typedef kodo::full_rlnc_encoder<fifi::binary> Encoder;
+    typedef kodo::full_rlnc_decoder_delayed<fifi::binary> Decoder;
+
+    // Common setting
+    Encoder::factory encoder_factory(symbols, symbol_size);
+    Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+
+    Decoder::factory decoder_factory(symbols, symbol_size);
+    Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+
+    std::vector<uint8_t> payload(encoder->payload_size());
+    std::vector<uint8_t> data_in(encoder->block_size());
+
+    kodo::random_uniform<uint8_t> fill_data;
+    fill_data.generate(&data_in[0], data_in.size());
+
+    kodo::set_symbols(kodo::storage(data_in), encoder);
+
+    encoder->systematic_off();
+
+    while( !decoder->is_complete() )
+    {
+
+        if((rand() % 100) > 50)
+        {
+            encoder->encode( &payload[0] );
+            decoder->decode( &payload[0] );
+        }
+        else
+        {
+            uint32_t symbol_id = rand() % encoder->symbols();
+
+            encoder->encode_raw(&payload[0], symbol_id);
+            decoder->decode_raw(&payload[0], symbol_id);
+
+        }
+        decoder->print_encoding_vectors(std::cout);
+    }
 
 }
+
 
 TEST(TestRlncFullVectorCodes, raw)
 {
@@ -258,7 +348,6 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 
         decoder_one->recode( &payload[0] );
         decoder_two->decode( &payload[0] );
-
     }
 
     std::vector<uint8_t> data_out_one(decoder_one->block_size(), '\0');
@@ -271,27 +360,31 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 }
 
 
+template
+    <
+    template <class> class Encoder,
+    template <class> class Decoder
+    >
 void test_recoders(uint32_t symbols, uint32_t symbol_size)
 {
+    invoke_recoding<Encoder<fifi::binary>, Decoder<fifi::binary> >(
+        symbols, symbol_size);
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
+    invoke_recoding<Encoder<fifi::binary8>, Decoder<fifi::binary8> >(
+        symbols, symbol_size);
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
+    invoke_recoding<Encoder<fifi::binary16>, Decoder<fifi::binary16> >(
+        symbols, symbol_size);
 
-    invoke_recoding
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+}
 
+void test_recoders(uint32_t symbols, uint32_t symbol_size)
+{
+    test_recoders<kodo::full_rlnc_encoder, kodo::full_rlnc_decoder>(
+        symbols, symbol_size);
+
+    test_recoders<kodo::full_rlnc_encoder, kodo::full_rlnc_decoder_delayed>(
+        symbols, symbol_size);
 }
 
 TEST(TestRlncFullVectorCodes, recoding_simple)

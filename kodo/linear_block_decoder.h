@@ -91,6 +91,8 @@ namespace kodo
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);
 
+                std::cout << "decode_raw " << symbol_index << std::endl;
+
                 if(m_uncoded[symbol_index])
                     return;
 
@@ -221,6 +223,7 @@ namespace kodo
                 // The previous vector may still be in memory
                 std::fill_n(vector_i, SuperCoder::vector_length(), 0);
 
+                // Stores the symbol and sets the pivot in the vector
                 store_uncoded_symbol(pivot_id, symbol_data);
 
                 m_uncoded[pivot_id] = true;
@@ -269,8 +272,9 @@ namespace kodo
         /// @param vector_data the data constituting the encoding vector
         /// @param symbol_data the data of the encoded symbol
         /// @return the pivot index if found.
-        boost::optional<uint32_t> forward_substitute_to_pivot(value_type *vector_data,
-                                                              value_type *symbol_data)
+        boost::optional<uint32_t> forward_substitute_to_pivot(
+            value_type *vector_data,
+            value_type *symbol_data)
             {
                 assert(vector_data != 0);
                 assert(symbol_data != 0);
@@ -291,21 +295,25 @@ namespace kodo
 
                             if(fifi::is_binary<field_type>::value)
                             {
-                                SuperCoder::subtract(vector_data, vector_i,
-                                                     SuperCoder::vector_length());
+                                SuperCoder::subtract(
+                                    vector_data, vector_i,
+                                    SuperCoder::vector_length());
 
-                                SuperCoder::subtract(symbol_data, symbol_i,
-                                                     SuperCoder::symbol_length());
+                                SuperCoder::subtract(
+                                    symbol_data, symbol_i,
+                                    SuperCoder::symbol_length());
                             }
                             else
                             {
-                                SuperCoder::multiply_subtract(vector_data, vector_i,
-                                                              current_coefficient,
-                                                              SuperCoder::vector_length());
+                                SuperCoder::multiply_subtract(
+                                    vector_data, vector_i,
+                                    current_coefficient,
+                                    SuperCoder::vector_length());
 
-                                SuperCoder::multiply_subtract(symbol_data, symbol_i,
-                                                              current_coefficient,
-                                                              SuperCoder::symbol_length());
+                                SuperCoder::multiply_subtract(
+                                    symbol_data, symbol_i,
+                                    current_coefficient,
+                                    SuperCoder::symbol_length());
                             }
                         }
                         else
@@ -426,6 +434,8 @@ namespace kodo
 
                         if( value )
                         {
+                            std::cout << "Backwards " << pivot_id << " from " << i << std::endl;
+
                             value_type *symbol_i = SuperCoder::symbol(i);
 
                             if(fifi::is_binary<field_type>::value)
