@@ -32,6 +32,25 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
             kodo::full_rlnc_decoder<fifi::binary16>
             >(symbols, symbol_size);
 
+    // The delayed decoders
+    invoke_basic_api
+        <
+            kodo::full_rlnc_encoder<fifi::binary>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary>
+            >(symbols, symbol_size);
+
+    invoke_basic_api
+        <
+            kodo::full_rlnc_encoder<fifi::binary8>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary8>
+            >(symbols, symbol_size);
+
+    invoke_basic_api
+        <
+            kodo::full_rlnc_encoder<fifi::binary16>,
+            kodo::full_rlnc_decoder_delayed<fifi::binary16>
+            >(symbols, symbol_size);
+
 
 }
 
@@ -47,6 +66,48 @@ TEST(TestRlncFullVectorCodes, basic_api)
     uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
 
     test_coders(symbols, symbol_size);
+}
+
+
+TEST(TestRlncFullVectorCodesDelayed, encoding_matrix)
+{
+    uint32_t symbols = 32;
+    uint32_t symbol_size = 1400;
+
+    typedef kodo::full_rlnc_encoder<fifi::binary> Encoder;
+    typedef kodo::full_rlnc_decoder_delayed<fifi::binary> Decoder;
+
+    // Common setting
+    Encoder::factory encoder_factory(symbols, symbol_size);
+    Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+
+    Decoder::factory decoder_factory(symbols, symbol_size);
+    Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+
+
+    std::vector<uint8_t> payload(encoder->payload_size());
+    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
+
+    kodo::random_uniform<uint8_t> fill_data;
+    fill_data.generate(&data_in[0], data_in.size());
+
+    kodo::set_symbols(kodo::storage(data_in), encoder);
+
+    // Set the encoder non-systematic
+    encoder->systematic_off();
+
+    while( !decoder->is_complete() )
+    {
+        uint32_t payload_used = encoder->encode( &payload[0] );
+
+        decoder->decode( &payload[0] );
+        decoder->print_encoding_vectors(std::cout);
+    }
+
+    std::vector<uint8_t> data_out(decoder->block_size(), '\0');
+    kodo::copy_symbols(kodo::storage(data_out), decoder);
+
+    EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 }
 
 

@@ -394,8 +394,10 @@ namespace kodo
 
                 assert(pivot_id < SuperCoder::symbols());
 
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
+                // These asserts can go away since the function
+                // will also work for packets already received (mvp).
+//                assert(m_uncoded[pivot_id] == false);
+//                assert(m_coded[pivot_id] == false);
 
                 // We found a "1" that nobody else had as pivot, we now
                 // substract this packet from other coded packets
@@ -406,6 +408,12 @@ namespace kodo
                     {
                         // We know that we have no non-zero elements
                         // outside the pivot position.
+                        continue;
+                    }
+
+                    if(i == pivot_id)
+                    {
+                        // We cannot backward substitute into ourself
                         continue;
                     }
 

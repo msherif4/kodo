@@ -8,11 +8,6 @@
 
 #include <stdint.h>
 
-
-
-//#include "../kodo/rlnc/full_vector.h"
-//#include "../kodo/rlnc/full_vector_decoder.h"
-
 namespace kodo
 {
 
@@ -57,12 +52,11 @@ namespace kodo
                     }
 
                     value_type *vector_i = SuperCoder::vector(i);
-                    vector_type encoding_vector(vector_i, SuperCoder::symbols());
 
                     for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
                     {
 
-                        value_type value = encoding_vector.coefficient( j );
+                        value_type value = vector_type::coefficient( j, vector_i );
                         std::cout << (uint32_t)value << " ";
                     }
                     std::cout << std::endl;
