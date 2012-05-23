@@ -99,9 +99,9 @@ TEST(TestRlncFullVectorCodesDelayed, encoding_matrix)
     while( !decoder->is_complete() )
     {
         uint32_t payload_used = encoder->encode( &payload[0] );
+        EXPECT_TRUE(payload_used > 0);
 
         decoder->decode( &payload[0] );
-//        decoder->print_encoding_vectors(std::cout);
     }
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
@@ -293,7 +293,7 @@ TEST(TestDelayedRull, raw)
             decoder->decode_raw(&payload[0], symbol_id);
 
         }
-        decoder->print_encoding_vectors(std::cout);
+
     }
 
 }

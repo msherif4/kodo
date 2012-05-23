@@ -91,8 +91,6 @@ namespace kodo
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);
 
-                std::cout << "decode_raw " << symbol_index << std::endl;
-
                 if(m_uncoded[symbol_index])
                     return;
 
@@ -434,7 +432,6 @@ namespace kodo
 
                         if( value )
                         {
-                            std::cout << "Backwards " << pivot_id << " from " << i << std::endl;
 
                             value_type *symbol_i = SuperCoder::symbol(i);
 

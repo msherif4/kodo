@@ -126,7 +126,8 @@ namespace kodo
                 }
 
                 // Now save the received symbol
-                store_coded_symbol(*pivot_id, vector_data, symbol_data);
+                SuperCoder::store_coded_symbol(*pivot_id, vector_data,
+                                               symbol_data);
 
                 // We have increased the rank
                 ++m_rank;

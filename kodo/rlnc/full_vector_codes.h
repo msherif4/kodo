@@ -118,7 +118,6 @@ namespace kodo
         : public full_vector_recoder<recode_proxy, random_uniform,
                  payload_decoder<
                  systematic_decoder<
-                 full_vector_decoder_debug<
                  full_vector_decoder<
                  linear_block_decoder_delayed<
                  linear_block_decoder<
@@ -128,7 +127,7 @@ namespace kodo
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
-                     > > > > > > > > > > > >
+                     > > > > > > > > > > >
     {};
 
 
