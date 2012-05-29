@@ -11,50 +11,47 @@
 #include "basic_api_test_helper.h"
 
 
+template<template <class> class Encoder,
+         template <class> class Decoder>
 void test_coders(uint32_t symbols, uint32_t symbol_size)
 {
-
     invoke_basic_api
         <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
+            Encoder<fifi::binary>,
+            Decoder<fifi::binary>
             >(symbols, symbol_size);
 
     invoke_basic_api
         <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
+            Encoder<fifi::binary8>,
+            Decoder<fifi::binary8>
             >(symbols, symbol_size);
 
     invoke_basic_api
         <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
+            Encoder<fifi::binary16>,
+            Decoder<fifi::binary16>
             >(symbols, symbol_size);
-
-    // The delayed decoders
-    invoke_basic_api
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_basic_api
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_basic_api
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary16>
-            >(symbols, symbol_size);
-
-
 }
 
 
+void test_coders(uint32_t symbols, uint32_t symbol_size)
+{
+
+    test_coders<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    // The delayed decoders
+    test_coders<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
+}
+
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
 TEST(TestRlncFullVectorCodes, basic_api)
 {
     test_coders(32, 1600);
@@ -68,93 +65,46 @@ TEST(TestRlncFullVectorCodes, basic_api)
     test_coders(symbols, symbol_size);
 }
 
-
-TEST(TestRlncFullVectorCodesDelayed, encoding_matrix)
+template<template <class> class Encoder,
+         template <class> class Decoder>
+void test_initialize(uint32_t symbols, uint32_t symbol_size)
 {
-    uint32_t symbols = 32;
-    uint32_t symbol_size = 1400;
+    invoke_initialize
+        <
+            Encoder<fifi::binary>,
+            Decoder<fifi::binary>
+            >(symbols, symbol_size);
 
-    typedef kodo::full_rlnc_encoder<fifi::binary> Encoder;
-    typedef kodo::full_rlnc_decoder_delayed<fifi::binary> Decoder;
+    invoke_initialize
+        <
+            Encoder<fifi::binary8>,
+            Decoder<fifi::binary8>
+            >(symbols, symbol_size);
 
-    // Common setting
-    Encoder::factory encoder_factory(symbols, symbol_size);
-    Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
-
-    Decoder::factory decoder_factory(symbols, symbol_size);
-    Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
-
-
-    std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
-
-    kodo::set_symbols(kodo::storage(data_in), encoder);
-
-    // Set the encoder non-systematic
-    encoder->systematic_off();
-
-    while( !decoder->is_complete() )
-    {
-        uint32_t payload_used = encoder->encode( &payload[0] );
-        EXPECT_TRUE(payload_used > 0);
-
-        decoder->decode( &payload[0] );
-    }
-
-    std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-    kodo::copy_symbols(kodo::storage(data_out), decoder);
-
-    EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+    invoke_initialize
+        <
+            Encoder<fifi::binary16>,
+            Decoder<fifi::binary16>
+            >(symbols, symbol_size);
 }
-
 
 void test_initialize(uint32_t symbols, uint32_t symbol_size)
 {
 
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+    test_initialize<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder>(symbols, symbol_size);
 
     // The delayed decoders
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary8>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_initialize
-        <
-            kodo::full_rlnc_encoder<fifi::binary16>,
-            kodo::full_rlnc_decoder_delayed<fifi::binary16>
-            >(symbols, symbol_size);
-
+    test_initialize<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
 
 }
 
-
+/// Test that the encoders and decoders initialize() function can be used
+/// to reset the state of an encoder and decoder and that they therefore can be
+/// safely reused.
 TEST(TestRlncFullVectorCodes, initialize_function)
 {
     test_coders(32, 1600);
@@ -204,6 +154,8 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
 
 }
 
+/// Tests that an encoder producing systematic packets is handled
+/// correctly in the decoder.
 TEST(TestRlncFullVectorCodes, systematic)
 {
     test_coders_systematic(32, 1600);
@@ -252,53 +204,8 @@ void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
         >(symbols, symbol_size);
 }
 
-TEST(TestDelayedRull, raw)
-{
-    uint32_t symbols = 32;
-    uint32_t symbol_size = 1400;
-
-    typedef kodo::full_rlnc_encoder<fifi::binary> Encoder;
-    typedef kodo::full_rlnc_decoder_delayed<fifi::binary> Decoder;
-
-    // Common setting
-    Encoder::factory encoder_factory(symbols, symbol_size);
-    Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
-
-    Decoder::factory decoder_factory(symbols, symbol_size);
-    Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
-
-    std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size());
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
-
-    kodo::set_symbols(kodo::storage(data_in), encoder);
-
-    encoder->systematic_off();
-
-    while( !decoder->is_complete() )
-    {
-
-        if((rand() % 100) > 50)
-        {
-            encoder->encode( &payload[0] );
-            decoder->decode( &payload[0] );
-        }
-        else
-        {
-            uint32_t symbol_id = rand() % encoder->symbols();
-
-            encoder->encode_raw(&payload[0], symbol_id);
-            decoder->decode_raw(&payload[0], symbol_id);
-
-        }
-
-    }
-
-}
-
-
+/// Tests whether mixed un-coded and coded packets are correctly handled
+/// in the encoder and decoder.
 TEST(TestRlncFullVectorCodes, raw)
 {
     test_coders_raw(32, 1600);
@@ -387,6 +294,16 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
         symbols, symbol_size);
 }
 
+/// Tests that the recoding function works, this is done by using one encoder
+/// and two decoders:
+///
+///    +------------+      +------------+      +------------+
+///    | encoder    |+---->| decoder #1 |+---->| decoder #2 |
+///    +------------+      +------------+      +------------+
+///
+/// Where the encoder passes data to the first decoder which then
+/// recodes and passes data to the second decoder
+///
 TEST(TestRlncFullVectorCodes, recoding_simple)
 {
     test_recoders(32, 1600);
