@@ -54,7 +54,7 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
         EXPECT_EQ(encoder->block_size(), encoder->bytes_used());
         EXPECT_EQ(decoder->block_size(), decoder->bytes_used());
 
-        EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
+        EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
 
         std::vector<uint8_t> payload(encoder->payload_size());
 

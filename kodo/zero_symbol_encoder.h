@@ -3,21 +3,21 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ZERO_PAYLOAD_ENCODER_H
-#define KODO_ZERO_PAYLOAD_ENCODER_H
+#ifndef KODO_ZERO_SYMBOL_ENCODER_H
+#define KODO_ZERO_SYMBOL_ENCODER_H
 
 #include <stdint.h>
 
 namespace kodo
 {
 
-    /// Zeros the incoming payload buffer
+    /// Zeros the incoming symbol buffers
     template<class SuperCoder>
-    class zero_payload_encoder : public SuperCoder
+    class zero_symbol_encoder : public SuperCoder
     {
     public:
-        
-        /// memsets the incoming payload and forwards the
+
+        /// Zero the incoming symbol buffers and forward
         /// call.
         /// @param symbol_data symbol storage
         /// @param symbol_id symbol id storage
@@ -33,7 +33,7 @@ namespace kodo
                 return SuperCoder::encode(symbol_data, symbol_id);
             }
     };
-}        
+}
 
 #endif
 

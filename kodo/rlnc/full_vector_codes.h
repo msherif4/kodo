@@ -18,8 +18,9 @@
 #include "../final_coder_factory_pool.h"
 #include "../final_coder_factory.h"
 #include "../finite_field_math.h"
-#include "../zero_payload_encoder.h"
+#include "../zero_symbol_encoder.h"
 #include "../systematic_encoder.h"
+#include "../non_systematic_encoder.h"
 #include "../systematic_decoder.h"
 #include "../has_bytes_used.h"
 #include "../has_block_info.h"
@@ -38,43 +39,66 @@
 #include "full_vector_recoder.h"
 #include "full_vector_payload_recoder.h"
 #include "full_vector_systematic_recoder.h"
-#include "full_vector_storage.h"
 
-#include "seed_encoder.h"
-#include "seed_decoder.h"
+#include "../linear_block_encoder.h"
+#include "../linear_block_decoder.h"
+#include "../linear_block_decoder_delayed.h"
+#include "../linear_block_vector_storage.h"
+#include "../linear_block_vector_generator.h"
+
+#include "../../kodo_debug/full_vector_decoder_debug.h"
 
 namespace kodo
 {
 
+    /// A basic RLNC encoder. This type of RLNC encoder
+    /// transmits the entire encoding vector as part of the
+    /// encoded payload. It therefore allows recoding at
+    /// intermediate nodes in a network.
     template<class Field>
     class full_rlnc_encoder
         : public payload_encoder<
                  systematic_encoder<
-                 zero_payload_encoder<
-                 full_vector_encoder<block_uniform,
+                 zero_symbol_encoder<
+                 full_vector_encoder<
+                 linear_block_vector_generator<block_uniform_no_position,
+                 linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_shallow_partial<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_encoder<Field>, Field>
-                     > > > > > > > >
+                     > > > > > > > > > >
     {};
-    
+
+
+    /// Intermediate layer utilized by the re-coding functionality
+    /// of a RLNC decoder. This allows us to re-use layers from the
+    /// RLNC encoder to build a RLNC recoder
+    template<class SuperCoder>
+    class recode_proxy
+        : public payload_encoder<
+                 non_systematic_encoder<
+                 zero_symbol_encoder<SuperCoder
+                     > > >
+    {};
+
+    /// A RLNC decoder. The decoder decodes according to a
+    /// full encoding vector.
     template<class Field>
     class full_rlnc_decoder
-        : public payload_decoder<
+        : public full_vector_recoder<recode_proxy, random_uniform,
+                 payload_decoder<
                  systematic_decoder<
-                 full_vector_payload_recoder<
-                 full_vector_systematic_recoder<
-                 full_vector_recoder<random_uniform,
                  full_vector_decoder<
-                 full_vector_storage<
+                 linear_block_decoder<
+                 linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_deep<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > >
+                     > > > > > > > > > >
     {};
 
     /// Common typedefs
@@ -87,19 +111,26 @@ namespace kodo
     typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
     typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
 
-
+    /// A RLNC decoder with delayed backwards substitute. The decoder decodes
+    /// according to a full encoding vector.
     template<class Field>
-    class opt_full_rlnc_encoder
-        : public systematic_encoder<
-                 zero_payload_encoder<
-                 full_vector_encoder<block_cache_lookup_uniform,
+    class full_rlnc_decoder_delayed
+        : public full_vector_recoder<recode_proxy, random_uniform,
+                 payload_decoder<
+                 systematic_decoder<
+                 full_vector_decoder<
+                 linear_block_decoder_delayed<
+                 linear_block_decoder<
+                 linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
-                 symbol_storage_shallow_partial<
+                 symbol_storage_deep<
                  has_bytes_used<
                  has_block_info<
-                 final_coder_factory_pool<opt_full_rlnc_encoder<Field>, Field>
-                     > > > > > > >
-    {};    
+                 final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
+                     > > > > > > > > > > >
+    {};
+
+
 }
 
 #endif

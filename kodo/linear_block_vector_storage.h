@@ -3,13 +3,13 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RLNC_FULL_VECTOR_STORAGE_H
-#define KODO_RLNC_FULL_VECTOR_STORAGE_H
+#ifndef KODO_LINEAR_BLOCK_VECTOR_STORAGE_H
+#define KODO_LINEAR_BLOCK_VECTOR_STORAGE_H
 
 #include <stdint.h>
 #include <boost/shared_array.hpp>
 
-#include "full_vector.h"
+#include "linear_block_vector.h"
 
 namespace kodo
 {
@@ -18,7 +18,7 @@ namespace kodo
     /// where the payload_id carries all coding coefficients
     /// i.e. the "encoding vector"
     template<class SuperCoder>
-    class full_vector_storage : public SuperCoder
+    class linear_block_vector_storage : public SuperCoder
     {
     public:
 
@@ -28,17 +28,17 @@ namespace kodo
         /// The value_type used to store the field elements
         typedef typename field_type::value_type value_type;
 
-        /// The encoding vector type
-        typedef full_vector<field_type> vector_type;
-       
+        /// The coefficient vector type
+        typedef linear_block_vector<field_type> vector_type;
+
     public:
 
         /// Constructor
-        full_vector_storage()
+        linear_block_vector_storage()
             : m_vector_length(0),
               m_vector_size(0)
             { }
-        
+
         /// @see final_coder::construct(...)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
@@ -53,7 +53,7 @@ namespace kodo
                 /// Note, we have as many vectors as we have symbols
                 /// therefore the maximum number of vectors also
                 /// equal the maximum number of symbols
-                m_vector_storage.resize(max_symbols * max_vector_length, 0); 
+                m_vector_storage.resize(max_symbols * max_vector_length, 0);
             }
 
         /// @see final_coder::initialize(...)
@@ -63,16 +63,16 @@ namespace kodo
 
                 m_vector_length = vector_type::length(symbols);
                 m_vector_size = vector_type::size(symbols);
-                
+
                 assert(m_vector_size > 0);
-                
+
                 /// Zero initialize the needed storage for the encoding
                 /// vectors (we have as many vectors as symbols)
                 std::fill(m_vector_storage.begin(),
                           m_vector_storage.end(), 0);
-                
+
             }
-        
+
         /// @return the specified vector
         value_type* vector(uint32_t index)
             {

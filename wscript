@@ -3,73 +3,89 @@
 
 import os
 
-# Necessary since we override different Contexts
-import waflib.extras.wurftools as wt
-
 APPNAME = 'kodo'
-VERSION = '1.0.0'
+VERSION = '2.0.1'
 
-wt.add_dependency('sak', 'git://github.com/steinwurf/sak.git', '1.0.0')
-
-wt.add_dependency('fifi', 'git://github.com/steinwurf/fifi.git', '1.0.1')
-
-wt.add_dependency('boost', 'git://github.com/steinwurf/external-boost.git',
-                  '1.1.0-boost_1_48_0')
-
-wt.add_dependency('gtest', 'git://github.com/steinwurf/external-gtest.git',
-                  '1.0.1-gtest_1_6_0')
-
-
-def load_helper(ctx, name):
-    if ctx.is_system_dependency(name):
+def recurse_helper(ctx, name):
+    if not ctx.has_dependency_path(name):
         ctx.fatal('Load a tool to find %s as system dependency' % name)
     else:
-        ctx.load_dependency(name)
+        p = ctx.dependency_path(name)
+        ctx.recurse(p)
+
 
 def options(opt):
 
-    opt.load('wurftools')
+    opt.load('toolchain_cxx')
+    opt.load('dependency_bundle')
 
-    load_helper(opt, 'sak')
-    load_helper(opt, 'fifi')
-    load_helper(opt, 'boost')
-    load_helper(opt, 'gtest')
+    import waflib.extras.dependency_bundle as bundle
+    import waflib.extras.dependency_resolve as resolve
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'gtest',
+            git_repository = 'git://github.com/steinwurf/external-gtest.git',
+            major_version = 1))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'boost',
+            git_repository = 'git://github.com/steinwurf/external-boost.git',
+            major_version = 1))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'sak',
+            git_repository = 'git://github.com/steinwurf/sak.git',
+            major_version = 2))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'fifi',
+            git_repository = 'git://github.com/steinwurf/fifi.git',
+            major_version = 2))
 
 
 def configure(conf):
 
-    conf.load('wurftools')
+    if conf.is_toplevel():
 
-    load_helper(conf, 'sak')
-    load_helper(conf, 'fifi')
-    load_helper(conf, 'boost')
-    load_helper(conf, 'gtest')
+        conf.load('toolchain_cxx')
+        conf.load('dependency_bundle')
 
-    if conf.env.TOOLCHAIN == 'linux':
-        conf.env.CXXFLAGS_KODO_FLAGS = ['-O2', '-g', '-ftree-vectorize',
-                                        '-Wextra', '-Wall']
-
-    if conf.env.TOOLCHAIN == 'win32':
-        conf.env.CXXFLAGS_KODO_FLAGS = ['/O2', '/Ob2', '/W3', '/EHsc']
-
-
+        recurse_helper(conf, 'boost')
+        recurse_helper(conf, 'gtest')
+        recurse_helper(conf, 'sak')
+        recurse_helper(conf, 'fifi')
 
 def build(bld):
 
-    bld.load('wurftools')
+    if bld.is_toplevel():
 
-    load_helper(bld, 'sak')
-    load_helper(bld, 'fifi')
-    load_helper(bld, 'boost')
-    load_helper(bld, 'gtest')
+        bld.load('dependency_bundle')
+
+        recurse_helper(bld, 'boost')
+        recurse_helper(bld, 'gtest')
+        recurse_helper(bld, 'sak')
+        recurse_helper(bld, 'fifi')
+
+        # Only build test when executed from the
+        # top-level wscript i.e. not when included as a dependency
+        # in a recurse call
+
+        bld.recurse('test')
+        bld.recurse('examples/encode_decode_simple')
+
+        bld.recurse('benchmark/throughput')
 
     # Export own includes
     bld(includes = '.',
         export_includes = '.',
         name = 'kodo_includes')
 
-    bld.recurse('test')
-    #bld.recurse('benchmark/throughput')
+
+
 
 
 

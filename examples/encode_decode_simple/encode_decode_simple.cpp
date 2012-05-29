@@ -1,4 +1,4 @@
-// Copyright Steinwurf APS 2011-2012.
+// Copyright Steinwurf ApS 2011-2012.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
@@ -8,7 +8,7 @@
 int main()
 {
     // Set the number of symbols (i.e. the generation size in RLNC
-    // terminology) and the size of a symbol in bytes 
+    // terminology) and the size of a symbol in bytes
     uint32_t symbols = 42;
     uint32_t symbol_size = 100;
 
@@ -52,7 +52,7 @@ int main()
 
     // The decoder is complete, now copy the symbols from the decoder
     std::vector<uint8_t> data_out(decoder->block_size());
-    kodo::copy_symbols(kodo::storage(data_out), decoder); 
+    kodo::copy_symbols(kodo::storage(data_out), decoder);
 
     // Check we properly decoded the data
     if (std::equal(data_out.begin(), data_out.end(), data_in.begin()))

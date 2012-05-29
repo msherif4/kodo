@@ -3,32 +3,29 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYSTEMATIC_DECODER_H
-#define KODO_SYSTEMATIC_DECODER_H
+#ifndef KODO_NON_SYSTEMATIC_ENCODER_H
+#define KODO_NON_SYSTEMATIC_ENCODER_H
 
 #include <stdint.h>
 #include <sak/convert_endian.h>
+#include <boost/type_traits/is_base_of.hpp>
 
 #include "systematic_base_coder.h"
 
 namespace kodo
 {
 
-    /// Systematic encoder layer
+    /// Non-systematic encoding layer, this layer always
+    /// forwards packets to lower layers without producing
+    /// a systematic packet. It is useful in cases where
+    /// a decoder expects an encoder to produce packets with
+    /// the systematic flags in them, but where we never will
+    /// produce a systematic packet (i.e. during recoding in
+    /// RLNC schemes).
     template<class SuperCoder>
-    class systematic_decoder : public SuperCoder
+    class non_systematic_encoder : public SuperCoder
     {
     public:
-
-        /// The field type
-        typedef typename SuperCoder::field_type field_type;
-
-        /// The value type
-        typedef typename field_type::value_type value_type;
-
-        /// The symbol count type
-        typedef typename systematic_base_coder::counter_type
-            counter_type;
 
         /// The flag type
         typedef typename systematic_base_coder::flag_type
@@ -48,11 +45,11 @@ namespace kodo
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required payload buffer size in bytes
+            /// @return the required symbol_id buffer size in bytes
             uint32_t max_symbol_id_size() const
                 {
                     return SuperCoder::factory::max_symbol_id_size() +
-                        sizeof(flag_type) + sizeof(counter_type);
+                        sizeof(flag_type);
                 }
         };
 
@@ -60,37 +57,31 @@ namespace kodo
 
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
 
-                flag_type flag =
-                    sak::big_endian::get<flag_type>(symbol_id);
+                /// Flag non_systematic packet
+                sak::big_endian::put<flag_type>(
+                    systematic_base_coder::non_systematic_flag, symbol_id);
 
-                symbol_id += sizeof(flag_type);
+                uint32_t bytes_consumed =
+                    SuperCoder::encode(symbol_data, symbol_id
+                                       + sizeof(flag_type));
 
-                if(flag == systematic_base_coder::systematic_flag)
-                {
-                    /// Get symbol index and copy the symbol
-                    counter_type symbol_index =
-                        sak::big_endian::get<counter_type>(symbol_id);
-
-                    SuperCoder::decode_raw(symbol_data, symbol_index);
-                }
-                else
-                {
-                    SuperCoder::decode(symbol_data, symbol_id);
-                }
+                return bytes_consumed + sizeof(flag_type);
             }
 
-        /// @return the required payload buffer size in bytes
+        /// @return the required symbol_id buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 return SuperCoder::symbol_id_size() +
-                    sizeof(flag_type) + sizeof(counter_type);
+                    sizeof(flag_type);
             }
+
     };
+
 }
 
 #endif
