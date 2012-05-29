@@ -221,6 +221,7 @@ namespace kodo
                 // The previous vector may still be in memory
                 std::fill_n(vector_i, SuperCoder::vector_length(), 0);
 
+                // Stores the symbol and sets the pivot in the vector
                 store_uncoded_symbol(pivot_id, symbol_data);
 
                 m_uncoded[pivot_id] = true;
@@ -269,8 +270,9 @@ namespace kodo
         /// @param vector_data the data constituting the encoding vector
         /// @param symbol_data the data of the encoded symbol
         /// @return the pivot index if found.
-        boost::optional<uint32_t> forward_substitute_to_pivot(value_type *vector_data,
-                                                              value_type *symbol_data)
+        boost::optional<uint32_t> forward_substitute_to_pivot(
+            value_type *vector_data,
+            value_type *symbol_data)
             {
                 assert(vector_data != 0);
                 assert(symbol_data != 0);
@@ -291,21 +293,25 @@ namespace kodo
 
                             if(fifi::is_binary<field_type>::value)
                             {
-                                SuperCoder::subtract(vector_data, vector_i,
-                                                     SuperCoder::vector_length());
+                                SuperCoder::subtract(
+                                    vector_data, vector_i,
+                                    SuperCoder::vector_length());
 
-                                SuperCoder::subtract(symbol_data, symbol_i,
-                                                     SuperCoder::symbol_length());
+                                SuperCoder::subtract(
+                                    symbol_data, symbol_i,
+                                    SuperCoder::symbol_length());
                             }
                             else
                             {
-                                SuperCoder::multiply_subtract(vector_data, vector_i,
-                                                              current_coefficient,
-                                                              SuperCoder::vector_length());
+                                SuperCoder::multiply_subtract(
+                                    vector_data, vector_i,
+                                    current_coefficient,
+                                    SuperCoder::vector_length());
 
-                                SuperCoder::multiply_subtract(symbol_data, symbol_i,
-                                                              current_coefficient,
-                                                              SuperCoder::symbol_length());
+                                SuperCoder::multiply_subtract(
+                                    symbol_data, symbol_i,
+                                    current_coefficient,
+                                    SuperCoder::symbol_length());
                             }
                         }
                         else
@@ -394,8 +400,10 @@ namespace kodo
 
                 assert(pivot_id < SuperCoder::symbols());
 
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
+                // These asserts can go away since the function
+                // will also work for packets already received (mvp).
+//                assert(m_uncoded[pivot_id] == false);
+//                assert(m_coded[pivot_id] == false);
 
                 // We found a "1" that nobody else had as pivot, we now
                 // substract this packet from other coded packets
@@ -409,6 +417,12 @@ namespace kodo
                         continue;
                     }
 
+                    if(i == pivot_id)
+                    {
+                        // We cannot backward substitute into ourself
+                        continue;
+                    }
+
                     if( m_coded[i] )
                     {
                         value_type *vector_i = SuperCoder::vector(i);
@@ -418,6 +432,7 @@ namespace kodo
 
                         if( value )
                         {
+
                             value_type *symbol_i = SuperCoder::symbol(i);
 
                             if(fifi::is_binary<field_type>::value)

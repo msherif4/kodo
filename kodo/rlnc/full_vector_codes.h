@@ -42,9 +42,11 @@
 
 #include "../linear_block_encoder.h"
 #include "../linear_block_decoder.h"
+#include "../linear_block_decoder_delayed.h"
 #include "../linear_block_vector_storage.h"
 #include "../linear_block_vector_generator.h"
 
+#include "../../kodo_debug/full_vector_decoder_debug.h"
 
 namespace kodo
 {
@@ -108,6 +110,26 @@ namespace kodo
 
     typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
     typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
+
+    /// A RLNC decoder with delayed backwards substitute. The decoder decodes
+    /// according to a full encoding vector.
+    template<class Field>
+    class full_rlnc_decoder_delayed
+        : public full_vector_recoder<recode_proxy, random_uniform,
+                 payload_decoder<
+                 systematic_decoder<
+                 full_vector_decoder<
+                 linear_block_decoder_delayed<
+                 linear_block_decoder<
+                 linear_block_vector_storage<
+                 finite_field_math<fifi::default_field_impl,
+                 symbol_storage_deep<
+                 has_bytes_used<
+                 has_block_info<
+                 final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
+                     > > > > > > > > > > >
+    {};
+
 
 }
 
