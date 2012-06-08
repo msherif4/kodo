@@ -38,15 +38,15 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
-   ::
-   mkdir dev
-   cd dev
+  ::
+  mkdir dev
+  cd dev
 
-1. Clone and download the Fifi libraries by running:
-   ::
-   git clone git://github.com/steinwurf/fifi.git
+2. Clone and download the Fifi libraries by running:
+  ::
+  git clone git://github.com/steinwurf/fifi.git
 
-2. Clone and download the Boost C++ libraries by running:
+3. Clone and download the Boost C++ libraries by running:
   ::
   git clone git://github.com/steinwurf/external-boost.git
 
@@ -54,7 +54,7 @@ github.com/steinwurf.
  wish you may also use those repositories or another
  Boost way of installing Boost @todo improve.
 
-3. Clone and download the Kodo libraries by running:
+4. Clone and download the Kodo libraries by running:
   ::
   git clone git://github.com/steinwurf/kodo.git
 
