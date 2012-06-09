@@ -315,20 +315,20 @@ void benchmark(const test_setup &setup)
         kodo::seed_rlnc_encoder<fifi::binary16>,
         kodo::seed_rlnc_decoder<fifi::binary16> >(setup));
 
-    run("rs_2",
-        make_block<
-        kodo::rs_encoder<fifi::binary>,
-        kodo::rs_decoder<fifi::binary> >(setup));
+//    run("rs_2",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary>,
+//        kodo::rs_decoder<fifi::binary> >(setup));
 
-    run("rs_8",
-        make_block<
-        kodo::rs_encoder<fifi::binary8>,
-        kodo::rs_decoder<fifi::binary8> >(setup));
+//    run("rs_8",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary8>,
+//        kodo::rs_decoder<fifi::binary8> >(setup));
 
-    run("rs_16",
-        make_block<
-        kodo::rs_encoder<fifi::binary16>,
-        kodo::rs_decoder<fifi::binary16> >(setup));
+//    run("rs_16",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary16>,
+//        kodo::rs_decoder<fifi::binary16> >(setup));
 
     // If custom initialization is needed the following approach may
     // be used.
