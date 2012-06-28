@@ -62,6 +62,7 @@ Download tools (Windows)
 
 .. _`Visual Studio Express 10`: http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
 .. _Python: http://www.python.org/download/
+.. _msysgit: http://msysgit.github.com/
 .. _`github for Windows`_: http://windows.github.com/
 
 Alternatively you may be able to build and test Kodo in
