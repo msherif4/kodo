@@ -1,6 +1,6 @@
-Kodo Tutorial
+Kodo Manual
 =============
-This is the Kodo tutorial in this document we will try to introduce
+This is the Kodo manual in this document we will try to introduce
 users to the Kodo library.
 
 Platforms
@@ -18,9 +18,9 @@ building the Kodo libraries. You can check the status on the
 
 The buildbot currently builds for the following platforms:
 
- * Windows.
+ * Windows XP and Windows 7.
  * Various Linux distributions.
- * Mac OS.
+ * Mac OS Lion.
 
 See the details on the `build slaves`_ page.
 
@@ -81,27 +81,26 @@ Clone the git repository (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All dependencies needed are hosted on github.com and may be found at
-github.com/steinwurf.
+http://github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
   ::
-  mkdir dev
-  cd dev
+    mkdir dev
+    cd dev
 
 2. Clone and download the Kodo libraries by running:
   ::
-  git clone git://github.com/steinwurf/kodo.git
+    git clone git://github.com/steinwurf/kodo.git
 
 Download the source code as archives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Download the zip or tar.gz archives from the following locations and
-extract them to a desired location.
+Download the zip or tar.gz archive from the following location and
+extract it to a desired location.
 
-1. Fifi can be downloaded from http://github.com/steinwurf/fifi.git
-2. Kodo can be downloaded from http://github.com/steinwurf/kodo.git
-3. Boost can be downloaded from http://github.com/steinwurf/external-boost.git
+* https://github.com/steinwurf/kodo/downloads
 
+:ref:`Contents`
 
 Waf (build system)
 ------------------
