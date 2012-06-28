@@ -84,13 +84,13 @@ All dependencies needed are hosted on github.com and may be found at
 http://github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
-  ::
-    mkdir dev
-    cd dev
+   ::
+     mkdir dev
+     cd dev
 
 2. Clone and download the Kodo libraries by running:
-  ::
-    git clone git://github.com/steinwurf/kodo.git
+   ::
+     git clone git://github.com/steinwurf/kodo.git
 
 Download the source code as archives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
