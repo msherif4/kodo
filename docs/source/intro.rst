@@ -1,5 +1,6 @@
-Kodo Manual
-=============
+.._tools-and-platforms:
+Tools and Platforms
+===================
 This is the Kodo manual in this document we will try to introduce
 users to the Kodo library.
 
@@ -102,6 +103,9 @@ extract it to a desired location.
 
 see :ref:`rsttest` for more info
 :ref:`guide-connecting`
+
+test :ref:`tools-and-platforms`
+
 
 Waf (build system)
 ------------------
