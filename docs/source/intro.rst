@@ -30,7 +30,7 @@ Tools Needed
 ------------
 In order to build and work with Kodo you need the following tools:
 
-1. C++ compiler, Kodo is a C++ library so to use it you will need a
+1. **C++ compiler:** Kodo is a C++ library so to use it you will need a
    working C++ compiler installed. We have tested the following
    compilers with Kodo: g++ (v4.4.3 and up), clang++ (v3.0) and Visual
    Studio Express 10.
@@ -38,8 +38,8 @@ In order to build and work with Kodo you need the following tools:
 If you wish to build the Kodo examples and unit-tests it is recommended
 that you also install the following:
 
-1. Python any version later than 2.7 or 3.0 should be fine.
-2. Git any version should be fine.
+2. **Python:** any version later than 2.7 or 3.0 should be fine.
+3. **Git:** any version should be fine.
 
 Download tools (Ubuntu or other Debian based distros)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,12 +50,12 @@ Simply get the dependencies using the following command:
 Download tools (Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. You need a working C++ compiler we have tested using
+1. **C++ compiler:**: You need a working C++ compiler we have tested using
    `Visual Studio Express 10`_ compiler which is free of charge.
    Newer versions should also be fine.
-2. You need a working Python installation. Find the available
+2. **Python:** You need a working Python installation. Find the available
    download on the `Python homepage`_.
-3. There are several ways to get git on Windows. We have tested the
+3. **Git:** There are several ways to get git on Windows. We have tested the
    msysgit_ tool. However, github now also have a tool for managing
    git repositories called `github for Windows`_ which may be used
    (we have not tested this).
