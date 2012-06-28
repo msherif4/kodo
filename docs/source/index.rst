@@ -8,18 +8,21 @@ Kodo documentation
 ==================
 
 Welcome to the Kodo Network Coding library documentation. On these pages you
-will find the information you need to start using Kodo for your research or
-educational purposes.
+will find the information you need to start using Kodo in your applications.
 
 About
 -----
-**Kodo** is a flexible C++ network coding, intended to be used for commercial
+Kodo is a C++ library for Network Coding, intended to be used for commercial
 applications and for research on implementation of Network Coding. The library
 enable researchers to implement, new codes and algorithms, perform simulations,
 and benchmark the coding operations on any platform where a C++ compiler is
 available. The library provide a multitude of build blocks and parameters that
 can be combined in order to create codes. To ensure ease of use several codes
 are predefined, and high level API's provided.
+
+User Documentation
+------------------
+
 
 Hello Kodo
 ----------
