@@ -104,7 +104,7 @@ extract it to a desired location.
 see :ref:`rsttest` for more info
 :ref:`guide-connecting`
 
-test :ref:`tools-and-platforms`
+test :ref:`tools-and-platforms`_
 
 
 Waf (build system)
