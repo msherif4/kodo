@@ -1,5 +1,5 @@
-Introduction
-============
+User Documentation
+==================
 This part of the documentation introduces how Kodo may be use in your
 own projects.
 
