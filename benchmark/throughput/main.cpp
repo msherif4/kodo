@@ -149,6 +149,7 @@ struct test_block
 
 };
 
+
 /// Build a new test block
 template<class Encoder, class Decoder>
 boost::shared_ptr< test_block<Encoder,Decoder> >
@@ -156,6 +157,7 @@ make_block(const test_setup &setup,
            typename Encoder::factory &encoder_factory,
            typename Decoder::factory &decoder_factory)
 {
+
     typename Encoder::pointer encoder =
         encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
 
@@ -168,28 +170,50 @@ make_block(const test_setup &setup,
 }
 
 
+/// Build a new test block
 template<class Encoder, class Decoder>
-void run(const std::string &name, const test_setup &setup)
+boost::shared_ptr< test_block<Encoder,Decoder> >
+make_block(const test_setup &setup)
+{
+    typename Encoder::factory encoder_factory(setup.m_symbols,
+                                              setup.m_symbol_size);
+
+    typename Decoder::factory decoder_factory(setup.m_symbols,
+                                              setup.m_symbol_size);
+
+    typename Encoder::pointer encoder =
+        encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+    typename Decoder::pointer decoder =
+        decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+    return boost::make_shared< test_block<Encoder, Decoder> >(
+        setup, encoder, decoder);
+}
+
+
+/// Build a new test block
+template<class Encoder, class Decoder>
+boost::shared_ptr< test_block<Encoder,Decoder> >
+make_block(const test_setup &setup,
+           typename Encoder::pointer &encoder,
+           typename Decoder::pointer &decoder)
+{
+    return boost::make_shared< test_block<Encoder, Decoder> >(
+        setup, encoder, decoder);
+}
+
+
+template<class TestBlockPtr>//Encoder, class Decoder>
+void run(const std::string &name, //const test_setup &setup,
+         TestBlockPtr block)
+         //boost::shared_ptr< test_block<Encoder,Decoder> > block)
 {
 
-    typedef typename Encoder::pointer encoder_ptr;
-    typedef typename Encoder::factory encoder_factory_type;
-
-    typedef typename Decoder::pointer decoder_ptr;
-    typedef typename Decoder::factory decoder_factory_type;
-
     std::cout << "running " << name << " symbols = "
-              << setup.m_symbols << std::endl;
+              << block->m_setup.m_symbols << std::endl;
 
     // Estimate speed of encoder / decoder
-    encoder_factory_type encoder_factory(setup.m_symbols, setup.m_symbol_size);
-    decoder_factory_type decoder_factory(setup.m_symbols, setup.m_symbol_size);
-
-    typedef boost::shared_ptr<test_block<Encoder,Decoder> >  block_ptr;
-
-    block_ptr block =
-        make_block<Encoder,Decoder>(setup, encoder_factory, decoder_factory);
-
     // Warm up
     sak::code_warmup warmup;
 
@@ -202,7 +226,7 @@ void run(const std::string &name, const test_setup &setup)
     // The number of iterations needed to run the target time seconds
     // we expect the encoder to always be faster than the decoder, which means
     // it will always require more iterations.
-    uint64_t iterations = warmup.iterations(setup.m_target_time);
+    uint64_t iterations = warmup.iterations(block->m_setup.m_target_time);
 
     std::cout << "needed encode iterations " << iterations << std::endl;
 
@@ -222,7 +246,7 @@ void run(const std::string &name, const test_setup &setup)
 
         // Amount of data processed
         long double bytes = static_cast<long double>(
-            setup.m_symbol_size * symbols_consumed);
+            block->m_setup.m_symbol_size * symbols_consumed);
 
         long double megs = bytes / 1000000.0;
         long double megs_per_second = megs / total_sec;
@@ -247,7 +271,7 @@ void run(const std::string &name, const test_setup &setup)
 
         // Amount of data processed
         long double bytes = static_cast<long double>(
-            setup.m_symbol_size * symbols_consumed);
+            block->m_setup.m_symbol_size * symbols_consumed);
 
         long double megs = bytes / 1000000.0;
         long double megs_per_second = megs / total_sec;
@@ -259,9 +283,85 @@ void run(const std::string &name, const test_setup &setup)
 }
 
 
-template<class Encoder, class Decoder>
-void benchmark(const std::string &name)
+void benchmark(const test_setup &setup)
 {
+    run("full_rlnc_2",
+        make_block<
+        kodo::full_rlnc_encoder<fifi::binary>,
+        kodo::full_rlnc_decoder<fifi::binary> >(setup));
+
+    run("full_rlnc_8",
+        make_block<
+        kodo::full_rlnc_encoder<fifi::binary8>,
+        kodo::full_rlnc_decoder<fifi::binary8> >(setup));
+
+    run("full_rlnc_16",
+        make_block<
+        kodo::full_rlnc_encoder<fifi::binary16>,
+        kodo::full_rlnc_decoder<fifi::binary16> >(setup));
+
+    run("seed_rlnc_2",
+        make_block<
+        kodo::seed_rlnc_encoder<fifi::binary>,
+        kodo::seed_rlnc_decoder<fifi::binary> >(setup));
+
+    run("seed_rlnc_8",
+        make_block<
+        kodo::seed_rlnc_encoder<fifi::binary8>,
+        kodo::seed_rlnc_decoder<fifi::binary8> >(setup));
+
+    run("seed_rlnc_16",
+        make_block<
+        kodo::seed_rlnc_encoder<fifi::binary16>,
+        kodo::seed_rlnc_decoder<fifi::binary16> >(setup));
+
+//    run("rs_2",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary>,
+//        kodo::rs_decoder<fifi::binary> >(setup));
+
+//    run("rs_8",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary8>,
+//        kodo::rs_decoder<fifi::binary8> >(setup));
+
+//    run("rs_16",
+//        make_block<
+//        kodo::rs_encoder<fifi::binary16>,
+//        kodo::rs_decoder<fifi::binary16> >(setup));
+
+    // If custom initialization is needed the following approach may
+    // be used.
+    // {
+    //     typedef kodo::full_rlnc_encoder<fifi::binary> encoder_type;
+    //     typedef kodo::full_rlnc_decoder<fifi::binary> decoder_type;
+    //
+    //     encoder_type::factory encoder_factory(setup.m_symbols,
+    //                                           setup.m_symbol_size);
+    //
+    //     decoder_type::factory decoder_factory(setup.m_symbols,
+    //                                           setup.m_symbol_size);
+    //
+    //     for(uint32_t i = 0; i < 10; ++i)
+    //     {
+    //
+    //         encoder_type::pointer encoder =
+    //             encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+    //
+    //         encoder->set_some_option(i);
+    //
+    //         decoder_type::pointer decoder =
+    //             decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+    //
+    //         run("full_rlnc_8",
+    //             make_block<encoder_type, decoder_type>(setup, encoder, decoder));
+    //     }
+    // }
+}
+
+int main()
+{
+
     {
         test_setup setup;
         setup.m_symbols = 16;
@@ -269,7 +369,7 @@ void benchmark(const std::string &name)
         setup.m_extra_symbols = 16;
         setup.m_target_time = 5.0;
 
-        run<Encoder,Decoder>(name, setup);
+        benchmark(setup);
     }
 
     {
@@ -279,41 +379,8 @@ void benchmark(const std::string &name)
         setup.m_extra_symbols = 16;
         setup.m_target_time = 5.0;
 
-        run<Encoder,Decoder>(name, setup);
+        benchmark(setup);
     }
-
-
-}
-
-int main()
-{
-    benchmark<kodo::full_rlnc_encoder<fifi::binary>,
-              kodo::full_rlnc_decoder<fifi::binary> >("full_rlnc_2");
-
-    benchmark<kodo::full_rlnc_encoder<fifi::binary8>,
-              kodo::full_rlnc_decoder<fifi::binary8> >("full_rlnc_8");
-
-    benchmark<kodo::full_rlnc_encoder<fifi::binary16>,
-              kodo::full_rlnc_decoder<fifi::binary16> >("full_rlnc_16");
-
-    benchmark<kodo::seed_rlnc_encoder<fifi::binary>,
-              kodo::seed_rlnc_decoder<fifi::binary> >("seed_rlnc_2");
-
-    benchmark<kodo::seed_rlnc_encoder<fifi::binary8>,
-              kodo::seed_rlnc_decoder<fifi::binary8> >("seed_rlnc_8");
-
-    benchmark<kodo::seed_rlnc_encoder<fifi::binary16>,
-              kodo::seed_rlnc_decoder<fifi::binary16> >("seed_rlnc_16");
-
-    benchmark<kodo::rs_encoder<fifi::binary>,
-              kodo::rs_decoder<fifi::binary> >("rs_2");
-
-    benchmark<kodo::rs_encoder<fifi::binary8>,
-              kodo::rs_decoder<fifi::binary8> >("rs_8");
-
-    benchmark<kodo::rs_encoder<fifi::binary16>,
-              kodo::rs_decoder<fifi::binary16> >("rs_16");
-
 
     return 0;
 }
