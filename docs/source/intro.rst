@@ -100,7 +100,7 @@ extract it to a desired location.
 
 * https://github.com/steinwurf/kodo/downloads
 
-:ref:`Contents`
+:ref:`rst_tutorial`
 
 Waf (build system)
 ------------------
