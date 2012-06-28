@@ -54,16 +54,16 @@ Download tools (Windows)
    `Visual Studio Express 10`_ compiler which is free of charge.
    Newer versions should also be fine.
 2. You need a working Python installation. Find the available
-   download on the Python_ homepage.
+   download on the `Python homepage`_.
 3. There are several ways to get git on Windows. We have tested the
    msysgit_ tool. However, github now also have a tool for managing
    git repositories called `github for Windows`_ which may be used
    (we have not tested this).
 
 .. _`Visual Studio Express 10`: http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
-.. _Python: http://www.python.org/download/
+.. _`Python homepage`: http://www.python.org/download/
 .. _msysgit: http://msysgit.github.com/
-.. _`github for Windows`_: http://windows.github.com/
+.. _`github for Windows`: http://windows.github.com/
 
 Alternatively you may be able to build and test Kodo in
 Cygwin but we have not tested this (let us know if you try :)).
