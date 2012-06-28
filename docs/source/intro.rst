@@ -1,4 +1,4 @@
-.._tools-and-platforms:
+.. _tools-and-platforms:
 Tools and Platforms
 ===================
 This is the Kodo manual in this document we will try to introduce
