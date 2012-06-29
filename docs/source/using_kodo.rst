@@ -14,13 +14,22 @@ The functionality used from these libraries are **header-only** which
 means that you only have to specify the correct includes paths to use
 them. The libraries are:
 
-1. **Fifi** (http://github.com/steinwurf/fifi), this library contains
+1. **Fifi** this library contains
    finite field arithmetics used in ECC (Error Correcting Code) algorithms.
-2. **Boost** C++ libraries (http://boost.org), this library contains wide range
+
+   * http://github.com/steinwurf/fifi
+
+2. **Sak** (), this library contains a few
+   utility functions used in Kodo such as endian conversion.
+
+   * http://github.com/steinwurf/sak
+
+3. **Boost** C++ libraries, this library contains wide range
    of C++ utilities. We use only a subset of these functionalities such as
    smart-pointers.
-3. **Sak** (http://github.com/steinwurf/fifi), this library contains a few
-   utility functions used in Kodo such as endian conversion.
+
+   * http://boost.org
+
 
 Note, that in future version we plan to switch to C++11 which most likely will
 mean that the Boost dependency is no longer needed. You can help with this
