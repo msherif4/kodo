@@ -77,7 +77,7 @@ updated. In addition to this it is also possible to download the
 library as either zip or tar.gz archive. We will
 describe both approaches in the following:
 
-Clone the git repository (recommended)
+Recommended: Clone the git repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. Create a suitable directory for the projects (optional)
@@ -89,7 +89,7 @@ Clone the git repository (recommended)
    ::
      git clone git://github.com/steinwurf/kodo.git
 
-Download the source code as archives
+Alternative: Download the source code as archives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download the zip or tar.gz archive from the following location and

@@ -16,12 +16,6 @@ available. The library provide a multitude of build blocks and parameters that
 can be combined in order to create codes. To ensure ease of use several codes
 are predefined, and high level API's provided.
 
-.. _rsttest:
-Rst TESt
-========
-okidoki
-
-
 Documentation
 -------------
 
