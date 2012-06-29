@@ -112,6 +112,9 @@ A Waf project contains two types of files:
    project build information. You can think of it as a type
    of ``makefile`` written in Python.
 
+.. note:: See the ``waf`` build options by running ``python waf -h``
+          in your favorite command-line shell.
+
 
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------
@@ -147,7 +150,11 @@ Provided that you have the `Tools Needed`_ installed.
    ::
      python waf build
 
-4a. Windows: hej
+4. Run the produced executables depending on the host platform.
+   a. **Linux**: Run unit-tests from the Kodo directory by running
+      ``./build/linux/test/kodo_tests`` in your shell.
+   b. **Windows**: Run unit-tests from the Kodo directory by running
+      ``./build/win32/test/kodo_tests.exe`` in your command prompt.
 
 
 Running Tests
