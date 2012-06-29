@@ -108,6 +108,7 @@ a wide varity of use-case. You may read more about Waf at
 the project homepage: http://code.google.com/p/waf/
 
 A Waf project contains two types of files:
+
 1. The ``waf`` file this the actual build-system executable.
    This file is not meant to be edited.
 2. A number of ``wscript`` files, these files contain the
