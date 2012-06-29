@@ -126,7 +126,7 @@ Using ``g++`` the example code may be compiled as::
 Example using Waf (extended)
 ----------------------------
 
-.. attention: This example still need to be added to the sources
+.. warning: This example still need to be added to the sources
 
 If you wish to use Waf to build your application you may utilize its
 functionality to setup dependencies for Kodo. The ``waf`` build-script
@@ -144,7 +144,7 @@ use a plain Waf build-script see next section.
 Example using Waf (unmodified)
 ------------------------------
 
-.. attention: This example still need to be added to the sources
+.. warning: This example still need to be added to the sources
 
 If you wish to use a plain Waf version downloaded from
 http://code.google.com/p/waf/ the following example shows one
