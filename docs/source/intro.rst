@@ -18,9 +18,9 @@ building the Kodo libraries. You can check the status on the
 
 The buildbot currently builds for the following platforms:
 
- * Windows XP and Windows 7.
- * Various Linux distributions.
- * Mac OS Lion.
+* Windows XP and Windows 7.
+* Various Linux distributions.
+* Mac OS Lion.
 
 See the details on the `build slaves`_ page.
 
@@ -152,7 +152,7 @@ Provided that you have the `Tools Needed`_ installed.
 
 4. Run the produced executables depending on the host platform.
 
-   a. **Linux**: Run unit-tests from the Kodo directory by running
+   a. **Linux & Mac**: Run unit-tests from the Kodo directory by running
       ``./build/linux/test/kodo_tests`` in your shell.
 
    b. **Windows**: Run unit-tests from the Kodo directory by running
