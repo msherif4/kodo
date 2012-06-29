@@ -121,6 +121,11 @@ Using ``g++`` the example code may be compiled as::
 ::
   g++ main.cpp -o example -I ~/dev/steinwurf/kodo/ -I ~/dev/steinwurf/external-boost/boost -I ~/dev/steinwurf/fifi -I ~/dev/steinwurf/sak
 
+As you can see we simply have to provide the include path directives.
+You may run the application by typing:
+::
+  ./example
+
 
 Example using Waf (extended)
 ----------------------------
