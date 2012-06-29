@@ -14,17 +14,17 @@ The functionality used from these libraries are **header-only** which
 means that you only have to specify the correct includes paths to use
 them. The libraries are:
 
-1. **Fifi** this library contains
+1. **Fifi**: this library contains
    finite field arithmetics used in ECC (Error Correcting Code) algorithms.
 
    * http://github.com/steinwurf/fifi
 
-2. **Sak** (), this library contains a few
+2. **Sak**: this library contains a few
    utility functions used in Kodo such as endian conversion.
 
    * http://github.com/steinwurf/sak
 
-3. **Boost** C++ libraries, this library contains wide range
+3. **Boost** C++ libraries: this library contains wide range
    of C++ utilities. We use only a subset of these functionalities such as
    smart-pointers.
 
@@ -42,20 +42,24 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
+
   ::
     mkdir dev
     cd dev
 
 2. Clone and download the Fifi libraries by running:
+
   ::
     git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Sak libraries by running:
+
   ::
     git clone git://github.com/steinwurf/sak.git
 
 
 4. Clone and download the Boost C++ libraries by running:
+
   ::
     git clone git://github.com/steinwurf/external-boost.git
 
