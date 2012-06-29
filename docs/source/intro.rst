@@ -71,17 +71,14 @@ Cygwin but we have not tested this (let us know if you try :)).
 Download the sources
 --------------------
 There are several ways in which you may get the Kodo library and its
-dependencies. We recommend downloading the libraries using git, this
-will allow you to easily get new updates whenever the libraries are
+dependencies. We recommend downloading the library using git, this
+will allow you to easily get new updates whenever the library is
 updated. In addition to this it is also possible to download the
-libraries as either zip or tar.gz archives. We will
+library as either zip or tar.gz archive. We will
 describe both approaches in the following:
 
 Clone the git repository (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-All dependencies needed are hosted on github.com and may be found at
-http://github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
    ::
@@ -119,9 +116,9 @@ A Waf project contains two types of files:
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------
 
-If you are primarily interested in quickly trying some Kodo examples,
-we have tried to make that really easy. Provided that you have the
-`Tools Needed`_ installed.
+If you are primarily interested in quickly trying some Kodo examples
+or building the unit-tests, we have tried to make that really easy.
+Provided that you have the `Tools Needed`_ installed.
 
 .. note:: We recommend trying to build and run the unit-test, before
           using Kodo in your own project. However, if you want to skip
@@ -138,16 +135,19 @@ we have tried to make that really easy. Provided that you have the
 
    The ``waf configure`` ensures that all tools needed by Kodo are
    available and prepares to build Kodo.
-   Kodo relies on a number of auxiliary libraries by specifying the
-   ``--bundle=ALL`` command we instruct ``waf`` to automatically download
-   these. The ``--bundle-path`` informs ``waf`` about where the downloaded
-   libraries should be placed. You may omit the ``--bundle-path`` option
-   in that case ``waf`` will create a local directory in the Kodo folder
-   called ``bundle_dependencies`` and store the libraries there.
+   Kodo relies on a number of auxiliary libraries (see :ref:kodo-dependencies)
+   by specifying the ``--bundle=ALL`` command we instruct ``waf`` to
+   automatically download these. The ``--bundle-path`` informs ``waf``
+   about where the downloaded libraries should be placed. You may
+   omit the ``--bundle-path`` option in that case ``waf`` will create a
+   local directory in the Kodo folder called  ``bundle_dependencies`` and
+   store the libraries there.
 
-3. Invoke ``waf`` to build the unit-tests and examples
+3. Invoke ``waf`` to build the unit-tests and examples.
    ::
      python waf build
+
+4a. Windows: hej
 
 
 Running Tests
