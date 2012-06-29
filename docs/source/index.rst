@@ -31,6 +31,7 @@ Documentation
    :maxdepth: 2
 
    intro
+   using_kodo
    nc_glossary
 
    contribution/contribution

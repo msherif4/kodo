@@ -50,7 +50,7 @@ Simply get the dependencies using the following command:
 Download tools (Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **C++ compiler:**: You need a working C++ compiler we have tested using
+1. **C++ compiler:** You need a working C++ compiler we have tested using
    `Visual Studio Express 10`_ compiler which is free of charge.
    Newer versions should also be fine.
 2. **Python:** You need a working Python installation. Find the available
@@ -123,7 +123,7 @@ If you are primarily interested in quickly trying some Kodo examples
 or building the unit-tests, we have tried to make that really easy.
 Provided that you have the `Tools Needed`_ installed.
 
-.. note:: We recommend trying to build and run the unit-test, before
+.. note:: We recommend trying to build and run the unit-tests, before
           using Kodo in your own project. However, if you want to skip
           this step you may jump directly to :ref:include-kodo-in-project
 
