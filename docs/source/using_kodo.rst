@@ -73,8 +73,7 @@ which shows how to invoke the ``g++`` compiler. The following may also
 be found in the ``examples/sample_makefile`` folder in the Kodo sources.
 
 To try it out either use the code provide there or save the following
-code in a file called ``main.cpp``
-
+code in a file called ``main.cpp``.
 ::
   #include <fifi/fifi_utils.h>
   #include <kodo/rlnc/full_vector_codes.h>
