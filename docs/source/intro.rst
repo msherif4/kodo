@@ -156,7 +156,7 @@ Provided that you have the `Tools Needed`_ installed.
       ``./build/linux/test/kodo_tests`` in your shell.
 
    b. **Windows**: Run unit-tests from the Kodo directory by running
-      ``./build/win32/test/kodo_tests.exe`` in your command prompt.
+      ``build/win32/test/kodo_tests.exe`` in your command prompt.
 
 
 Running Tests
