@@ -42,26 +42,21 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
-
-  ::
-    mkdir dev
-    cd dev
+   ::
+     mkdir dev
+     cd dev
 
 2. Clone and download the Fifi libraries by running:
-
-  ::
-    git clone git://github.com/steinwurf/fifi.git
+   ::
+     git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Sak libraries by running:
-
-  ::
-    git clone git://github.com/steinwurf/sak.git
-
+   ::
+     git clone git://github.com/steinwurf/sak.git
 
 4. Clone and download the Boost C++ libraries by running:
-
-  ::
-    git clone git://github.com/steinwurf/external-boost.git
+   ::
+     git clone git://github.com/steinwurf/external-boost.git
 
   .. note:: Boost can be installed in many different ways.
   For example many Linux distributions support installing Boost
