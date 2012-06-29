@@ -288,3 +288,29 @@ that the layers are compatible.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+Using Kodo
+..........
+Kodo is a header only library which essentially means that all you have to do to use it in your applications is to set the right include path. However, Kodo itself also has a couple dependencies:
+
+1. Boost C++: Kodo depends on a number of headers from the Boost C++ libraries (this dependency will most likely be removed once we switch to C++11, however we need to ensure compiler support on all our target platforms first).
+2. Sak: The Sak library is a small header only C++ collection of functionality.
+3. Fifi: The Fifi C++ library provides Finite Field arithmetics needed by the encoding and decoding algorithms in Kodo.
+
+*Note, that all dependencies are available as separate repositories on the Steinwurf GitHub page.*
+
+
+
+
+

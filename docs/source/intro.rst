@@ -1,8 +1,7 @@
-.. _tools-and-platforms:
-Tools and Platforms
-===================
-This is the Kodo manual in this document we will try to introduce
-users to the Kodo library.
+.. _introduction:
+Introduction
+============
+In this document we will to introduce new users to the Kodo library.
 
 Platforms
 ---------
@@ -101,41 +100,54 @@ extract it to a desired location.
 
 * https://github.com/steinwurf/kodo/downloads
 
-see :ref:`rsttest` for more info
-:ref:`guide-connecting`
-
-test :ref:`tools-and-platforms_`
-
-
 Waf (build system)
 ------------------
-Once you have downloaded the Kodo source code to your computer you
-may want to build the Kodo examples and unit-test. The easiest way
-to do this is to use our Waf build scripts. Waf is a Python based
-build tool.
+We use the Waf build-system to build all Kodo examples and
+unit-tests. Waf is a Python based build-system and supports
+a wide varity of use-case. You may read more about Waf at
+the project homepage: http://code.google.com/p/waf/
+
+A Waf project contains two types of files:
+1. The ``waf`` file this the actual build-system executable.
+   This file is not meant to be edited.
+2. A number of ``wscript`` files, these files contain the
+   project build information. You can think of it as a type
+   of ``makefile`` written in Python.
 
 
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------
+
 If you are primarily interested in quickly trying some Kodo examples,
 we have tried to make that really easy. Provided that you have the
 `Tools Needed`_ installed.
 
+.. note:: We recommend trying to build and run the unit-test, before
+          using Kodo in your own project. However, if you want to skip
+          this step you may jump directly to :ref:include-kodo-in-project
 
 
-Compiling an Example
-....................
-
-1. Checkout this repository
-2. Build an example
-
+1. Navigate to the directory containing the Kodo sources:
    ::
+     cd dev/kodo/
 
-      cd kodo/examples/encode_decode_simple
-      python waf --bundle=ALL
-      python waf configure build
+2. Invoke ``waf`` to build the Kodo unit-tests and examples.
+   ::
+     python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
 
-3. Run the executable produced in the *build/platform/* directory
+   The ``waf configure`` ensures that all tools needed by Kodo are
+   available and prepares to build Kodo.
+   Kodo relies on a number of auxiliary libraries by specifying the
+   ``--bundle=ALL`` command we instruct ``waf`` to automatically download
+   these. The ``--bundle-path`` informs ``waf`` about where the downloaded
+   libraries should be placed. You may omit the ``--bundle-path`` option
+   in that case ``waf`` will create a local directory in the Kodo folder
+   called ``bundle_dependencies`` and store the libraries there.
+
+3. Invoke ``waf`` to build the unit-tests and examples
+   ::
+     python waf build
+
 
 Running Tests
 .............
@@ -152,19 +164,6 @@ If you wish to use several of our project you might want to specify a common pat
    ::
 
       ./waf configure --bundle=ALL --bundle-path=../../bundles
-
-
-
-Using Kodo
-..........
-Kodo is a header only library which essentially means that all you have to do to use it in your applications is to set the right include path. However, Kodo itself also has a couple dependencies:
-
-1. Boost C++: Kodo depends on a number of headers from the Boost C++ libraries (this dependency will most likely be removed once we switch to C++11, however we need to ensure compiler support on all our target platforms first).
-2. Sak: The Sak library is a small header only C++ collection of functionality.
-3. Fifi: The Fifi C++ library provides Finite Field arithmetics needed by the encoding and decoding algorithms in Kodo.
-
-*Note, that all dependencies are available as separate repositories on the Steinwurf GitHub page.*
-
 
 
 
