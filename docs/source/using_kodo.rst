@@ -72,10 +72,11 @@ Kodo without using any fancy build-system we provide a small makefile
 which shows how to invoke the ``g++`` compiler. The following may also
 be found in the ``examples/sample_makefile`` folder in the Kodo sources.
 
- To try it out either use the
-code provide or save the following code in a file called ``main.cpp``
+To try it out either use the code provide there or save the following
+code in a file called ``main.cpp``
+
 ::
-  #include#include <kodo/rlnc/full_vector_codes.h>
+  #include <kodo/rlnc/full_vector_codes.h>
 
   int main()
   {
