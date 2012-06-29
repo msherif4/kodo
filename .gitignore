@@ -3,3 +3,8 @@
 build
 bundle_dependencies
 .waf*
+*.s
+*~
+\#*#
+*.out
+*.pyc
