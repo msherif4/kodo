@@ -76,6 +76,7 @@ To try it out either use the code provide there or save the following
 code in a file called ``main.cpp``
 
 ::
+  #include <fifi/fifi_utils.h>
   #include <kodo/rlnc/full_vector_codes.h>
 
   int main()
@@ -119,17 +120,14 @@ code in a file called ``main.cpp``
 
 Using ``g++`` the example code may be compiled as::
 ::
-  g++ main.cpp -o benchmark --std=c++0x -I../path_to_gauge/ -L../path_to_libguage -lgauge -L../path_to_libboostxyz -lboost_chrono -lboost_program_options -lboost_system -lrt
-
-
-This example is available here:
-
-*
-
+  g++ main.cpp -o example -I ~/dev/steinwurf/kodo/ -I ~/dev/steinwurf/external-boost/boost -I ~/dev/steinwurf/fifi -I ~/dev/steinwurf/sak
 
 
 Example using Waf (extended)
 ----------------------------
+
+.. attention: This example still need to be added to the sources
+
 If you wish to use Waf to build your application you may utilize its
 functionality to setup dependencies for Kodo. The ``waf`` build-script
 found in the Kodo source package has been extended with a number of
@@ -147,6 +145,9 @@ use a plain Waf build-script see next section.
 
 Example using Waf (unmodified)
 ------------------------------
+
+.. attention: This example still need to be added to the sources
+
 If you wish to use a plain Waf version downloaded from
 http://code.google.com/p/waf/ the following example shows one
 possible way of using it to build an application with Kodo.
