@@ -137,8 +137,6 @@ tools to make managing dependencies easier. The tools added to the
 If you wish to use the same approach you can find an example building
 an application using Kodo and the modified ``waf`` executable here:
 
-*
-
 If are already using a unmodified version of Waf or would like to
 use a plain Waf build-script see next section.
 
