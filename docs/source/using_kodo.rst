@@ -59,10 +59,10 @@ github.com/steinwurf.
      git clone git://github.com/steinwurf/external-boost.git
 
   .. note:: Boost can be installed in many different ways.
-  For example many Linux distributions support installing Boost
-  via the package manager. Alternatively Boost also provides
-  its own version control repositories, if you
-  wish, you may also use download Boost using those repositories.
+            For example many Linux distributions support installing Boost
+            via the package manager. Alternatively Boost also provides
+            its own version control repositories, if you
+            wish, you may also use download Boost using those repositories.
 
 
 Example using makefile / command-line
