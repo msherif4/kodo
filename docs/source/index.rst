@@ -26,6 +26,7 @@ Documentation
 
    intro
    using_kodo
+   howto
    nc_glossary
 
    contribution/contribution
