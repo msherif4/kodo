@@ -246,7 +246,8 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     kodo::set_symbols(kodo::storage(data_in), encoder);
 
     // Set the encoder non-systematic
-    encoder->systematic_off();
+    if(kodo::is_systematic_encoder(encoder))
+        kodo::set_systematic_off(encoder);
 
     while( !decoder_two->is_complete() )
     {

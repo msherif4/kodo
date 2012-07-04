@@ -6,6 +6,8 @@
 #ifndef KODO_LINEAR_BLOCK_DECODER_H
 #define KODO_LINEAR_BLOCK_DECODER_H
 
+#include <fifi/is_binary.h>
+
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>

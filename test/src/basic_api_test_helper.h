@@ -7,7 +7,8 @@
 #define KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER
 
 #include <gtest/gtest.h>
-
+#include <kodo/generators/random_uniform.h>
+#include <kodo/systematic_encoder.h>
 
 template<class Encoder, class Decoder>
 inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
@@ -52,7 +53,8 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     kodo::set_symbols(kodo::storage(data_in), encoder);
 
     // Set the encoder non-systematic
-    encoder->systematic_off();
+    if(kodo::is_systematic_encoder(encoder))
+        kodo::set_systematic_off(encoder);
 
     while( !decoder->is_complete() )
     {
@@ -90,7 +92,8 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 
     kodo::set_symbols(kodo::storage(data_in), encoder);
 
-    encoder->systematic_off();
+    if(kodo::is_systematic_encoder(encoder))
+        kodo::set_systematic_off(encoder);
 
     while( !decoder->is_complete() )
     {
@@ -155,7 +158,8 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         kodo::set_symbols(kodo::storage(data_in), encoder);
 
         // Set the encoder non-systematic
-        encoder->systematic_off();
+        if(kodo::is_systematic_encoder(encoder))
+            kodo::set_systematic_off(encoder);
 
         while( !decoder->is_complete() )
         {
@@ -199,7 +203,8 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     kodo::set_symbols(kodo::storage(data_in), encoder);
 
     // Ensure encoder systematic
-    encoder->systematic_on();
+    EXPECT_TRUE(kodo::is_systematic_encoder(encoder));
+    kodo::set_systematic_on(encoder);
 
     uint32_t pkg_count = 0;
 
