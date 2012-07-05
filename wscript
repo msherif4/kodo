@@ -46,6 +46,12 @@ def options(opt):
             git_repository = 'git://github.com/steinwurf/fifi.git',
             major_version = 2))
 
+    bundle.add_dependency(opt,
+        resolve.ResolveGitFollowMaster(
+            name = 'gauge',
+            git_repository = 'git://github.com/steinwurf/cxx-gauge.git'))
+
+
 
 def configure(conf):
 
@@ -58,6 +64,7 @@ def configure(conf):
         recurse_helper(conf, 'gtest')
         recurse_helper(conf, 'sak')
         recurse_helper(conf, 'fifi')
+        recurse_helper(conf, 'gauge')
 
 def build(bld):
 
@@ -69,6 +76,7 @@ def build(bld):
         recurse_helper(bld, 'gtest')
         recurse_helper(bld, 'sak')
         recurse_helper(bld, 'fifi')
+        recurse_helper(bld, 'gauge')
 
         # Only build test when executed from the
         # top-level wscript i.e. not when included as a dependency
@@ -78,6 +86,7 @@ def build(bld):
         bld.recurse('examples/encode_decode_simple')
 
         bld.recurse('benchmark/throughput')
+        bld.recurse('benchmark/count_operations')
 
     # Export own includes
     bld(includes = '.',
