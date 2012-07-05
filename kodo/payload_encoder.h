@@ -61,7 +61,11 @@ namespace kodo
                 uint8_t *symbol_data = payload;
                 uint8_t *symbol_id = payload + SuperCoder::symbol_size();
 
-                return SuperCoder::encode(symbol_data, symbol_id);
+                // The non-payload layers only return the number of bytes
+                // use for the symbol_id here we return _all_ the bytes
+                // used.
+                return SuperCoder::encode(symbol_data, symbol_id)
+                    + SuperCoder::symbol_size();
             }
 
         /// @return the required payload buffer size in bytes
