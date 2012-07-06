@@ -7,6 +7,7 @@
 #define KODO_LINEAR_BLOCK_ENCODER_H
 
 #include <stdint.h>
+#include <fifi/is_binary.h>
 
 #include "linear_block_vector.h"
 

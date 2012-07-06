@@ -69,19 +69,6 @@ struct test_block
 
         }
 
-    template<class E>
-    typename boost::enable_if_c<kodo::is_systematic_encoder<E>::value>::type
-    systematic_off()
-        {
-            m_encoder->systematic_off();
-        }
-
-    template<class E>
-    typename boost::enable_if_c<!kodo::is_systematic_encoder<E>::value>::type
-    systematic_off()
-        {
-            // Do nothing it is not a systematic encoder
-        }
 
     /// Run the encoder
     /// @return the number of symbols encoded
@@ -89,7 +76,8 @@ struct test_block
         {
             m_encoder->initialize(m_setup.m_symbols, m_setup.m_symbol_size);
 
-            systematic_off<Encoder>();
+            if(kodo::is_systematic_encoder(m_encoder))
+                kodo::set_systematic_off(m_encoder);
 
             kodo::set_symbols(kodo::storage(m_data_in), m_encoder);
 

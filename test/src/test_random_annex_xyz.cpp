@@ -134,7 +134,8 @@ void invoke_random_annex_partial(uint32_t max_symbols,
         typename random_annex_decoder::pointer_type decoder =
             obj_decoder.build(i);
 
-        encoder->systematic_off();
+        if(kodo::is_systematic_encoder(encoder))
+            kodo::set_systematic_off(encoder);
 
         EXPECT_TRUE(encoder->block_size() >= encoder->bytes_used());
         EXPECT_TRUE(decoder->block_size() >= decoder->bytes_used());

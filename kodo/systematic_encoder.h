@@ -11,6 +11,7 @@
 #include <boost/type_traits/is_base_of.hpp>
 
 #include "systematic_base_coder.h"
+#include "systematic_operations.h"
 
 namespace kodo
 {
@@ -34,9 +35,6 @@ namespace kodo
         /// The flag type
         typedef typename systematic_base_coder::flag_type
             flag_type;
-
-        /// Tag for this layer
-        struct is_systematic_encoder_tag {};
 
     public:
 
@@ -98,19 +96,19 @@ namespace kodo
             }
 
         /// @return, true if the encoder is in systematic mode
-        bool is_systematic() const
+        bool is_systematic_on() const
             {
                 return m_systematic;
             }
 
         /// Set the encoder in systematic mode
-        void systematic_on()
+        void set_systematic_on()
             {
                 m_systematic = true;
             }
 
         /// Turns off systematic mode
-        void systematic_off()
+        void set_systematic_off()
             {
                 m_systematic = false;
             }
@@ -173,31 +171,62 @@ namespace kodo
 
     };
 
-
-    template<typename T>
-    class is_systematic_encoder
+    /// Overload for the generic is_systematic_encoder_dispatch(...) function
+    ///
+    /// \ingroup g_systematic_coding
+    /// \ingroup g_generic_api
+    ///
+    /// @param e the encoder
+    /// @return true since this is an systematic encoder
+    template<class SuperCoder>
+    inline bool
+    is_systematic_encoder_dipatch(const systematic_encoder<SuperCoder> *)
     {
+        return true;
+    }
 
-        typedef char true_type;
+    /// Overload for the generic is_systematic_on_dispatch(...) function
+    ///
+    /// \ingroup g_systematic_coding
+    /// \ingroup g_generic_api
+    ///
+    /// @param e the encoder
+    /// @return true if the encoder currently produces systematic symbols
+    template<class SuperCoder>
+    inline bool
+    is_systematic_on_dispatch(systematic_encoder<SuperCoder> *e)
+    {
+        assert(e != 0);
+        return e->is_systematic_on();
+    }
 
-        struct false_type{ true_type _[2]; };
+    /// Overload for the generic set_systematic_off_dispatch(...) function
+    ///
+    /// \ingroup g_systematic_coding
+    /// \ingroup g_generic_api
+    ///
+    /// @param e the encoder
+    template<class SuperCoder>
+    inline void
+    set_systematic_off_dispatch(systematic_encoder<SuperCoder> *e)
+    {
+        assert(e != 0);
+        e->set_systematic_off();
+    }
 
-        typedef char (&yes)[1];
-        typedef char (&no)[2];
-
-
-        template <typename U>
-        static yes has_systematic_tag(typename U::is_systematic_encoder_tag *);
-
-        template <typename U>
-        static no has_systematic_tag(...);
-
-    public:
-
-        enum { value = (sizeof(has_systematic_tag<T>(0)) == sizeof(yes)) };
-
-    };
-
+    /// Overload for the generic set_systematic_on_dispatch(...) function
+    ///
+    /// \ingroup g_systematic_coding
+    /// \ingroup g_generic_api
+    ///
+    /// @param e the encoder
+    template<class SuperCoder>
+    inline void
+    set_systematic_on_dispatch(systematic_encoder<SuperCoder> *e)
+    {
+        assert(e != 0);
+        e->set_systematic_on();
+    }
 
 }
 
