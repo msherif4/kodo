@@ -46,7 +46,8 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
         typename Encoder::pointer encoder = obj_encoder.build(i);
         typename Decoder::pointer decoder = obj_decoder.build(i);
 
-        encoder->systematic_off();
+        if(kodo::is_systematic_encoder(encoder))
+            kodo::set_systematic_off(encoder);
 
         // Since the storage we encode is a multiple of the
         // block size we always expect that the encoder is
@@ -117,7 +118,8 @@ void invoke_object_partial(uint32_t max_symbols,
         typename Encoder::pointer encoder = obj_encoder.build(i);
         typename Decoder::pointer decoder = obj_decoder.build(i);
 
-        encoder->systematic_off();
+        if(kodo::is_systematic_encoder(encoder))
+            kodo::set_systematic_off(encoder);
 
         EXPECT_TRUE(encoder->block_size() >= encoder->bytes_used());
         EXPECT_TRUE(decoder->block_size() >= decoder->bytes_used());
