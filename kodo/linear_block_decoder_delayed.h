@@ -71,7 +71,7 @@ namespace kodo
                 {
                     // Stores the symbol and updates the corresponding
                     // encoding vector
-                    store_uncoded_symbol(symbol_index, symbol);
+                    SuperCoder::store_uncoded_symbol(symbol_index, symbol);
 
                     // We have increased the rank
                     ++m_rank;
@@ -122,7 +122,7 @@ namespace kodo
                 if(!fifi::is_binary<field_type>::value)
                 {
                     // Normalize symbol and vector
-                    normalize(*pivot_id, vector_data, symbol_data);
+                    SuperCoder::normalize(*pivot_id, vector_data, symbol_data);
                 }
 
                 // Now save the received symbol
