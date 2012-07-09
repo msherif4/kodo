@@ -11,7 +11,7 @@
 
 namespace kodo
 {
-    
+
     /// Basic layer performing common finite field operation
     template<template <class> class FieldImpl, class SuperCoder>
     class finite_field_math : public SuperCoder
@@ -23,7 +23,7 @@ namespace kodo
 
         /// The value type
         typedef typename field_type::value_type value_type;
-        
+
         /// The field implementation selector
         typedef typename FieldImpl<field_type>::type field_impl;
 
@@ -55,21 +55,21 @@ namespace kodo
                 {
                     pointer coder = SuperCoder::factory::build(symbols, symbol_size);
                     coder->m_field = m_field;
-                    
+
                     return coder;
                 }
 
         protected:
 
             /// The field implementation
-            field_pointer m_field;            
+            field_pointer m_field;
         };
-               
+
     public:
 
         /// Multiplies the symbol with the coefficient
         ///     symbol_dest = symbol_dest * coefficient
-        /// 
+        ///
         /// @param symbol_dest the destination buffer for the source symbol
         /// @param coefficient the multiplicative constant
         /// @param symbol_length the length of the symbol in value_type elements
@@ -83,17 +83,17 @@ namespace kodo
                 fifi::multiply_constant(*m_field, coefficient,
                                         symbol_dest, symbol_length);
             }
-        
+
         /// Multiplies the source symbol with the coefficient and adds it to the
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest + symbol_src * coefficient
-        /// 
+        ///
         /// @param symbol_dest the destination buffer for the source symbol
-        /// @param symbol_src the source buffer for the 
+        /// @param symbol_src the source buffer for the
         /// @param coefficient the multiplicative constant
         /// @param symbol_length the length of the symbol in value_type elements
         void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
-                          value_type coefficient, uint32_t symbol_length) const
+                          value_type coefficient, uint32_t symbol_length)
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
@@ -111,7 +111,7 @@ namespace kodo
         /// @param symbol_src the source symbol
         /// @param symbol_length the length of the symbol in value_type elements
         void add(value_type *symbol_dest, const value_type *symbol_src,
-                 uint32_t symbol_length) const
+                 uint32_t symbol_length)
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
@@ -124,13 +124,13 @@ namespace kodo
         /// Multiplies the source symbol with the coefficient and subtracts it from the
         /// destination symbol i.e.:
         ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
-        /// 
+        ///
         /// @param symbol_dest the destination buffer for the source symbol
-        /// @param symbol_src the source buffer for the 
+        /// @param symbol_src the source buffer for the
         /// @param coefficient the multiplicative constant
         /// @param symbol_length the length of the symbol in value_type elements
         void multiply_subtract(value_type *symbol_dest, const value_type *symbol_src,
-                               value_type coefficient, uint32_t symbol_length) const
+                               value_type coefficient, uint32_t symbol_length)
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
@@ -143,12 +143,12 @@ namespace kodo
 
         /// Subtracts the source symbol from the destination symbol i.e.:
         ///     symbol_dest = symbol_dest - symbol_src
-        /// 
+        ///
         /// @param symbol_dest the destination buffer holding the resulting symbol
         /// @param symbol_src the source symbol
         /// @param symbol_length the length of the symbol in value_type elements
         void subtract(value_type *symbol_dest, const value_type *symbol_src,
-                      uint32_t symbol_length) const
+                      uint32_t symbol_length)
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
@@ -157,21 +157,21 @@ namespace kodo
 
                 fifi::subtract(*m_field, symbol_dest, symbol_src, symbol_length);
             }
-        
-        /// Inverts the field element 
+
+        /// Inverts the field element
         /// @param value the finite field vale to be inverted.
-        value_type invert(value_type value) const
+        value_type invert(value_type value)
             {
                 assert(m_field);
-                return m_field->invert( value ); 
+                return m_field->invert( value );
             }
 
     private:
 
         /// The selected field
         field_pointer m_field;
-    };    
-}        
+    };
+}
 
 #endif
 
