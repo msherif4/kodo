@@ -4,6 +4,7 @@
 // http://www.steinwurf.com/licensing
 
 #include <ctime>
+#include <stack>
 
 #include <kodo/rlnc/full_vector_codes.h>
 
@@ -31,7 +32,7 @@ std::vector<std::string> setup_operations()
         {
             "dest[i] = dest[i] + src[i]",
             "dest[i] = dest[i] - src[i]",
-            "dest[i] = dest[i] * src[i]",
+            "dest[i] = dest[i] * constant",
             "dest[i] = dest[i] + (constant * src[i])",
             "dest[i] = dest[i] - (constant * src[i])",
             "invert(value)"
@@ -66,7 +67,7 @@ namespace kodo
               m_invert(0)
             { }
 
-        /// Counter for dest[i] = dest[i] * src[i]
+        /// Counter for dest[i] = dest[i] * constant
         uint32_t m_multiply;
 
         /// Counter for dest[i] = dest[i] + (constant * src[i])
@@ -204,6 +205,148 @@ namespace kodo
 
 }
 
+struct config_less_than
+    : public std::binary_function<gauge::config_set, gauge::config_set, bool>
+{
+    bool operator()(const gauge::config_set &n1, const gauge::config_set &n2) const
+    {
+        if(n1.get_value<uint32_t>("symbols") < n2.get_value<uint32_t>("symbols"))
+            return true;
+        if(n1.get_value<uint32_t>("symbol_size") < n2.get_value<uint32_t>("symbol_size"))
+            return true;
+        if(n1.get_value<std::string>("type") < n2.get_value<std::string>("type"))
+            return true;
+
+        std::cout << "compare " << n1 << " with " << n2 << std::endl;
+
+        return false;
+    }
+};
+
+/// When we encode / decode data we actually record many counters although
+/// the benchmark only asks for one-at-a-time to avoid running the same
+/// the same configuration for the encoder / decoder again and again for
+/// the different operations this small class "remembers" the results.
+/// So that if the configuration did not change we may simply return the
+/// unread results
+class result_memory
+{
+public:
+    typedef std::stack<double> final_result;
+    typedef std::map<std::string, final_result> operation_result;
+    typedef std::map<gauge::config_set, operation_result, config_less_than> result_map;
+
+    void store_result(const gauge::config_set &config,
+                      const std::string &operation,
+                      double result)
+        {
+            std::cout << "STORE " << config << " as " << operation << std::endl;
+
+            auto it = m_results.find(config);
+
+            if(it == m_results.end())
+            {
+                m_results.insert(std::make_pair(config, operation_result()));
+            }
+
+            auto it2 = m_results[config].find(operation);
+
+            if(it2 == m_results[config].end())
+            {
+                m_results[config].insert(std::make_pair(operation, final_result()));
+            }
+
+            operation_result &o = m_results[config];
+
+                std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+                            operation_result &o1 = m_results[config];
+
+                std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+                            operation_result &o2 = m_results[config];
+
+                std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+                            operation_result &o3 = m_results[config];
+
+                std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+
+            std::cout << "OKOKOKOK m_results.size() " << m_results.size() << std::endl;
+
+            final_result &r = m_results[config][operation];
+
+                        std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+            final_result &r3 = m_results[config][operation];
+
+
+                        std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+            final_result &r4 = m_results[config][operation];
+
+// //            r.reserve(100);
+
+            std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+           final_result *p1 = &r;
+
+
+
+//             //uint32_t size_before = m_results[config][operation].size();
+//             std::cout << r.size() << std::endl;
+             r.push(result);
+//             std::cout << r.size() << std::endl;
+             final_result &r2 = m_results[config][operation];
+             std::cout << r2.size() << std::endl;
+
+             std::cout << "m_results.size() " << m_results.size() << std::endl;
+
+             final_result *p2 = &r2;
+
+             std::cout << (void*)p1 << "       " << (void*)p2 << std::endl;
+
+//             //std::cout << r.size() << std::endl;
+//             //uint32_t size_after = m_results[config][operation].size();
+
+//             //std::cout << "Before " << size_before << " size after " << size_after << std::endl;
+
+
+             assert(m_results[config][operation].size() > 0);
+        }
+
+    bool has_result(const gauge::config_set &config)
+        {
+            std::cout << "CHECK " << config << std::endl;
+            std::string operation = config.get_value<std::string>("operation");
+
+            const final_result &r = m_results[config][operation];
+
+            std::cout << "CHECK " << r.size() << std::endl;
+
+            return r.size() > 0;//m_results[config][operation].size() > 0;
+        }
+
+    double measurement(const gauge::config_set &config)
+        {
+            assert(has_result(config));
+            std::cout << "FETCH " << config << std::endl;
+            std::string operation = config.get_value<std::string>("operation");
+
+            final_result &r = m_results[config][operation];
+
+            double result = r.top();//m_results[config][operation].top();
+            r.pop();
+            //m_results[config][operation].pop();
+
+            return result;
+        }
+
+    result_map m_results;
+
+};
+
 template<class Encoder, class Decoder>
 class operations_benchmark : public gauge::benchmark
 {
@@ -261,12 +404,16 @@ public:
         {
             gauge::config_set cs = get_current_configuration();
 
+            // Should never be run if we already have the result since
+            // it is called from the RUN macro
+            assert(!m_result_memory.has_result(cs));
+
             std::string type = cs.get_value<std::string>("type");
 
             if(type == "encoder")
             {
                 m_old_counter = m_encoder->get_operations_counter();
-            }
+                }
             else if(type == "decoder")
             {
                 m_old_counter = m_decoder->get_operations_counter();
@@ -285,6 +432,10 @@ public:
         {
             gauge::config_set cs = get_current_configuration();
 
+            // Should never be run if we already have the result since
+            // it is called from the RUN macro
+            assert(!m_result_memory.has_result(cs));
+
             std::string type = cs.get_value<std::string>("type");
 
             if(type == "encoder")
@@ -299,13 +450,15 @@ public:
             {
                 assert(0);
             }
-
         }
 
     /// Prepares the measurement for every run
     void setup()
         {
             gauge::config_set cs = get_current_configuration();
+
+            if(m_result_memory.has_result(cs))
+                return;
 
             uint32_t symbols = cs.get_value<uint32_t>("symbols");
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
@@ -326,11 +479,13 @@ public:
         {
             gauge::config_set cs = get_current_configuration();
 
-            std::string operation = cs.get_value<std::string>("operation");
+            if(m_result_memory.has_result(cs))
+            {
+                return m_result_memory.measurement(cs);
+            }
+
             std::string type = cs.get_value<std::string>("type");
 
-            uint32_t old_count = 0;
-            uint32_t new_count = 0;
             uint32_t symbols_coded = 0;
 
             if(type == "encoder")
@@ -346,56 +501,66 @@ public:
                 assert(0);
             }
 
+            uint32_t diff = 0;
+            double result = 0;
 
-            if(operation == "dest[i] = dest[i] + src[i]")
-            {
-                old_count = m_old_counter.m_add;
-                new_count = m_new_counter.m_add;
-            }
-            else if(operation == "dest[i] = dest[i] - src[i]")
-            {
-                old_count = m_old_counter.m_subtract;
-                new_count = m_new_counter.m_subtract;
-            }
-            else if(operation == "dest[i] = dest[i] * src[i]")
-            {
-                old_count = m_old_counter.m_multiply;
-                new_count = m_new_counter.m_multiply;
-            }
-            else if(operation == "dest[i] = dest[i] + (constant * src[i])")
-            {
-                old_count = m_old_counter.m_multiply_add;
-                new_count = m_new_counter.m_multiply_add;
-            }
-            else if(operation == "dest[i] = dest[i] - (constant * src[i])")
-            {
-                old_count = m_old_counter.m_multiply_subtract;
-                new_count = m_new_counter.m_multiply_subtract;
-            }
-            else if(operation == "invert(value)")
-            {
-                old_count = m_old_counter.m_invert;
-                new_count = m_new_counter.m_invert;
-            }
-            else
-            {
-                assert(0);
-            }
+            // Store all results in the result memory
+            assert(m_new_counter.m_add >= m_old_counter.m_add);
+            diff = m_new_counter.m_add - m_old_counter.m_add;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "dest[i] = dest[i] + src[i]", result);
 
-            assert(new_count >= old_count);
-            uint32_t diff = new_count - old_count;
-            double result = double(diff) / double(symbols_coded);
-            return result;
+            assert(m_new_counter.m_subtract >= m_old_counter.m_subtract);
+            diff = m_new_counter.m_subtract - m_old_counter.m_subtract;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "dest[i] = dest[i] - src[i]", result);
+
+            assert(m_new_counter.m_multiply >= m_old_counter.m_multiply);
+            diff = m_new_counter.m_multiply - m_old_counter.m_multiply;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "dest[i] = dest[i] * constant", result);
+
+            assert(m_new_counter.m_multiply_add >= m_old_counter.m_multiply_add);
+            diff = m_new_counter.m_multiply_add - m_old_counter.m_multiply_add;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "dest[i] = dest[i] + (constant * src[i])", result);
+
+            assert(m_new_counter.m_multiply_subtract >= m_old_counter.m_multiply_subtract);
+            diff = m_new_counter.m_multiply_subtract - m_old_counter.m_multiply_subtract;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "dest[i] = dest[i] - (constant * src[i])", result);
+
+            assert(m_new_counter.m_invert >= m_old_counter.m_invert);
+            diff = m_new_counter.m_invert - m_old_counter.m_invert;
+            result = double(diff) / double(symbols_coded);
+            m_result_memory.store_result(cs, "invert(value)", result);
+
+            if(!m_result_memory.has_result(cs))
+                std::cout << cs << std::endl;
+            // We now _should_ have a result
+            assert(m_result_memory.has_result(cs));
+
+            return m_result_memory.measurement(cs);
+
         }
 
     /// Where the actual measurement is performed
     void run()
         {
 
+            // Check with the result memory whether we already have
+            // results for this configuration
+            gauge::config_set cs = get_current_configuration();
+
+            if(m_result_memory.has_result(cs))
+                return;
+
             // We switch any systematic operations off so we code
             // symbols from the beginning
             if(kodo::is_systematic_encoder(m_encoder))
                 kodo::set_systematic_off(m_encoder);
+
+            std::cout << "RUUUUUUUUUUUUUUUN" << std::endl;
 
             RUN{
 
@@ -452,6 +617,9 @@ protected:
 
     /// The counter after the measurement
     kodo::operations_counter m_new_counter;
+
+    /// Result memory
+    result_memory m_result_memory;
 };
 
 typedef operations_benchmark<
