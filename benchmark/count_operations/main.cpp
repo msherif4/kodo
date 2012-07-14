@@ -21,7 +21,7 @@ std::vector<uint32_t> setup_symbols()
 
 std::vector<uint32_t> setup_symbol_size()
 {
-    std::vector<uint32_t> symbol_size = {100, 1000, 2000};
+    std::vector<uint32_t> symbol_size = {1400};
     return symbol_size;
 }
 
@@ -85,6 +85,50 @@ namespace kodo
         /// Counter for invert(value)
         uint32_t m_invert;
     };
+
+    operations_counter operator-(const operations_counter &a,
+                                 const operations_counter &b)
+    {
+        operations_counter res;
+        res.m_multiply = a.m_multiply - b.m_multiply;
+        res.m_multiply_add = a.m_multiply_add - b.m_multiply_add;
+        res.m_add = a.m_add - b.m_add;
+        res.m_multiply_subtract = a.m_multiply_subtract - b.m_multiply_subtract;
+        res.m_subtract = a.m_subtract - b.m_subtract;
+        res.m_invert = a.m_invert - b.m_invert;
+        return res;
+    }
+
+    bool operator>=(const operations_counter &a,
+                    const operations_counter &b)
+    {
+        if(a.m_multiply >= b.m_multiply)
+            return true;
+        if(a.m_multiply < b.m_multiply)
+            return false;
+        if(a.m_multiply_add >= b.m_multiply_add)
+            return true;
+        if(a.m_multiply_add < b.m_multiply_add)
+            return false;
+        if(a.m_add >= b.m_add)
+            return true;
+        if(a.m_add < b.m_add)
+            return false;
+        if(a.m_multiply_subtract >= b.m_multiply_subtract)
+            return true;
+        if(a.m_multiply_subtract < b.m_multiply_subtract)
+            return false;
+        if(a.m_subtract >= b.m_subtract)
+            return true;
+        if(a.m_subtract < b.m_subtract)
+            return false;
+        if(a.m_invert >= b.m_invert)
+            return true;
+        if(a.m_invert < b.m_invert)
+            return false;
+
+        return false;
+    }
 
     /// This layer "intercepts" all calls to the finite_field_math
     /// layer counting the different operations
@@ -205,6 +249,7 @@ namespace kodo
 
 }
 
+
 struct config_less_than
     : public std::binary_function<gauge::config_set, gauge::config_set, bool>
 {
@@ -212,12 +257,20 @@ struct config_less_than
     {
         if(n1.get_value<uint32_t>("symbols") < n2.get_value<uint32_t>("symbols"))
             return true;
+        if(n1.get_value<uint32_t>("symbols") > n2.get_value<uint32_t>("symbols"))
+            return false;
         if(n1.get_value<uint32_t>("symbol_size") < n2.get_value<uint32_t>("symbol_size"))
             return true;
+        if(n1.get_value<uint32_t>("symbol_size") > n2.get_value<uint32_t>("symbol_size"))
+            return false;
+        if(n1.get_value<std::string>("operation") < n2.get_value<std::string>("operation"))
+            return true;
+        if(n1.get_value<std::string>("operation") > n2.get_value<std::string>("operation"))
+            return false;
         if(n1.get_value<std::string>("type") < n2.get_value<std::string>("type"))
             return true;
-
-        std::cout << "compare " << n1 << " with " << n2 << std::endl;
+        if(n1.get_value<std::string>("type") > n2.get_value<std::string>("type"))
+            return false;
 
         return false;
     }
@@ -232,113 +285,44 @@ struct config_less_than
 class result_memory
 {
 public:
-    typedef std::stack<double> final_result;
-    typedef std::map<std::string, final_result> operation_result;
-    typedef std::map<gauge::config_set, operation_result, config_less_than> result_map;
+    typedef std::stack<double> result_stack;
+    typedef std::map<gauge::config_set, result_stack, config_less_than> result_map;
 
-    void store_result(const gauge::config_set &config,
+    void store_result(uint32_t symbols,
+                      uint32_t symbol_size,
                       const std::string &operation,
+                      const std::string &type,
                       double result)
         {
-            std::cout << "STORE " << config << " as " << operation << std::endl;
+            // Create the config
+            gauge::config_set cs;
+            cs.set_value<uint32_t>("symbols", symbols);
+            cs.set_value<uint32_t>("symbol_size", symbol_size);
+            cs.set_value<std::string>("operation", operation);
+            cs.set_value<std::string>("type", type);
 
+            m_results[cs].push(result);
+            assert(m_results[cs].size() > 0);
+        }
+
+    bool has_result(const gauge::config_set &config) const
+        {
             auto it = m_results.find(config);
 
             if(it == m_results.end())
-            {
-                m_results.insert(std::make_pair(config, operation_result()));
-            }
-
-            auto it2 = m_results[config].find(operation);
-
-            if(it2 == m_results[config].end())
-            {
-                m_results[config].insert(std::make_pair(operation, final_result()));
-            }
-
-            operation_result &o = m_results[config];
-
-                std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-                            operation_result &o1 = m_results[config];
-
-                std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-                            operation_result &o2 = m_results[config];
-
-                std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-                            operation_result &o3 = m_results[config];
-
-                std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-
-            std::cout << "OKOKOKOK m_results.size() " << m_results.size() << std::endl;
-
-            final_result &r = m_results[config][operation];
-
-                        std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-            final_result &r3 = m_results[config][operation];
-
-
-                        std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-            final_result &r4 = m_results[config][operation];
-
-// //            r.reserve(100);
-
-            std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-           final_result *p1 = &r;
-
-
-
-//             //uint32_t size_before = m_results[config][operation].size();
-//             std::cout << r.size() << std::endl;
-             r.push(result);
-//             std::cout << r.size() << std::endl;
-             final_result &r2 = m_results[config][operation];
-             std::cout << r2.size() << std::endl;
-
-             std::cout << "m_results.size() " << m_results.size() << std::endl;
-
-             final_result *p2 = &r2;
-
-             std::cout << (void*)p1 << "       " << (void*)p2 << std::endl;
-
-//             //std::cout << r.size() << std::endl;
-//             //uint32_t size_after = m_results[config][operation].size();
-
-//             //std::cout << "Before " << size_before << " size after " << size_after << std::endl;
-
-
-             assert(m_results[config][operation].size() > 0);
-        }
-
-    bool has_result(const gauge::config_set &config)
-        {
-            std::cout << "CHECK " << config << std::endl;
-            std::string operation = config.get_value<std::string>("operation");
-
-            const final_result &r = m_results[config][operation];
-
-            std::cout << "CHECK " << r.size() << std::endl;
-
-            return r.size() > 0;//m_results[config][operation].size() > 0;
+                return false;
+            else
+                return it->second.size() > 0;
         }
 
     double measurement(const gauge::config_set &config)
         {
             assert(has_result(config));
-            std::cout << "FETCH " << config << std::endl;
-            std::string operation = config.get_value<std::string>("operation");
 
-            final_result &r = m_results[config][operation];
+            result_stack &r = m_results[config];
 
-            double result = r.top();//m_results[config][operation].top();
+            double result = r.top();
             r.pop();
-            //m_results[config][operation].pop();
 
             return result;
         }
@@ -391,7 +375,7 @@ public:
                             cs.set_value<uint32_t>("symbol_size", symbol_size[j]);
                             cs.set_value<std::string>("operation", operations[k]);
                             cs.set_value<std::string>("type", types[u]);
-//                        cs.set_value<uint32_t>("element_size", sizeof(value_type));
+
                             add_configuration(cs);
                         }
                     }
@@ -408,23 +392,11 @@ public:
             // it is called from the RUN macro
             assert(!m_result_memory.has_result(cs));
 
-            std::string type = cs.get_value<std::string>("type");
+            m_old_encoder_counter = m_encoder->get_operations_counter();
+            m_old_decoder_counter = m_decoder->get_operations_counter();
 
-            if(type == "encoder")
-            {
-                m_old_counter = m_encoder->get_operations_counter();
-                }
-            else if(type == "decoder")
-            {
-                m_old_counter = m_decoder->get_operations_counter();
-            }
-            else
-            {
-                assert(0);
-            }
-
-            m_decoded_symbols = 0;
             m_encoded_symbols = 0;
+            m_decoded_symbols = 0;
         }
 
     /// Stops a measurement and saves the counter
@@ -436,20 +408,8 @@ public:
             // it is called from the RUN macro
             assert(!m_result_memory.has_result(cs));
 
-            std::string type = cs.get_value<std::string>("type");
-
-            if(type == "encoder")
-            {
-                m_new_counter = m_encoder->get_operations_counter();
-            }
-            else if(type == "decoder")
-            {
-                m_new_counter = m_decoder->get_operations_counter();
-            }
-            else
-            {
-                assert(0);
-            }
+            m_new_encoder_counter = m_encoder->get_operations_counter();
+            m_new_decoder_counter = m_decoder->get_operations_counter();
         }
 
     /// Prepares the measurement for every run
@@ -484,60 +444,82 @@ public:
                 return m_result_memory.measurement(cs);
             }
 
-            std::string type = cs.get_value<std::string>("type");
+            uint32_t symbols = cs.get_value<uint32_t>("symbols");
+            uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
-            uint32_t symbols_coded = 0;
-
-            if(type == "encoder")
-            {
-                symbols_coded = m_encoded_symbols;
-            }
-            else if(type == "decoder")
-            {
-                symbols_coded = m_decoded_symbols;
-            }
-            else
-            {
-                assert(0);
-            }
-
-            uint32_t diff = 0;
             double result = 0;
 
+            assert(m_new_encoder_counter >= m_old_encoder_counter);
+            assert(m_new_decoder_counter >= m_old_decoder_counter);
+
             // Store all results in the result memory
-            assert(m_new_counter.m_add >= m_old_counter.m_add);
-            diff = m_new_counter.m_add - m_old_counter.m_add;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "dest[i] = dest[i] + src[i]", result);
+            kodo::operations_counter encoder_diff =
+                m_new_encoder_counter - m_old_encoder_counter;
 
-            assert(m_new_counter.m_subtract >= m_old_counter.m_subtract);
-            diff = m_new_counter.m_subtract - m_old_counter.m_subtract;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "dest[i] = dest[i] - src[i]", result);
+            kodo::operations_counter decoder_diff =
+                m_new_decoder_counter - m_old_decoder_counter;
 
-            assert(m_new_counter.m_multiply >= m_old_counter.m_multiply);
-            diff = m_new_counter.m_multiply - m_old_counter.m_multiply;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "dest[i] = dest[i] * constant", result);
+            result = double(encoder_diff.m_add) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] + src[i]",
+                                         "encoder", result);
 
-            assert(m_new_counter.m_multiply_add >= m_old_counter.m_multiply_add);
-            diff = m_new_counter.m_multiply_add - m_old_counter.m_multiply_add;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "dest[i] = dest[i] + (constant * src[i])", result);
+            result = double(decoder_diff.m_add) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] + src[i]",
+                                         "decoder", result);
 
-            assert(m_new_counter.m_multiply_subtract >= m_old_counter.m_multiply_subtract);
-            diff = m_new_counter.m_multiply_subtract - m_old_counter.m_multiply_subtract;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "dest[i] = dest[i] - (constant * src[i])", result);
+            result = double(encoder_diff.m_subtract) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] - src[i]",
+                                         "encoder", result);
 
-            assert(m_new_counter.m_invert >= m_old_counter.m_invert);
-            diff = m_new_counter.m_invert - m_old_counter.m_invert;
-            result = double(diff) / double(symbols_coded);
-            m_result_memory.store_result(cs, "invert(value)", result);
+            result = double(decoder_diff.m_subtract) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] - src[i]",
+                                         "decoder", result);
 
-            if(!m_result_memory.has_result(cs))
-                std::cout << cs << std::endl;
-            // We now _should_ have a result
+            result = double(encoder_diff.m_multiply) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] * constant",
+                                         "encoder", result);
+
+            result = double(decoder_diff.m_multiply) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] * constant",
+                                         "decoder", result);
+
+            result = double(encoder_diff.m_multiply_add) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] + (constant * src[i])",
+                                         "encoder", result);
+
+            result = double(decoder_diff.m_multiply_add) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] + (constant * src[i])",
+                                         "decoder", result);
+
+            result = double(encoder_diff.m_multiply_subtract) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] - (constant * src[i])",
+                                         "encoder", result);
+
+            result = double(decoder_diff.m_multiply_subtract) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "dest[i] = dest[i] - (constant * src[i])",
+                                         "decoder", result);
+
+            result = double(encoder_diff.m_invert) / double(m_encoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "invert(value)",
+                                         "encoder", result);
+
+            result = double(decoder_diff.m_invert) / double(m_decoded_symbols);
+            m_result_memory.store_result(symbols, symbol_size,
+                                         "invert(value)",
+                                         "decoder", result);
+
+            // We SHOULD :) now have stored the result we are looking for
             assert(m_result_memory.has_result(cs));
 
             return m_result_memory.measurement(cs);
@@ -559,8 +541,6 @@ public:
             // symbols from the beginning
             if(kodo::is_systematic_encoder(m_encoder))
                 kodo::set_systematic_off(m_encoder);
-
-            std::cout << "RUUUUUUUUUUUUUUUN" << std::endl;
 
             RUN{
 
@@ -584,7 +564,7 @@ public:
 
     /// The unit we measure in
     std::string unit_text() const
-        { return "operations"; }
+        { return "operations per symbol"; }
 
 protected:
 
@@ -613,10 +593,16 @@ protected:
     std::vector<uint8_t> m_encoded_data;
 
     /// The counter before the measurement starts
-    kodo::operations_counter m_old_counter;
+    kodo::operations_counter m_old_encoder_counter;
 
     /// The counter after the measurement
-    kodo::operations_counter m_new_counter;
+    kodo::operations_counter m_new_encoder_counter;
+
+    /// The counter before the measurement starts
+    kodo::operations_counter m_old_decoder_counter;
+
+    /// The counter after the measurement
+    kodo::operations_counter m_new_decoder_counter;
 
     /// Result memory
     result_memory m_result_memory;
@@ -662,6 +648,8 @@ int main(int argc, const char* argv[])
         std::make_shared<gauge::python_printer>("out.py"));
 
     gauge::runner::run_benchmarks(argc, argv);
+
+
     return 0;
 }
 
