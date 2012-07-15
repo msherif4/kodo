@@ -10,8 +10,12 @@
 
 #include <kodo/rs/reed_solomon_codes.h>
 
-#include <sak/code_warmup.h>
 #include <boost/make_shared.hpp>
+
+#include <gauge/gauge.h>
+#include <gauge/console_printer.h>
+#include <gauge/python_printer.h>
+
 
 /// The test setup parameters
 struct test_setup
@@ -33,31 +37,180 @@ struct test_setup
 };
 
 
+std::vector<uint32_t> setup_symbols()
+{
+    std::vector<uint32_t> symbols = {16, 32, 64, 128, 1024};
+    return symbols;
+}
+
+std::vector<uint32_t> setup_symbol_size()
+{
+    std::vector<uint32_t> symbol_size = {1400};
+    return symbol_size;
+}
+
+/// Returns which operation to measure
+std::vector<std::string> setup_types()
+{
+    std::vector<std::string> types =
+        {
+            "encoder",
+            "decoder"
+        };
+
+    return types;
+}
+
+
+
+
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
-struct test_block
+struct throughput_benchmark : public gauge::time_benchmark
 {
 
-    /// Test block consisting of an encoder and decoder
-    /// @param setup the test_setup
-    /// @param encoder
-    test_block(const test_setup &setup,
-               typename Encoder::pointer encoder,
-               typename Decoder::pointer decoder)
-        : m_setup(setup),
-          m_encoder(encoder),
-          m_decoder(decoder)
+    typedef typename Encoder::factory encoder_factory;
+    typedef typename Encoder::pointer encoder_ptr;
+
+    typedef typename Decoder::factory decoder_factory;
+    typedef typename Decoder::pointer decoder_ptr;
+
+
+    throughput_benchmark()
         {
+            auto symbols = setup_symbols();
+            auto symbol_size = setup_symbol_size();
+
+            // uint32_t max_symbols =
+            //     *std::max_element(symbols.begin(), symbols.end());
+
+            // uint32_t max_symbol_size =
+            //     *std::max_element(symbol_size.begin(), symbol_size.end());
+
+            // m_decoder_factory = std::make_shared<decoder_factory>(
+            //     max_symbols, max_symbol_size);
+
+            // m_encoder_factory = std::make_shared<encoder_factory>(
+            //     max_symbols, max_symbol_size);
+
+            auto types = setup_types();
+
+            for(uint32_t i = 0; i < symbols.size(); ++i)
+            {
+                for(uint32_t j = 0; j < symbol_size.size(); ++j)
+                {
+                    for(uint32_t u = 0; u < types.size(); ++u)
+                    {
+                        gauge::config_set cs;
+                        cs.set_value<uint32_t>("symbols", symbols[i]);
+                        cs.set_value<uint32_t>("symbol_size", symbol_size[j]);
+                        cs.set_value<std::string>("type", types[u]);
+
+                        add_configuration(cs);
+                    }
+                }
+            }
+        }
+
+    void start()
+        {
+            m_encoded_symbols = 0;
+            m_decoded_symbols = 0;
+            gauge::time_benchmark::start();
+        }
+
+    void stop()
+        {
+            gauge::time_benchmark::stop();
+        }
+
+    double measurement()
+        {
+            // Get the time spent per iteration
+            double time = gauge::time_benchmark::measurement();
+
+            gauge::config_set cs = get_current_configuration();
+            std::string type = cs.get_value<std::string>("type");
+            uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
+
+            // The number of bytes {en|de}coded
+            uint32_t total_bytes = 0;
+
+            if(type == "decoder")
+            {
+                total_bytes = m_decoded_symbols * symbol_size;
+            }
+            else if(type == "encoder")
+            {
+                total_bytes = m_encoded_symbols * symbol_size;
+            }
+            else
+            {
+                assert(0);
+            }
+
+            // The bytes per iteration
+            uint32_t bytes =
+                total_bytes / gauge::time_benchmark::iteration_count();
+
+            return bytes / time; // MB/s for each iteration
+        }
+
+
+    bool accept_measurement()
+        {
+            gauge::config_set cs = get_current_configuration();
+
+            std::string type = cs.get_value<std::string>("type");
+
+            if(type == "decoder")
+            {
+                // If we are benchmarking a decoder we only accept
+                // the measurement if the decoding was successful
+                if(!m_decoder->is_complete())
+                {
+                    return false;
+                }
+            }
+
+            return gauge::time_benchmark::accept_measurement();
+        }
+
+    std::string unit_text() const
+        {
+            return "MB/s";
+        }
+
+    void setup()
+        {
+            gauge::config_set cs = get_current_configuration();
+
+            uint32_t symbols = cs.get_value<uint32_t>("symbols");
+            uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
+
+            // Make the factories fit perfectly otherwise there seems to
+            // be problems with memory access i.e. when using a factory
+            // with max symbols 1024 with a symbols 16
+            m_decoder_factory = std::make_shared<decoder_factory>(
+                symbols, symbol_size);
+
+            m_encoder_factory = std::make_shared<encoder_factory>(
+                symbols, symbol_size);
+
+            m_encoder = m_encoder_factory->build(symbols, symbol_size);
+            m_decoder = m_decoder_factory->build(symbols, symbol_size);
+
             // Prepare the data to be encoded
-            m_data_in.resize(m_encoder->block_size());
+            m_encoded_data.resize(m_encoder->block_size());
 
             // Just for fun - fill the data with random data
             kodo::random_uniform<uint8_t> fill_data;
-            fill_data.generate(&m_data_in[0], m_data_in.size());
+            fill_data.generate(&m_encoded_data[0], m_encoded_data.size());
+
+            kodo::set_symbols(kodo::storage(m_encoded_data), m_encoder);
 
             // Prepare storage to the encoded payloads
-            assert(m_encoder->symbols() == setup.m_symbols);
-            uint32_t payload_count = setup.m_symbols + setup.m_extra_symbols;
+            uint32_t payload_count = symbols * 10;
 
             m_payloads.resize(payload_count);
             for(uint32_t i = 0; i < payload_count; ++i)
@@ -66,20 +219,15 @@ struct test_block
             }
 
             m_temp_payload.resize( m_encoder->payload_size() );
-
         }
 
 
-    /// Run the encoder
-    /// @return the number of symbols encoded
-    uint32_t run_encode()
+    void encode_payloads()
         {
-            m_encoder->initialize(m_setup.m_symbols, m_setup.m_symbol_size);
-
+            // We switch any systematic operations off so we code
+            // symbols from the beginning
             if(kodo::is_systematic_encoder(m_encoder))
                 kodo::set_systematic_off(m_encoder);
-
-            kodo::set_symbols(kodo::storage(m_data_in), m_encoder);
 
             uint32_t payload_count = m_payloads.size();
 
@@ -87,46 +235,107 @@ struct test_block
             {
                 std::vector<uint8_t> &payload = m_payloads[i];
                 m_encoder->encode(&payload[0]);
-            }
 
-            return payload_count;
+                ++m_encoded_symbols;
+            }
         }
 
-    /// Run the decoder
-    /// @return the number of symbols decoded
-    uint32_t run_decode()
+    void decode_payloads()
         {
-            m_decoder->initialize(m_setup.m_symbols, m_setup.m_symbol_size);
-
             uint32_t payload_count = m_payloads.size();
 
             for(uint32_t i = 0; i < payload_count; ++i)
             {
-                std::copy(m_payloads[i].begin(), m_payloads[i].end(),
+                std::copy(m_payloads[i].begin(),
+                          m_payloads[i].end(),
                           m_temp_payload.begin());
 
                 m_decoder->decode(&m_temp_payload[0]);
 
+                ++m_decoded_symbols;
+
                 if(m_decoder->is_complete())
                 {
-                    return i;
+                    return;
                 }
             }
-
-            return payload_count;
         }
 
-    /// Test setup
-    test_setup m_setup;
+    /// Run the encoder
+    void run_encode()
+        {
+            // The clock is running
+            RUN{
+                encode_payloads();
+            }
+        }
+
+    /// Run the decoder
+    void run_decode()
+        {
+            // Encode some data
+            encode_payloads();
+
+            gauge::config_set cs = get_current_configuration();
+
+            uint32_t symbols = cs.get_value<uint32_t>("symbols");
+            uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
+
+            // The clock is running
+            RUN{
+                // We have to make sure the decoder is in a "clean" state
+                // i.e. no symbols already decoded.
+                m_decoder->initialize(symbols, symbol_size);
+
+                // Decode the payloads
+                decode_payloads();
+            }
+        }
+
+
+    void run_benchmark()
+    {
+        gauge::config_set cs = get_current_configuration();
+
+        std::string type = cs.get_value<std::string>("type");
+
+        if(type == "encoder")
+        {
+            run_encode();
+        }
+        else if(type == "decoder")
+        {
+            run_decode();
+        }
+        else
+        {
+            assert(0);
+        }
+
+    }
+
+protected:
+
+    /// The decoder factory
+    std::shared_ptr<decoder_factory> m_decoder_factory;
+
+    /// The encoder factory
+    std::shared_ptr<encoder_factory> m_encoder_factory;
 
     /// The encoder to use
-    typename Encoder::pointer m_encoder;
+    encoder_ptr m_encoder;
+
+    /// The number of symbols encoded
+    uint32_t m_encoded_symbols;
 
     /// The encoder to use
-    typename Decoder::pointer m_decoder;
+    decoder_ptr m_decoder;
+
+    /// The number of symbols decoded
+    uint32_t m_decoded_symbols;
 
     /// The data encoded
-    std::vector<uint8_t> m_data_in;
+    std::vector<uint8_t> m_encoded_data;
 
     /// Temporary payload to not destroy the already encoded payloads
     /// when decoding
@@ -137,238 +346,277 @@ struct test_block
 
 };
 
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary>,
+    kodo::full_rlnc_decoder<fifi::binary> > setup_rlnc_throughput;
 
-/// Build a new test block
-template<class Encoder, class Decoder>
-boost::shared_ptr< test_block<Encoder,Decoder> >
-make_block(const test_setup &setup,
-           typename Encoder::factory &encoder_factory,
-           typename Decoder::factory &decoder_factory)
+BENCHMARK_F(setup_rlnc_throughput, FullRLNC, Binary, 5)
 {
+    run_benchmark();
+}
 
-    typename Encoder::pointer encoder =
-        encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary8>,
+    kodo::full_rlnc_decoder<fifi::binary8> > setup_rlnc_throughput8;
 
-    typename Decoder::pointer decoder =
-        decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+BENCHMARK_F(setup_rlnc_throughput8, FullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
 
-    return boost::make_shared< test_block<Encoder, Decoder> >(
-        setup, encoder, decoder);
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary16>,
+    kodo::full_rlnc_decoder<fifi::binary16> > setup_rlnc_throughput16;
 
+BENCHMARK_F(setup_rlnc_throughput16, FullRLNC, Binary16, 5)
+{
+    run_benchmark();
 }
 
 
-/// Build a new test block
-template<class Encoder, class Decoder>
-boost::shared_ptr< test_block<Encoder,Decoder> >
-make_block(const test_setup &setup)
+
+
+// /// Build a new test block
+// template<class Encoder, class Decoder>
+// boost::shared_ptr< test_block<Encoder,Decoder> >
+// make_block(const test_setup &setup,
+//            typename Encoder::factory &encoder_factory,
+//            typename Decoder::factory &decoder_factory)
+// {
+
+//     typename Encoder::pointer encoder =
+//         encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+//     typename Decoder::pointer decoder =
+//         decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+//     return boost::make_shared< test_block<Encoder, Decoder> >(
+//         setup, encoder, decoder);
+
+// }
+
+
+// /// Build a new test block
+// template<class Encoder, class Decoder>
+// boost::shared_ptr< test_block<Encoder,Decoder> >
+// make_block(const test_setup &setup)
+// {
+//     typename Encoder::factory encoder_factory(setup.m_symbols,
+//                                               setup.m_symbol_size);
+
+//     typename Decoder::factory decoder_factory(setup.m_symbols,
+//                                               setup.m_symbol_size);
+
+//     typename Encoder::pointer encoder =
+//         encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+//     typename Decoder::pointer decoder =
+//         decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+
+//     return boost::make_shared< test_block<Encoder, Decoder> >(
+//         setup, encoder, decoder);
+// }
+
+
+// /// Build a new test block
+// template<class Encoder, class Decoder>
+// boost::shared_ptr< test_block<Encoder,Decoder> >
+// make_block(const test_setup &setup,
+//            typename Encoder::pointer &encoder,
+//            typename Decoder::pointer &decoder)
+// {
+//     return boost::make_shared< test_block<Encoder, Decoder> >(
+//         setup, encoder, decoder);
+// }
+
+
+// template<class TestBlockPtr>//Encoder, class Decoder>
+// void run(const std::string &name, //const test_setup &setup,
+//          TestBlockPtr block)
+//          //boost::shared_ptr< test_block<Encoder,Decoder> > block)
+// {
+
+//     std::cout << "running " << name << " symbols = "
+//               << block->m_setup.m_symbols << std::endl;
+
+//     // Estimate speed of encoder / decoder
+//     // Warm up
+//     sak::code_warmup warmup;
+
+//     while(!warmup.done())
+//     {
+//         block->run_encode();
+//         warmup.next_iteration();
+//     }
+
+//     // The number of iterations needed to run the target time seconds
+//     // we expect the encoder to always be faster than the decoder, which means
+//     // it will always require more iterations.
+//     uint64_t iterations = warmup.iterations(block->m_setup.m_target_time);
+
+//     std::cout << "needed encode iterations " << iterations << std::endl;
+
+
+//     {
+//         boost::timer::cpu_timer timer;
+//         timer.start();
+
+//         uint64_t symbols_consumed = 0;
+
+//         for(uint32_t i = 0; i < iterations; ++i)
+//             symbols_consumed += block->run_encode();
+
+//         timer.stop();
+
+//         long double total_sec = sak::seconds_elapsed(timer);
+
+//         // Amount of data processed
+//         long double bytes = static_cast<long double>(
+//             block->m_setup.m_symbol_size * symbols_consumed);
+
+//         long double megs = bytes / 1000000.0;
+//         long double megs_per_second = megs / total_sec;
+
+//         std::cout << "Encode symbols consumed " << symbols_consumed << std::endl;
+//         std::cout << "Encode test time " << total_sec << " [s]" << std::endl;
+//         std::cout << "Encode MB/s = " << megs_per_second << std::endl;
+//     }
+
+//     {
+//         boost::timer::cpu_timer timer;
+//         timer.start();
+
+//         uint64_t symbols_consumed = 0;
+
+//         for(uint32_t i = 0; i < iterations; ++i)
+//             symbols_consumed += block->run_decode();
+
+//         timer.stop();
+
+//         long double total_sec = sak::seconds_elapsed(timer);
+
+//         // Amount of data processed
+//         long double bytes = static_cast<long double>(
+//             block->m_setup.m_symbol_size * symbols_consumed);
+
+//         long double megs = bytes / 1000000.0;
+//         long double megs_per_second = megs / total_sec;
+
+//         std::cout << "Decode symbols consumed " << symbols_consumed << std::endl;
+//         std::cout << "Decode test time " << total_sec << " [s]" << std::endl;
+//         std::cout << "Decode MB/s = " << megs_per_second << std::endl;
+//     }
+// }
+
+
+// void benchmark(const test_setup &setup)
+// {
+//     run("full_rlnc_2",
+//         make_block<
+//         kodo::full_rlnc_encoder<fifi::binary>,
+//         kodo::full_rlnc_decoder<fifi::binary> >(setup));
+
+//     run("full_rlnc_8",
+//         make_block<
+//         kodo::full_rlnc_encoder<fifi::binary8>,
+//         kodo::full_rlnc_decoder<fifi::binary8> >(setup));
+
+//     run("full_rlnc_16",
+//         make_block<
+//         kodo::full_rlnc_encoder<fifi::binary16>,
+//         kodo::full_rlnc_decoder<fifi::binary16> >(setup));
+
+//     run("seed_rlnc_2",
+//         make_block<
+//         kodo::seed_rlnc_encoder<fifi::binary>,
+//         kodo::seed_rlnc_decoder<fifi::binary> >(setup));
+
+//     run("seed_rlnc_8",
+//         make_block<
+//         kodo::seed_rlnc_encoder<fifi::binary8>,
+//         kodo::seed_rlnc_decoder<fifi::binary8> >(setup));
+
+//     run("seed_rlnc_16",
+//         make_block<
+//         kodo::seed_rlnc_encoder<fifi::binary16>,
+//         kodo::seed_rlnc_decoder<fifi::binary16> >(setup));
+
+// //    run("rs_2",
+// //        make_block<
+// //        kodo::rs_encoder<fifi::binary>,
+// //        kodo::rs_decoder<fifi::binary> >(setup));
+
+// //    run("rs_8",
+// //        make_block<
+// //        kodo::rs_encoder<fifi::binary8>,
+// //        kodo::rs_decoder<fifi::binary8> >(setup));
+
+// //    run("rs_16",
+// //        make_block<
+// //        kodo::rs_encoder<fifi::binary16>,
+// //        kodo::rs_decoder<fifi::binary16> >(setup));
+
+//     // If custom initialization is needed the following approach may
+//     // be used.
+//     // {
+//     //     typedef kodo::full_rlnc_encoder<fifi::binary> encoder_type;
+//     //     typedef kodo::full_rlnc_decoder<fifi::binary> decoder_type;
+//     //
+//     //     encoder_type::factory encoder_factory(setup.m_symbols,
+//     //                                           setup.m_symbol_size);
+//     //
+//     //     decoder_type::factory decoder_factory(setup.m_symbols,
+//     //                                           setup.m_symbol_size);
+//     //
+//     //     for(uint32_t i = 0; i < 10; ++i)
+//     //     {
+//     //
+//     //         encoder_type::pointer encoder =
+//     //             encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+//     //
+//     //         encoder->set_some_option(i);
+//     //
+//     //         decoder_type::pointer decoder =
+//     //             decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+//     //
+//     //         run("full_rlnc_8",
+//     //             make_block<encoder_type, decoder_type>(setup, encoder, decoder));
+//     //     }
+//     // }
+// }
+
+int main(int argc, const char* argv[])
 {
-    typename Encoder::factory encoder_factory(setup.m_symbols,
-                                              setup.m_symbol_size);
 
-    typename Decoder::factory decoder_factory(setup.m_symbols,
-                                              setup.m_symbol_size);
+    srand(static_cast<uint32_t>(time(0)));
 
-    typename Encoder::pointer encoder =
-        encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+    gauge::runner::instance().printers().push_back(
+        std::make_shared<gauge::console_printer>());
 
-    typename Decoder::pointer decoder =
-        decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
+    gauge::runner::instance().printers().push_back(
+        std::make_shared<gauge::python_printer>("out.py"));
 
-    return boost::make_shared< test_block<Encoder, Decoder> >(
-        setup, encoder, decoder);
-}
+    gauge::runner::run_benchmarks(argc, argv);
 
-
-/// Build a new test block
-template<class Encoder, class Decoder>
-boost::shared_ptr< test_block<Encoder,Decoder> >
-make_block(const test_setup &setup,
-           typename Encoder::pointer &encoder,
-           typename Decoder::pointer &decoder)
-{
-    return boost::make_shared< test_block<Encoder, Decoder> >(
-        setup, encoder, decoder);
-}
-
-
-template<class TestBlockPtr>//Encoder, class Decoder>
-void run(const std::string &name, //const test_setup &setup,
-         TestBlockPtr block)
-         //boost::shared_ptr< test_block<Encoder,Decoder> > block)
-{
-
-    std::cout << "running " << name << " symbols = "
-              << block->m_setup.m_symbols << std::endl;
-
-    // Estimate speed of encoder / decoder
-    // Warm up
-    sak::code_warmup warmup;
-
-    while(!warmup.done())
-    {
-        block->run_encode();
-        warmup.next_iteration();
-    }
-
-    // The number of iterations needed to run the target time seconds
-    // we expect the encoder to always be faster than the decoder, which means
-    // it will always require more iterations.
-    uint64_t iterations = warmup.iterations(block->m_setup.m_target_time);
-
-    std::cout << "needed encode iterations " << iterations << std::endl;
-
-
-    {
-        boost::timer::cpu_timer timer;
-        timer.start();
-
-        uint64_t symbols_consumed = 0;
-
-        for(uint32_t i = 0; i < iterations; ++i)
-            symbols_consumed += block->run_encode();
-
-        timer.stop();
-
-        long double total_sec = sak::seconds_elapsed(timer);
-
-        // Amount of data processed
-        long double bytes = static_cast<long double>(
-            block->m_setup.m_symbol_size * symbols_consumed);
-
-        long double megs = bytes / 1000000.0;
-        long double megs_per_second = megs / total_sec;
-
-        std::cout << "Encode symbols consumed " << symbols_consumed << std::endl;
-        std::cout << "Encode test time " << total_sec << " [s]" << std::endl;
-        std::cout << "Encode MB/s = " << megs_per_second << std::endl;
-    }
-
-    {
-        boost::timer::cpu_timer timer;
-        timer.start();
-
-        uint64_t symbols_consumed = 0;
-
-        for(uint32_t i = 0; i < iterations; ++i)
-            symbols_consumed += block->run_decode();
-
-        timer.stop();
-
-        long double total_sec = sak::seconds_elapsed(timer);
-
-        // Amount of data processed
-        long double bytes = static_cast<long double>(
-            block->m_setup.m_symbol_size * symbols_consumed);
-
-        long double megs = bytes / 1000000.0;
-        long double megs_per_second = megs / total_sec;
-
-        std::cout << "Decode symbols consumed " << symbols_consumed << std::endl;
-        std::cout << "Decode test time " << total_sec << " [s]" << std::endl;
-        std::cout << "Decode MB/s = " << megs_per_second << std::endl;
-    }
-}
-
-
-void benchmark(const test_setup &setup)
-{
-    run("full_rlnc_2",
-        make_block<
-        kodo::full_rlnc_encoder<fifi::binary>,
-        kodo::full_rlnc_decoder<fifi::binary> >(setup));
-
-    run("full_rlnc_8",
-        make_block<
-        kodo::full_rlnc_encoder<fifi::binary8>,
-        kodo::full_rlnc_decoder<fifi::binary8> >(setup));
-
-    run("full_rlnc_16",
-        make_block<
-        kodo::full_rlnc_encoder<fifi::binary16>,
-        kodo::full_rlnc_decoder<fifi::binary16> >(setup));
-
-    run("seed_rlnc_2",
-        make_block<
-        kodo::seed_rlnc_encoder<fifi::binary>,
-        kodo::seed_rlnc_decoder<fifi::binary> >(setup));
-
-    run("seed_rlnc_8",
-        make_block<
-        kodo::seed_rlnc_encoder<fifi::binary8>,
-        kodo::seed_rlnc_decoder<fifi::binary8> >(setup));
-
-    run("seed_rlnc_16",
-        make_block<
-        kodo::seed_rlnc_encoder<fifi::binary16>,
-        kodo::seed_rlnc_decoder<fifi::binary16> >(setup));
-
-//    run("rs_2",
-//        make_block<
-//        kodo::rs_encoder<fifi::binary>,
-//        kodo::rs_decoder<fifi::binary> >(setup));
-
-//    run("rs_8",
-//        make_block<
-//        kodo::rs_encoder<fifi::binary8>,
-//        kodo::rs_decoder<fifi::binary8> >(setup));
-
-//    run("rs_16",
-//        make_block<
-//        kodo::rs_encoder<fifi::binary16>,
-//        kodo::rs_decoder<fifi::binary16> >(setup));
-
-    // If custom initialization is needed the following approach may
-    // be used.
     // {
-    //     typedef kodo::full_rlnc_encoder<fifi::binary> encoder_type;
-    //     typedef kodo::full_rlnc_decoder<fifi::binary> decoder_type;
-    //
-    //     encoder_type::factory encoder_factory(setup.m_symbols,
-    //                                           setup.m_symbol_size);
-    //
-    //     decoder_type::factory decoder_factory(setup.m_symbols,
-    //                                           setup.m_symbol_size);
-    //
-    //     for(uint32_t i = 0; i < 10; ++i)
-    //     {
-    //
-    //         encoder_type::pointer encoder =
-    //             encoder_factory.build(setup.m_symbols, setup.m_symbol_size);
-    //
-    //         encoder->set_some_option(i);
-    //
-    //         decoder_type::pointer decoder =
-    //             decoder_factory.build(setup.m_symbols, setup.m_symbol_size);
-    //
-    //         run("full_rlnc_8",
-    //             make_block<encoder_type, decoder_type>(setup, encoder, decoder));
-    //     }
+    //     test_setup setup;
+    //     setup.m_symbols = 16;
+    //     setup.m_symbol_size = 1600;
+    //     setup.m_extra_symbols = 16;
+    //     setup.m_target_time = 5.0;
+
+    //     benchmark(setup);
     // }
-}
 
-int main()
-{
+    // {
+    //     test_setup setup;
+    //     setup.m_symbols = 32;
+    //     setup.m_symbol_size = 1600;
+    //     setup.m_extra_symbols = 16;
+    //     setup.m_target_time = 5.0;
 
-    {
-        test_setup setup;
-        setup.m_symbols = 16;
-        setup.m_symbol_size = 1600;
-        setup.m_extra_symbols = 16;
-        setup.m_target_time = 5.0;
-
-        benchmark(setup);
-    }
-
-    {
-        test_setup setup;
-        setup.m_symbols = 32;
-        setup.m_symbol_size = 1600;
-        setup.m_extra_symbols = 16;
-        setup.m_target_time = 5.0;
-
-        benchmark(setup);
-    }
+    //     benchmark(setup);
+    // }
 
     return 0;
 }
