@@ -37,7 +37,7 @@ namespace kodo
 
         /// The field we are in
         typedef typename Super::field_type field_type;
-        
+
         /// The value type used
         typedef typename Super::value_type value_type;
 
@@ -50,7 +50,7 @@ namespace kodo
 
         /// Pointer produced by the factory
         typedef typename Super::pointer pointer;
-        
+
         /// Partial and zero symbol types
         typedef std::vector<value_type> symbol_type;
 
@@ -59,7 +59,7 @@ namespace kodo
 
         /// Access to the SuperCoder mapping variable
         using Super::m_mapping;
-        
+
     public:
 
         /// The factory layer associated with this coder. We create
@@ -74,10 +74,10 @@ namespace kodo
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
                     uint32_t max_symbol_length =
-                        fifi::bytes_to_elements<field_type>(max_symbol_size);
+                        fifi::elements_needed<field_type>(max_symbol_size);
 
                     assert(max_symbol_length > 0);
-                    
+
                     m_zero_symbol = boost::make_shared<symbol_type>();
                     m_zero_symbol->resize(max_symbol_length, 0);
                 }
@@ -95,7 +95,7 @@ namespace kodo
 
             /// The zero symbol
             symbol_ptr m_zero_symbol;
-            
+
         };
 
     public:
@@ -106,8 +106,8 @@ namespace kodo
                 Super::construct(max_symbols, max_symbol_size);
 
                 uint32_t max_symbol_length =
-                    fifi::bytes_to_elements<field_type>(max_symbol_size);
-                
+                    fifi::elements_needed<field_type>(max_symbol_size);
+
                 m_partial_symbol = boost::make_shared<symbol_type>();
                 m_partial_symbol->resize(max_symbol_length, 0);
             }
@@ -118,7 +118,7 @@ namespace kodo
                 Super::initialize(symbols, symbol_size);
                 std::fill(m_partial_symbol->begin(), m_partial_symbol->end(), 0);
             }
-                
+
         /// Sets the storage
         /// @param symbol_storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
@@ -126,7 +126,7 @@ namespace kodo
                 storage_sequence_type symbol_sequence =
                     split_storage(symbol_storage, Super::symbol_size());
 
-                uint32_t sequence_size = symbol_sequence.size(); 
+                uint32_t sequence_size = symbol_sequence.size();
                 uint32_t last_index = sequence_size - 1;
 
                 for(uint32_t i = 0; i < last_index; ++i)
@@ -148,7 +148,7 @@ namespace kodo
                 }
 
                 const_storage zero_symbol = storage(*m_zero_symbol);
-                
+
                 for(uint32_t i = last_index + 1; i < Super::symbols(); ++i)
                 {
                     Super::set_symbol(i, zero_symbol);
@@ -162,8 +162,8 @@ namespace kodo
 
         /// The partial symbol
         symbol_ptr m_partial_symbol;
-                
-    };        
+
+    };
 }
 
 #endif

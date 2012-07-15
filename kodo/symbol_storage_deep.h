@@ -29,7 +29,7 @@ namespace kodo
 
         /// The value type used
         typedef typename SuperCoder::value_type value_type;
-        
+
         /// The field we are in
         typedef typename SuperCoder::field_type field_type;
 
@@ -41,11 +41,11 @@ namespace kodo
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
                 uint32_t max_symbol_length =
-                    fifi::bytes_to_elements<field_type>(max_symbol_size);
-                
+                    fifi::elements_needed<field_type>(max_symbol_size);
+
                 uint32_t max_data_needed =
                     max_symbols * max_symbol_length;
-                
+
                 assert(max_data_needed > 0);
                 m_data.resize(max_data_needed, 0);
             }
@@ -54,7 +54,7 @@ namespace kodo
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
-                
+
                 std::fill(m_data.begin(), m_data.end(), 0);
             }
 
@@ -63,8 +63,8 @@ namespace kodo
             {
                 return reinterpret_cast<const uint8_t*>(
                     symbol(index));
-            }        
-        
+            }
+
         /// @return value_type pointer to the symbol
         value_type* symbol(uint32_t index)
             {
@@ -75,8 +75,8 @@ namespace kodo
         const value_type* symbol(uint32_t index) const
             {
                 return &m_data[index * SuperCoder::symbol_length()];
-            }        
-        
+            }
+
         /// Sets the storage
         /// @param storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
@@ -98,16 +98,16 @@ namespace kodo
                 assert(index < SuperCoder::symbols());
 
                 mutable_storage data = storage(m_data);
-                
+
                 uint32_t offset = index * SuperCoder::symbol_size();
                 data += offset;
-                
+
                 /// Copy the data
                 copy_storage(data, symbol);
             }
 
         /// Create an overload of the copy_storage(...) function for this symbol
-        /// storage. 
+        /// storage.
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);
@@ -115,10 +115,10 @@ namespace kodo
 
                 uint32_t data_to_copy = std::min(dest_storage.m_size,
                                                  SuperCoder::block_size());
-                
+
                 /// Wrap our buffer in a storage object
                 const_storage src_storage = storage(data(), data_to_copy);
-                
+
                 /// Use the copy_storage(...) function to copy the data
                 copy_storage(dest_storage, src_storage);
             }
@@ -132,11 +132,11 @@ namespace kodo
             }
 
     private:
-        
+
         /// Storage for the symbol data
         std::vector<value_type> m_data;
 
-    };    
+    };
 }
 
 #endif
