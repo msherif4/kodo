@@ -10,6 +10,10 @@
 #include <kodo/generators/random_uniform.h>
 #include <kodo/systematic_encoder.h>
 
+#include <fifi/is_prime2325.h>
+#include <fifi/prime2325_binary_search.h>
+#include <fifi/prime2325_apply_prefix.h>
+
 template<class Encoder, class Decoder>
 inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 {
@@ -50,7 +54,36 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     kodo::random_uniform<uint8_t> fill_data;
     fill_data.generate(&data_in[0], data_in.size());
 
-    kodo::set_symbols(kodo::storage(data_in), encoder);
+    // Make sure we have one extreme value (testing optimal prime)
+    // Without the prefix mapping decoding will fail (just try :))
+    if(data_in.size() > 4)
+    {
+        data_in[0] = 0xff;
+        data_in[1] = 0xff;
+        data_in[2] = 0xff;
+        data_in[3] = 0xff;
+    }
+
+    std::vector<uint8_t> encode_data(data_in);
+
+    // Only used for prime fields, lets reconsider how we implement
+    // this less intrusive
+    uint32_t prefix = 0;
+
+    if(fifi::is_prime2325<typename Encoder::field_type>::value)
+    {
+        // This field only works for multiple of uint32_t
+        assert((encoder->block_size() % 4) == 0);
+
+        uint32_t block_length = encoder->block_size() / 4;
+
+        fifi::prime2325_binary_search search(block_length);
+        prefix = search.find_prefix(sak::storage_list(encode_data));
+
+        fifi::apply_prefix(sak::storage_list(encode_data), prefix);
+    }
+
+    kodo::set_symbols(kodo::storage(encode_data), encoder);
 
     // Set the encoder non-systematic
     if(kodo::is_systematic_encoder(encoder))
@@ -66,6 +99,12 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
     kodo::copy_symbols(kodo::storage(data_out), decoder);
+
+    if(fifi::is_prime2325<typename Encoder::field_type>::value)
+    {
+        // Now we have to apply the prefix to the decoded data
+        fifi::apply_prefix(sak::storage_list(data_out), prefix);
+    }
 
     EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 }

@@ -32,6 +32,12 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
             Encoder<fifi::binary16>,
             Decoder<fifi::binary16>
             >(symbols, symbol_size);
+
+    invoke_basic_api
+        <
+            Encoder<fifi::prime2325>,
+            Decoder<fifi::prime2325>
+            >(symbols, symbol_size);
 }
 
 
@@ -60,7 +66,7 @@ TEST(TestRlncFullVectorCodes, basic_api)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
 
     test_coders(symbols, symbol_size);
 }
@@ -86,6 +92,13 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
             Encoder<fifi::binary16>,
             Decoder<fifi::binary16>
             >(symbols, symbol_size);
+
+    invoke_initialize
+        <
+            Encoder<fifi::prime2325>,
+            Decoder<fifi::prime2325>
+            >(symbols, symbol_size);
+
 }
 
 void test_initialize(uint32_t symbols, uint32_t symbol_size)
@@ -113,7 +126,7 @@ TEST(TestRlncFullVectorCodes, initialize_function)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
 
     test_initialize(symbols, symbol_size);
 }
@@ -135,6 +148,11 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
     invoke_systematic<
         Encoder<fifi::binary16>,
         Decoder<fifi::binary16>
+        >(symbols, symbol_size);
+
+    invoke_systematic<
+        Encoder<fifi::prime2325>,
+        Decoder<fifi::prime2325>
         >(symbols, symbol_size);
 
 }
@@ -164,7 +182,7 @@ TEST(TestRlncFullVectorCodes, systematic)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
 
     test_coders_systematic(symbols, symbol_size);
 }
@@ -186,6 +204,11 @@ void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
     invoke_out_of_order_raw<
         Encoder<fifi::binary16>,
         Decoder<fifi::binary16>
+        >(symbols, symbol_size);
+
+    invoke_out_of_order_raw<
+        Encoder<fifi::prime2325>,
+        Decoder<fifi::prime2325>
         >(symbols, symbol_size);
 
 }
@@ -214,7 +237,7 @@ TEST(TestRlncFullVectorCodes, raw)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
 
     test_coders_raw(symbols, symbol_size);
 }
@@ -284,6 +307,9 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
     invoke_recoding<Encoder<fifi::binary16>, Decoder<fifi::binary16> >(
         symbols, symbol_size);
 
+    invoke_recoding<Encoder<fifi::prime2325>, Decoder<fifi::prime2325> >(
+        symbols, symbol_size);
+
 }
 
 void test_recoders(uint32_t symbols, uint32_t symbol_size)
@@ -313,7 +339,7 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
 
     test_recoders(symbols, symbol_size);
 }
