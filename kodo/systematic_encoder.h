@@ -7,7 +7,7 @@
 #define KODO_SYSTEMATIC_ENCODER_H
 
 #include <stdint.h>
-#include <sak/convert_endian.h>
+#include <sak/convert_endian.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
 #include "systematic_base_coder.h"

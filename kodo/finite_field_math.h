@@ -67,6 +67,18 @@ namespace kodo
 
     public:
 
+        /// @see final_coder::construct(...)
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+            {
+                SuperCoder::construct(max_symbols, max_symbol_size);
+
+                uint32_t max_symbol_length =
+                    fifi::elements_needed<field_type>(max_symbol_size);
+
+                assert(max_symbol_length > 0);
+                m_temp_symbol.resize(max_symbol_length, 0);
+            }
+
         /// Multiplies the symbol with the coefficient
         ///     symbol_dest = symbol_dest * coefficient
         ///
@@ -100,7 +112,8 @@ namespace kodo
                 assert(symbol_src  != 0);
                 assert(symbol_length > 0);
 
-                fifi::multiply_add(*m_field, coefficient, symbol_dest, symbol_src,
+                fifi::multiply_add(*m_field, coefficient, symbol_dest,
+                                   symbol_src, &m_temp_symbol[0],
                                    symbol_length);
             }
 
@@ -137,7 +150,8 @@ namespace kodo
                 assert(symbol_src  != 0);
                 assert(symbol_length > 0);
 
-                fifi::multiply_subtract(*m_field, coefficient, symbol_dest, symbol_src,
+                fifi::multiply_subtract(*m_field, coefficient, symbol_dest,
+                                        symbol_src, &m_temp_symbol[0],
                                         symbol_length);
             }
 
@@ -170,6 +184,10 @@ namespace kodo
 
         /// The selected field
         field_pointer m_field;
+
+        /// Temp. symbol used in various compound operations
+        std::vector<value_type> m_temp_symbol;
+
     };
 }
 

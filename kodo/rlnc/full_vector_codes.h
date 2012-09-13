@@ -61,7 +61,7 @@ namespace kodo
                  systematic_encoder<
                  zero_symbol_encoder<
                  full_vector_encoder<
-                 linear_block_vector_generator<block_uniform_no_position,
+                 linear_block_vector_generator<block_cache_lookup_uniform,
                  linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
                  symbol_storage_shallow_partial<

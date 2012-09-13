@@ -209,6 +209,8 @@ struct throughput_benchmark : public gauge::time_benchmark
 
     void encode_payloads()
         {
+            kodo::set_symbols(kodo::storage(m_encoded_data), m_encoder);
+
             // We switch any systematic operations off so we code
             // symbols from the beginning
             if(kodo::is_systematic_encoder(m_encoder))
@@ -249,8 +251,16 @@ struct throughput_benchmark : public gauge::time_benchmark
     /// Run the encoder
     void run_encode()
         {
+            gauge::config_set cs = get_current_configuration();
+
+            uint32_t symbols = cs.get_value<uint32_t>("symbols");
+            uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
+
             // The clock is running
             RUN{
+                // We have to make sure the encoder is in a "clean" state
+                m_encoder->initialize(symbols, symbol_size);
+
                 encode_payloads();
             }
         }

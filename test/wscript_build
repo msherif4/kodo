@@ -3,7 +3,7 @@
 
 
 bld.program(
-    features = 'cxx',
+    features = 'cxx test',
     source   = ['kodo_tests.cpp'] + bld.path.ant_glob('src/*.cpp'),
     target   = 'kodo_tests',
     cxxflags = bld.toolchain_cxx_flags(),

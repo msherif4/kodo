@@ -7,7 +7,7 @@
 #define KODO_SYSTEMATIC_DECODER_H
 
 #include <stdint.h>
-#include <sak/convert_endian.h>
+#include <sak/convert_endian.hpp>
 
 #include "systematic_base_coder.h"
 

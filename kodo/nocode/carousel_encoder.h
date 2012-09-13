@@ -1,7 +1,7 @@
 #ifndef KODO_CAROUSEL_ENCODER_H
 #define KODO_CAROUSEL_ENCODER_H
 
-#include <sak/convert_endian.h>
+#include <sak/convert_endian.hpp>
 #include "carousel_common.h"
 
 namespace kodo

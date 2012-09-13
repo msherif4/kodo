@@ -7,9 +7,7 @@
 #define KODO_RLNC_SEED_ENCODER_H
 
 #include <stdint.h>
-#include <sak/convert_endian.h>
-
-
+#include <sak/convert_endian.hpp>
 
 namespace kodo
 {

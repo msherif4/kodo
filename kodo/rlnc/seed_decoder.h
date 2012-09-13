@@ -11,7 +11,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
-#include <sak/convert_endian.h>
+#include <sak/convert_endian.hpp>
 
 namespace kodo
 {

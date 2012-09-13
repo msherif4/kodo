@@ -16,6 +16,7 @@ def recurse_helper(ctx, name):
 
 def options(opt):
 
+    opt.load('waf_unit_test_v2')
     opt.load('toolchain_cxx')
     opt.load('dependency_bundle')
 
@@ -32,24 +33,25 @@ def options(opt):
         resolve.ResolveGitMajorVersion(
             name = 'boost',
             git_repository = 'git://github.com/steinwurf/external-boost.git',
-            major_version = 1))
+            major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'sak',
             git_repository = 'git://github.com/steinwurf/sak.git',
-            major_version = 3))
+            major_version = 4))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
             git_repository = 'git://github.com/steinwurf/fifi.git',
-            major_version = 2))
+            major_version = 3))
 
     bundle.add_dependency(opt,
-        resolve.ResolveGitFollowMaster(
+        resolve.ResolveGitMajorVersion(
             name = 'gauge',
-            git_repository = 'git://github.com/steinwurf/cxx-gauge.git'))
+            git_repository = 'git://github.com/steinwurf/cxx-gauge.git',
+            major_version = 1))
 
 
 
@@ -57,6 +59,7 @@ def configure(conf):
 
     if conf.is_toplevel():
 
+        conf.load('waf_unit_test_v2')
         conf.load('toolchain_cxx')
         conf.load('dependency_bundle')
 
@@ -87,6 +90,10 @@ def build(bld):
 
         bld.recurse('benchmark/throughput')
         bld.recurse('benchmark/count_operations')
+
+        from waflib.extras import waf_unit_test_v2
+        bld.add_post_fun(waf_unit_test_v2.summary)
+        bld.add_post_fun(waf_unit_test_v2.set_exit_code)
 
     # Export own includes
     bld(includes = '.',
