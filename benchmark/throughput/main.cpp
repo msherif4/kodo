@@ -31,7 +31,7 @@ std::vector<uint32_t> setup_symbols()
 std::vector<uint32_t> setup_symbol_size()
 {
     std::vector<uint32_t> symbol_size;
-    symbol_size.push_back(1400);
+    symbol_size.push_back(1600);
 
     return symbol_size;
 }

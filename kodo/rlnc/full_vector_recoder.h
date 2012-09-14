@@ -73,6 +73,15 @@ namespace kodo
                 // Se note in class description
                 assert(m_proxy.symbol_size() == SuperCoder::symbol_size());
                 assert(m_proxy.symbol_id_size() <= SuperCoder::symbol_id_size());
+
+                m_proxy.construct(max_symbols, max_symbol_size);
+            }
+
+        /// @see final_coder::initialize(...)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+                m_proxy.initialize(symbols, symbol_size);
             }
 
         /// The recode functionality is special for Network Coding

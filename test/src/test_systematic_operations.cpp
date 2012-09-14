@@ -33,7 +33,7 @@ namespace kodo
 TEST(TestSystematicOperations, is_systematic_encoder)
 {
     uint32_t symbols = 10;
-    uint32_t symbol_size = 10;
+    uint32_t symbol_size = 16;
 
     {
         typedef kodo::full_rlnc_encoder_no_system<fifi::binary>::factory

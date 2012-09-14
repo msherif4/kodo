@@ -41,8 +41,8 @@ TEST(TestRlncSeedCodes, basic_api)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_coders(symbols, symbol_size);
 }
@@ -78,8 +78,8 @@ TEST(TestRlncSeedCodes, systematic)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_coders_systematic(symbols, symbol_size);
 }

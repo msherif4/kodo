@@ -33,6 +33,8 @@
 #include "../generators/block_cache_lookup.h"
 #include "../payload_encoder.h"
 #include "../payload_decoder.h"
+#include "../align_symbol_id_decoder.h"
+#include "../align_symbol_id_encoder.h"
 
 #include "full_vector_encoder.h"
 #include "full_vector_decoder.h"
@@ -79,8 +81,9 @@ namespace kodo
     class recode_proxy
         : public payload_encoder<
                  non_systematic_encoder<
+                 align_symbol_id_encoder<
                  zero_symbol_encoder<SuperCoder
-                     > > >
+                     > > > >
     {};
 
     /// A RLNC decoder. The decoder decodes according to a
@@ -90,6 +93,7 @@ namespace kodo
         : public full_vector_recoder<recode_proxy, random_uniform,
                  payload_decoder<
                  systematic_decoder<
+                 align_symbol_id_decoder<
                  full_vector_decoder<
                  linear_block_decoder<
                  linear_block_vector_storage<
@@ -98,7 +102,7 @@ namespace kodo
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > >
+                     > > > > > > > > > > >
     {};
 
     /// Common typedefs
@@ -118,6 +122,7 @@ namespace kodo
         : public full_vector_recoder<recode_proxy, random_uniform,
                  payload_decoder<
                  systematic_decoder<
+                 align_symbol_id_decoder<
                  full_vector_decoder<
                  linear_block_decoder_delayed<
                  linear_block_decoder<
@@ -127,7 +132,7 @@ namespace kodo
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
-                     > > > > > > > > > > >
+                     > > > > > > > > > > > >
     {};
 
 

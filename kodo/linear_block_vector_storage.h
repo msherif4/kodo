@@ -53,7 +53,10 @@ namespace kodo
                 /// Note, we have as many vectors as we have symbols
                 /// therefore the maximum number of vectors also
                 /// equal the maximum number of symbols
-                m_vector_storage.resize(max_symbols * max_vector_length, 0);
+                m_vector_storage.resize(max_symbols);
+                for(uint32_t i = 0; i < max_symbols; ++i)
+                    m_vector_storage[i].resize(max_vector_length);
+//                m_vector_storage.resize(max_symbols * max_vector_length, 0);
             }
 
         /// @see final_coder::initialize(...)
@@ -66,10 +69,11 @@ namespace kodo
 
                 assert(m_vector_size > 0);
 
+
                 /// Zero initialize the needed storage for the encoding
                 /// vectors (we have as many vectors as symbols)
-                std::fill(m_vector_storage.begin(),
-                          m_vector_storage.end(), 0);
+                // std::fill(m_vector_storage.begin(),
+                //           m_vector_storage.end(), 0);
 
             }
 
@@ -77,14 +81,14 @@ namespace kodo
         value_type* vector(uint32_t index)
             {
                 assert(index < SuperCoder::symbols());
-                return &m_vector_storage[ index * m_vector_length ];
+                return &(m_vector_storage[index])[0];
             }
 
         /// @return the specified vector
         const value_type* vector(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
-                return &m_vector_storage[ index * m_vector_length ];
+                return &(m_vector_storage[index])[0];
             }
 
         /// @return the length of the vector in value_type elements
@@ -101,8 +105,11 @@ namespace kodo
 
     private:
 
-        /// Stores the encoding vectors
-        std::vector<value_type> m_vector_storage;
+        /// Stores the encoding vectors, we do a vector of vectors
+        /// to keep alignment of the individual vectors. This is
+        /// needed when using SSE etc. instructions for fast
+        /// computations with the vectors
+        std::vector<std::vector<value_type> > m_vector_storage;
 
         /// The length of a vector in value_type elements
         uint32_t m_vector_length;

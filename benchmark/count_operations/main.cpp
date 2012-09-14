@@ -21,7 +21,7 @@ std::vector<uint32_t> setup_symbols()
 
 std::vector<uint32_t> setup_symbol_size()
 {
-    std::vector<uint32_t> symbol_size = {1400};
+    std::vector<uint32_t> symbol_size = {1600};
     return symbol_size;
 }
 
@@ -235,6 +235,7 @@ namespace kodo
     class full_rlnc_decoder_count
         : public payload_decoder<
                  systematic_decoder<
+                 align_symbol_id_decoder<
                  full_vector_decoder<
                  linear_block_decoder<
                  linear_block_vector_storage<
@@ -244,7 +245,7 @@ namespace kodo
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder_count<Field>, Field>
-                     > > > > > > > > > >
+                     > > > > > > > > > > >
     {};
 
 }

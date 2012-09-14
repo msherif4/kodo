@@ -45,6 +45,10 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
+                    // Due to alignment of the finite field math the symbol
+                    // size should always be a multiple of 16
+                    assert((max_symbol_size % 16) == 0);
+
                     m_field = boost::make_shared<field_impl>();
                 }
 
@@ -53,6 +57,10 @@ namespace kodo
             /// @param max_symbol_size the maximum size of a symbol in bytes
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
+                    // Due to alignment of the finite field math the symbol
+                    // size should always be a multiple of 16
+                    assert((symbol_size % 16) == 0);
+
                     pointer coder = SuperCoder::factory::build(symbols, symbol_size);
                     coder->m_field = m_field;
 
@@ -72,8 +80,14 @@ namespace kodo
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
-                uint32_t max_symbol_length =
+                // The maximum symbol length needed for the temp symbol. We
+                // expect this will be one value per symbol (for the encoding
+                // vector) or the number of symbols needed for the actual data.
+                uint32_t data_symbol_length =
                     fifi::elements_needed<field_type>(max_symbol_size);
+
+                uint32_t max_symbol_length =
+                    std::max(max_symbols, data_symbol_length);
 
                 assert(max_symbol_length > 0);
                 m_temp_symbol.resize(max_symbol_length, 0);
@@ -149,10 +163,12 @@ namespace kodo
                 assert(symbol_dest != 0);
                 assert(symbol_src  != 0);
                 assert(symbol_length > 0);
+                assert(symbol_length <= m_temp_symbol.size());
+                assert(symbol_dest != symbol_src);
 
-                fifi::multiply_subtract(*m_field, coefficient, symbol_dest,
-                                        symbol_src, &m_temp_symbol[0],
-                                        symbol_length);
+                fifi::multiply_subtract(
+                    *m_field, coefficient, symbol_dest, symbol_src,
+                    &m_temp_symbol[0], symbol_length);
             }
 
         /// Subtracts the source symbol from the destination symbol i.e.:

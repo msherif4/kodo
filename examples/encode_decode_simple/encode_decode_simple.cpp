@@ -10,7 +10,7 @@ int main()
     // Set the number of symbols (i.e. the generation size in RLNC
     // terminology) and the size of a symbol in bytes
     uint32_t symbols = 42;
-    uint32_t symbol_size = 100;
+    uint32_t symbol_size = 160;
 
     // Typdefs for the encoder/decoder type we wish to use
     typedef kodo::full_rlnc_encoder<fifi::binary8> rlnc_encoder;

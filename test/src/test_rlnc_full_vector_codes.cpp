@@ -56,8 +56,8 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
         >(symbols, symbol_size);
 }
 
-/// Tests the basic API functionality this mean basic encoding
-/// and decoding
+// Tests the basic API functionality this mean basic encoding
+// and decoding
 TEST(TestRlncFullVectorCodes, basic_api)
 {
     test_coders(32, 1600);
@@ -65,8 +65,8 @@ TEST(TestRlncFullVectorCodes, basic_api)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_coders(symbols, symbol_size);
 }
@@ -115,9 +115,9 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
 
 }
 
-/// Test that the encoders and decoders initialize() function can be used
-/// to reset the state of an encoder and decoder and that they therefore can be
-/// safely reused.
+// Test that the encoders and decoders initialize() function can be used
+// to reset the state of an encoder and decoder and that they therefore can be
+// safely reused.
 TEST(TestRlncFullVectorCodes, initialize_function)
 {
     test_coders(32, 1600);
@@ -125,8 +125,8 @@ TEST(TestRlncFullVectorCodes, initialize_function)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_initialize(symbols, symbol_size);
 }
@@ -181,8 +181,8 @@ TEST(TestRlncFullVectorCodes, systematic)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_coders_systematic(symbols, symbol_size);
 }
@@ -236,8 +236,8 @@ TEST(TestRlncFullVectorCodes, raw)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_coders_raw(symbols, symbol_size);
 }
@@ -251,11 +251,17 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+
+    typename Encoder::pointer encoder =
+        encoder_factory.build(symbols, symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder_one = decoder_factory.build(symbols, symbol_size);
-    typename Decoder::pointer decoder_two = decoder_factory.build(symbols, symbol_size);
+
+    typename Decoder::pointer decoder_one =
+        decoder_factory.build(symbols, symbol_size);
+
+    typename Decoder::pointer decoder_two =
+        decoder_factory.build(symbols, symbol_size);
 
     EXPECT_EQ(encoder->payload_size(), decoder_one->payload_size());
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
@@ -286,8 +292,11 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     kodo::copy_symbols(kodo::storage(data_out_one), decoder_one);
     kodo::copy_symbols(kodo::storage(data_out_two), decoder_two);
 
-    EXPECT_TRUE(std::equal(data_out_one.begin(), data_out_one.end(), data_in.begin()));
-    EXPECT_TRUE(std::equal(data_out_two.begin(), data_out_two.end(), data_in.begin()));
+    EXPECT_TRUE(
+        std::equal(data_out_one.begin(), data_out_one.end(), data_in.begin()));
+
+    EXPECT_TRUE(
+        std::equal(data_out_two.begin(), data_out_two.end(), data_in.begin()));
 }
 
 
@@ -338,8 +347,8 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
 
     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 1000) + 1) * 4;
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
 
     test_recoders(symbols, symbol_size);
 }

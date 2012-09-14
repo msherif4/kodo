@@ -23,6 +23,14 @@ namespace kodo
             : m_proxy(0)
             {}
 
+        /// @see final_coder::construct(...)
+        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
+            { }
+
+        /// @see final_coder::initialize(...)
+        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+            { }
+
         /// Forwards the encode(...) function to the
         /// proxy_encode(...) function in the specified proxy
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)

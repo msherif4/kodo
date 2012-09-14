@@ -14,6 +14,18 @@
 #include <fifi/prime2325_binary_search.h>
 #include <fifi/prime2325_apply_prefix.h>
 
+/// @return a random number of symbols to use in the tests
+inline uint32_t rand_symbols()
+{
+    return (rand() % 256) + 1;
+}
+
+/// @return a random symbol size to use in the tests
+inline uint32_t rand_symbol_size()
+{
+    return ((rand() % 1000) + 1) * 16;
+}
+
 template<class Encoder, class Decoder>
 inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 {
@@ -115,10 +127,12 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    typename Encoder::pointer encoder =
+        encoder_factory.build(symbols, symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    typename Decoder::pointer decoder =
+        decoder_factory.build(symbols, symbol_size);
 
     // Encode/decode operations
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());

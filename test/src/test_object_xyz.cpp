@@ -195,7 +195,7 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
     srand(static_cast<uint32_t>(time(0)));
 
     uint32_t symbols = (rand() % 256) + 1;
-    uint32_t symbol_size = ((rand() % 2000) + 1) * 2;
+    uint32_t symbol_size = ((rand() % 100) + 1) * 16;
 
     // Multiplies the data to be encoded so that the object encoder
     // is expected to contain multiplier encoders.

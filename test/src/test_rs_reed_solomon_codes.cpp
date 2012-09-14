@@ -28,11 +28,11 @@ TEST(TestReedSolomonCodes, test_construct)
 
 
     {
-        kodo::rs8_encoder::factory fenc(255, 1400);
-        kodo::rs8_encoder::pointer penc = fenc.build(128, 1400);
+        kodo::rs8_encoder::factory fenc(255, 1600);
+        kodo::rs8_encoder::pointer penc = fenc.build(128, 1600);
 
-        kodo::rs8_decoder::factory fdec(255, 1400);
-        kodo::rs8_decoder::pointer pdec = fdec.build(128, 1400);
+        kodo::rs8_decoder::factory fdec(255, 1600);
+        kodo::rs8_decoder::pointer pdec = fdec.build(128, 1600);
 
 
     }
@@ -58,11 +58,11 @@ TEST(TestReedSolomonCodes, test_encode_decode)
 
         uint32_t symbols = choose_symbols(random_generator);
 
-        kodo::rs8_encoder::factory fenc(255, 1400);
-        kodo::rs8_encoder::pointer encoder = fenc.build(symbols, 1400);
+        kodo::rs8_encoder::factory fenc(255, 1600);
+        kodo::rs8_encoder::pointer encoder = fenc.build(symbols, 1600);
 
-        kodo::rs8_decoder::factory fdec(255, 1400);
-        kodo::rs8_decoder::pointer decoder = fdec.build(symbols, 1400);
+        kodo::rs8_decoder::factory fdec(255, 1600);
+        kodo::rs8_decoder::pointer decoder = fdec.build(symbols, 1600);
 
         // Encode/decode operations
         EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
