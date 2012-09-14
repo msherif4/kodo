@@ -119,7 +119,7 @@ struct throughput_benchmark : public gauge::time_benchmark
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
             // The number of bytes {en|de}coded
-            uint32_t total_bytes = 0;
+            uint64_t total_bytes = 0;
 
             if(type == "decoder")
             {
@@ -135,7 +135,7 @@ struct throughput_benchmark : public gauge::time_benchmark
             }
 
             // The bytes per iteration
-            uint32_t bytes =
+            uint64_t bytes =
                 total_bytes / gauge::time_benchmark::iteration_count();
 
             return bytes / time; // MB/s for each iteration
