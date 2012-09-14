@@ -15,28 +15,33 @@
 
 std::vector<uint32_t> setup_symbols()
 {
-    std::vector<uint32_t> symbols = {16, 32, 64, 128, 1024};
+    std::vector<uint32_t> symbols;
+    symbols.push_back(16);
+    symbols.push_back(32);
+    symbols.push_back(64);
+    symbols.push_back(128);
+    symbols.push_back(1024);
     return symbols;
 }
 
 std::vector<uint32_t> setup_symbol_size()
 {
-    std::vector<uint32_t> symbol_size = {1600};
+    std::vector<uint32_t> symbol_size;
+    symbol_size.push_back(1600);
+
     return symbol_size;
 }
 
 /// Returns which operation to measure
 std::vector<std::string> setup_operations()
 {
-    std::vector<std::string> operations =
-        {
-            "dest[i] = dest[i] + src[i]",
-            "dest[i] = dest[i] - src[i]",
-            "dest[i] = dest[i] * constant",
-            "dest[i] = dest[i] + (constant * src[i])",
-            "dest[i] = dest[i] - (constant * src[i])",
-            "invert(value)"
-        };
+    std::vector<std::string> operations;
+    operations.push_back("dest[i] = dest[i] + src[i]");
+    operations.push_back("dest[i] = dest[i] - src[i]");
+    operations.push_back("dest[i] = dest[i] * constant");
+    operations.push_back("dest[i] = dest[i] + (constant * src[i])");
+    operations.push_back("dest[i] = dest[i] - (constant * src[i])");
+    operations.push_back("invert(value)");
 
     return operations;
 }
@@ -44,11 +49,9 @@ std::vector<std::string> setup_operations()
 /// Returns which operation to measure
 std::vector<std::string> setup_types()
 {
-    std::vector<std::string> types =
-        {
-            "encoder",
-            "decoder"
-        };
+    std::vector<std::string> types;
+    types.push_back("encoder");
+    types.push_back("decoder");
 
     return types;
 }
