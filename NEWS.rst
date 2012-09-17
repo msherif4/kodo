@@ -6,7 +6,12 @@ of every change, see the Git log.
 
 Latest (head of the master branch)
 ----------------------------------
-* TBD
+* Moved source files to the src folder
+* Added operations counter benchmark
+* Switched to use the cxx-gauge project for the benchmark code
+* Bump fifi to version 3
+* Bump boost to version 2
+* Bump sak to version 4
 
 2.0.1
 -----

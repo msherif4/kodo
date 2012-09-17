@@ -96,8 +96,8 @@ def build(bld):
         bld.add_post_fun(waf_unit_test_v2.set_exit_code)
 
     # Export own includes
-    bld(includes = '.',
-        export_includes = '.',
+    bld(includes = './src',
+        export_includes = './src',
         name = 'kodo_includes')
 
 
