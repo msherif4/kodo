@@ -7,6 +7,8 @@
 #define KODO_ALIGN_SYMBOL_ID_DECODER_H
 
 #include <cstdint>
+#include <sak/aligned_allocator.hpp>
+#include <sak/is_aligned.hpp>
 
 namespace kodo
 {
@@ -26,7 +28,7 @@ namespace kodo
                 SuperCoder::initialize(symbols, symbol_size);
                 m_temp_id.resize(SuperCoder::symbol_id_size());
 
-                assert((((uintptr_t)&m_temp_id[0]) & 15) == 0);
+                assert(sak::is_aligned(&m_temp_id[0]));
             }
 
         /// The decode function which consumes an incomming symbol and
@@ -38,7 +40,7 @@ namespace kodo
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
 
-                if((((uintptr_t)symbol_id) & 15) != 0)
+                if(sak::is_aligned(symbol_id) == false)
                 {
                     std::copy(symbol_id,
                               symbol_id + SuperCoder::symbol_id_size(),
@@ -52,10 +54,16 @@ namespace kodo
                 }
             }
 
+    private:
+
+        /// The storage type
+        typedef std::vector<uint8_t, sak::aligned_allocator<uint8_t> >
+            aligned_vector;
+
     protected:
 
         /// Temp symbol id (with aligned memory)
-        std::vector<uint8_t> m_temp_id;
+        aligned_vector m_temp_id;
 
     };
 }
