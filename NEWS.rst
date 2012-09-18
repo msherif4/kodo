@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest (head of the master branch)
 ----------------------------------
+* tbd
+
+3.0.0
+-----
 * Moved source files to the src folder
 * Added operations counter benchmark
 * Switched to use the cxx-gauge project for the benchmark code
