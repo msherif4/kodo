@@ -8,6 +8,11 @@ Latest (head of the master branch)
 ----------------------------------
 * tbd
 
+3.0.1
+-----
+* Removing asserts on symbol size. Fifi should handle symbol sizes
+  not a multiple of 16.
+
 3.0.0
 -----
 * Moved source files to the src folder
