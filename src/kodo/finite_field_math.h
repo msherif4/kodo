@@ -45,10 +45,6 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
-                    // Due to alignment of the finite field math the symbol
-                    // size should always be a multiple of 16
-                    assert((max_symbol_size % 16) == 0);
-
                     m_field = boost::make_shared<field_impl>();
                 }
 
@@ -57,11 +53,9 @@ namespace kodo
             /// @param max_symbol_size the maximum size of a symbol in bytes
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
-                    // Due to alignment of the finite field math the symbol
-                    // size should always be a multiple of 16
-                    assert((symbol_size % 16) == 0);
+                    pointer coder =
+                        SuperCoder::factory::build(symbols, symbol_size);
 
-                    pointer coder = SuperCoder::factory::build(symbols, symbol_size);
                     coder->m_field = m_field;
 
                     return coder;

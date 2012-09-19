@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 bld.program(
-    features = 'cxx test',
+    features = 'cxx',
     source   = ['main.cpp'],
     target   = 'kodo_throughput',
     cxxflags = bld.toolchain_cxx_flags(),
