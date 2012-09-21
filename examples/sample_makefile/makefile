@@ -1,7 +1,20 @@
 # Simple make file showing the commandline arguments to g++
-# used to compile a benchmark with gauge.
-# Note, that the paths to the gauge and boost libraries depend
-# on your specific machine and will need to be updated .
+# used to compile a simple example with kodo
+# Note, that the paths to the libraries depend
+# on your specific machine and will need to be updated.
 
+# The include path to the kodo sources
+kodo_dir = ../../src
+
+# The include path to the sak sources
+sak_dir = ~/dev/bundle_dependencies/sak-master/src
+
+# The include path to the fifi sources
+fifi_dir = ~/dev/bundle_dependencies/fifi-master/src
+
+# The include path to the boost sources
+boost_dir = ~/dev/bundle_dependencies/boost-master/boost-lib
+
+# Invoke the compiler
 all:
-	g++ main.cpp -o benchmark --std=c++0x -I../../src -L../../build/linux -lgauge -L../../build/linux/__root__/home/mvp/dev/bundle_dependencies/boost-1.2.0/ -lboost_chrono -lboost_program_options -lboost_system -lrt
+	g++ main.cpp -o test --std=c++0x -I $(boost_dir) -I $(fifi_dir) -I $(kodo_dir) -I $(sak_dir)
