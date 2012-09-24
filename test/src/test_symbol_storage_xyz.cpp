@@ -3,20 +3,19 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
 
-#include <kodo/has_block_info.h>
-#include <kodo/final_coder_factory.h>
-#include <kodo/storage.h>
-#include <kodo/symbol_storage_shallow_partial.h>
-#include <kodo/symbol_storage_shallow.h>
-#include <kodo/symbol_storage_deep.h>
+#include <gtest/gtest.h>
+
+#include <kodo/has_block_info.hpp>
+#include <kodo/final_coder_factory.hpp>
+#include <kodo/storage.hpp>
+#include <kodo/symbol_storage_shallow_partial.hpp>
+#include <kodo/symbol_storage_shallow.hpp>
+#include <kodo/symbol_storage_deep.hpp>
 
 namespace kodo
 {
-
     template<class Field>
     class shallow_const_coder
         : public symbol_storage_shallow_const<
@@ -194,7 +193,6 @@ TEST(TestSymbolStorage, test_set_storage_function)
     }
 
 }
-
 
 // Probably stupid, but just to avoid a warning about comparing
 // signed and unsigned values, using EXPECT_EQ(...) otherwise

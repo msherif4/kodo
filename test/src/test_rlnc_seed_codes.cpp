@@ -3,17 +3,17 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
 #include <ctime>
 
-#include <kodo/rlnc/seed_codes.h>
-#include <kodo_debug/full_vector_decoder_debug.h>
-#include "basic_api_test_helper.h"
+#include <gtest/gtest.h>
 
+#include <kodo/rlnc/seed_codes.hpp>
+#include <kodo_debug/full_vector_decoder_debug.hpp>
+
+#include "basic_api_test_helper.hpp"
 
 static void test_coders(uint32_t symbols, uint32_t symbol_size)
 {
-
     invoke_basic_api
         <
             kodo::seed_rlnc_encoder<fifi::binary>,
@@ -83,8 +83,4 @@ TEST(TestRlncSeedCodes, systematic)
 
     test_coders_systematic(symbols, symbol_size);
 }
-
-
-
-
 

@@ -3,9 +3,10 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
 #include <stdint.h>
 #include <time.h>
+
+#include <gtest/gtest.h>
 
 GTEST_API_ int main(int argc, char **argv)
 {

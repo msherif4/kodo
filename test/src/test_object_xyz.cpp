@@ -3,15 +3,14 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <ctime>
 
-#include <kodo/object_decoder.h>
-#include <kodo/object_encoder.h>
-#include <kodo/rfc5052_partitioning_scheme.h>
-#include <kodo/rlnc/full_vector_codes.h>
+#include <gtest/gtest.h>
 
+#include <kodo/object_decoder.hpp>
+#include <kodo/object_encoder.hpp>
+#include <kodo/rfc5052_partitioning_scheme.hpp>
+#include <kodo/rlnc/full_vector_codes.hpp>
 
 template<
     class Encoder,
@@ -203,6 +202,4 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
 
     test_object_coders(symbols, symbol_size, multiplier);
 }
-
-
 

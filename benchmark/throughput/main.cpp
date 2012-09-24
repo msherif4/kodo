@@ -5,17 +5,15 @@
 
 #include <ctime>
 
-#include <kodo/rlnc/full_vector_codes.h>
-#include <kodo/rlnc/seed_codes.h>
-
-#include <kodo/rs/reed_solomon_codes.h>
-
 #include <boost/make_shared.hpp>
 
-#include <gauge/gauge.h>
-#include <gauge/console_printer.h>
-#include <gauge/python_printer.h>
+#include <gauge/gauge.hpp>
+#include <gauge/console_printer.hpp>
+#include <gauge/python_printer.hpp>
 
+#include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/rlnc/seed_codes.hpp>
+#include <kodo/rs/reed_solomon_codes.hpp>
 
 std::vector<uint32_t> setup_symbols()
 {
@@ -421,7 +419,6 @@ int main(int argc, const char* argv[])
         std::make_shared<gauge::python_printer>("out.py"));
 
     gauge::runner::run_benchmarks(argc, argv);
-
 
     return 0;
 }

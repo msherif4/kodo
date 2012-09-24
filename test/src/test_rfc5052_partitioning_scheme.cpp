@@ -3,13 +3,13 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
 #include <ctime>
 #include <algorithm>
 
-#include <kodo/rfc5052_partitioning_scheme.h>
+#include <gtest/gtest.h>
+
+#include <kodo/rfc5052_partitioning_scheme.hpp>
 
 TEST(TestRfc5052PartitioningScheme, partition_in_hand)
 {
@@ -18,7 +18,7 @@ TEST(TestRfc5052PartitioningScheme, partition_in_hand)
     uint32_t max_symbols = 16;
     uint32_t max_symbol_size = 1500;
     uint32_t object_size = 123456;
-    
+
     kodo::rfc5052_partitioning_scheme partitioning(
         max_symbols, max_symbol_size, object_size);
 
@@ -60,7 +60,7 @@ TEST(TestRfc5052PartitioningScheme, partition_two_blocks)
         max_symbols, max_symbol_size, object_size);
 
     ASSERT_EQ(partitioning.blocks(), uint32_t(2));
-    
+
     ASSERT_TRUE(partitioning.symbols(0)*partitioning.symbol_size(0) +
                 partitioning.symbols(1)*partitioning.symbol_size(1)
 		>= object_size);

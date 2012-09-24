@@ -6,12 +6,12 @@
 #include <ctime>
 #include <stack>
 
-#include <kodo/rlnc/full_vector_codes.h>
+#include <gauge/gauge.hpp>
+#include <gauge/console_printer.hpp>
+#include <gauge/python_printer.hpp>
 
-#include <gauge/gauge.h>
-#include <gauge/console_printer.h>
-#include <gauge/python_printer.h>
 
+#include <kodo/rlnc/full_vector_codes.hpp>
 
 std::vector<uint32_t> setup_symbols()
 {
@@ -653,8 +653,6 @@ int main(int argc, const char* argv[])
 
     gauge::runner::run_benchmarks(argc, argv);
 
-
     return 0;
 }
-
 

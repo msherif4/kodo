@@ -3,12 +3,13 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
 #include <ctime>
-#include <kodo/generators/block.h>
-#include <kodo/generators/block_seed.h>
-#include <kodo/generators/block_cache.h>
 
+#include <gtest/gtest.h>
+
+#include <kodo/generators/block.hpp>
+#include <kodo/generators/block_seed.hpp>
+#include <kodo/generators/block_cache.hpp>
 
 template<template <class> class Block, class ValueType>
 void create_blocks(uint32_t length)
@@ -16,14 +17,14 @@ void create_blocks(uint32_t length)
     std::vector<ValueType> zero(length);
     std::vector<ValueType> one(length);
     std::vector<ValueType> two(length);
-    
+
     typename Block<ValueType>::factory f;
     typename Block<ValueType>::pointer block = f.build(length);
 
     block->fill(0, &zero[0]);
     block->fill(0, &one[0]);
     block->fill(0, &two[0]);
-    
+
     EXPECT_TRUE(std::equal(zero.begin(), zero.end(), one.begin()));
     EXPECT_TRUE(std::equal(one.begin(), one.end(), two.begin()));
 
@@ -33,7 +34,7 @@ void create_blocks(uint32_t length)
     EXPECT_TRUE(std::equal(one.end(), one.end(), two.begin()));
 
     block->fill(0, &one[0]);
-    EXPECT_TRUE(std::equal(zero.begin(), zero.end(), one.begin()));    
+    EXPECT_TRUE(std::equal(zero.begin(), zero.end(), one.begin()));
 }
 
 TEST(TestGeneratorBlock, basic)

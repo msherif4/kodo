@@ -45,13 +45,13 @@ def options(opt):
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
             git_repository = 'git://github.com/steinwurf/fifi.git',
-            major_version = 3))
+            major_version = 4))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gauge',
             git_repository = 'git://github.com/steinwurf/cxx-gauge.git',
-            major_version = 1))
+            major_version = 2))
 
 
 

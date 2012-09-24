@@ -3,21 +3,18 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
-
-#include <kodo/rs/reed_solomon_codes.h>
 
 #include <boost/make_shared.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
 
+#include <gtest/gtest.h>
 
+#include <kodo/rs/reed_solomon_codes.hpp>
 
 TEST(TestReedSolomonCodes, test_construct)
 {
-
     // The uniform int distribution
     typedef boost::random::uniform_int_distribution<uint32_t>
             uniform_int;
@@ -79,8 +76,6 @@ TEST(TestReedSolomonCodes, test_encode_decode)
         while( !decoder->is_complete() )
         {
             encoder->encode( &payload[0] );
-
-
 
             decoder->decode( &payload[0] );
             ++symbol_count;

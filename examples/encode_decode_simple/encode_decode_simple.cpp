@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <kodo/rlnc/full_vector_codes.h>
+#include <kodo/rlnc/full_vector_codes.hpp>
 
 int main()
 {
@@ -65,3 +65,4 @@ int main()
                   << "please file a bug report :)" << std::endl;
     }
 }
+

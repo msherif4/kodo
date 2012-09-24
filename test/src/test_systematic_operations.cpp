@@ -3,11 +3,11 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
 
-#include <kodo/rlnc/full_vector_codes.h>
+#include <gtest/gtest.h>
+
+#include <kodo/rlnc/full_vector_codes.hpp>
 
 namespace kodo
 {
@@ -66,8 +66,6 @@ TEST(TestSystematicOperations, is_systematic_encoder)
 
         EXPECT_TRUE(kodo::is_systematic_encoder(ptr));
         EXPECT_TRUE(kodo::is_systematic_on(ptr));
-
     }
-
 }
 

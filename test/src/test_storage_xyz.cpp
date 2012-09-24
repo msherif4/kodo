@@ -3,12 +3,11 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
 
-#include <kodo/storage.h>
+#include <gtest/gtest.h>
 
+#include <kodo/storage.hpp>
 
 TEST(TestStorageFunction, test_storage_function)
 {
@@ -29,6 +28,4 @@ TEST(TestStorageFunction, test_storage_function)
     }
 
 }
-
-
 

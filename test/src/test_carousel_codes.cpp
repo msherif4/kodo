@@ -3,12 +3,13 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
 #include <ctime>
 
-#include <kodo/nocode/carousel_codes.h>
-#include "basic_api_test_helper.h"
+#include <gtest/gtest.h>
 
+#include <kodo/nocode/carousel_codes.hpp>
+
+#include "basic_api_test_helper.hpp"
 
 static void test_coders(uint32_t symbols, uint32_t symbol_size)
 {
@@ -33,11 +34,5 @@ TEST(TestNoCodeCarouselCodes, basic_api)
 
     test_coders(symbols, symbol_size);
 }
-
-
-
-
-
-
 
 

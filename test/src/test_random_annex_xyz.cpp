@@ -3,18 +3,18 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <ctime>
 
-#include <kodo/random_annex_base.h>
-#include <kodo/random_annex_encoder.h>
-#include <kodo/random_annex_decoder.h>
-#include <kodo/rfc5052_partitioning_scheme.h>
-#include <kodo/generators/random_uniform.h>
-#include <kodo/rlnc/full_vector_codes.h>
+#include <gtest/gtest.h>
 
-#include "basic_api_test_helper.h"
+#include <kodo/random_annex_base.hpp>
+#include <kodo/random_annex_encoder.hpp>
+#include <kodo/random_annex_decoder.hpp>
+#include <kodo/rfc5052_partitioning_scheme.hpp>
+#include <kodo/generators/random_uniform.hpp>
+#include <kodo/rlnc/full_vector_codes.hpp>
+
+#include "basic_api_test_helper.hpp"
 
 //
 // Tests the build_annex functionality
@@ -28,9 +28,6 @@ inline void invoke_random_annex_base()
 
     annex_base.build_annex(4, scheme);
 }
-
-
-
 
 TEST(TestRandomAnnexBase, build_annex)
 {
@@ -206,9 +203,5 @@ TEST(TestRandomAnnexCoder, construct_and_invoke_the_basic_api)
 
     test_random_annex_coders(symbols, symbol_size, multiplier);
 }
-
-
-
-
 
 

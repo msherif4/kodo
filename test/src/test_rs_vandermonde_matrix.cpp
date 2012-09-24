@@ -3,15 +3,15 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
-
 #include <stdint.h>
-
-#include <kodo/rs/vandermonde_matrix.h>
 
 #include <boost/make_shared.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
+
+#include <gtest/gtest.h>
+
+#include <kodo/rs/vandermonde_matrix.hpp>
 
 // Test function for printing the matrix
 template<class Field>

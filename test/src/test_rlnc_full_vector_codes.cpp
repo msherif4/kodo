@@ -3,13 +3,14 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <gtest/gtest.h>
 #include <ctime>
 
-#include <kodo/rlnc/full_vector_codes.h>
-#include <kodo_debug/full_vector_decoder_debug.h>
-#include "basic_api_test_helper.h"
+#include <gtest/gtest.h>
 
+#include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo_debug/full_vector_decoder_debug.hpp>
+
+#include "basic_api_test_helper.hpp"
 
 template<template <class> class Encoder,
          template <class> class Decoder>
@@ -352,8 +353,4 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
 
     test_recoders(symbols, symbol_size);
 }
-
-
-
-
 
