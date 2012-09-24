@@ -8,6 +8,10 @@ Latest (head of the master branch)
 ----------------------------------
 * tbd
 
+4.0.0
+-----
+* Using .hpp extension instead of .h
+
 3.0.1
 -----
 * Removing asserts on symbol size. Fifi should handle symbol sizes
