@@ -48,8 +48,8 @@ namespace kodo
             /// Constructs a new block factory
             /// @param seed_value, the seed value used for
             ///        the underlying random generator
-            factory(uint32_t seed_value = 0)
-                : m_seed(seed_value)
+            factory()
+                : m_seed(0)
                 { }
 
             /// Build a factory for blocks of the defined length
@@ -63,6 +63,13 @@ namespace kodo
                     p->construct(block_length, m_seed);
 
                     return p;
+                }
+
+            /// Set the seed to use
+            /// @param seed the seed value
+            void set_seed(uint32_t seed)
+                {
+                    m_seed = seed;
                 }
 
         private:

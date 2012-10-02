@@ -34,11 +34,6 @@ namespace kodo
         public:
 
             /// @see block_final::factory(...)
-            factory(uint32_t seed_value = 0)
-                : SuperBlock::factory(seed_value)
-                { }
-
-            /// @see block_final::factory(...)
             pointer build(uint32_t block_length)
                 {
                     if(m_cache.find(block_length) == m_cache.end())

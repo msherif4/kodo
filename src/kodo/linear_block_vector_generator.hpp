@@ -66,6 +66,12 @@ namespace kodo
                     return coder;
                 }
 
+            /// Set the see used by the generator block
+            void set_seed(uint32_t seed)
+                {
+                    m_generator_factory->set_seed(seed);
+                }
+
         private:
 
             typename generator_block::factory m_generator_factory;
