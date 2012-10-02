@@ -87,6 +87,7 @@ def build(bld):
 
         bld.recurse('test')
         bld.recurse('examples/encode_decode_simple')
+        bld.recurse('examples/set_seed_encoder')
 
         bld.recurse('benchmark/throughput')
         bld.recurse('benchmark/count_operations')
