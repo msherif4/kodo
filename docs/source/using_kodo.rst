@@ -70,7 +70,11 @@ Example using makefile / command-line
 If you would like to see an example of building an application with
 Kodo without using any fancy build-system we provide a small makefile
 which shows how to invoke the ``g++`` compiler. The example can be found
-in the ``examples/sample_makefile`` folder in the Kodo sources.
+in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
+
+.. _`Kodo repository`: https://github.com/steinwurf/kodo
+
+
 
 
 Example using Waf (extended)
