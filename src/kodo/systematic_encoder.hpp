@@ -181,7 +181,7 @@ namespace kodo
     /// @return true since this is an systematic encoder
     template<class SuperCoder>
     inline bool
-    is_systematic_encoder_dipatch(const systematic_encoder<SuperCoder> *)
+    is_systematic_encoder_dispatch(const systematic_encoder<SuperCoder> *)
     {
         return true;
     }
