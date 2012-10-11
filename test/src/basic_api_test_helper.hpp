@@ -91,9 +91,9 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
         uint32_t block_length = encoder->block_size() / 4;
 
         fifi::prime2325_binary_search search(block_length);
-        prefix = search.find_prefix(sak::storage_list(encode_data));
+        prefix = search.find_prefix(sak::storage(encode_data));
 
-        fifi::apply_prefix(sak::storage_list(encode_data), prefix);
+        fifi::apply_prefix(sak::storage(encode_data), prefix);
     }
 
     kodo::set_symbols(kodo::storage(encode_data), encoder);
@@ -116,7 +116,7 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     if(fifi::is_prime2325<typename Encoder::field_type>::value)
     {
         // Now we have to apply the prefix to the decoded data
-        fifi::apply_prefix(sak::storage_list(data_out), prefix);
+        fifi::apply_prefix(sak::storage(data_out), prefix);
     }
 
     EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
