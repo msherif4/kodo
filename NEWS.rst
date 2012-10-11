@@ -8,6 +8,11 @@ Latest (head of the master branch)
 ----------------------------------
 * tbd
 
+5.0.0
+-----
+* Bump fifi to version 5.x.y.
+* Bump sak to version 6.x.y.
+
 4.0.0
 -----
 * Using .hpp extension instead of .h
