@@ -27,7 +27,7 @@ namespace kodo
     /// Catch all implementation if no specializations exist
     /// this function will be called.
     /// @return always return false
-    inline bool is_systematic_encoder_dipatch(...)
+    inline bool is_systematic_encoder_dispatch(...)
     {
         return false;
     }
@@ -47,7 +47,7 @@ namespace kodo
     template<class Encoder>
     inline bool is_systematic_encoder(const Encoder & e)
     {
-        return is_systematic_encoder_dipatch(&e);
+        return is_systematic_encoder_dispatch(&e);
     }
 
     /// Helper for unwrapping encoders stored in a shared_ptr
