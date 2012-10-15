@@ -4,9 +4,14 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest (head of the master branch)
-----------------------------------
+Latest (major/minor/bugfix)
+---------------------------
 * tbd
+
+6.0.0
+-----
+* Bump fifi to version 6
+* Bump sak to version 7
 
 5.0.0
 -----
