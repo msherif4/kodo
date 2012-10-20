@@ -1,8 +1,7 @@
 .. _using_kodo:
 Using Kodo in Your Application
 ==============================
-The purpose of this page is to describe how you may
-include Kodo in your own projects.
+The following describes how you may include Kodo in your own projects.
 
 Dependencies of Kodo
 --------------------
@@ -76,37 +75,38 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
 
 
 
+..
 
-Example using Waf (extended)
-----------------------------
+   Example using Waf (extended)
+   ----------------------------
 
-.. warning:: This example still need to be added to the sources
+   .. warning:: This example still need to be added to the sources
 
-If you wish to use Waf to build your application you may utilize its
-functionality to setup dependencies for Kodo. The ``waf`` build-script
-found in the Kodo source package has been extended with a number of
-tools to make managing dependencies easier. The tools added to the
-``waf`` executable may be found here: https://github.com/steinwurf/external-waf
+   If you wish to use Waf to build your application you may utilize its
+   functionality to setup dependencies for Kodo. The ``waf`` build-script
+   found in the Kodo source package has been extended with a number of
+   tools to make managing dependencies easier. The tools added to the
+   ``waf`` executable may be found here: https://github.com/steinwurf/external-waf
 
-If you wish to use the same approach you can find an example building
-an application using Kodo and the modified ``waf`` executable here:
+   If you wish to use the same approach you can find an example building
+   an application using Kodo and the modified ``waf`` executable here:
 
-If are already using a unmodified version of Waf or would like to
-use a plain Waf build-script see next section.
+   If are already using a unmodified version of Waf or would like to
+   use a plain Waf build-script see next section.
 
 
-Example using Waf (unmodified)
-------------------------------
+   Example using Waf (unmodified)
+   ------------------------------
 
-.. warning:: This example still need to be added to the sources
+   .. warning:: This example still need to be added to the sources
 
-If you wish to use a plain Waf version downloaded from
-http://code.google.com/p/waf/ the following example shows one
-possible way of using it to build an application with Kodo.
+   If you wish to use a plain Waf version downloaded from
+   http://code.google.com/p/waf/ the following example shows one
+   possible way of using it to build an application with Kodo.
 
-This example is available at:
+   This example is available at:
 
-*
+   *
 
 
 
