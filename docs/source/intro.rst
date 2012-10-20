@@ -10,6 +10,7 @@ Kodo provides several different codes, primarily the basic Random Linear Network
 Code and multiple variants.
 
 * Random Linear Network Code (RLNC)
+
   * Dense variant
   * Sparse variant with fixed density
   * Sparse variant with uniform density
@@ -18,6 +19,7 @@ Code and multiple variants.
   * Variants where a seed is included
 
 * Other codes and approaches
+
   * Random Annex overlay code
   * Reed-Solomon code
   * Carousel code (round robin scheduling of symbols)
