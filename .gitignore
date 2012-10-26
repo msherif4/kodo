@@ -28,3 +28,6 @@ GTAGS
 
 # Emacs temp / auto save
 \#*#
+
+# compiled documentation
+*.pdf

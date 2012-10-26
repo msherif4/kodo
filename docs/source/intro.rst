@@ -3,11 +3,32 @@ Introduction
 ============
 In this document we will to introduce new users to the Kodo library.
 
+Features
+--------
+
+Kodo provides several different codes, primarily the basic Random Linear Network
+Code and multiple variants.
+
+* Random Linear Network Code (RLNC)
+
+  * Dense variant
+  * Sparse variant with fixed density
+  * Sparse variant with uniform density
+  * Systematic variants
+  * Variants where the coding vector is included (for recoding)
+  * Variants where a seed is included
+
+* Other codes and approaches
+
+  * Random Annex overlay code
+  * Reed-Solomon code
+  * Carousel code (round robin scheduling of symbols)
+
+
 Platforms
 ---------
-Kodo is a plain C++ library so it should be reasonable portable. We
-try to keep everything working and most platforms. To ensure that
-we don't break a supported platform we have a buildbot instance
+Kodo is a plain C++ library so it is portable to a wide range of platforms.
+To ensure that we don't break a supported platform we have a buildbot instance
 building the Kodo libraries. You can check the status on the
 `Buildbot Waterfall`_ page.
 
@@ -43,7 +64,7 @@ that you also install the following:
 
 Download tools (Ubuntu or other Debian based distros)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Simply get the dependencies using the following command:
+Get the dependencies using the following command:
 ::
   sudo apt-get install g++ python git-core
 
@@ -55,8 +76,8 @@ Download tools (Windows)
    Newer versions should also be fine.
 2. **Python:** You need a working Python installation. Find the available
    download on the `Python homepage`_.
-3. **Git:** There are several ways to get git on Windows. Currently our 
-   build-system only supports the msysgit_ tool. 
+3. **Git:** There are several ways to get git on Windows. Currently our
+   build-system only supports the msysgit_ tool.
 
 .. _`Visual Studio Express 10`: http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
 .. _`Python homepage`: http://www.python.org/download/
@@ -154,7 +175,5 @@ Provided that you have the `Tools Needed`_ installed.
 
    b. **Windows**: Run unit-tests from the Kodo directory by running
       ``build/win32/test/kodo_tests.exe`` in your command prompt.
-
-
 
 
