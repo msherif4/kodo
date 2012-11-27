@@ -100,10 +100,9 @@ namespace kodo
                 m_coefficients.resize(max_symbols);
             }
 
-        /// The decode function which consumes the encoded symbol
-        /// and symbol id
-        /// @param symbol_data, the encoded symbol
-        /// @param symbol_id, identifies how the symbol was encoded
+        /// The decode function which consumes the encoded symbol and symbol id
+        /// @param symbol_data the encoded symbol
+        /// @param symbol_id identifies how the symbol was encoded
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

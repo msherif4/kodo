@@ -74,7 +74,8 @@ namespace kodo
 
 
         /// The decode function which consumes the payload
-        /// @param payload, the input payload
+        /// @param symbol_data the input payload
+        /// @param symbol_id the corresponding symbol id
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

@@ -23,7 +23,10 @@ namespace kodo
     {
     public:
 
+        /// value type pointer
         typedef const ValueType* value_ptr;
+
+        /// storage type
         typedef const_storage storage_type;
 
     };
@@ -34,7 +37,10 @@ namespace kodo
     {
     public:
 
+        /// value type pointer
         typedef ValueType* value_ptr;
+
+        /// storage type
         typedef mutable_storage storage_type;
 
     };

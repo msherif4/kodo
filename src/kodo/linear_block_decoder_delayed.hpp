@@ -146,6 +146,9 @@ namespace kodo
 
     protected:
 
+        /// Performs the final backward substitution that transform the coding
+        /// matrix from echelon form to reduce echelon form and hence fully
+        /// decode the generation
         void final_backward_substitute()
             {
                 assert(SuperCoder::is_complete());

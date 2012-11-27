@@ -77,7 +77,7 @@ namespace kodo
             }
 
         /// Sets the storage
-        /// @param storage a const storage container
+        /// @param symbol_storage a const storage container
         void set_symbols(const const_storage &symbol_storage)
             {
                 assert(symbol_storage.m_size > 0);

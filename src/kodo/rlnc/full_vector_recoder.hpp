@@ -90,11 +90,13 @@ namespace kodo
                 return m_proxy.encode(s);
             }
 
+        /// @returns the size of a symbol id
         uint32_t proxy_symbol_id_size()
             {
                 return SuperCoder::vector_size();
             }
 
+        /// @return the size of a  symbol
         uint32_t proxy_symbol_size()
             {
                 return SuperCoder::symbol_size();

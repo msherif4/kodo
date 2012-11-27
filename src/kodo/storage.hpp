@@ -18,7 +18,10 @@ namespace kodo
     {
     public:
 
+        /// the value type
         typedef uint8_t value_type;
+
+        /// value pointer type
         typedef value_type* value_ptr;
 
     public:
@@ -63,7 +66,10 @@ namespace kodo
     {
     public:
 
+        /// the value type
         typedef uint8_t value_type;
+
+        /// value type pointer
         typedef const value_type* value_ptr;
 
     public:
@@ -141,12 +147,14 @@ namespace kodo
     template<>
     struct storage_sequence<const_storage>
     {
+        /// typedef for the storage type
         typedef std::vector<const_storage> type;
     };
 
     template<>
     struct storage_sequence<mutable_storage>
     {
+        /// typedef for the storage type
         typedef std::vector<mutable_storage> type;
     };
 
