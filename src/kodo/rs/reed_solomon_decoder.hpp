@@ -122,7 +122,7 @@ namespace kodo
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                SuperCoder::decode_with_vector(&m_coefficients[0], symbol);
+                SuperCoder::decode_with_vector(symbol, &m_coefficients[0]);
             }
 
         /// @return the required buffer needed for the symbol id
