@@ -59,7 +59,7 @@ namespace kodo
 
     public:
 
-        /// @see final_coder::construct(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -76,7 +76,7 @@ namespace kodo
                 m_proxy.construct(max_symbols, max_symbol_size);
             }
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);

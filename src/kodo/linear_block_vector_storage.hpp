@@ -39,7 +39,7 @@ namespace kodo
               m_vector_size(0)
             { }
 
-        /// @see final_coder::construct(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -56,10 +56,11 @@ namespace kodo
                 m_vector_storage.resize(max_symbols);
                 for(uint32_t i = 0; i < max_symbols; ++i)
                     m_vector_storage[i].resize(max_vector_length);
-//                m_vector_storage.resize(max_symbols * max_vector_length, 0);
+
+                    //m_vector_storage.resize(max_symbols * max_vector_length, 0);
             }
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);

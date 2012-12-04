@@ -22,16 +22,17 @@ namespace kodo
             : m_proxy(0)
             {}
 
-        /// @see final_coder::construct(...)
-        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
+        /// @copydoc final_coder_factory::construct()
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             { }
 
-        /// @see final_coder::initialize(...)
-        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+        /// @copydoc final_coder_factory::initialize()
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             { }
 
         /// Forwards the encode(...) function to the
         /// proxy_encode(...) function in the specified proxy
+        /// @copydoc linear_block_encoder::encode()
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(m_proxy);
@@ -40,6 +41,7 @@ namespace kodo
 
         /// Forwards the encode(...) function to the
         /// proxy_encode(...) function in the specified proxy
+        /// @copydoc linear_block_encoder::symbol_id_size()
         uint32_t symbol_id_size() const
             {
                 assert(m_proxy);
@@ -48,6 +50,7 @@ namespace kodo
 
         /// Forwards the encode(...) function to the
         /// proxy_encode(...) function in the specified proxy
+        /// @copydoc linear_block_encoder::symbol_size()
         uint32_t symbol_size()
             {
                 assert(m_proxy);

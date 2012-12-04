@@ -94,17 +94,25 @@ namespace kodo
         /// times.
         /// @param max_symbols the maximum symbols this coder can expect
         /// @param max_symbol_size the maximum size of a symbol in bytes
-        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 /// This is just the factory layer so we do nothing
+
+                // To suppress compiler warning
+                (void*) max_symbols;
+                (void*) max_symbol_size;
             }
 
         /// Initializes the coder
         /// @param symbols the number of symbols the coder should store
         /// @param symbol_size the size of each symbol in bytes
-        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 /// This is just the factory layer so we do nothing
+
+                // To suppress compiler warning
+                (void*) symbols;
+                (void*) symbol_size;
             }
     };
 }

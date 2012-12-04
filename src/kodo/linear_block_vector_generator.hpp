@@ -45,12 +45,12 @@ namespace kodo
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @see final_coder_factory::build(..)
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =

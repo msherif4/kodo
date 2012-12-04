@@ -34,17 +34,20 @@ namespace kodo
     public:
 
         /// Using this function we may "encode" an uncoded symbol.
-        /// This function basically copies a specific symbol to the
-        /// symbol buffer unmodified, no headers or similar are added
-        /// to the payload buffer. I.e. the user must track which symbol is
-        /// fetched him/her-self. Can be used in special cases
-        /// where a specific symbols data is needed.
-        /// If an actual systematic encoder/decoder is needed check
-        /// the kodo/systematic_encoder.h and kodo/systematic_decoder.h
-        /// For this function the user provides the buffer alternatively
-        /// if one simply wants to access the raw data of a symbol
-        /// the symbol storage classes contains the raw_symbol(..) function
-        /// which returns the buffer of a symbol.
+        /// This function basically copies a specific symbol to the symbol
+        /// buffer unmodified, no headers or similar are added to the payload
+        /// buffer. I.e. the user must track which symbol is fetched
+        /// him/her-self. Can be used in special cases where a specific symbols
+        /// data is needed. If an actual systematic encoder/decoder is needed
+        /// check the kodo/systematic_encoder.h and kodo/systematic_decoder.h
+        /// For this function the user provides the buffer alternatively if one
+        /// simply wants to access the raw data of a symbol the symbol storage
+        /// classes contains the raw_symbol(..) function which returns the
+        /// buffer of a symbol.
+        ///
+        /// @param symbol_data buffer where the symbol is put
+        /// @param symbol_id buffer the symbol index
+        /// @return the amount of used buffer space in bytes
         uint32_t encode_raw(uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_data != 0);
@@ -67,9 +70,8 @@ namespace kodo
 
         /// Encodes a symbol according to the encoding vector
         /// @param symbol_data the destination buffer for the encoded symbol
-        /// @param symbol_id the encoding vector - note at this point the
-        ///        encoding vector should already be initialized with coding
-        ///        coefficients.
+        /// @param symbol_id the encoding vector - note at this point the coding
+        ///        vector should already be initialized with coding coefficients
         void encode_with_vector(value_type *symbol_data,
                                 const value_type *symbol_id)
             {

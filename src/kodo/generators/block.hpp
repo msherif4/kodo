@@ -33,7 +33,7 @@ namespace kodo
             : m_position(0)
             { }
 
-        /// @see block_final(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);
@@ -103,7 +103,7 @@ namespace kodo
 
     public:
 
-        /// @see block_final(...)
+        /// @copydoc final_code_factory::construct()
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);

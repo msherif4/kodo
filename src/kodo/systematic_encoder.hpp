@@ -40,13 +40,12 @@ namespace kodo
     public:
 
         /// The factory layer associated with this coder.
-        /// In this case only needed to provide the max_payload_size()
-        /// function.
+        /// In this case only needed to provide the max_payload_size() function.
         class factory : public SuperCoder::factory
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -67,7 +66,7 @@ namespace kodo
               m_systematic(true)
             { }
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -79,6 +78,7 @@ namespace kodo
 
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
+        /// @copydoc linear_block_encoder::encode_with_vector()
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -124,6 +124,7 @@ namespace kodo
     private:
 
         /// Encodes a systematic packet
+        /// @copydoc linear_block_encode::encode_with_vector()
         uint32_t encode_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -146,6 +147,7 @@ namespace kodo
             }
 
         /// Encodes a non-systematic packets
+        /// @copydoc linear_block_encode::encode_with_vector()
         uint32_t encode_non_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 /// Flag non_systematic packet
@@ -160,14 +162,11 @@ namespace kodo
 
     private:
 
-        /// Keeps track of the number of symbol sent
-        /// allows us to switch to non-systematic
-        /// encoding after sending all source symbols
-        /// systematically
+        /// Keeps track of the number of symbol sent allows us to switch to
+        /// non-systematic encoding after sending all source symbols systematically
         counter_type m_count;
 
-        /// Allows the systematic mode to be disabled
-        /// at runtime
+        /// Allows the systematic mode to be disabled at runtime
         bool m_systematic;
 
     };
