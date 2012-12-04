@@ -69,7 +69,7 @@ namespace kodo
                 uint32_t max_vector_length =
                     vector_type::length(max_symbols);
 
-                m_vector_data.resize(max_vector_length);
+                m_symbol_id.resize(max_vector_length);
             }
 
 
@@ -85,12 +85,12 @@ namespace kodo
                     sak::big_endian::get<seed_id>(symbol_id);
 
                 /// Fill the encoding vector
-                SuperCoder::generate(id, &m_vector_data[0]);
+                SuperCoder::generate(id, &m_symbol_id[0]);
 
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                SuperCoder::decode_with_vector(&m_vector_data[0], symbol);
+                SuperCoder::decode_with_vector(&m_symbol_id[0], symbol);
             }
 
 
@@ -108,7 +108,7 @@ namespace kodo
     protected:
 
         /// The encoding vector buffer
-        std::vector<value_type> m_vector_data;
+        std::vector<value_type> m_symbol_id;
 
     };
 }

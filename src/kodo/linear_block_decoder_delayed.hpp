@@ -104,38 +104,38 @@ namespace kodo
 
         /// Decodes a symbol based on the vector
         /// @param symbol_data buffer containing the encoding symbol
-        /// @param vector_data buffer containing the encoding vector
-        void decode_with_vector(value_type *vector_data, value_type *symbol_data)
+        /// @param symbol_id buffer containing the encoding vector
+        void decode_with_vector(value_type *symbol_id, value_type *symbol_data)
             {
                 assert(symbol_data != 0);
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
 
                 // See if we can find a pivot
-                boost::optional<uint32_t> pivot_id
-                    = SuperCoder::forward_substitute_to_pivot(vector_data,
+                boost::optional<uint32_t> pivot_index
+                    = SuperCoder::forward_substitute_to_pivot(symbol_id,
                                                               symbol_data);
 
-                if(!pivot_id)
+                if(!pivot_index)
                     return;
 
                 if(!fifi::is_binary<field_type>::value)
                 {
                     // Normalize symbol and vector
-                    SuperCoder::normalize(*pivot_id, vector_data, symbol_data);
+                    SuperCoder::normalize(*pivot_index, symbol_id, symbol_data);
                 }
 
                 // Now save the received symbol
-                SuperCoder::store_coded_symbol(*pivot_id, vector_data,
+                SuperCoder::store_coded_symbol(*pivot_index, symbol_id,
                                                symbol_data);
 
                 // We have increased the rank
                 ++m_rank;
 
-                m_coded[ *pivot_id ] = true;
+                m_coded[ *pivot_index ] = true;
 
-                if(*pivot_id > m_maximum_pivot)
+                if(*pivot_index > m_maximum_pivot)
                 {
-                    m_maximum_pivot = *pivot_id;
+                    m_maximum_pivot = *pivot_index;
                 }
 
                 if(SuperCoder::is_complete())

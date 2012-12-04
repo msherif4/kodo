@@ -67,19 +67,19 @@ namespace kodo
 
         /// Encodes a symbol according to the encoding vector
         /// @param symbol_data the destination buffer for the encoded symbol
-        /// @param vector_data the encoding vector - note at this point the
+        /// @param symbol_id the encoding vector - note at this point the
         ///        encoding vector should already be initialized with coding
         ///        coefficients.
         void encode_with_vector(value_type *symbol_data,
-                                const value_type *vector_data)
+                                const value_type *symbol_id)
             {
                 assert(symbol_data != 0);
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
                     value_type coefficient =
-                        vector_type::coefficient(i, vector_data);
+                        vector_type::coefficient(i, symbol_id);
 
                     if(coefficient)
                     {

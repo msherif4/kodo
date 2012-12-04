@@ -136,17 +136,17 @@ namespace kodo
 
         //     }
 
-        // void normalize(uint32_t row_id, uint32_t pivot_id)
+        // void normalize(uint32_t row_id, uint32_t pivot_index)
         //     {
         //         assert(row_id < m_symbols);
-        //         assert(pivot_id < m_symbols);
+        //         assert(pivot_index < m_symbols);
 
 
 
         //         value_type *row = coefficients(row_id);
         //         assert(row != 0);
 
-        //         value_type coefficient = row[pivot_id];
+        //         value_type coefficient = row[pivot_index];
         //         assert(coefficient > 0);
 
         //         value_type inverted_coefficient = field->invert(coefficient);

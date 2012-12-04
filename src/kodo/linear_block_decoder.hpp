@@ -151,67 +151,67 @@ namespace kodo
 
         /// Decodes a symbol based on the vector
         /// @param symbol_data buffer containing the encoding symbol
-        /// @param vector_data buffer containing the encoding vector
-        void decode_with_vector(value_type *vector_data, value_type *symbol_data)
+        /// @param symbol_id buffer containing the encoding vector
+        void decode_with_vector(value_type *symbol_id, value_type *symbol_data)
             {
                 assert(symbol_data != 0);
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
 
                 // See if we can find a pivot
-                boost::optional<uint32_t> pivot_id
-                    = forward_substitute_to_pivot(vector_data, symbol_data);
+                boost::optional<uint32_t> pivot_index
+                    = forward_substitute_to_pivot(symbol_id, symbol_data);
 
-                if(!pivot_id)
+                if(!pivot_index)
                     return;
 
                 if(!fifi::is_binary<field_type>::value)
                 {
                     // Normalize symbol and vector
-                    normalize(*pivot_id, vector_data, symbol_data);
+                    normalize(*pivot_index, symbol_id, symbol_data);
                 }
 
                 // Reduce the symbol further
-                forward_substitute_from_pivot(*pivot_id, vector_data, symbol_data);
+                forward_substitute_from_pivot(*pivot_index, symbol_id, symbol_data);
 
                 // Now with the found pivot reduce the existing symbols
-                backward_substitute(*pivot_id, vector_data, symbol_data);
+                backward_substitute(*pivot_index, symbol_id, symbol_data);
 
                 // Now save the received symbol
-                store_coded_symbol(*pivot_id, vector_data, symbol_data);
+                store_coded_symbol(*pivot_index, symbol_id, symbol_data);
 
                 // We have increased the rank
                 ++m_rank;
 
-                m_coded[ *pivot_id ] = true;
+                m_coded[ *pivot_index ] = true;
 
-                if(*pivot_id > m_maximum_pivot)
+                if(*pivot_index > m_maximum_pivot)
                 {
-                    m_maximum_pivot = *pivot_id;
+                    m_maximum_pivot = *pivot_index;
                 }
             }
 
         /// When adding a raw symbol (i.e. uncoded) with a specific pivot id and
         /// the decoder already contains a coded symbol in that position this
         /// function performs the proper swap between the two symbols.
-        /// @param pivot_id the pivot position of the raw symbol
+        /// @param pivot_index the pivot position of the raw symbol
         /// @param symbol_data the data for the raw symbol
-        void swap_decode(uint32_t pivot_id, const value_type *symbol_data)
+        void swap_decode(uint32_t pivot_index, const value_type *symbol_data)
             {
-                assert(m_coded[pivot_id] == true);
-                assert(m_uncoded[pivot_id] == false);
+                assert(m_coded[pivot_index] == true);
+                assert(m_uncoded[pivot_index] == false);
 
-                m_coded[pivot_id] = false;
+                m_coded[pivot_index] = false;
 
-                value_type *symbol_i = SuperCoder::symbol(pivot_id);
-                value_type *vector_i = SuperCoder::vector(pivot_id);
+                value_type *symbol_i = SuperCoder::symbol(pivot_index);
+                value_type *vector_i = SuperCoder::vector(pivot_index);
 
                 value_type value =
-                    vector_type::coefficient(pivot_id, vector_i);
+                    vector_type::coefficient(pivot_index, vector_i);
 
                 assert(value == 1);
 
                 // Subtract the new pivot symbol
-                vector_type::set_coefficient(pivot_id, vector_i, 0);
+                vector_type::set_coefficient(pivot_index, vector_i, 0);
 
                 SuperCoder::subtract(symbol_i, symbol_data,
                                      SuperCoder::symbol_length());
@@ -224,9 +224,9 @@ namespace kodo
                 std::fill_n(vector_i, SuperCoder::vector_length(), 0);
 
                 // Stores the symbol and sets the pivot in the vector
-                store_uncoded_symbol(pivot_id, symbol_data);
+                store_uncoded_symbol(pivot_index, symbol_data);
 
-                m_uncoded[pivot_id] = true;
+                m_uncoded[pivot_index] = true;
 
                 // No need to backwards substitute since we are
                 // replacing an existing symbol. I.e. backwards
@@ -235,31 +235,31 @@ namespace kodo
 
         /// Iterates the encoding vector from where a pivot has been identified
         /// and subtracts existing symbols
-        /// @param pivot_id the index of the found pivot element
-        /// @param vector_data the data constituting the encoding vector
+        /// @param pivot_index the index of the found pivot element
+        /// @param symbol_id the data constituting the encoding vector
         /// @param symbol_data the data of the encoded symbol
-        void normalize(uint32_t pivot_id,
-                       value_type *vector_data,
+        void normalize(uint32_t pivot_index,
+                       value_type *symbol_id,
                        value_type *symbol_data)
             {
 
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
                 assert(symbol_data != 0);
 
-                assert(pivot_id < SuperCoder::symbols());
+                assert(pivot_index < SuperCoder::symbols());
 
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
+                assert(m_uncoded[pivot_index] == false);
+                assert(m_coded[pivot_index] == false);
 
                 value_type coefficient =
-                    vector_type::coefficient( pivot_id, vector_data );
+                    vector_type::coefficient( pivot_index, symbol_id );
 
                 assert(coefficient > 0);
 
                 value_type inverted_coefficient = SuperCoder::invert(coefficient);
 
                 // Update symbol and corresponding vector
-                SuperCoder::multiply(vector_data, inverted_coefficient,
+                SuperCoder::multiply(symbol_id, inverted_coefficient,
                                      SuperCoder::vector_length());
 
                 SuperCoder::multiply(symbol_data, inverted_coefficient,
@@ -269,21 +269,21 @@ namespace kodo
 
         /// Iterates the encoding vector and subtracts existing symbols until
         /// a pivot element is found.
-        /// @param vector_data the data constituting the encoding vector
+        /// @param symbol_id the data constituting the encoding vector
         /// @param symbol_data the data of the encoded symbol
         /// @return the pivot index if found.
         boost::optional<uint32_t> forward_substitute_to_pivot(
-            value_type *vector_data,
+            value_type *symbol_id,
             value_type *symbol_data)
             {
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
                 assert(symbol_data != 0);
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
 
                     value_type current_coefficient
-                        = vector_type::coefficient( i, vector_data );
+                        = vector_type::coefficient( i, symbol_id );
 
                     if( current_coefficient )
                     {
@@ -296,7 +296,7 @@ namespace kodo
                             if(fifi::is_binary<field_type>::value)
                             {
                                 SuperCoder::subtract(
-                                    vector_data, vector_i,
+                                    symbol_id, vector_i,
                                     SuperCoder::vector_length());
 
                                 SuperCoder::subtract(
@@ -306,7 +306,7 @@ namespace kodo
                             else
                             {
                                 SuperCoder::multiply_subtract(
-                                    vector_data, vector_i,
+                                    symbol_id, vector_i,
                                     current_coefficient,
                                     SuperCoder::vector_length());
 
@@ -328,32 +328,32 @@ namespace kodo
 
         /// Iterates the encoding vector from where a pivot has been identified
         /// and subtracts existing symbols
-        /// @param pivot_id the index of the found pivot element
-        /// @param vector_data the data constituting the encoding vector
+        /// @param pivot_index the index of the found pivot element
+        /// @param symbol_id the data constituting the encoding vector
         /// @param symbol_data the data of the encoded symbol
-        void forward_substitute_from_pivot(uint32_t pivot_id,
-                                           value_type *vector_data,
+        void forward_substitute_from_pivot(uint32_t pivot_index,
+                                           value_type *symbol_id,
                                            value_type *symbol_data)
             {
                 // We have received an encoded symbol - described
                 // by the symbol group. We now normalize the
                 // the encoding vector according to the symbol id.
                 // I.e. we make sure the pivot position has a "1"
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
                 assert(symbol_data != 0);
 
-                assert(pivot_id < SuperCoder::symbols());
+                assert(pivot_index < SuperCoder::symbols());
 
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
+                assert(m_uncoded[pivot_index] == false);
+                assert(m_coded[pivot_index] == false);
 
                 /// If this pivot was smaller than the maximum pivot we have
                 /// we also need to potentially backward substitute the higher
                 /// pivot values into the new packet
-                for(uint32_t i = pivot_id + 1; i <= m_maximum_pivot; ++i)
+                for(uint32_t i = pivot_index + 1; i <= m_maximum_pivot; ++i)
                 {
                     // Do we have a non-zero value here?
-                    value_type value = vector_type::coefficient(i, vector_data);
+                    value_type value = vector_type::coefficient(i, symbol_id);
 
                     if( !value )
                     {
@@ -367,7 +367,7 @@ namespace kodo
 
                         if(fifi::is_binary<field_type>::value)
                         {
-                            SuperCoder::subtract(vector_data, vector_i,
+                            SuperCoder::subtract(symbol_id, vector_i,
                                                  SuperCoder::vector_length());
 
                             SuperCoder::subtract(symbol_data, symbol_i,
@@ -375,7 +375,7 @@ namespace kodo
                         }
                         else
                         {
-                            SuperCoder::multiply_subtract(vector_data, vector_i,
+                            SuperCoder::multiply_subtract(symbol_id, vector_i,
                                                           value,
                                                           SuperCoder::vector_length());
 
@@ -389,23 +389,23 @@ namespace kodo
 
         /// Backward substitute the found symbol into the
         /// existing symbols.
-        /// @param pivot_id the pivot index of the symbol in the
-        ///        buffers vector_data and symbol_data
-        /// @param vector_data buffer containing the encoding vector
+        /// @param pivot_index the pivot index of the symbol in the
+        ///        buffers symbol_id and symbol_data
+        /// @param symbol_id buffer containing the encoding vector
         /// @param symbol_data buffer containing the encoding symbol
-        void backward_substitute(uint32_t pivot_id,
-                                 const value_type *vector_data,
+        void backward_substitute(uint32_t pivot_index,
+                                 const value_type *symbol_id,
                                  const value_type *symbol_data)
             {
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
                 assert(symbol_data != 0);
 
-                assert(pivot_id < SuperCoder::symbols());
+                assert(pivot_index < SuperCoder::symbols());
 
                 // These asserts can go away since the function
                 // will also work for packets already received (mvp).
-//                assert(m_uncoded[pivot_id] == false);
-//                assert(m_coded[pivot_id] == false);
+//                assert(m_uncoded[pivot_index] == false);
+//                assert(m_coded[pivot_index] == false);
 
                 // We found a "1" that nobody else had as pivot, we now
                 // substract this packet from other coded packets
@@ -419,7 +419,7 @@ namespace kodo
                         continue;
                     }
 
-                    if(i == pivot_id)
+                    if(i == pivot_index)
                     {
                         // We cannot backward substitute into ourself
                         continue;
@@ -430,7 +430,7 @@ namespace kodo
                         value_type *vector_i = SuperCoder::vector(i);
 
                         value_type value =
-                            vector_type::coefficient( pivot_id, vector_i );
+                            vector_type::coefficient( pivot_index, vector_i );
 
                         if( value )
                         {
@@ -439,7 +439,7 @@ namespace kodo
 
                             if(fifi::is_binary<field_type>::value)
                             {
-                                SuperCoder::subtract(vector_i, vector_data,
+                                SuperCoder::subtract(vector_i, symbol_id,
                                                      SuperCoder::vector_length());
 
                                 SuperCoder::subtract(symbol_i, symbol_data,
@@ -449,7 +449,7 @@ namespace kodo
                             {
 
                                 // Update symbol and corresponding vector
-                                SuperCoder::multiply_subtract(vector_i, vector_data,
+                                SuperCoder::multiply_subtract(vector_i, symbol_id,
                                                               value,
                                                               SuperCoder::vector_length());
 
@@ -464,24 +464,24 @@ namespace kodo
 
         /// Store an encoded symbol and encoding vector with the specified
         /// pivot found.
-        /// @param pivot_id the pivot index
-        /// @param vector_data buffer containing the encoding vector
+        /// @param pivot_index the pivot index
+        /// @param symbol_id buffer containing the encoding vector
         /// @param symbol_data buffer containing the encoding symbol
-        void store_coded_symbol(uint32_t pivot_id,
-                                const value_type *vector_data,
+        void store_coded_symbol(uint32_t pivot_index,
+                                const value_type *symbol_id,
                                 const value_type *symbol_data)
             {
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
-                assert(vector_data != 0);
+                assert(m_uncoded[pivot_index] == false);
+                assert(m_coded[pivot_index] == false);
+                assert(symbol_id != 0);
                 assert(symbol_data != 0);
 
                 // Copy it into the vector storage
-                value_type *vector_dest = SuperCoder::vector( pivot_id );
-                value_type *symbol_dest = SuperCoder::symbol( pivot_id );
+                value_type *vector_dest = SuperCoder::vector( pivot_index );
+                value_type *symbol_dest = SuperCoder::symbol( pivot_index );
 
-                std::copy(vector_data,
-                          vector_data + SuperCoder::vector_length(),
+                std::copy(symbol_id,
+                          symbol_id + SuperCoder::vector_length(),
                           vector_dest);
 
                 std::copy(symbol_data,
@@ -491,25 +491,25 @@ namespace kodo
             }
 
         /// Stores an uncoded or fully decoded symbol
-        /// @param pivot_id the pivot index of the symbol
+        /// @param pivot_index the pivot index of the symbol
         /// @param symbol_data the data for the symbol
-        void store_uncoded_symbol(uint32_t pivot_id,
+        void store_uncoded_symbol(uint32_t pivot_index,
                                   const value_type *symbol_data)
             {
                 assert(symbol_data != 0);
-                assert(m_uncoded[pivot_id] == false);
-                assert(m_coded[pivot_id] == false);
+                assert(m_uncoded[pivot_index] == false);
+                assert(m_coded[pivot_index] == false);
 
                 // Copy it into the symbol storage
-                value_type *vector_dest = SuperCoder::vector( pivot_id );
-                value_type *symbol_dest = SuperCoder::symbol( pivot_id );
+                value_type *vector_dest = SuperCoder::vector( pivot_index );
+                value_type *symbol_dest = SuperCoder::symbol( pivot_index );
 
                 std::copy(symbol_data,
                           symbol_data + SuperCoder::symbol_length(),
                           symbol_dest);
 
                 // Update the corresponding vector
-                vector_type::set_coefficient(pivot_id, vector_dest, 1);
+                vector_type::set_coefficient(pivot_index, vector_dest, 1);
 
             }
 
