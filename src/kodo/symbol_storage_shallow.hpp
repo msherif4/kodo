@@ -89,14 +89,14 @@ namespace kodo
                 std::fill(m_mapping.begin(), m_mapping.end(), (value_ptr) 0);
             }
 
-        /// @return uint8_t pointer to the symbol
+        /// @copydoc symbol_storage_deep::raw_symbol()
         const uint8_t* raw_symbol(uint32_t index) const
             {
                 return reinterpret_cast<const uint8_t*>(
                     symbol(index));
             }
 
-        /// @return value_type pointer to the symbol
+        /// @copydoc symbol_storage_deep::symbol()
         value_ptr symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
@@ -104,8 +104,7 @@ namespace kodo
                 return m_mapping[index];
             }
 
-        /// Sets the storage
-        /// @param symbol_storage a const storage container
+        /// @copydoc symbol_storage_deep::set_symbols()
         void set_symbols(const storage_type &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =
@@ -120,9 +119,7 @@ namespace kodo
                 }
             }
 
-        /// Sets a symbol -> data mapping
-        /// @param index the index of the symbol into the coding block
-        /// @param symbol the actual data of that symbol
+        /// @copydoc symbol_storage_deep::set_symbols()
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
@@ -132,8 +129,7 @@ namespace kodo
                 m_mapping[index] = cast_storage<value_type>(symbol);
             }
 
-        /// Create an overload of the copy_storage(...) function for this symbol
-        /// storage.
+        /// @copydoc symbol_storage_deep::copy_symbols()
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);

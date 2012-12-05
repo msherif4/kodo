@@ -57,6 +57,7 @@ namespace kodo
                 std::fill(m_data.begin(), m_data.end(), 0);
             }
 
+        /// @param index the index number of the raw symbol
         /// @return uint8_t pointer to the symbol
         const uint8_t* raw_symbol(uint32_t index) const
             {
@@ -64,12 +65,14 @@ namespace kodo
                     symbol(index));
             }
 
+        /// @param index the index number of the symbol
         /// @return value_type pointer to the symbol
         value_type* symbol(uint32_t index)
             {
                 return &m_data[index * SuperCoder::symbol_length()];
             }
 
+        /// @param index the index number of the symbol
         /// @return value_type pointer to the symbol
         const value_type* symbol(uint32_t index) const
             {
@@ -105,8 +108,8 @@ namespace kodo
                 copy_storage(data, symbol);
             }
 
-        /// Create an overload of the copy_storage(...) function for this symbol
-        /// storage.
+        /// Overload of the copy_storage() function for this symbol storage.
+        /// @param dest_storage destination buffer
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);

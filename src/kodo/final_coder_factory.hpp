@@ -52,6 +52,7 @@ namespace kodo
             /// Builds the actual coder
             /// @param symbols the symbols this coder will use
             /// @param symbol_size the size of a symbol in bytes
+            /// @return pointer to an instantiation of what the factory build
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
