@@ -98,6 +98,7 @@ namespace kodo
         /// Assigns and converts a mutable storage buffer
         /// into a const storage buffer
         /// @param s the mutable storage object
+        /// @return reference to the storage
         const_storage& operator=(const mutable_storage &s)
             {
                 m_size = s.m_size;
@@ -230,12 +231,13 @@ namespace kodo
                   dest.m_data);
     }
 
+     /// @param dest_storage destination buffer
     template<class Coder>
-    inline void copy_symbols(const mutable_storage &dest,
+    inline void copy_symbols(const mutable_storage &dest_storage,
                              const boost::shared_ptr<Coder> &coder)
     {
         assert(coder);
-        coder->copy_symbols(dest);
+        coder->copy_symbols(dest_storage);
     }
 
     template<class StorageType, class Coder>

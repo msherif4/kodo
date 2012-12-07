@@ -46,7 +46,7 @@ namespace kodo
         public:
 
             /// Constructs a new block factory
-            /// @param seed_value, the seed value used for
+            /// @param seed_value the seed value used for
             ///        the underlying random generator
             factory()
                 : m_seed(0)

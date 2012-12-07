@@ -118,8 +118,7 @@ namespace kodo
         /// Constructs a new random annex decoder
         /// @param annex_size the number of symbols used for the random annex
         /// @param factory the decoder factory to use
-        /// @param object_size the size in bytes of the object that should be
-        ///        decoded
+        /// @param object_size size in bytes of the object that is to be decoded
         random_annex_decoder(uint32_t annex_size, factory_type &factory,
                              uint32_t object_size)
             : m_annex_size(annex_size),

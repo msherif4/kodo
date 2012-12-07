@@ -57,8 +57,7 @@ namespace kodo
                 std::fill(m_data.begin(), m_data.end(), 0);
             }
 
-        /// @param index the index number of the raw symbol
-        /// @return uint8_t pointer to the symbol
+        /// @copydoc symbol_storage_shallow::raw_symbol()
         const uint8_t* raw_symbol(uint32_t index) const
             {
                 return reinterpret_cast<const uint8_t*>(
@@ -79,8 +78,7 @@ namespace kodo
                 return &m_data[index * SuperCoder::symbol_length()];
             }
 
-        /// Sets the storage
-        /// @param symbol_storage a const storage container
+        /// @copydoc symbol_storage_shallow::set_symbols()
         void set_symbols(const const_storage &symbol_storage)
             {
                 assert(symbol_storage.m_size > 0);
@@ -90,9 +88,7 @@ namespace kodo
                 copy_storage(storage(m_data), symbol_storage);
             }
 
-        /// Sets a symbol - by copying it into the right location in the buffer
-        /// @param index the index of the symbol into the coding block
-        /// @param symbol the actual data of that symbol
+        /// @copydoc symbol_storage_shallow::set_symbols()
         void set_symbol(uint32_t index, const const_storage &symbol)
             {
                 assert(symbol.m_data != 0);
@@ -108,8 +104,7 @@ namespace kodo
                 copy_storage(data, symbol);
             }
 
-        /// Overload of the copy_storage() function for this symbol storage.
-        /// @param dest_storage destination buffer
+        /// @copydoc symbol_storage_shallow::copy_symbols()
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);
@@ -121,10 +116,9 @@ namespace kodo
                 /// Wrap our buffer in a storage object
                 const_storage src_storage = storage(data(), data_to_copy);
 
-                /// Use the copy_storage(...) function to copy the data
+                /// Use the copy_storage() function to copy the data
                 copy_storage(dest_storage, src_storage);
             }
-
 
         /// Access to the data of the block
         /// @return a pointer to the data of the block

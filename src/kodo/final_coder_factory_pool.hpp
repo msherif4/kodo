@@ -49,7 +49,7 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
                   m_max_symbol_size(max_symbol_size),
-	          m_pool(boost::bind(&factory::make_coder, max_symbols,
+                  m_pool(boost::bind(&factory::make_coder, max_symbols,
                                      max_symbol_size))
                 {
                     assert(m_max_symbols > 0);
@@ -81,6 +81,9 @@ namespace kodo
         private:
 
             /// Creates a new coder if non is stored in the pool
+            /// @param max_symbols the maximum symbols this coder can expect
+            /// @param max_symbol_size the maximum size of a symbol in bytes
+            /// @return a pointer to the coder
             static pointer make_coder(uint32_t max_symbols,
                                       uint32_t max_symbol_size)
                 {
@@ -113,19 +116,23 @@ namespace kodo
         /// see. A coder may only be constructed ONCE, but initialized many
         /// times.
         ///
-        /// @param max_symbols the maximum symbols this coder can expect
-        /// @param max_symbol_size the maximum size of a symbol in bytes
-        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
+        /// @copydoc final_coder_factory::construct()
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 // This is just the factory layer so we do nothing
+
+                (void) max_symbols;
+                (void) max_symbol_size;
             }
 
         /// Initializes the coder
-        /// @param symbols the number of symbols the coder should store
-        /// @param symbol_size the size of each symbol in bytes
-        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+        /// @copydoc final_coder_factory::initialize()
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 // This is just the factory layer so we do nothing
+
+                (void) symbols;
+                (void) symbol_size;
             }
     };
 }

@@ -46,7 +46,7 @@ namespace kodo
 
     public:
 
-        /// Pick a symbol one after another
+        /// @copydoc linear_block_decoder::decode()
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

@@ -26,16 +26,14 @@ namespace kodo
 
     public:
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc block::construct()
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);
                 m_random_generator.seed(seed_value);
             }
 
-        /// Fills the vector buffer with the encoding vector defined by the block id
-        /// @param block_id the id of the block
-        /// @param buffer where the coding vector will be put
+        /// @copydoc block::fill()
         void fill(uint32_t block_id, value_type *buffer)
             {
                 assert(buffer != 0);

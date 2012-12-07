@@ -99,9 +99,8 @@ namespace kodo
             {
                 /// This is just the factory layer so we do nothing
 
-                // To suppress compiler warning
-                (void*) max_symbols;
-                (void*) max_symbol_size;
+                (void) max_symbols;
+                (void) max_symbol_size;
             }
 
         /// Initializes the coder
@@ -111,9 +110,8 @@ namespace kodo
             {
                 /// This is just the factory layer so we do nothing
 
-                // To suppress compiler warning
-                (void*) symbols;
-                (void*) symbol_size;
+                (void) symbols;
+                (void) symbol_size;
             }
     };
 }

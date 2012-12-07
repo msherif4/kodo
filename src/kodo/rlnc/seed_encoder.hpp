@@ -83,9 +83,8 @@ namespace kodo
                 m_seed_id = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
-        /// @copydoc linear_block_encoder::encode()
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return the amount of buffer used in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -107,7 +106,7 @@ namespace kodo
             }
 
 
-        /// @return the required payload buffer size in bytes
+        /// @return the required symbol id  buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 return sizeof(seed_id);

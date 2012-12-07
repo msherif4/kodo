@@ -39,9 +39,7 @@ namespace kodo
         {
         public:
 
-            /// Constructor
-            /// @param max_symbols the maximum symbols this coder can expect
-            /// @param max_symbol_size the maximum size of a symbol in bytes
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -49,8 +47,7 @@ namespace kodo
                 }
 
             /// Forwards the build function and sets the finite field
-            /// @param max_symbols the maximum symbols this coder can expect
-            /// @param max_symbol_size the maximum size of a symbol in bytes
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =

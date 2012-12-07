@@ -99,9 +99,9 @@ namespace kodo
                 return m_symbols;
             }
 
-        /// Returns the coefficients for a specific index
-        /// i.e. corresponds to the column in the Vandermonde
-        /// matrix.
+        /// Returns the coefficients for a specific index i.e. corresponds to
+        /// the column in the Vandermonde matrix.
+        /// @param index the index
         /// @return array of coefficients
         const value_type* coefficients(uint32_t index) const
             {
@@ -117,8 +117,7 @@ namespace kodo
                 return &m_matrix[index * m_symbols];
             }
 
-        // Performs row operations and puts the matrix on systematic
-        // form
+        // Performs row operations and puts the matrix on systematic form
         // void set_systematic()
         //     {
 

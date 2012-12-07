@@ -23,26 +23,30 @@ namespace kodo
         rfc5052_partitioning_scheme();
 
         /// Constructor
-        /// @param max_block_length the maximum number of symbols in a block
-        /// @param symbol_size the size in bytes of a symbol
-        /// @param transfer_length the size in bytes of the whole object
+        /// @param max_symbols the maximum number of symbols in a block
+        /// @param max_symbol_size the size in bytes of a symbol
+        /// @param object_size the size in bytes of the whole object
         rfc5052_partitioning_scheme(uint32_t max_symbols,
                                     uint32_t max_symbol_size,
                                     uint32_t object_size);
 
+        /// @param block_id the block index
         /// @return the number of symbols in a specific block
         uint32_t symbols(uint32_t block_id) const;
 
+        /// @param block_id the block index
         /// @return the size of a symbol in a specific block
         uint32_t symbol_size(uint32_t block_id) const;
 
+        /// @param block_id the block index
         /// @return the size of a specific block in bytes
         uint32_t block_size(uint32_t block_id) const;
 
-        /// @return the offset in bytes to the start of a
-        ///         specific block
-    	uint32_t byte_offset(uint32_t block_id) const;
+        /// @param block_id the block index
+        /// @return the offset in bytes to the start of a specific block
+        uint32_t byte_offset(uint32_t block_id) const;
 
+        /// @param block_id the block index
         /// @return the number of bytes used in a specific block
         uint32_t bytes_used(uint32_t block_id) const;
 

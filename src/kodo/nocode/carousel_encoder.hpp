@@ -12,16 +12,13 @@
 
 namespace kodo
 {
-    /// Simple un-coded scheme not meant for practical use but
-    /// for simulation purposes. As it simply produces un-coded
-    /// symbols.
+    /// Simple un-coded scheme not meant for practical use but for simulation
+    /// purposes. As it simply produces un-coded symbols.
     ///
-    /// Works like a systematic encoder only that it restarts
-    /// the systematic transmission from the beginning after
-    /// sending the last symbol.
+    /// Works like a systematic encoder only that it restarts the systematic
+    /// transmission from the beginning after sending the last symbol.
     ///
-    /// Example sending sequence 4 symbols:
-    /// 1,2,3,4, 1,2,3,4, 1,2,3,4 ... , 1,2,3,4
+    /// Example sequence of 4 symbols: 1,2,3,4, 1,2,3,4, 1,2,3,4 ... , 1,2,3,4
     ///
     /// Simply repeats the raw un-coded symbols.
     template<class SuperCoder>
@@ -34,9 +31,8 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder.
-        /// In this case only needed to provide the max_payload_size()
-        /// function.
+        /// The factory layer associated with this coder. In this case only
+        /// needed to provide the max_payload_size() function.
         class factory : public SuperCoder::factory
         {
         public:
@@ -62,7 +58,8 @@ namespace kodo
                 m_current_symbol = 0;
             }
 
-        /// Pick a symbol one after another
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return the amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

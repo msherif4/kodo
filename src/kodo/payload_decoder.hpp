@@ -41,8 +41,8 @@ namespace kodo
     public:
 
         /// Unpacks the symbol data and symbol id from the payload
-        /// buffer. @see payload_encoder::encode(...) for memory layout.
-        /// @param payload, the buffer from which we take the data and id
+        /// buffer. @see payload_encoder::encode() for memory layout.
+        /// @param payload the buffer from which we take the data and id
         void decode(uint8_t *payload)
             {
                 assert(payload != 0);

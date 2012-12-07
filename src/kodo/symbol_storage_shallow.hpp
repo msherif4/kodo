@@ -89,14 +89,16 @@ namespace kodo
                 std::fill(m_mapping.begin(), m_mapping.end(), (value_ptr) 0);
             }
 
-        /// @copydoc symbol_storage_deep::raw_symbol()
+        /// @param index the index number of the raw symbol
+        /// @return uint8_t pointer to the symbol
         const uint8_t* raw_symbol(uint32_t index) const
             {
                 return reinterpret_cast<const uint8_t*>(
                     symbol(index));
             }
 
-        /// @copydoc symbol_storage_deep::symbol()
+        /// @param index the index number of the symbol
+        /// @return value_type pointer to the symbol
         value_ptr symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
@@ -104,7 +106,8 @@ namespace kodo
                 return m_mapping[index];
             }
 
-        /// @copydoc symbol_storage_deep::set_symbols()
+        /// Sets the storage
+        /// @param symbol_storage a const storage container
         void set_symbols(const storage_type &symbol_storage)
             {
                 storage_sequence_type symbol_sequence =
@@ -119,7 +122,9 @@ namespace kodo
                 }
             }
 
-        /// @copydoc symbol_storage_deep::set_symbols()
+        /// Sets a symbol - by copying it into the right location in the buffer
+        /// @param index the index of the symbol into the coding block
+        /// @param symbol the actual data of that symbol
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
@@ -129,7 +134,8 @@ namespace kodo
                 m_mapping[index] = cast_storage<value_type>(symbol);
             }
 
-        /// @copydoc symbol_storage_deep::copy_symbols()
+        /// Overload of the copy_storage() function for this symbol storage.
+        /// @param dest_storage destination buffer
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);
