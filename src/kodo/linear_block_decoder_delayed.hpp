@@ -17,6 +17,10 @@
 
 namespace kodo
 {
+    /// Linear block decoder with delayer backwards substitution
+    /// The delayed backwards substitution can reduce the fill-in effect and can
+    /// therefore improve the decoding throughput when decoding sparse symbols,
+    /// in particular if the generation size is large.
     template<class SuperCoder>
     class linear_block_decoder_delayed : public SuperCoder
     {

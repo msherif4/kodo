@@ -18,16 +18,15 @@
 
 namespace kodo
 {
-    /// Implements a simple recoding scheme for RLNC. Based on the
-    /// random generator we re-combine previously received symbols
-    /// to produce new re-encoded symbols.
+    /// Implements a simple recoding scheme for RLNC. Based on the random
+    /// generator we re-combine previously received symbols to produce new
+    /// re-encoded symbols.
     ///
-    /// Note about sizes the proxy coder "bypasses" the existing
-    /// coding layers. Thus to ensure correct behaviour the
-    /// proxy coders symbol_id_size should be smaller than or
-    /// equal to the "parent" coders. There is in principle nothing
-    /// wrong with the proxy coder to need more space than the
-    /// parent coder, but currently we do not support this.
+    /// Note about sizes the proxy coder "bypasses" the existing coding layers.
+    /// Thus to ensure correct behaviour the proxy coders symbol_id_size should
+    /// be smaller than or equal to the "parent" coders. There is in principle
+    /// nothing wrong with the proxy coder to need more space than the parent
+    /// coder, but currently we do not support this.
     template<template <class> class ProxyCoder,
              template <class> class RandomGenerator,
              class SuperCoder>
@@ -35,6 +34,7 @@ namespace kodo
     {
     public:
 
+        /// full vector RLNC recoder
         class proxy
             : public ProxyCoder<
                      proxy_encoder<
@@ -83,8 +83,7 @@ namespace kodo
                 m_proxy.initialize(symbols, symbol_size);
             }
 
-        /// The recode functionality is special for Network Coding
-        /// algorithms.
+        /// The recode functionality is special for Network Coding algorithms.
         uint32_t recode(uint8_t *s)
             {
                 return m_proxy.encode(s);
@@ -109,9 +108,8 @@ namespace kodo
 
                 if(m_rank == 0)
                 {
-                    /// We do not have any symbols in our buffer
-                    /// we have to simply output a zero encoding vector
-                    /// and symbol
+                    /// We do not have any symbols in our buffer we have to
+                    /// simply output a zero encoding vector and symbol
                     return SuperCoder::vector_size();
                 }
 

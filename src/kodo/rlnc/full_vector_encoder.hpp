@@ -13,10 +13,9 @@
 namespace kodo
 {
     /// The full vector RLNC encoder.
-    /// This type of encoder produces and sends the entire
-    /// encoding vector. Sending the entire encoding vector
-    /// has the advantage that intermediate nodes may easily
-    /// perform recoding (a special operation used in Network
+    /// This type of encoder produces and sends the entire encoding vector.
+    /// Sending the entire encoding vector has the advantage that intermediate
+    /// nodes may easily perform recoding (a special operation used in Network
     /// Coding algorithms).
     template<class SuperCoder>
     class full_vector_encoder : public SuperCoder
@@ -38,8 +37,7 @@ namespace kodo
     public:
 
         /// The factory layer associated with this coder.
-        /// Maintains the block generator needed for the encoding
-        /// vectors.
+        /// Maintains the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         public:

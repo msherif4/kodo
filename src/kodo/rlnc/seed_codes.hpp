@@ -40,6 +40,11 @@
 
 namespace kodo
 {
+    /// Seed RLNC encoder
+    /// generates coding vector based on seeds which can be communicated to the
+    /// seed decoder in order to reduce the overhead due to transmission of the
+    /// coding vector. Note that this approach is currently incompatible with
+    /// recoding
     template<class Field>
     class seed_rlnc_encoder
         : public payload_encoder<
@@ -56,6 +61,10 @@ namespace kodo
                      > > > > > > > > > >
     {};
 
+    /// Seed RLNC decoder
+    /// generates coding vector based on the seeds which is accompanying the
+    /// coded symbols from the encoder. Note that this approach is currently
+    /// incompatible with recoding
     template<class Field>
     class seed_rlnc_decoder
         : public payload_decoder<
