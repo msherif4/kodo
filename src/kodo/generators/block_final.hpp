@@ -46,15 +46,13 @@ namespace kodo
         public:
 
             /// Constructs a new block factory
-            /// @param seed_value the seed value used for
-            ///        the underlying random generator
             factory()
                 : m_seed(0)
                 { }
 
             /// Build a factory for blocks of the defined length
-            /// @param block_length the length of the block in value_type
-            ///        elements
+            /// @param block_length length of the block in value_type elements
+            /// @return pointer to the build final block
             pointer build(uint32_t block_length)
                 {
                     assert(block_length > 0);
@@ -65,7 +63,7 @@ namespace kodo
                     return p;
                 }
 
-            /// Set the seed to use
+            /// Set the used seed
             /// @param seed the seed value
             void set_seed(uint32_t seed)
                 {
@@ -81,6 +79,8 @@ namespace kodo
     public:
 
         /// Construct and store the parameters to the block generator
+        /// @param block_length the length of the block used in the coders
+        /// @param seed_value seed value for the underlying random generator
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 assert(block_length > 0);
@@ -89,8 +89,8 @@ namespace kodo
                 m_seed = seed_value;
             }
 
-        /// @return the block_length i.e. the length of a block in
-        ///         value_type elements
+        /// @return the block_length i.e. the length of a block in value_type
+        /// elements
         uint32_t block_length() const
             {
                 return m_block_length;
@@ -104,8 +104,7 @@ namespace kodo
 
     private:
 
-        /// Store the block length - the length of a block in value_type
-        /// elements
+        /// Store the block length, the length of a block in value_type elements
         uint32_t m_block_length;
 
         /// The seed specified

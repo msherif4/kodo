@@ -16,8 +16,7 @@
 
 namespace kodo
 {
-    /// Terminates the layered coder and contains the coder allocation
-    /// policy
+    /// Terminates the layered coder and contains the coder allocation policy
     template<class FINAL, class Field>
     class final_coder_factory : boost::noncopyable
     {
@@ -26,8 +25,8 @@ namespace kodo
         /// Define the field type
         typedef Field field_type;
 
-        /// The value type used i.e. the finite field elements
-        /// are stored using this data type
+        /// The value type used i.e. the finite field elements are stored using
+        /// this data type
         typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder

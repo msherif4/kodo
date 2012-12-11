@@ -181,6 +181,7 @@ namespace kodo
 
         /// Inverts the field element
         /// @param value the finite field vale to be inverted.
+        /// @return the inverse
         value_type invert(value_type value)
             {
                 assert(m_field);

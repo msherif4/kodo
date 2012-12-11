@@ -106,7 +106,6 @@ namespace kodo
 
     protected:
 
-        /// Decodes a symbol based on the vector
         /// @copydoc linear_block_decoder::decode_with_vector()
         void decode_with_vector(value_type *symbol_data, value_type *symbol_id)
             {

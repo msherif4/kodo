@@ -43,8 +43,7 @@ namespace kodo
         /// The annex iterator type
         typedef typename std::set<annex_info>::iterator annex_iterator;
 
-        /// The callback function to invoke when a decoder
-        /// completes
+        /// The callback function to invoke when a decoder completes
         typedef boost::function<void ()> is_complete_handler;
 
     public:
@@ -107,6 +106,7 @@ namespace kodo
                 }
 
             internal_pointer_type m_c;
+
             is_complete_handler m_h;
 
         };

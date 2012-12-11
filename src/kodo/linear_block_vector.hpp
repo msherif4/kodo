@@ -63,6 +63,7 @@ namespace kodo
         return vector[index];
     }
 
+    /// @copydoc linear_block_vector::coefficient()
     template<>
     inline fifi::binary::value_type
     linear_block_vector<fifi::binary>::coefficient(uint32_t index,
@@ -80,7 +81,7 @@ namespace kodo
 
     /// @param index the coeffecient index
     /// @param vector the vector that is operated on
-    /// @param coeffecient the coefficient that is set
+    /// @param coefficient the coefficient that is set
     template<class Field>
     inline void
     linear_block_vector<Field>::set_coefficient(uint32_t index,
@@ -91,9 +92,7 @@ namespace kodo
         vector[index] = coefficient;
     }
 
-    /// @param index the coeffecient index
-    /// @param vector the vector that is operated on
-    /// @param coeffecient the coefficient that is set
+    /// @copydoc linear_block_vector::set_coefficient()
     template<>
     inline void linear_block_vector<fifi::binary>::set_coefficient(uint32_t index,
                                                                    value_type *vector,
@@ -115,8 +114,8 @@ namespace kodo
         {
             vector[array_index] &= ~mask;
         }
-
     }
+
 
     template<class Field>
     inline uint32_t
@@ -125,6 +124,7 @@ namespace kodo
         return symbols;
     }
 
+    /// @copydoc linear_block_vector::length()
     template<>
     inline uint32_t
     linear_block_vector<fifi::binary>::length(uint32_t symbols)

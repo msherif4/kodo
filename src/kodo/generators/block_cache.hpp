@@ -33,7 +33,8 @@ namespace kodo
 
         public:
 
-            /// @copydoc final_coder_factory::build()
+            /// @param block_length the length of the used blocks
+            /// @return pointer to the build block cache
             pointer build(uint32_t block_length)
                 {
                     if(m_cache.find(block_length) == m_cache.end())

@@ -22,6 +22,7 @@ namespace kodo
     {
     public:
 
+        /// Typedef for the value type
         typedef ValueType value_type;
 
         /// Fills the vector buffer with random bytes

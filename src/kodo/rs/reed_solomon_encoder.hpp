@@ -32,15 +32,14 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder.
-        /// Maintains the block generator needed for the encoding
-        /// vectors.
+        /// The factory layer associated with this coder. Maintains the block
+        /// generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         private:
 
-            /// Access to the finite field implementation used
-            /// stored in the finite_field_math layer
+            /// Access to the finite field implementation used stored in the
+            /// finite_field_math layer
             using SuperCoder::factory::m_field;
 
         public:
@@ -50,7 +49,7 @@ namespace kodo
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
                     // A Reed-Solomon code cannot support more symbols
-                    // than 2^m - 1 where m is the length of the finite
+                    /// than 2^m - 1 where m is the length of the finite
                     // field elements in bytes
                     assert(max_symbols < field_type::order);
                 }
@@ -93,7 +92,7 @@ namespace kodo
                 m_count = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
+        /// Iterates over the symbols stored in the encoding symbol id parts
         /// of the payload id, and calls the encode_symbol function.
         /// @param symbol_data buffer where the encoded symbols should be stored
         /// @param symbol_id buffer where the symbol id is stored

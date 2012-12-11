@@ -70,14 +70,14 @@ namespace kodo
 
                 assert(m_vector_size > 0);
 
-
-                /// Zero initialize the needed storage for the encoding
-                /// vectors (we have as many vectors as symbols)
+                /// Zero initialize the needed storage for the encoding vectors
+                /// (we have as many vectors as symbols)
                 // std::fill(m_vector_storage.begin(),
                 //           m_vector_storage.end(), 0);
 
             }
 
+        /// @param index the index in the vector
         /// @return the specified vector
         value_type* vector(uint32_t index)
             {
@@ -85,6 +85,7 @@ namespace kodo
                 return &(m_vector_storage[index])[0];
             }
 
+        /// @param index the index in the vector
         /// @return the specified vector
         const value_type* vector(uint32_t index) const
             {

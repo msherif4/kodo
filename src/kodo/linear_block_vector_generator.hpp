@@ -80,8 +80,8 @@ namespace kodo
 
     public:
 
-        /// Generates the coefficients for a linear block vector
-        /// into the requested buffer
+        /// Generates the coefficients for a linear block vector into the
+        /// requested buffer
         void generate(uint32_t index, value_type *vector_buffer)
             {
                 assert(vector_buffer != 0);

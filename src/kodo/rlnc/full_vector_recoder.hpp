@@ -95,12 +95,13 @@ namespace kodo
                 return SuperCoder::vector_size();
             }
 
-        /// @return the size of a  symbol
+        /// @return the size of a symbol
         uint32_t proxy_symbol_size()
             {
                 return SuperCoder::symbol_size();
             }
 
+        /// @copydoc proxy_encoder::encode()
         uint32_t proxy_encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

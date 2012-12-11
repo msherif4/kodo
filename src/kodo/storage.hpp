@@ -145,6 +145,7 @@ namespace kodo
     template<class Storage>
     struct storage_sequence;
 
+    /// @copydoc storage_sequence
     template<>
     struct storage_sequence<const_storage>
     {
@@ -152,6 +153,7 @@ namespace kodo
         typedef std::vector<const_storage> type;
     };
 
+    /// @copydoc storage_sequence
     template<>
     struct storage_sequence<mutable_storage>
     {

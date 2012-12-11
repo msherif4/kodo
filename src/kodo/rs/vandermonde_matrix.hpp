@@ -26,6 +26,9 @@ namespace kodo
 
     public:
 
+        /// @param systematic defines whether the code is systematic
+        /// @param symbols the number of symbols in a block
+        /// @param field the used field
         template<class FieldImpl>
         vandermonde_matrix(bool systematic, uint32_t symbols,
                            const boost::shared_ptr<FieldImpl> &field)
@@ -41,13 +44,11 @@ namespace kodo
                 /// The maximum number of encoding symbols
                 uint32_t max_symbols = Field::order - 1;
 
-                // Create the Vandermonde matrix as suggested in
-                // RFC 5510.
-                // Excepts we transpose it, if used as suggested the
-                // k coefficients needed when producing a new encoded
-                // symbol would be located disjoint in memory.
-                // Memory access will be very inefficient if coefficients
-                // are not in major row order.
+                // Create the Vandermonde matrix as suggested in RFC 5510.
+                // Excepts we transpose it, if used as suggested the k
+                // coefficients needed when producing a new encoded symbol would
+                // be located disjoint in memory. Memory access will be very
+                // inefficient if coefficients are not in major row order.
                 //
                 // a is the primitive element (alpha)
                 //

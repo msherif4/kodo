@@ -34,7 +34,7 @@ namespace kodo
             { }
 
         /// @param block_length the length of a block in bytes
-        /// @seed_value the seed value of the block
+        /// @param seed_value the seed value of the block
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);

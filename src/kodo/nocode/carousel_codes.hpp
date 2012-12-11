@@ -26,6 +26,7 @@
 
 namespace kodo
 {
+    /// @copydoc carousel_encoder
     class nocode_carousel_encoder
         : public payload_encoder<
                  zero_symbol_encoder<
@@ -38,6 +39,7 @@ namespace kodo
                      > > > > > > >
     {};
 
+    /// @copydoc carousel_decoder
     class nocode_carousel_decoder
         : public payload_decoder<
                  carousel_decoder<

@@ -139,6 +139,7 @@ namespace kodo
                 return m_rank;
             }
 
+        /// @param index the symbol index to check
         /// @return true if the symbol with the specified id
         ///         has already been received in the decoder
         bool symbol_exists(uint32_t index) const

@@ -19,15 +19,12 @@
 
 namespace kodo
 {
-    /// For a given selection of object partitioning
-    /// parameters this function returns the maximum
-    /// allowed annex size.
+    /// For a given selection of object partitioning parameters this function
+    /// returns the maximum allowed annex size.
     ///
-    /// The result returned from this function is
-    /// guaranteed to work for any partitioning scheme
-    /// as long as the maximum symbol size is not changed
-    /// and maximum number of symbols per block is not
-    /// increased.
+    /// The result returned from this function is guaranteed to work for any
+    /// partitioning scheme as long as the maximum symbol size is not changed
+    /// and maximum number of symbols per block is not increased.
     uint32_t max_annex_size(uint32_t max_symbols,
                             uint32_t max_symbol_size,
                             uint32_t object_size)
@@ -36,18 +33,15 @@ namespace kodo
         assert(max_symbol_size > 0);
         assert(object_size > 0);
 
-        // The minimum number of total symbols we can have
-        // for the given maximum_symbol_size and object_size
-        // ceil(x/y) = ((x - 1) / y) + 1
+        // The minimum number of total symbols we can have for the given
+        // maximum_symbol_size and object_size ceil(x/y) = ((x - 1) / y) + 1
         uint32_t min_total_symbols = ((object_size - 1) / max_symbol_size) + 1;
 
-        // Out of that we have a our maximum block size and
-        // since we select the annex overlap
-        // randomly without replacement there is no way we
-        // can have an annex bigger than the number of
-        // available symbols in the surrounding blocks
-        // i.e. the total number of surrounding symbols minus the
-        // maximum block
+        // Out of that we have a our maximum block size and since we select the
+        // annex overlap randomly without replacement there is no way we can
+        // have an annex bigger than the number of available symbols in the
+        // surrounding blocks i.e. the total number of surrounding symbols minus
+        // the maximum block
         if(max_symbols > min_total_symbols)
         {
             // Everything fits into one block

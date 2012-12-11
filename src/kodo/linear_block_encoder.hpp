@@ -46,7 +46,7 @@ namespace kodo
         /// buffer of a symbol.
         ///
         /// @param symbol_data buffer where the symbol is put
-        /// @param symbol_id buffer the symbol index
+        /// @param symbol_index buffer the symbol index
         /// @return the amount of used buffer space in bytes
         uint32_t encode_raw(uint8_t *symbol_data, uint32_t symbol_index)
             {

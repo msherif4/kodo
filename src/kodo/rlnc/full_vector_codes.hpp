@@ -52,10 +52,7 @@
 
 namespace kodo
 {
-    /// A basic RLNC encoder. This type of RLNC encoder
-    /// transmits the entire encoding vector as part of the
-    /// encoded payload. It therefore allows recoding at
-    /// intermediate nodes in a network.
+    /// @copydoc full_vector_encoder
     template<class Field>
     class full_rlnc_encoder
         : public payload_encoder<
@@ -84,8 +81,7 @@ namespace kodo
                      > > > >
     {};
 
-    /// A RLNC decoder. The decoder decodes according to a
-    /// full encoding vector.
+    /// @copydoc full_vector_decoder
     template<class Field>
     class full_rlnc_decoder
         : public full_vector_recoder<recode_proxy, random_uniform,

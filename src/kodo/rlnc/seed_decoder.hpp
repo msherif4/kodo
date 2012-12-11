@@ -17,9 +17,9 @@
 
 namespace kodo
 {
-    /// Implementes a simple uniform random encoding scheme
-    /// where the payload_id carries all coding coefficients
-    /// i.e. the "encoding vector"
+    /// generates coding vector based on the seeds which is accompanying the
+    /// coded symbols from the encoder. Note that this approach is currently
+    /// incompatible with recoding
     template<class SuperCoder>
     class seed_decoder : public SuperCoder
     {

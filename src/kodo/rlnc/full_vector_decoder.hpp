@@ -14,9 +14,9 @@
 
 namespace kodo
 {
-    /// Implements a simple RLNC decoder. The implementation is quite
-    /// simple since we rely on most of the functionality in the linear
-    /// block decoder. We only have to provide the size functions.
+    /// Implements a simple RLNC decoder. The implementation is quite simple
+    /// since we rely on most of the functionality in the linear block decoder.
+    /// We only have to provide the size functions.
     template<class SuperCoder>
     class full_vector_decoder : public SuperCoder
     {
@@ -33,9 +33,8 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder.
-        /// In this case only needed to provide the max_payload_size()
-        /// function.
+        /// The factory layer associated with this coder. In this case only
+        /// needed to provide the max_payload_size() function.
         class factory : public SuperCoder::factory
         {
         public:

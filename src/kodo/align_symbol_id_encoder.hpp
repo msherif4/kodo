@@ -29,10 +29,8 @@ namespace kodo
                 assert(sak::is_aligned(&m_temp_id[0]));
             }
 
-        /// The encode function which produces an incoming symbol and
-        /// the corresponding symbol_id
-        /// @param symbol_data the encoded symbol
-        /// @param symbol_id the coefficients used to create the encoded symbol
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return the amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

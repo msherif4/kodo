@@ -33,7 +33,7 @@ namespace kodo
 
         public:
 
-            /// @copydoc final_coder_factory::build()
+            /// @copydoc block_cache::factory::build()
             pointer build(uint32_t block_length)
                 {
                     if(m_cache.find(block_length) == m_cache.end())

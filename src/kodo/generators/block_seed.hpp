@@ -22,6 +22,8 @@ namespace kodo
 
         /// The value type used inside the field
         typedef typename SuperBlock::value_type value_type;
+
+        /// The random generator
         typedef RandomGenerator<value_type> random_generator;
 
     public:

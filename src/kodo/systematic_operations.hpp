@@ -77,8 +77,8 @@ namespace kodo
         return false;
     }
 
-    /// Returns whether the encoder is in the systematic mode i.e. it
-    /// is generating un-coded symbols
+    /// Returns whether the encoder is in the systematic mode i.e. it is
+    /// generating un-coded symbols
     ///
     /// \ingroup g_systematic_coding
     /// \ingroup g_generic_api

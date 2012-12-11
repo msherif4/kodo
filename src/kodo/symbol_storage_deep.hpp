@@ -88,7 +88,7 @@ namespace kodo
                 copy_storage(storage(m_data), symbol_storage);
             }
 
-        /// @copydoc symbol_storage_shallow::set_symbols()
+        /// @copydoc symbol_storage_shallow::set_symbol()
         void set_symbol(uint32_t index, const const_storage &symbol)
             {
                 assert(symbol.m_data != 0);
