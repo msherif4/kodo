@@ -4,7 +4,6 @@
 bld.program(features = 'cxx',
             source   = 'encode_decode_simple.cpp',
             target   = 'encode_decode_simple',
-            cxxflags = bld.toolchain_cxx_flags(),
             use      = ['kodo_includes', 'boost_includes',
                         'fifi_includes', 'sak_includes'])
 

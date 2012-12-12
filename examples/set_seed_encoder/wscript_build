@@ -4,7 +4,6 @@
 bld.program(features = 'cxx',
             source   = 'set_seed_encoder.cpp',
             target   = 'set_seed_encoder',
-            cxxflags = bld.toolchain_cxx_flags(),
             use      = ['kodo_includes', 'boost_includes',
                         'fifi_includes', 'sak_includes'])
 
