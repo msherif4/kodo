@@ -79,6 +79,7 @@ namespace kodo
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
         /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return used amount of buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

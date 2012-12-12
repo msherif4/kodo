@@ -12,9 +12,8 @@
 
 namespace kodo
 {
-    /// The purpose of the seed encoder is to avoid sending a full
-    /// encoding vector which for high fields may consume a significant
-    /// number of bytes.
+    /// The purpose of the seed encoder is to avoid sending a full encoding
+    /// vector which for high fields may consume a significant number of bytes.
     /// The seed encoder instead only prepends the seed/id used to generate
     /// the encoding vector. A decoder may the utilize this seed/id to recreate
     /// the encoding vector on the receiving side.
