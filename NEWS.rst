@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+7.0.1
+-----
+* Fixed missing include in storage.hpp
+
 7.0.0
 -----
 * Update waf to use external tools repository
