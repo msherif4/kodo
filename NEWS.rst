@@ -4,9 +4,14 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest (bugfix)
----------------------------
-* Updated waf to no use git local clones which are creating hardlinks
+Latest
+------
+* tbd
+
+7.0.0
+-----
+* Update waf to use external tools repository
+* Updated waf to not use git local clones which are creating hardlinks
   that are not allowed on the "afs" filesystem
 
 6.0.0
