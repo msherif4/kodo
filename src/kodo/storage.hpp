@@ -6,7 +6,8 @@
 #ifndef KODO_STORAGE_HPP
 #define KODO_STORAGE_HPP
 
-#include <stdint.h>
+#include <cstdint>
+#include <vector>
 
 #include <boost/shared_ptr.hpp>
 
