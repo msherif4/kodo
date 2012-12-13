@@ -24,7 +24,7 @@ inline uint32_t rand_symbols()
 /// @return a random symbol size to use in the tests
 inline uint32_t rand_symbol_size()
 {
-    return (rand() % 1000) * 4;
+    return ((rand() % 1000) + 1) * 4;
 }
 
 template<class Encoder, class Decoder>
