@@ -40,6 +40,7 @@
 
 namespace kodo
 {
+    /// @copydoc seed_encoder
     template<class Field>
     class seed_rlnc_encoder
         : public payload_encoder<
@@ -56,6 +57,7 @@ namespace kodo
                      > > > > > > > > > >
     {};
 
+    /// @copydoc seed_decoder
     template<class Field>
     class seed_rlnc_decoder
         : public payload_decoder<

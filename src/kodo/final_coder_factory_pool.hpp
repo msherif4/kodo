@@ -18,9 +18,9 @@
 
 namespace kodo
 {
-    /// Terminates the layered coder and contains the coder final factory.
-    /// The pool factory uses a memory pool to recycle encoders/decoders,
-    /// and thereby minimize memory consumption.
+    /// Terminates the layered coder and contains the coder final factory. The
+    /// pool factory uses a memory pool to recycle encoders/decoders, and
+    /// thereby minimize memory consumption.
     template<class FINAL, class Field>
     class final_coder_factory_pool : boost::noncopyable
     {
@@ -29,8 +29,8 @@ namespace kodo
         /// Define the field type
         typedef Field field_type;
 
-        /// The value type used i.e. the finite field elements
-        /// are stored using this data type
+        /// The value type used i.e. the finite field elements are stored using
+        /// this data type
         typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder
@@ -41,24 +41,18 @@ namespace kodo
         {
         public:
 
-            /// Constructor
-            /// @param max_symbols the maximum symbols this coder
-            ///        can expect
-            /// @param max_symbol_size the maximum size of a symbol
-            ///        in bytes
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
                   m_max_symbol_size(max_symbol_size),
-	          m_pool(boost::bind(&factory::make_coder, max_symbols,
+                  m_pool(boost::bind(&factory::make_coder, max_symbols,
                                      max_symbol_size))
                 {
                     assert(m_max_symbols > 0);
                     assert(m_max_symbol_size > 0);
                 }
 
-            /// Builds the actual coder
-            /// @param symbols the symbols this coder will use
-            /// @param symbol_size the size of a symbol in bytes
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
@@ -70,17 +64,17 @@ namespace kodo
                     return coder;
                 }
 
-            /// @return the maximum number of symbols in a block
+            /// @copydoc final_coder_factory::factory::max_symbols()
             uint32_t max_symbols() const
                 { return m_max_symbols; }
 
-            /// @return the maximum symbol size in bytes
+            /// @copydoc final_coder_factory::factory::max_symbol_size()
             uint32_t max_symbol_size() const
                 { return m_max_symbol_size; }
 
         private:
 
-            /// Creates a new coder if non is stored in the pool
+            /// @copydoc final_coder_factory::factory::pointer()
             static pointer make_coder(uint32_t max_symbols,
                                       uint32_t max_symbol_size)
                 {
@@ -104,28 +98,26 @@ namespace kodo
             /// Resource pool for the coders
             sak::resource_pool<FINAL> m_pool;
 
-
         };
 
     public:
 
-        /// Constructs the coder with the maximum parameters it will ever
-        /// see. A coder may only be constructed ONCE, but initialized many
-        /// times.
-        ///
-        /// @param max_symbols the maximum symbols this coder can expect
-        /// @param max_symbol_size the maximum size of a symbol in bytes
-        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
+        /// @copydoc final_coder_factory::construct()
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 // This is just the factory layer so we do nothing
+
+                (void) max_symbols;
+                (void) max_symbol_size;
             }
 
-        /// Initializes the coder
-        /// @param symbols the number of symbols the coder should store
-        /// @param symbol_size the size of each symbol in bytes
-        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
+        /// @copydoc final_coder_factory::initialize()
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 // This is just the factory layer so we do nothing
+
+                (void) symbols;
+                (void) symbol_size;
             }
     };
 }

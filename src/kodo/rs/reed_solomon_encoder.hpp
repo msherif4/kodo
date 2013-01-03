@@ -32,30 +32,29 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder.
-        /// Maintains the block generator needed for the encoding
-        /// vectors.
+        /// The factory layer associated with this coder. Maintains the block
+        /// generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         private:
 
-            /// Access to the finite field implementation used
-            /// stored in the finite_field_math layer
+            /// Access to the finite field implementation used stored in the
+            /// finite_field_math layer
             using SuperCoder::factory::m_field;
 
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
                     // A Reed-Solomon code cannot support more symbols
-                    // than 2^m - 1 where m is the length of the finite
+                    /// than 2^m - 1 where m is the length of the finite
                     // field elements in bytes
                     assert(max_symbols < field_type::order);
                 }
 
-            /// @see final_coder_factory::factory(..)
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
@@ -86,14 +85,14 @@ namespace kodo
 
     public:
 
-        /// @see final_coder_factory::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
                 m_count = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
+        /// Iterates over the symbols stored in the encoding symbol id parts
         /// of the payload id, and calls the encode_symbol function.
         /// @param symbol_data buffer where the encoded symbols should be stored
         /// @param symbol_id buffer where the symbol id is stored

@@ -30,7 +30,7 @@ namespace kodo
               m_symbol_length(0)
             {}
 
-        /// @see final_coder_factory(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);

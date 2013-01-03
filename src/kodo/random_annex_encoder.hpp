@@ -103,7 +103,7 @@ namespace kodo
             }
 
         /// Builds a specific encoder
-        /// @param encoder_id, specifies the encoder to build
+        /// @param encoder_id specifies the encoder to build
         /// @return the initialized encoder
         pointer_type build(uint32_t encoder_id)
             {

@@ -68,9 +68,9 @@ namespace kodo
         {
         public:
 
-            /// @see Super::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
+                : Super::factory(max_symbols, max_symbol_size)
                 {
                     uint32_t max_symbol_length =
                         fifi::elements_needed<field_type>(max_symbol_size);
@@ -81,7 +81,7 @@ namespace kodo
                     m_zero_symbol->resize(max_symbol_length, 0);
                 }
 
-            /// @see Super::factory::build(...)
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder = Super::factory::build(symbols, symbol_size);
@@ -99,7 +99,7 @@ namespace kodo
 
     public:
 
-        /// @see SuperCoder::construct(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 Super::construct(max_symbols, max_symbol_size);
@@ -111,7 +111,7 @@ namespace kodo
                 m_partial_symbol->resize(max_symbol_length, 0);
             }
 
-        /// @see SuperCoder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 Super::initialize(symbols, symbol_size);

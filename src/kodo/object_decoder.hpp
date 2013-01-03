@@ -33,9 +33,8 @@ namespace kodo
     public:
 
         /// Constructs a new object decoder
-        /// @param factory, the decoder factory to use
-        /// @param object_size, the size in bytes of the object that should be
-        ///        decoded
+        /// @param factory the decoder factory to use
+        /// @param object_size size in bytes of the object to be decoded
         object_decoder(factory_type &factory, uint32_t object_size)
             : m_factory(factory),
               m_object_size(object_size)
@@ -48,15 +47,14 @@ namespace kodo
 
             }
 
-        /// @return the number of decoders which may be created for
-        ///         this object
+        /// @return the number of decoders which may be created for this object
         uint32_t decoders() const
             {
                 return m_partitioning.blocks();
             }
 
         /// Builds a specific decoder
-        /// @param decoder_id, specifies the decoder to build
+        /// @param decoder_id specifies the decoder to build
         /// @return the initialized decoder
         pointer_type build(uint32_t decoder_id)
             {

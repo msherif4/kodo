@@ -25,7 +25,7 @@ namespace kodo
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -41,8 +41,8 @@ namespace kodo
     public:
 
         /// Unpacks the symbol data and symbol id from the payload
-        /// buffer. @see payload_encoder::encode(...) for memory layout.
-        /// @param payload, the buffer from which we take the data and id
+        /// buffer. @see payload_encoder::encode() for memory layout.
+        /// @param payload the buffer from which we take the data and id
         void decode(uint8_t *payload)
             {
                 assert(payload != 0);

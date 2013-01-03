@@ -13,10 +13,9 @@
 namespace kodo
 {
     /// The full vector RLNC encoder.
-    /// This type of encoder produces and sends the entire
-    /// encoding vector. Sending the entire encoding vector
-    /// has the advantage that intermediate nodes may easily
-    /// perform recoding (a special operation used in Network
+    /// This type of encoder produces and sends the entire encoding vector.
+    /// Sending the entire encoding vector has the advantage that intermediate
+    /// nodes may easily perform recoding (a special operation used in Network
     /// Coding algorithms).
     template<class SuperCoder>
     class full_vector_encoder : public SuperCoder
@@ -38,13 +37,12 @@ namespace kodo
     public:
 
         /// The factory layer associated with this coder.
-        /// Maintains the block generator needed for the encoding
-        /// vectors.
+        /// Maintains the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -64,7 +62,7 @@ namespace kodo
 
     public:
 
-        /// @see final_coder_factory::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -75,8 +73,8 @@ namespace kodo
                 m_count = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

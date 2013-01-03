@@ -15,12 +15,12 @@
 
 namespace kodo
 {
-    /// The object reader type - defines a function which can be used to
-    /// set the storage for an encoder.
-    /// As an example see the const_storage_reader.
+    /// The object reader type - defines a function which can be used to set the
+    /// storage for an encoder. As an example see the const_storage_reader.
     template<class EncoderPointer>
     struct object_reader
     {
+        /// function which can be used to set the storage for an encoder
         typedef boost::function<void (uint32_t, uint32_t, EncoderPointer)>
             type;
     };

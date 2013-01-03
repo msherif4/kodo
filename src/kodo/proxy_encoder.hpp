@@ -22,32 +22,42 @@ namespace kodo
             : m_proxy(0)
             {}
 
-        /// @see final_coder::construct(...)
-        void construct(uint32_t /*max_symbols*/, uint32_t /*max_symbol_size*/)
-            { }
+        /// @copydoc final_coder_factory::construct()
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+            {
+                (void) max_symbols;
+                (void) max_symbol_size;
+            }
 
-        /// @see final_coder::initialize(...)
-        void initialize(uint32_t /*symbols*/, uint32_t /*symbol_size*/)
-            { }
+        /// @copydoc final_coder_factory::initialize()
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                (void) symbols;
+                (void) symbol_size;
+            }
 
-        /// Forwards the encode(...) function to the
-        /// proxy_encode(...) function in the specified proxy
+        /// Forwards the encode() function to the proxy_encode() function in the
+        /// specified proxy
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(m_proxy);
                 return m_proxy->proxy_encode(symbol_data, symbol_id);
             }
 
-        /// Forwards the encode(...) function to the
-        /// proxy_encode(...) function in the specified proxy
+        /// Forwards the encode() function to the proxy_encode() function in the
+        /// specified proxy
+        /// @return the required symbol id buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 assert(m_proxy);
                 return m_proxy->proxy_symbol_id_size();
             }
 
-        /// Forwards the encode(...) function to the
-        /// proxy_encode(...) function in the specified proxy
+        /// Forwards the encode() function to the proxy_encode() function in the
+        /// specified proxy
+        /// @return the required payload buffer size in bytes
         uint32_t symbol_size()
             {
                 assert(m_proxy);
@@ -55,6 +65,7 @@ namespace kodo
             }
 
         /// Set the pointer to the proxy object
+        /// @param proxy pointer to the proxy that is to be set
         void set_proxy(Proxy *proxy)
             {
                 assert(proxy);

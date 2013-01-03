@@ -50,7 +50,7 @@ namespace kodo
 
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -60,7 +60,7 @@ namespace kodo
                     assert(max_symbols < field_type::order);
                 }
 
-            /// @see final_coder_factory::factory(..)
+            /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
@@ -92,7 +92,7 @@ namespace kodo
 
     public:
 
-        /// @see final_coder_factory(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -100,10 +100,9 @@ namespace kodo
                 m_coefficients.resize(max_symbols);
             }
 
-        /// The decode function which consumes the encoded symbol
-        /// and symbol id
-        /// @param symbol_data, the encoded symbol
-        /// @param symbol_id, identifies how the symbol was encoded
+        /// The decode function which consumes the encoded symbol and symbol id
+        /// @param symbol_data the encoded symbol
+        /// @param symbol_id identifies how the symbol was encoded
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -123,7 +122,7 @@ namespace kodo
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                SuperCoder::decode_with_vector(&m_coefficients[0], symbol);
+                SuperCoder::decode_with_vector(symbol, &m_coefficients[0]);
             }
 
         /// @return the required buffer needed for the symbol id

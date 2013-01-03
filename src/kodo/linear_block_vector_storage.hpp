@@ -39,7 +39,7 @@ namespace kodo
               m_vector_size(0)
             { }
 
-        /// @see final_coder::construct(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -56,10 +56,11 @@ namespace kodo
                 m_vector_storage.resize(max_symbols);
                 for(uint32_t i = 0; i < max_symbols; ++i)
                     m_vector_storage[i].resize(max_vector_length);
-//                m_vector_storage.resize(max_symbols * max_vector_length, 0);
+
+                    //m_vector_storage.resize(max_symbols * max_vector_length, 0);
             }
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -69,14 +70,14 @@ namespace kodo
 
                 assert(m_vector_size > 0);
 
-
-                /// Zero initialize the needed storage for the encoding
-                /// vectors (we have as many vectors as symbols)
+                /// Zero initialize the needed storage for the encoding vectors
+                /// (we have as many vectors as symbols)
                 // std::fill(m_vector_storage.begin(),
                 //           m_vector_storage.end(), 0);
 
             }
 
+        /// @param index the index in the vector
         /// @return the specified vector
         value_type* vector(uint32_t index)
             {
@@ -84,6 +85,7 @@ namespace kodo
                 return &(m_vector_storage[index])[0];
             }
 
+        /// @param index the index in the vector
         /// @return the specified vector
         const value_type* vector(uint32_t index) const
             {
