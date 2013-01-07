@@ -135,7 +135,7 @@ namespace kodo
                     if(coefficient)
                     {
                         value_type *vector_i = SuperCoder::vector( i );
-                        value_type *symbol_i = SuperCoder::symbol( i );
+                        value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol( i ));
 
                         if(fifi::is_binary<field_type>::value)
                         {

@@ -202,7 +202,8 @@ namespace kodo
 
                 m_coded[pivot_id] = false;
 
-                value_type *symbol_i = SuperCoder::symbol(pivot_id);
+                value_type *symbol_i
+                    = reinterpret_cast<value_type*>(SuperCoder::symbol(pivot_id));
                 value_type *vector_i = SuperCoder::vector(pivot_id);
 
                 value_type value =
@@ -291,7 +292,8 @@ namespace kodo
                         if( symbol_exists( i ) )
                         {
                             value_type *vector_i = SuperCoder::vector( i );
-                            value_type *symbol_i = SuperCoder::symbol( i );
+                            value_type *symbol_i =
+                                reinterpret_cast<value_type*>(SuperCoder::symbol( i ));
 
                             if(fifi::is_binary<field_type>::value)
                             {
@@ -363,7 +365,7 @@ namespace kodo
                     if( symbol_exists(i) )
                     {
                         value_type *vector_i = SuperCoder::vector(i);
-                        value_type *symbol_i = SuperCoder::symbol(i);
+                        value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol(i));
 
                         if(fifi::is_binary<field_type>::value)
                         {
@@ -402,11 +404,6 @@ namespace kodo
 
                 assert(pivot_id < SuperCoder::symbols());
 
-                // These asserts can go away since the function
-                // will also work for packets already received (mvp).
-//                assert(m_uncoded[pivot_id] == false);
-//                assert(m_coded[pivot_id] == false);
-
                 // We found a "1" that nobody else had as pivot, we now
                 // substract this packet from other coded packets
                 // - if they have a "1" on our pivot place
@@ -435,7 +432,7 @@ namespace kodo
                         if( value )
                         {
 
-                            value_type *symbol_i = SuperCoder::symbol(i);
+                            value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol(i));
 
                             if(fifi::is_binary<field_type>::value)
                             {
@@ -478,7 +475,7 @@ namespace kodo
 
                 // Copy it into the vector storage
                 value_type *vector_dest = SuperCoder::vector( pivot_id );
-                value_type *symbol_dest = SuperCoder::symbol( pivot_id );
+                value_type *symbol_dest = reinterpret_cast<value_type*>(SuperCoder::symbol( pivot_id ));
 
                 std::copy(vector_data,
                           vector_data + SuperCoder::vector_length(),
@@ -502,7 +499,7 @@ namespace kodo
 
                 // Copy it into the symbol storage
                 value_type *vector_dest = SuperCoder::vector( pivot_id );
-                value_type *symbol_dest = SuperCoder::symbol( pivot_id );
+                value_type *symbol_dest = reinterpret_cast<value_type*>(SuperCoder::symbol( pivot_id ));
 
                 std::copy(symbol_data,
                           symbol_data + SuperCoder::symbol_length(),

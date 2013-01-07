@@ -155,7 +155,7 @@ namespace kodo
                 for(uint32_t i = symbols; i --> 0;)
                 {
                     value_type *vector_i = SuperCoder::vector(i);
-                    value_type *symbol_i = SuperCoder::symbol(i);
+                    value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol(i));
 
                     SuperCoder::backward_substitute(
                         i, vector_i, symbol_i);

@@ -86,6 +86,7 @@ namespace kodo
         /// @return uint8_t pointer to the symbol
         const uint8_t* raw_symbol(uint32_t index) const
             {
+                assert(index < SuperCoder::symbols());
                 return reinterpret_cast<const uint8_t*>(
                     symbol(index));
             }
