@@ -10,6 +10,8 @@
 
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 #include "storage.hpp"
 #include "random_annex_base.hpp"
