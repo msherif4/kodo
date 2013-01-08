@@ -33,7 +33,8 @@ namespace kodo
             : m_position(0)
             { }
 
-        /// @see block_final(...)
+        /// @param block_length the length of a block in bytes
+        /// @param seed_value the seed value of the block
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);
@@ -103,18 +104,19 @@ namespace kodo
 
     public:
 
-        /// @see block_final(...)
+        /// @copydoc block::construct()
         void construct(uint32_t block_length, uint32_t seed_value)
             {
                 SuperBlock::construct(block_length, seed_value);
                 m_random_generator.seed(seed_value);
             }
 
-        /// Fills the vector buffer with the encoding vector defined by the block id
-        /// @param block_id the id of the block
-        /// @param buffer where the coding vector will be put
-        void fill(uint32_t /*block_id*/, value_type *buffer)
+        /// @copydoc block::fill()
+        void fill(uint32_t block_id, value_type *buffer)
             {
+                // to suppress compiler warning
+                (void*) block_id;
+
                 assert(buffer != 0);
                 m_random_generator.generate(buffer, SuperBlock::block_length());
             }
