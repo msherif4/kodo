@@ -203,3 +203,40 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
     test_object_coders(symbols, symbol_size, multiplier);
 }
 
+
+
+// class object_reader
+// {
+// public:
+
+//     template<class T, class U>
+//     void read(kodo::symbol_storage_shallow<T,U> &shallow)
+//         {
+//             std::cout << "Works" << std::endl;
+//         }
+    
+// };
+
+
+// TEST(TestObjectCoder, test_object_reader)
+// {
+//     typedef kodo::full_rlnc8_encoder encoder_t;
+
+//     encoder_t::factory f(10,10);
+//     encoder_t::pointer e = f.build(10,10);
+
+    
+
+// }
+
+
+
+
+
+
+
+
+
+
+
+
