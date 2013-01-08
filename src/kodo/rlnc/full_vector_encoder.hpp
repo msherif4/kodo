@@ -53,12 +53,12 @@ namespace kodo
             /// @return the required payload buffer size in bytes
             uint32_t max_symbol_id_size() const
                 {
-                    uint32_t max_vector_size =
+                    uint32_t max_symbol_id_size =
                         vector_type::size( SuperCoder::factory::max_symbols() );
 
-                    assert(max_vector_size > 0);
+                    assert(max_symbol_id_size > 0);
 
-                    return max_vector_size;
+                    return max_symbol_id_size;
                 }
         };
 
@@ -69,8 +69,8 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_vector_size = vector_type::size( symbols );
-                assert(m_vector_size > 0);
+                m_symbol_id_size = vector_type::size( symbols );
+                assert(m_symbol_id_size > 0);
 
                 m_count = 0;
             }
@@ -90,26 +90,22 @@ namespace kodo
                 SuperCoder::generate(m_count, vector);
                 ++m_count;
 
-                // Cast the symbol to the correct field value_type
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
+                SuperCoder::encode(symbol_data, symbol_id);
 
-                SuperCoder::encode_with_vector(symbol, vector);
-
-                return m_vector_size;
+                return m_symbol_id_size;
             }
 
 
         /// @return the required payload buffer size in bytes
         uint32_t symbol_id_size() const
             {
-                return m_vector_size;
+                return m_symbol_id_size;
             }
 
     protected:
 
         /// The size of the encoding vector in bytes
-        uint32_t m_vector_size;
+        uint32_t m_symbol_id_size;
 
         /// Keeping track of the number of packets sent
         uint32_t m_count;

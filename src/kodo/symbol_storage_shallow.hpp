@@ -50,7 +50,7 @@ namespace kodo
     public:
 
         /// The value type used
-        typedef typename SuperCoder::value_type value_type;
+        typedef uint8_t value_type;
 
         /// The storage traits
         typedef StorageTraits<value_type> storage_trait;
@@ -87,8 +87,7 @@ namespace kodo
         const uint8_t* raw_symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
-                return reinterpret_cast<const uint8_t*>(
-                    symbol(index));
+                return symbol(index);
             }
 
         /// @return value_type pointer to the symbol
@@ -121,6 +120,7 @@ namespace kodo
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
+//                std::cout << symbol.m_size << " " << SuperCoder::symbol_size() << std::endl;
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 

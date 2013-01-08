@@ -204,6 +204,7 @@ namespace kodo
 
                 value_type *symbol_i
                     = reinterpret_cast<value_type*>(SuperCoder::symbol(pivot_id));
+
                 value_type *vector_i = SuperCoder::vector(pivot_id);
 
                 value_type value =

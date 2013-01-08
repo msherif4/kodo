@@ -103,10 +103,12 @@ namespace kodo
         /// i.e. corresponds to the column in the Vandermonde
         /// matrix.
         /// @return array of coefficients
-        const value_type* coefficients(uint32_t index) const
+        const uint8_t* coefficients(uint32_t index) const
             {
                 assert(index < field_type::order);
-                return &m_matrix[index * m_symbols];
+
+                return reinterpret_cast<const uint8_t*>(
+                    &m_matrix[index * m_symbols]);
             }
 
     private:

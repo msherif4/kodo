@@ -121,7 +121,13 @@ namespace kodo
                     sizeof(flag_type) + sizeof(counter_type);
             }
 
-    private:
+        /// @return the number of systematic coded packets
+        uint32_t systematic_count() const
+            {
+                return m_count;
+            }
+
+    protected:
 
         /// Encodes a systematic packet
         uint32_t encode_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
@@ -158,7 +164,7 @@ namespace kodo
                 return bytes_consumed + sizeof(flag_type);
             }
 
-    private:
+    protected:
 
         /// Keeps track of the number of symbol sent
         /// allows us to switch to non-systematic

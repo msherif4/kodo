@@ -50,40 +50,38 @@ namespace kodo
                 assert(symbol_data != 0);
                 assert(symbol_index < SuperCoder::symbols());
 
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
-
                 // Did you forget to set the data on the encoder?
                 assert(SuperCoder::symbol(symbol_index) != 0);
 
                 std::copy(SuperCoder::symbol(symbol_index),
-                          SuperCoder::symbol(symbol_index) + SuperCoder::symbol_length(),
-                          symbol);
+                          SuperCoder::symbol(symbol_index) + SuperCoder::symbol_size(),
+                          symbol_data);
 
                 return 0;
             }
-
-    protected:
 
         /// Encodes a symbol according to the encoding vector
         /// @param symbol_data the destination buffer for the encoded symbol
         /// @param vector_data the encoding vector - note at this point the
         ///        encoding vector should already be initialized with coding
         ///        coefficients.
-        void encode_with_vector(value_type *symbol_data,
-                                const value_type *vector_data)
+        void encode(uint8_t *symbol_data_,
+                    const uint8_t *vector_data_)
             {
-                assert(symbol_data != 0);
-                assert(vector_data != 0);
+                assert(symbol_data_ != 0);
+                assert(vector_data_ != 0);
 
+                value_type *symbol_data = reinterpret_cast<value_type*>(symbol_data_);
+                const value_type *vector_data = reinterpret_cast<const value_type*>(vector_data_);
+                
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    value_type coefficient =
+                    auto coefficient =
                         vector_type::coefficient(i, vector_data);
 
                     if(coefficient)
                     {
-                        const value_type *symbol_i = SuperCoder::symbol( i );
+                        const value_type *symbol_i = reinterpret_cast<const value_type*>(SuperCoder::symbol( i ));
 
                         // Did you forget to set the data on the encoder?
                         assert(symbol_i != 0);

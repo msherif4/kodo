@@ -66,10 +66,10 @@ namespace kodo
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
-                uint32_t max_vector_length =
-                    vector_type::length(max_symbols);
+                uint32_t max_vector_size =
+                    vector_type::size(max_symbols);
 
-                m_vector_data.resize(max_vector_length);
+                m_vector_data.resize(max_vector_size);
             }
 
         /// @see final_coder_factory::initialize(...)
@@ -93,19 +93,16 @@ namespace kodo
                 /// Put in the current seed_id
                 sak::big_endian::put<seed_id>(m_seed_id, symbol_id);
 
-                SuperCoder::generate(m_seed_id, &m_vector_data[0]);
+                SuperCoder::generate(m_seed_id, reinterpret_cast<value_type*>(&m_vector_data[0]));
 
                 ++m_seed_id;
 
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
-
-                SuperCoder::encode_with_vector(symbol, &m_vector_data[0]);
+                SuperCoder::encode(symbol_data, &m_vector_data[0]);
 
                 return symbol_id_size();
             }
 
-
+        
         /// @return the required payload buffer size in bytes
         uint32_t symbol_id_size() const
             {
@@ -115,7 +112,7 @@ namespace kodo
     private:
 
         /// The encoding vector buffer
-        std::vector<value_type> m_vector_data;
+        std::vector<uint8_t> m_vector_data;
 
         /// The size of the encoding vector in bytes
         uint32_t m_vector_size;

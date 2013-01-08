@@ -34,8 +34,8 @@ namespace kodo
         /// Easy access to SuperCoder
         typedef symbol_storage_shallow_const<SuperCoder> Super;
 
-        /// The field we are in
-        typedef typename Super::field_type field_type;
+        // /// The field we are in
+        // typedef typename Super::field_type field_type;
 
         /// The value type used
         typedef typename Super::value_type value_type;
@@ -72,13 +72,15 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
-                    uint32_t max_symbol_length =
-                        fifi::elements_needed<field_type>(max_symbol_size);
+                    // uint32_t max_symbol_length =
+                    //     fifi::elements_needed<field_type>(max_symbol_size);
 
-                    assert(max_symbol_length > 0);
+                    
+                    // assert(max_symbol_length > 0);
+                    assert(max_symbol_size > 0); 
 
                     m_zero_symbol = boost::make_shared<symbol_type>();
-                    m_zero_symbol->resize(max_symbol_length, 0);
+                    m_zero_symbol->resize(max_symbol_size, 0);
                 }
 
             /// @see Super::factory::build(...)
@@ -104,11 +106,13 @@ namespace kodo
             {
                 Super::construct(max_symbols, max_symbol_size);
 
-                uint32_t max_symbol_length =
-                    fifi::elements_needed<field_type>(max_symbol_size);
+                // uint32_t max_symbol_length =
+                //     fifi::elements_needed<field_type>(max_symbol_size);
 
+                assert(max_symbol_size > 0); 
+                
                 m_partial_symbol = boost::make_shared<symbol_type>();
-                m_partial_symbol->resize(max_symbol_length, 0);
+                m_partial_symbol->resize(max_symbol_size, 0);
             }
 
         /// @see SuperCoder::initialize(...)

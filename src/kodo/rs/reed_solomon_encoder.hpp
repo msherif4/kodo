@@ -108,14 +108,10 @@ namespace kodo
                 sak::big_endian::put<value_type>(m_count, symbol_id);
 
                 // Get the corresponding coding coefficients
-                const value_type *encoding_coefficients =
+                const uint8_t *encoding_coefficients =
                     m_matrix->coefficients(m_count);
 
-                // Cast the symbol to the correct field value_type
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
-
-                SuperCoder::encode_with_vector(symbol, encoding_coefficients);
+                SuperCoder::encode(symbol_data, encoding_coefficients);
 
                 // Now increment the count so that we use other
                 // coefficients next time
