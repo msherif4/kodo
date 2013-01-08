@@ -22,7 +22,7 @@ namespace kodo
             : m_bytes_used(0)
             {}
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -30,8 +30,7 @@ namespace kodo
             }
 
         /// Sets the number of bytes used
-        /// @param bytes_used, then number of bytes used out of the total
-        ///        coders block size
+        /// @param bytes_used number of bytes used of the total coders block size
         void set_bytes_used(uint32_t bytes_used)
             {
                 assert(bytes_used > 0);

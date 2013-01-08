@@ -41,7 +41,7 @@ namespace kodo
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -58,6 +58,8 @@ namespace kodo
 
         /// Iterates over the symbols stored in the encoding symbol id part
         /// of the payload id, and calls the encode_symbol function.
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return the amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);

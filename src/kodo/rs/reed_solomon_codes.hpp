@@ -43,6 +43,7 @@
 
 namespace kodo
 {
+    /// A reed-solomon encoder
     template<class Field>
     class rs_encoder
         : public payload_encoder<
@@ -57,6 +58,7 @@ namespace kodo
                      > > > > > > > >
     {};
 
+    /// A reed-solomon decoder
     template<class Field>
     class rs_decoder
         : public payload_decoder<

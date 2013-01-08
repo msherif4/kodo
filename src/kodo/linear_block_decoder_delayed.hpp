@@ -17,6 +17,10 @@
 
 namespace kodo
 {
+    /// Linear block decoder with delayer backwards substitution
+    /// The delayed backwards substitution can reduce the fill-in effect and can
+    /// therefore improve the decoding throughput when decoding sparse symbols,
+    /// in particular if the generation size is large.
     template<class SuperCoder>
     class linear_block_decoder_delayed : public SuperCoder
     {
@@ -32,8 +36,7 @@ namespace kodo
 
         /// The decode function which consumes an incomming symbol and
         /// the corresponding symbol_id
-        /// @param symbol_data the encoded symbol
-        /// @param symbol_id the coefficients used to create the encoded symbol
+        /// @copydoc linear_block_decoder::decode()
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -45,12 +48,13 @@ namespace kodo
                 value_type *vector
                     = reinterpret_cast<value_type*>(symbol_id);
 
-                decode_with_vector(vector, symbol);
+                decode_with_vector(symbol, vector);
             }
 
         /// decode raw takes systematic packets inserts them into the decoder
         /// for this specific coder no backwards substitution are performed
         /// until the decoder reaches full rank.
+        /// @copydoc linear_block_decoder::decode_raw()
         void decode_raw(const uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
@@ -64,13 +68,13 @@ namespace kodo
 
                 if(m_coded[symbol_index])
                 {
-                    SuperCoder::swap_decode(symbol_index, symbol);
+                    SuperCoder::swap_decode(symbol, symbol_index);
                 }
                 else
                 {
                     // Stores the symbol and updates the corresponding
                     // encoding vector
-                    SuperCoder::store_uncoded_symbol(symbol_index, symbol);
+                    SuperCoder::store_uncoded_symbol(symbol, symbol_index);
 
                     // We have increased the rank
                     ++m_rank;
@@ -102,40 +106,38 @@ namespace kodo
 
     protected:
 
-        /// Decodes a symbol based on the vector
-        /// @param symbol_data buffer containing the encoding symbol
-        /// @param vector_data buffer containing the encoding vector
-        void decode_with_vector(value_type *vector_data, value_type *symbol_data)
+        /// @copydoc linear_block_decoder::decode_with_vector()
+        void decode_with_vector(value_type *symbol_data, value_type *symbol_id)
             {
                 assert(symbol_data != 0);
-                assert(vector_data != 0);
+                assert(symbol_id != 0);
 
                 // See if we can find a pivot
-                boost::optional<uint32_t> pivot_id
-                    = SuperCoder::forward_substitute_to_pivot(vector_data,
-                                                              symbol_data);
+                boost::optional<uint32_t> pivot_index
+                    = SuperCoder::forward_substitute_to_pivot(symbol_data,
+                                                              symbol_id);
 
-                if(!pivot_id)
+                if(!pivot_index)
                     return;
 
                 if(!fifi::is_binary<field_type>::value)
                 {
                     // Normalize symbol and vector
-                    SuperCoder::normalize(*pivot_id, vector_data, symbol_data);
+                    SuperCoder::normalize(symbol_data, symbol_id, *pivot_index);
                 }
 
                 // Now save the received symbol
-                SuperCoder::store_coded_symbol(*pivot_id, vector_data,
-                                               symbol_data);
+                SuperCoder::store_coded_symbol(symbol_data, symbol_id,
+                                               *pivot_index);
 
                 // We have increased the rank
                 ++m_rank;
 
-                m_coded[ *pivot_id ] = true;
+                m_coded[ *pivot_index ] = true;
 
-                if(*pivot_id > m_maximum_pivot)
+                if(*pivot_index > m_maximum_pivot)
                 {
-                    m_maximum_pivot = *pivot_id;
+                    m_maximum_pivot = *pivot_index;
                 }
 
                 if(SuperCoder::is_complete())
@@ -146,6 +148,9 @@ namespace kodo
 
     protected:
 
+        /// Performs the final backward substitution that transform the coding
+        /// matrix from echelon form to reduce echelon form and hence fully
+        /// decode the generation
         void final_backward_substitute()
             {
                 assert(SuperCoder::is_complete());
@@ -155,10 +160,10 @@ namespace kodo
                 for(uint32_t i = symbols; i --> 0;)
                 {
                     value_type *vector_i = SuperCoder::vector(i);
-                    value_type *symbol_i = SuperCoder::symbol(i);
+                    value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol(i));
 
                     SuperCoder::backward_substitute(
-                        i, vector_i, symbol_i);
+                        symbol_i, vector_i, i);
                 }
             }
     };

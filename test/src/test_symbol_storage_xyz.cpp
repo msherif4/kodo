@@ -106,8 +106,7 @@ void test_std_vector(CoderType coder)
 
 }
 
-// Test helper, creates a storage objected based on a pointer
-// and a size.
+// Test helper, creates a storage objected based on a pointer and a size.
 template<class CoderType, class DataType>
 void test_pointer_to_data(CoderType coder)
 {
@@ -131,7 +130,6 @@ void test_pointer_to_data(CoderType coder)
         coder->copy_symbols(kodo::storage(d_out.get(), vector_size*sizeof(DataType)));
 
         EXPECT_TRUE( std::equal(d_in.get(), d_in.get() + vector_size, d_out.get()) );
-
     }
 }
 
@@ -158,9 +156,7 @@ void test_coder(uint32_t symbols, uint32_t symbol_size)
     test_pointer_to_data<typename Coder::pointer, uint16_t>(coder);
     test_pointer_to_data<typename Coder::pointer, uint32_t>(coder);
     test_pointer_to_data<typename Coder::pointer, uint64_t>(coder);
-
 }
-
 
 TEST(TestSymbolStorage, test_set_storage_function)
 {
@@ -168,9 +164,6 @@ TEST(TestSymbolStorage, test_set_storage_function)
 
     uint32_t symbols = (rand() % 512) + 1;
     uint32_t symbol_size = ((rand() % 1000) + 1) * 16;
-
-//    uint32_t symbols = 10;
-//    uint32_t symbol_size = 32;
 
     {
         test_coder<kodo::shallow_const_coder<fifi::binary> >(symbols, symbol_size);
@@ -188,10 +181,7 @@ TEST(TestSymbolStorage, test_set_storage_function)
         test_coder<kodo::shallow_partial_coder<fifi::binary> >(symbols, symbol_size);
         test_coder<kodo::shallow_partial_coder<fifi::binary8> >(symbols, symbol_size);
         test_coder<kodo::shallow_partial_coder<fifi::binary16> >(symbols, symbol_size);
-
-
     }
-
 }
 
 // Probably stupid, but just to avoid a warning about comparing
@@ -266,11 +256,10 @@ void test_partial_std_vector(CoderType coder)
 }
 
 
-// Creates a coder and invokes the test helpers
+/// Creates a coder and invokes the test helpers
 template<class Coder>
 void test_partial_coder(uint32_t symbols, uint32_t symbol_size)
 {
-
     typename Coder::factory f(symbols, symbol_size);
 
     {
@@ -302,8 +291,6 @@ void test_partial_coder(uint32_t symbols, uint32_t symbol_size)
         test_partial_std_vector<typename Coder::pointer, uint64_t>(coder);
     }
 }
-
-
 
 TEST(TestSymbolStorage, test_set_partial_storage_function)
 {

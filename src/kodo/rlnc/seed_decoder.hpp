@@ -17,9 +17,9 @@
 
 namespace kodo
 {
-    /// Implementes a simple uniform random encoding scheme
-    /// where the payload_id carries all coding coefficients
-    /// i.e. the "encoding vector"
+    /// generates coding vector based on the seeds which is accompanying the
+    /// coded symbols from the encoder. Note that this approach is currently
+    /// incompatible with recoding
     template<class SuperCoder>
     class seed_decoder : public SuperCoder
     {
@@ -46,7 +46,7 @@ namespace kodo
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -61,7 +61,7 @@ namespace kodo
 
     public:
 
-        /// @see final_coder_factory(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -69,12 +69,13 @@ namespace kodo
                 uint32_t max_vector_length =
                     vector_type::length(max_symbols);
 
-                m_vector_data.resize(max_vector_length);
+                m_symbol_id.resize(max_vector_length);
             }
 
 
         /// The decode function which consumes the payload
-        /// @param payload, the input payload
+        /// @param symbol_data the input payload
+        /// @param symbol_id the corresponding symbol id
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -84,12 +85,12 @@ namespace kodo
                     sak::big_endian::get<seed_id>(symbol_id);
 
                 /// Fill the encoding vector
-                SuperCoder::generate(id, &m_vector_data[0]);
+                SuperCoder::generate(id, &m_symbol_id[0]);
 
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                SuperCoder::decode_with_vector(&m_vector_data[0], symbol);
+                SuperCoder::decode_with_vector(symbol, &m_symbol_id[0]);
             }
 
 
@@ -107,7 +108,7 @@ namespace kodo
     protected:
 
         /// The encoding vector buffer
-        std::vector<value_type> m_vector_data;
+        std::vector<value_type> m_symbol_id;
 
     };
 }

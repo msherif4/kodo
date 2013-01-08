@@ -23,7 +23,10 @@ namespace kodo
     {
     public:
 
+        /// value type pointer
         typedef const ValueType* value_ptr;
+
+        /// storage type
         typedef const_storage storage_type;
 
     };
@@ -34,7 +37,10 @@ namespace kodo
     {
     public:
 
+        /// value type pointer
         typedef ValueType* value_ptr;
+
+        /// storage type
         typedef mutable_storage storage_type;
 
     };
@@ -50,7 +56,7 @@ namespace kodo
     public:
 
         /// The value type used
-        typedef typename SuperCoder::value_type value_type;
+        typedef uint8_t value_type;
 
         /// The storage traits
         typedef StorageTraits<value_type> storage_trait;
@@ -67,7 +73,7 @@ namespace kodo
 
     public:
 
-        /// @see final_coder::construct(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -75,7 +81,7 @@ namespace kodo
                 m_mapping.resize(max_symbols, 0);
             }
 
-        /// @see final_coder::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -83,13 +89,15 @@ namespace kodo
                 std::fill(m_mapping.begin(), m_mapping.end(), (value_ptr) 0);
             }
 
+        /// @param index the index number of the raw symbol
         /// @return uint8_t pointer to the symbol
         const uint8_t* raw_symbol(uint32_t index) const
             {
-                return reinterpret_cast<const uint8_t*>(
-                    symbol(index));
+                assert(index < SuperCoder::symbols());
+                return symbol(index);
             }
 
+        /// @param index the index number of the symbol
         /// @return value_type pointer to the symbol
         value_ptr symbol(uint32_t index) const
             {
@@ -114,20 +122,21 @@ namespace kodo
                 }
             }
 
-        /// Sets a symbol -> data mapping
+        /// Sets a symbol - by copying it into the right location in the buffer
         /// @param index the index of the symbol into the coding block
         /// @param symbol the actual data of that symbol
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
+//                std::cout << symbol.m_size << " " << SuperCoder::symbol_size() << std::endl;
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 
                 m_mapping[index] = cast_storage<value_type>(symbol);
             }
 
-        /// Create an overload of the copy_storage(...) function for this symbol
-        /// storage.
+        /// Overload of the copy_storage() function for this symbol storage.
+        /// @param dest_storage destination buffer
         void copy_symbols(mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);

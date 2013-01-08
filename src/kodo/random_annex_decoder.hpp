@@ -43,8 +43,7 @@ namespace kodo
         /// The annex iterator type
         typedef typename std::set<annex_info>::iterator annex_iterator;
 
-        /// The callback function to invoke when a decoder
-        /// completes
+        /// The callback function to invoke when a decoder completes
         typedef boost::function<void ()> is_complete_handler;
 
     public:
@@ -107,6 +106,7 @@ namespace kodo
                 }
 
             internal_pointer_type m_c;
+
             is_complete_handler m_h;
 
         };
@@ -118,8 +118,7 @@ namespace kodo
         /// Constructs a new random annex decoder
         /// @param annex_size the number of symbols used for the random annex
         /// @param factory the decoder factory to use
-        /// @param object_size the size in bytes of the object that should be
-        ///        decoded
+        /// @param object_size size in bytes of the object that is to be decoded
         random_annex_decoder(uint32_t annex_size, factory_type &factory,
                              uint32_t object_size)
             : m_annex_size(annex_size),
@@ -229,9 +228,8 @@ namespace kodo
                 assert(from_decoder < m_annex.size());
                 assert(from_decoder < m_reverse_annex.size());
 
-                // Now we use the reverse annex info to further pass
-                // symbols to decoders with our decoded block in their
-                // annex
+                // Now we use the reverse annex info to further pass symbols to
+                // decoders with our decoded block in their annex
                 uint32_t reverse_annex_size = m_reverse_annex[from_decoder].size();
 
                 for(uint32_t to_decoder = 0; to_decoder < reverse_annex_size; ++to_decoder)
@@ -243,9 +241,8 @@ namespace kodo
                         continue;
 
                     // Decoder 'to_decoder' has 'from_decoder' in the annex -
-                    // we need to inspect the annex of 'to_decoder' to see
-                    // which symbols it is.
-                    // Fetch the annex for the decoder
+                    //we need to inspect the annex of 'to_decoder' to see
+                    // which symbols it is. Fetch the annex for the decoder
                     std::set<annex_info> &annex = m_annex[to_decoder];
 
                     for(annex_iterator it = annex.begin(); it != annex.end(); ++it)

@@ -20,9 +20,12 @@ namespace kodo
     {
     public:
 
+        /// Typedef for the value type
         typedef ValueType value_type;
 
         /// Fills the vector buffer with random bytes
+        /// @param buffer pointer to the destination of the symbol
+        /// @param length of the the symbol in elements
         void generate(value_type *buffer, uint32_t length)
             {
                 assert(buffer != 0);
@@ -40,6 +43,7 @@ namespace kodo
                 return m_distribution(m_random_generator);
             }
 
+        /// @param seed_value the value of the seed for symbol generation
         void seed(uint32_t seed_value)
             {
                 m_random_generator.seed(seed_value);

@@ -8,19 +8,19 @@
 
 #include <boost/shared_ptr.hpp>
 
-/// \file
+/// @file
 /// Sometimes it is useful to be able to write generic code
 /// which may work using both encoders which have systematic
 /// capabilities and encoders which do not. Using the functions
 /// presented here this is possible.
 ///
-/// \ingroup g_systematic_coding
-/// \ingroup g_generic_api
+/// @ingroup g_systematic_coding
+/// @ingroup g_generic_api
 ///
-/// \section Tests
+/// @section Tests
 ///
-/// - \ref test_systematic_operations.cpp "test_systematic_operations.cpp"
-///
+/// see @ref test_systematic_operations.cpp
+
 
 namespace kodo
 {
@@ -77,8 +77,8 @@ namespace kodo
         return false;
     }
 
-    /// Returns whether the encoder is in the systematic mode i.e. it
-    /// is generating un-coded symbols
+    /// Returns whether the encoder is in the systematic mode i.e. it is
+    /// generating un-coded symbols
     ///
     /// \ingroup g_systematic_coding
     /// \ingroup g_generic_api

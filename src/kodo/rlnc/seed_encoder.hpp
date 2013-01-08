@@ -12,9 +12,8 @@
 
 namespace kodo
 {
-    /// The purpose of the seed encoder is to avoid sending a full
-    /// encoding vector which for high fields may consume a significant
-    /// number of bytes.
+    /// The purpose of the seed encoder is to avoid sending a full encoding
+    /// vector which for high fields may consume a significant number of bytes.
     /// The seed encoder instead only prepends the seed/id used to generate
     /// the encoding vector. A decoder may the utilize this seed/id to recreate
     /// the encoding vector on the receiving side.
@@ -47,7 +46,7 @@ namespace kodo
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -61,18 +60,18 @@ namespace kodo
 
     public:
 
-        /// @see final_coder_factory(...)
+        /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
-                uint32_t max_vector_length =
-                    vector_type::length(max_symbols);
+                uint32_t max_vector_size =
+                    vector_type::size(max_symbols);
 
-                m_vector_data.resize(max_vector_length);
+                m_symbol_id.resize(max_vector_size);
             }
 
-        /// @see final_coder_factory::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -83,8 +82,8 @@ namespace kodo
                 m_seed_id = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return the amount of buffer used in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -93,20 +92,17 @@ namespace kodo
                 /// Put in the current seed_id
                 sak::big_endian::put<seed_id>(m_seed_id, symbol_id);
 
-                SuperCoder::generate(m_seed_id, &m_vector_data[0]);
+                SuperCoder::generate(m_seed_id, reinterpret_cast<value_type*>(&m_symbol_id[0]));
 
                 ++m_seed_id;
 
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
-
-                SuperCoder::encode_with_vector(symbol, &m_vector_data[0]);
+                SuperCoder::encode(symbol_data, &m_symbol_id[0]);
 
                 return symbol_id_size();
             }
 
 
-        /// @return the required payload buffer size in bytes
+        /// @return the required symbol id  buffer size in bytes
         uint32_t symbol_id_size() const
             {
                 return sizeof(seed_id);
@@ -115,7 +111,7 @@ namespace kodo
     private:
 
         /// The encoding vector buffer
-        std::vector<value_type> m_vector_data;
+        std::vector<uint8_t> m_symbol_id;
 
         /// The size of the encoding vector in bytes
         uint32_t m_vector_size;

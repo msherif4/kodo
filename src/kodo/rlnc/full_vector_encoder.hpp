@@ -13,10 +13,9 @@
 namespace kodo
 {
     /// The full vector RLNC encoder.
-    /// This type of encoder produces and sends the entire
-    /// encoding vector. Sending the entire encoding vector
-    /// has the advantage that intermediate nodes may easily
-    /// perform recoding (a special operation used in Network
+    /// This type of encoder produces and sends the entire encoding vector.
+    /// Sending the entire encoding vector has the advantage that intermediate
+    /// nodes may easily perform recoding (a special operation used in Network
     /// Coding algorithms).
     template<class SuperCoder>
     class full_vector_encoder : public SuperCoder
@@ -38,13 +37,12 @@ namespace kodo
     public:
 
         /// The factory layer associated with this coder.
-        /// Maintains the block generator needed for the encoding
-        /// vectors.
+        /// Maintains the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         public:
 
-            /// @see final_coder_factory::factory(...)
+            /// @copydoc final_coder_factory::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
@@ -53,30 +51,30 @@ namespace kodo
             /// @return the required payload buffer size in bytes
             uint32_t max_symbol_id_size() const
                 {
-                    uint32_t max_vector_size =
+                    uint32_t max_symbol_id_size =
                         vector_type::size( SuperCoder::factory::max_symbols() );
 
-                    assert(max_vector_size > 0);
+                    assert(max_symbol_id_size > 0);
 
-                    return max_vector_size;
+                    return max_symbol_id_size;
                 }
         };
 
     public:
 
-        /// @see final_coder_factory::initialize(...)
+        /// @copydoc final_coder_factory::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_vector_size = vector_type::size( symbols );
-                assert(m_vector_size > 0);
+                m_symbol_id_size = vector_type::size( symbols );
+                assert(m_symbol_id_size > 0);
 
                 m_count = 0;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
+        /// @copydoc linear_block_encoder::encode_with_vector()
+        /// @return amount of used buffer in bytes
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -90,26 +88,22 @@ namespace kodo
                 SuperCoder::generate(m_count, vector);
                 ++m_count;
 
-                // Cast the symbol to the correct field value_type
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
+                SuperCoder::encode(symbol_data, symbol_id);
 
-                SuperCoder::encode_with_vector(symbol, vector);
-
-                return m_vector_size;
+                return m_symbol_id_size;
             }
 
 
         /// @return the required payload buffer size in bytes
         uint32_t symbol_id_size() const
             {
-                return m_vector_size;
+                return m_symbol_id_size;
             }
 
     protected:
 
         /// The size of the encoding vector in bytes
-        uint32_t m_vector_size;
+        uint32_t m_symbol_id_size;
 
         /// Keeping track of the number of packets sent
         uint32_t m_count;

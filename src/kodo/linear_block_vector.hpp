@@ -41,15 +41,15 @@ namespace kodo
                                     value_type *vector,
                                     value_type coefficient);
 
-        /// @return the size of vector in value_type elements
-        /// Needed to store the encoding vector for a certain number
-        /// of symbols in a specific field.
-        /// Used when several elements are packed into
-        /// a single value_type, currently only used for the
-        /// binary field.
+        /// Needed to store the encoding vector for a certain number of symbols
+        /// in a specific field. Used when several elements are packed into a
+        /// single value_type, currently only used for the binary field.
+        /// @param symbols the number of symbols
+        /// @return the length of a vector in value_type elements
         static uint32_t length(uint32_t symbols);
 
-        /// @return the size of a vector in bytes
+        /// @param symbols the number of symbols
+        /// @return the size of  vector in bytes
         static uint32_t size(uint32_t symbols);
 
     };
@@ -63,6 +63,7 @@ namespace kodo
         return vector[index];
     }
 
+    /// @copydoc linear_block_vector::coefficient()
     template<>
     inline fifi::binary::value_type
     linear_block_vector<fifi::binary>::coefficient(uint32_t index,
@@ -78,6 +79,9 @@ namespace kodo
         return (vector[array_index] >> offset) & 0x1;
     }
 
+    /// @param index the coeffecient index
+    /// @param vector the vector that is operated on
+    /// @param coefficient the coefficient that is set
     template<class Field>
     inline void
     linear_block_vector<Field>::set_coefficient(uint32_t index,
@@ -88,6 +92,7 @@ namespace kodo
         vector[index] = coefficient;
     }
 
+    /// @copydoc linear_block_vector::set_coefficient()
     template<>
     inline void linear_block_vector<fifi::binary>::set_coefficient(uint32_t index,
                                                                    value_type *vector,
@@ -109,9 +114,7 @@ namespace kodo
         {
             vector[array_index] &= ~mask;
         }
-
     }
-
 
 
     template<class Field>
@@ -121,6 +124,7 @@ namespace kodo
         return symbols;
     }
 
+    /// @copydoc linear_block_vector::length()
     template<>
     inline uint32_t
     linear_block_vector<fifi::binary>::length(uint32_t symbols)

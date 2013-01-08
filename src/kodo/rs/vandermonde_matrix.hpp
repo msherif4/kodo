@@ -26,6 +26,9 @@ namespace kodo
 
     public:
 
+        /// @param systematic defines whether the code is systematic
+        /// @param symbols the number of symbols in a block
+        /// @param field the used field
         template<class FieldImpl>
         vandermonde_matrix(bool systematic, uint32_t symbols,
                            const boost::shared_ptr<FieldImpl> &field)
@@ -41,13 +44,11 @@ namespace kodo
                 /// The maximum number of encoding symbols
                 uint32_t max_symbols = Field::order - 1;
 
-                // Create the Vandermonde matrix as suggested in
-                // RFC 5510.
-                // Excepts we transpose it, if used as suggested the
-                // k coefficients needed when producing a new encoded
-                // symbol would be located disjoint in memory.
-                // Memory access will be very inefficient if coefficients
-                // are not in major row order.
+                // Create the Vandermonde matrix as suggested in RFC 5510.
+                // Excepts we transpose it, if used as suggested the k
+                // coefficients needed when producing a new encoded symbol would
+                // be located disjoint in memory. Memory access will be very
+                // inefficient if coefficients are not in major row order.
                 //
                 // a is the primitive element (alpha)
                 //
@@ -99,14 +100,16 @@ namespace kodo
                 return m_symbols;
             }
 
-        /// Returns the coefficients for a specific index
-        /// i.e. corresponds to the column in the Vandermonde
-        /// matrix.
+        /// Returns the coefficients for a specific index i.e. corresponds to
+        /// the column in the Vandermonde matrix.
+        /// @param index the index
         /// @return array of coefficients
-        const value_type* coefficients(uint32_t index) const
+        const uint8_t* coefficients(uint32_t index) const
             {
                 assert(index < field_type::order);
-                return &m_matrix[index * m_symbols];
+
+                return reinterpret_cast<const uint8_t*>(
+                    &m_matrix[index * m_symbols]);
             }
 
     private:
@@ -117,8 +120,7 @@ namespace kodo
                 return &m_matrix[index * m_symbols];
             }
 
-        // Performs row operations and puts the matrix on systematic
-        // form
+        // Performs row operations and puts the matrix on systematic form
         // void set_systematic()
         //     {
 
@@ -136,17 +138,17 @@ namespace kodo
 
         //     }
 
-        // void normalize(uint32_t row_id, uint32_t pivot_id)
+        // void normalize(uint32_t row_id, uint32_t pivot_index)
         //     {
         //         assert(row_id < m_symbols);
-        //         assert(pivot_id < m_symbols);
+        //         assert(pivot_index < m_symbols);
 
 
 
         //         value_type *row = coefficients(row_id);
         //         assert(row != 0);
 
-        //         value_type coefficient = row[pivot_id];
+        //         value_type coefficient = row[pivot_index];
         //         assert(coefficient > 0);
 
         //         value_type inverted_coefficient = field->invert(coefficient);

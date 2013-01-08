@@ -13,13 +13,16 @@
 
 namespace kodo
 {
-    /// The mutable storage class contains a pointer
-    /// and size of a modifiable/mutable buffer
+    /// The mutable storage class contains a pointer  and size of a
+    /// modifiable/mutable buffer
     struct mutable_storage
     {
     public:
 
+        /// the value type
         typedef uint8_t value_type;
+
+        /// value pointer type
         typedef value_type* value_ptr;
 
     public:
@@ -58,13 +61,16 @@ namespace kodo
 
     };
 
-    /// The const storage class contains a pointer and
-    /// size of a non-modifiable/const buffer
+    /// The const storage class contains a pointer and  size of a
+    /// non-modifiable/const buffer
     struct const_storage
     {
     public:
 
+        /// the value type
         typedef uint8_t value_type;
+
+        /// value type pointer
         typedef const value_type* value_ptr;
 
     public:
@@ -90,9 +96,10 @@ namespace kodo
               m_data(s.m_data)
             { }
 
-        /// Assigns and converts a mutable storage buffer
-        /// into a const storage buffer
+        /// Assigns and converts a mutable storage buffer into a const storage
+        /// buffer
         /// @param s the mutable storage object
+        /// @return reference to the storage
         const_storage& operator=(const mutable_storage &s)
             {
                 m_size = s.m_size;
@@ -139,15 +146,19 @@ namespace kodo
     template<class Storage>
     struct storage_sequence;
 
+    /// @implements storage_sequence
     template<>
     struct storage_sequence<const_storage>
     {
+        /// typedef for the storage type
         typedef std::vector<const_storage> type;
     };
 
+    /// @implements storage_sequence
     template<>
     struct storage_sequence<mutable_storage>
     {
+        /// typedef for the storage type
         typedef std::vector<mutable_storage> type;
     };
 
@@ -158,9 +169,8 @@ namespace kodo
     typedef storage_sequence<mutable_storage>::type
         mutable_storage_sequence;
 
-    /// Splits a continues storage buffer into a sequence of
-    /// storage buffers where the continues buffer is split at
-    /// a specified number of bytes
+    /// Splits a continues storage buffer into a sequence of storage buffers
+    /// where the continues buffer is split at a specified number of bytes
     template<class StorageType>
     inline typename storage_sequence<StorageType>::type
     split_storage(const StorageType &storage, uint32_t split)
@@ -202,8 +212,7 @@ namespace kodo
         return size;
     }
 
-    /// Zeros the memory pointed to by a mutable storage
-    /// object
+    /// Zeros the memory pointed to by a mutable storage object
     /// @param storage the mutable storage buffer
     inline void zero_storage(mutable_storage &storage)
     {
@@ -223,12 +232,13 @@ namespace kodo
                   dest.m_data);
     }
 
+     /// @param dest_storage destination buffer
     template<class Coder>
-    inline void copy_symbols(const mutable_storage &dest,
+    inline void copy_symbols(const mutable_storage &dest_storage,
                              const boost::shared_ptr<Coder> &coder)
     {
         assert(coder);
-        coder->copy_symbols(dest);
+        coder->copy_symbols(dest_storage);
     }
 
     template<class StorageType, class Coder>
