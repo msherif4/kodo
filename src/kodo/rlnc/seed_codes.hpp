@@ -24,8 +24,7 @@
 #include "../has_bytes_used.hpp"
 #include "../has_block_info.hpp"
 #include "../storage.hpp"
-#include "../symbol_storage_shallow.hpp"
-#include "../symbol_storage_shallow_partial.hpp"
+#include "../partial_shallow_symbol_storage.hpp"
 #include "../symbol_storage_deep.hpp"
 #include "../generators/block.hpp"
 #include "../payload_encoder.hpp"
@@ -50,7 +49,7 @@ namespace kodo
                  linear_block_vector_generator<block_uniform,
                  linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
-                 symbol_storage_shallow_partial<
+                 partial_shallow_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<seed_rlnc_encoder<Field>, Field>

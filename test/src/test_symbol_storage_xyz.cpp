@@ -10,15 +10,14 @@
 #include <kodo/has_block_info.hpp>
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/storage.hpp>
-#include <kodo/symbol_storage_shallow_partial.hpp>
-#include <kodo/symbol_storage_shallow.hpp>
+#include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/symbol_storage_deep.hpp>
 
 namespace kodo
 {
     template<class Field>
     class shallow_const_coder
-        : public symbol_storage_shallow_const<
+        : public const_shallow_symbol_storage<
                  has_block_info<
                  final_coder_factory<shallow_const_coder<Field>, Field>
                      > >
@@ -26,7 +25,7 @@ namespace kodo
 
     template<class Field>
     class shallow_mutable_coder
-        : public symbol_storage_shallow_mutable<
+        : public mutable_shallow_symbol_storage<
                  has_block_info<
                  final_coder_factory<shallow_mutable_coder<Field>, Field>
                      > >
@@ -42,7 +41,7 @@ namespace kodo
 
     template<class Field>
     class shallow_partial_coder
-        : public symbol_storage_shallow_partial<
+        : public partial_shallow_symbol_storage<
                  has_block_info<
                  final_coder_factory<shallow_partial_coder<Field>, Field>
                      > >

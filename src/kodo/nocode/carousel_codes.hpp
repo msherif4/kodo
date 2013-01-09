@@ -13,7 +13,7 @@
 #include "../zero_symbol_encoder.hpp"
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
-#include "../symbol_storage_shallow_partial.hpp"
+#include "../partial_shallow_symbol_storage.hpp"
 #include "../symbol_storage_deep.hpp"
 #include "../has_block_info.hpp"
 #include "../has_bytes_used.hpp"
@@ -32,7 +32,7 @@ namespace kodo
                  zero_symbol_encoder<
                  carousel_encoder<
                  linear_block_encoder<
-                 symbol_storage_shallow_partial<
+                 partial_shallow_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<nocode_carousel_encoder, fifi::binary>

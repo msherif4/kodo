@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYMBOL_STORAGE_SHALLOW_HPP
-#define KODO_SYMBOL_STORAGE_SHALLOW_HPP
+#ifndef KODO_SHALLOW_SYMBOL_STORAGE_HPP
+#define KODO_SHALLOW_SYMBOL_STORAGE_HPP
 
 #include <stdint.h>
 #include <vector>
@@ -51,7 +51,7 @@ namespace kodo
     /// be encoded already has been read into memory or if a user requires
     /// incoming data to be directly decoded into a specific buffer.
     template<template <class> class StorageTraits, class SuperCoder>
-    class symbol_storage_shallow : public SuperCoder
+    class shallow_symbol_storage : public SuperCoder
     {
     public:
 
@@ -177,17 +177,18 @@ namespace kodo
     /// for encoders since these to modify the buffers / data they
     /// operate on.
     template<class SuperCoder>
-    class symbol_storage_shallow_const
-        : public symbol_storage_shallow<shallow_const_trait, SuperCoder>
+    class const_shallow_symbol_storage
+        : public shallow_symbol_storage<shallow_const_trait, SuperCoder>
     {};
 
     /// Defines a coding layer for 'mutable' symbol storage. Allows the
     /// buffer data to be modified i.e. useful in decoders which need to
     /// access and modify the incoming symbols
     template<class SuperCoder>
-    class symbol_storage_shallow_mutable
-        : public symbol_storage_shallow<shallow_mutable_trait, SuperCoder>
+    class mutable_shallow_symbol_storage
+        : public shallow_symbol_storage<shallow_mutable_trait, SuperCoder>
     {};
+
 }
 
 #endif

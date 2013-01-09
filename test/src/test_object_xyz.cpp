@@ -203,13 +203,46 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
     test_object_coders(symbols, symbol_size, multiplier);
 }
 
+#include <type_traits>
 
+namespace kodo
+{
+
+    /// Type trait helper allows compile time detection of whether an
+    /// encoder / decoder contains the shallow_symbol_storage layer
+    ///
+    /// Example:
+    ///
+    /// typedef kodo::full_rlnc8_encoder encoder_t;
+    ///
+    /// if(kodo::has_shallow_symbol_storage<encoder_t>::value)
+    /// {
+    ///     // Do something here
+    /// }
+    ///
+    template<class T>
+    struct has_shallow_symbol_storage
+    {
+        template<template <class> class V, class U>
+        static uint8_t test(const kodo::shallow_symbol_storage<V,U> *);
+
+        static uint32_t test(...);
+
+        static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
+    };
+    
+}
+// template<template <class> class T, class Coder>
+// inline void has_layer(const Coder& coder)
+// {
+//     std::cout << std::is_base_of<T, Coder>::value << std::endl;
+// }
 
 // class object_reader
 // {
 // public:
 
-//     template<class T, class U>
+//     template<template <class> class T, class U>
 //     void read(kodo::symbol_storage_shallow<T,U> &shallow)
 //         {
 //             std::cout << "Works" << std::endl;
@@ -218,17 +251,79 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
 // };
 
 
-// TEST(TestObjectCoder, test_object_reader)
-// {
-//     typedef kodo::full_rlnc8_encoder encoder_t;
+class object_reader
+{
+public:
 
-//     encoder_t::factory f(10,10);
-//     encoder_t::pointer e = f.build(10,10);
+    object_reader(uint32_t max_symbols, uint32_t max_symbol_size)
+        : m_max_symbols(max_symbols),
+          m_max_symbol_size(max_symbol_size)
+        {}
 
+    template<class Coder>
+    typename std::enable_if<kodo::has_shallow_symbol_storage<Coder>::value>::type
+    operator()(uint32_t offset, uint32_t size, const boost::shared_ptr<Coder> &c)
+        {
+
+            std::cout << "set shallow" << std::endl;
+        }
+
+    template<class Coder>
+    typename std::enable_if<!kodo::has_shallow_symbol_storage<Coder>::value>::type
+    operator()(uint32_t offset, uint32_t size, const boost::shared_ptr<Coder> &c)
+        {
+
+            std::cout << "set deep" << std::endl;
+            c->decode((uint8_t*)0);
+        }
+
+        
+protected:
+
+    template<class Coder>
+    void set_shallow(uint32_t offset, uint32_t size, const boost::shared_ptr<Coder> &c)
+        {
+            std::cout << "set shallow" << std::endl;
+        }
+
+    template<class Coder>
+    void set_deep(uint32_t offset, uint32_t size, const boost::shared_ptr<Coder> &c)
+        {
+            std::cout << "set deep" << std::endl;
+            
+        }
+
+    uint32_t m_max_symbols;
+    uint32_t m_max_symbol_size;
     
+};
 
-// }
 
+TEST(TestObjectCoder, test_object_reader)
+{
+    typedef kodo::full_rlnc8_encoder encoder_t;
+
+    encoder_t::factory f(10,10);
+    encoder_t::pointer e = f.build(10,10);
+
+    typedef kodo::full_rlnc8_decoder decoder_t;
+        
+    decoder_t::factory fd(10,10);
+    decoder_t::pointer d = fd.build(10,10);
+
+    // std::cout << "Has shallow " << kodo::has_shallow_storage(e) << std::endl;
+    // std::cout << "Has shallow " << kodo::has_shallow_storage(d) << std::endl;
+
+    std::cout << kodo::has_shallow_symbol_storage<encoder_t>::value << std::endl;
+    std::cout << kodo::has_shallow_symbol_storage<decoder_t>::value << std::endl;
+    
+    static_assert(kodo::has_shallow_symbol_storage<encoder_t>::value,
+                  "Mush use shallow");
+
+    object_reader reader(10,10);
+    //reader(10,10,d);
+    
+}
 
 
 

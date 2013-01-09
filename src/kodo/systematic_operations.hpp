@@ -21,7 +21,6 @@
 ///
 /// see @ref test_systematic_operations.cpp
 
-
 namespace kodo
 {
     /// Catch all implementation if no specializations exist

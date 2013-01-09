@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYMBOL_STORAGE_SHALLOW_PARTIAL_HPP
-#define KODO_SYMBOL_STORAGE_SHALLOW_PARTIAL_HPP
+#ifndef KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
+#define KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
 
 #include <stdint.h>
 #include <vector>
@@ -13,7 +13,7 @@
 
 #include <fifi/fifi_utils.hpp>
 
-#include "symbol_storage_shallow.hpp"
+#include "shallow_symbol_storage.hpp"
 
 namespace kodo
 {
@@ -26,13 +26,13 @@ namespace kodo
     /// use it with the partial symbol storage without having to move
     /// it to a 10000 byte temp. buffer.
     template<class SuperCoder>
-    class symbol_storage_shallow_partial
-        : public symbol_storage_shallow_const<SuperCoder>
+    class partial_shallow_symbol_storage
+        : public const_shallow_symbol_storage<SuperCoder>
     {
     public:
 
         /// Easy access to SuperCoder
-        typedef symbol_storage_shallow_const<SuperCoder> Super;
+        typedef const_shallow_symbol_storage<SuperCoder> Super;
 
         // /// The field we are in
         // typedef typename Super::field_type field_type;
@@ -72,12 +72,7 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : Super::factory(max_symbols, max_symbol_size)
                 {
-                    // uint32_t max_symbol_length =
-                    //     fifi::elements_needed<field_type>(max_symbol_size);
-
-                    
-                    // assert(max_symbol_length > 0);
-                    assert(max_symbol_size > 0); 
+                    assert(max_symbol_size > 0);
 
                     m_zero_symbol = boost::make_shared<symbol_type>();
                     m_zero_symbol->resize(max_symbol_size, 0);

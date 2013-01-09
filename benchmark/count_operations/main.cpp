@@ -225,7 +225,7 @@ namespace kodo
                  linear_block_encoder<
                  finite_field_math_counter<
                  finite_field_math<fifi::default_field_impl,
-                 symbol_storage_shallow_partial<
+                 partial_shallow_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_encoder_count<Field>, Field>
