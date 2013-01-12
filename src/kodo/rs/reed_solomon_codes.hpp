@@ -26,7 +26,7 @@
 #include "../has_block_info.hpp"
 #include "../storage.hpp"
 #include "../partial_shallow_symbol_storage.hpp"
-#include "../symbol_storage_deep.hpp"
+#include "../deep_symbol_storage.hpp"
 #include "../generators/block.hpp"
 #include "../generators/block_cache.hpp"
 #include "../generators/block_cache_lookup.hpp"
@@ -65,7 +65,7 @@ namespace kodo
                  linear_block_decoder<
                  linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
-                 symbol_storage_deep<
+                 deep_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<rs_decoder<Field>, Field>

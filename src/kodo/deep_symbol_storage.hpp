@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYMBOL_STORAGE_DEEP_HPP
-#define KODO_SYMBOL_STORAGE_DEEP_HPP
+#ifndef KODO_DEEP_SYMBOL_STORAGE_HPP
+#define KODO_DEEP_SYMBOL_STORAGE_HPP
 
 #include <stdint.h>
 #include <vector>
@@ -22,7 +22,7 @@ namespace kodo
     /// internally. This is useful in cases where incoming data is to be
     /// decoded and no existing decoding buffer exist.
     template<class SuperCoder>
-    class symbol_storage_deep : public SuperCoder
+    class deep_symbol_storage : public SuperCoder
     {
     public:
 

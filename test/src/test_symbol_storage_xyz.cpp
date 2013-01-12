@@ -11,7 +11,9 @@
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/storage.hpp>
 #include <kodo/partial_shallow_symbol_storage.hpp>
-#include <kodo/symbol_storage_deep.hpp>
+#include <kodo/deep_symbol_storage.hpp>
+#include <kodo/has_shallow_symbol_storage.hpp>
+#include <kodo/has_deep_symbol_storage.hpp>
 
 namespace kodo
 {
@@ -33,7 +35,7 @@ namespace kodo
 
     template<class Field>
     class deep_coder
-        : public symbol_storage_deep<
+        : public deep_symbol_storage<
                  has_block_info<
                  final_coder_factory<deep_coder<Field>, Field>
                      > >
@@ -308,6 +310,56 @@ TEST(TestSymbolStorage, test_set_partial_storage_function)
         test_partial_coder<kodo::shallow_partial_coder<fifi::binary16> >(
             symbols, symbol_size);
     }
+}
+
+
+TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
+{
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_partial_coder<fifi::binary> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_partial_coder<fifi::binary8> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_partial_coder<fifi::binary16> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_const_coder<fifi::binary> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_const_coder<fifi::binary8> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::shallow_const_coder<fifi::binary16> >::value);
+
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<
+                    kodo::deep_coder<fifi::binary> >::value);
+
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<
+                    kodo::deep_coder<fifi::binary8> >::value);
+
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<
+                    kodo::deep_coder<fifi::binary16> >::value);
+
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<int>::value);
+    
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<fifi::binary8>::value);
+
+    EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
+                     kodo::shallow_symbol_storage>::value));
+
+    
+}
+
+TEST(TestSymbolStorage, test_has_deep_symbol_storage)
+{
+
+    EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
+                     kodo::deep_symbol_storage>::value));
+
+
 }
 
 

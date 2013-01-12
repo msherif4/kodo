@@ -18,13 +18,15 @@
 namespace kodo
 {
     /// Storage traits class for the const storage
-    template<class ValueType>
     class shallow_const_trait
     {
     public:
 
+        /// The value type
+        typedef uint8_t value_type;
+        
         /// value type pointer
-        typedef const ValueType* value_ptr;
+        typedef const value_type* value_ptr;
 
         /// storage type
         typedef const_storage storage_type;
@@ -32,13 +34,15 @@ namespace kodo
     };
 
     /// Storage traits class for the mutable storage
-    template<class ValueType>
     class shallow_mutable_trait
     {
     public:
 
+        /// The value type
+        typedef uint8_t value_type;
+
         /// value type pointer
-        typedef ValueType* value_ptr;
+        typedef value_type* value_ptr;
 
         /// storage type
         typedef mutable_storage storage_type;
@@ -50,17 +54,17 @@ namespace kodo
     /// external data structure. This is useful in cases where data to
     /// be encoded already has been read into memory or if a user requires
     /// incoming data to be directly decoded into a specific buffer.
-    template<template <class> class StorageTraits, class SuperCoder>
+    template<class StorageTraits, class SuperCoder>
     class shallow_symbol_storage : public SuperCoder
     {
     public:
 
-        /// The value type used
-        typedef uint8_t value_type;
-
         /// The storage traits
-        typedef StorageTraits<value_type> storage_trait;
-
+        typedef StorageTraits storage_trait;
+        
+        /// The value type used
+        typedef typename storage_trait::value_type value_type;
+        
         /// The pointer used
         typedef typename storage_trait::value_ptr value_ptr;
 

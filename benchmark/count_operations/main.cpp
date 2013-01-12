@@ -244,7 +244,7 @@ namespace kodo
                  linear_block_vector_storage<
                  finite_field_math_counter<
                  finite_field_math<fifi::default_field_impl,
-                 symbol_storage_deep<
+                 deep_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_decoder_count<Field>, Field>

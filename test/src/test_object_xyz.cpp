@@ -11,6 +11,7 @@
 #include <kodo/object_encoder.hpp>
 #include <kodo/rfc5052_partitioning_scheme.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/has_shallow_symbol_storage.hpp>
 
 template<
     class Encoder,
@@ -208,28 +209,6 @@ TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
 namespace kodo
 {
 
-    /// Type trait helper allows compile time detection of whether an
-    /// encoder / decoder contains the shallow_symbol_storage layer
-    ///
-    /// Example:
-    ///
-    /// typedef kodo::full_rlnc8_encoder encoder_t;
-    ///
-    /// if(kodo::has_shallow_symbol_storage<encoder_t>::value)
-    /// {
-    ///     // Do something here
-    /// }
-    ///
-    template<class T>
-    struct has_shallow_symbol_storage
-    {
-        template<template <class> class V, class U>
-        static uint8_t test(const kodo::shallow_symbol_storage<V,U> *);
-
-        static uint32_t test(...);
-
-        static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
-    };
     
 }
 // template<template <class> class T, class Coder>
