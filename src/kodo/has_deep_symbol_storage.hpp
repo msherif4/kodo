@@ -45,16 +45,16 @@ namespace kodo
     // };
 
     
-    template<class E, template <class...> class T>
-    struct has
-    {
-        template<class... Args>
-        static uint8_t test(const T<Args...> *);
+    // template<class E, template <class...> class T>
+    // struct has
+    // {
+    //     template<class... Args>
+    //     static uint8_t test(const T<Args...> *);
 
-        static uint32_t test(...);
+    //     static uint32_t test(...);
 
-        static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
-    };
+    //     static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
+    // };
 
     // template<class E, template <class, class> class T>
     // struct has
