@@ -347,8 +347,8 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
     
     EXPECT_FALSE(kodo::has_shallow_symbol_storage<fifi::binary8>::value);
 
-    // EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
-    //                  kodo::shallow_symbol_storage>::value));
+    EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
+                 kodo::shallow_symbol_storage>::value));
 
     
 }
@@ -359,7 +359,7 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
 TEST(TestSymbolStorage, test_has_deep_symbol_storage)
 {
 
-    EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
+    EXPECT_FALSE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
                  kodo::deep_symbol_storage>::value));
 
 
