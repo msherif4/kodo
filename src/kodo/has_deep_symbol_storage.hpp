@@ -11,6 +11,35 @@
 namespace kodo
 {
 
+    template<typename> struct any_return { typedef void type; };
+
+
+    template<typename B, template <class...> class D, typename Sfinae = void>
+    struct has: std::false_type {};
+
+
+    template<class T>
+    void has_helper(T *){}
+
+    template<template <class> class T, class Args>
+    void has_helper(T<Args> *){}
+
+    template<template <class, class> class T, class Arg1, class Arg2>
+    void has_helper(T<Arg1, Arg2> *){}
+
+    template
+    <
+        template <class, class, class> class T,
+        class Arg1, class Arg2, class Arg3
+        >
+    void has_helper(T<Arg1, Arg2, Arg3> *){}
+
+    template<typename B, template <class...> class  D>
+    struct has<B, D,
+        typename any_return< decltype( has_helper<D>(static_cast<B*>( nullptr )) ) >::type
+        >: std::true_type {};
+
+
     /// Type trait helper allows compile time detection of whether an
     /// encoder / decoder contains the deep_symbol_storage layer
     ///

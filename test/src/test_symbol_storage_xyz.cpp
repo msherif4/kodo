@@ -353,11 +353,14 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
     
 }
 
+
+
+
 TEST(TestSymbolStorage, test_has_deep_symbol_storage)
 {
 
-    // EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
-    //                  kodo::deep_symbol_storage>::value));
+    EXPECT_TRUE((kodo::has<kodo::shallow_partial_coder<fifi::binary>,
+                 kodo::deep_symbol_storage>::value));
 
 
 }
