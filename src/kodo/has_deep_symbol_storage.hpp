@@ -36,7 +36,7 @@ namespace kodo
 
     template<typename B, template <class...> class  D>
     struct has<B, D,
-        typename any_return< decltype( has_helper<D>(static_cast<B*>( nullptr )) ) >::type
+        typename any_return< decltype( has_helper<D>(static_cast<B*>( 0 )) ) >::type
         >: std::true_type {};
 
 
