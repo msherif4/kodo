@@ -48,7 +48,8 @@ namespace kodo
     template
     <
         class EncoderType,
-        class BlockPartitioning
+        class BlockPartitioning,
+        class ObjectData
     >
     class object_encoder : boost::noncopyable
     {
@@ -60,25 +61,30 @@ namespace kodo
         /// Pointer to an encoder
         typedef typename EncoderType::pointer pointer_type;
 
+        /// The storage type used
+        typedef typename EncoderType::symbol_storage_type symbol_storage_type;
+
         /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;
+
+        /// The data source type
+        typedef ObjectData object_data;
 
     public:
 
         /// Constructs a new object encoder
         /// @param factory the encoder factory to use
         /// @param object the object to encode
-        object_encoder(factory_type &factory, const const_storage &object)
+        object_encoder(factory_type &factory, const object_data &data)
             : m_factory(factory),
-              m_object(object)
+              m_data(data)
             {
 
-                assert(m_object.m_size > 0);
-                assert(m_object.m_data != 0);
+                assert(m_data.size() > 0);
 
                 m_partitioning = block_partitioning(m_factory.max_symbols(),
                                                     m_factory.max_symbol_size(),
-                                                    m_object.m_size);
+                                                    m_data.size());
             }
 
         /// @return the number of encoders which may be created for this object
@@ -111,7 +117,7 @@ namespace kodo
                 uint32_t bytes_used =
                     m_partitioning.bytes_used(encoder_id);
 
-                init_encoder(offset, bytes_used, encoder);
+                m_data.read(encoder, offset, bytes_used);
 
                 return encoder;
             }
@@ -119,30 +125,7 @@ namespace kodo
         /// @return the total size of the object to encode in bytes
         uint32_t object_size() const
             {
-                return m_object.m_size;
-            }
-
-    private:
-
-        void init_encoder(uint32_t offset, uint32_t size, pointer_type encoder) const
-            {
-                assert(offset < m_object.m_size);
-                assert(size > 0);
-                assert(encoder);
-
-                uint32_t remaining_bytes = m_object.m_size - offset;
-
-                assert(size <= remaining_bytes);
-
-                const_storage storage;
-                storage.m_data = m_object.m_data + offset;
-                storage.m_size = size;
-
-                encoder->set_symbols(storage);
-
-                // We require that encoders includes the has_bytes_used
-                // layer to support partially filled encoders
-                encoder->set_bytes_used(size);
+                return m_data.size();
             }
 
     private:
@@ -151,7 +134,7 @@ namespace kodo
         factory_type &m_factory;
 
         /// Store the object storage
-        const_storage m_object;
+        object_data m_data;
 
         /// The block partitioning scheme used
         block_partitioning m_partitioning;

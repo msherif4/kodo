@@ -57,7 +57,7 @@ namespace kodo
         typedef boost::shared_ptr<symbol_type> symbol_ptr;
 
         /// Access to the SuperCoder mapping variable
-        using Super::m_mapping;
+        using Super::m_data;
 
     public:
 

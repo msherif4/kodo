@@ -71,6 +71,9 @@ namespace kodo
         /// The storage type used
         typedef typename storage_trait::storage_type storage_type;
 
+        /// The symbol storage container
+        typedef std::vector<value_ptr> symbol_storage_type;
+        
         /// A sequence of storage types
         typedef typename storage_sequence<storage_type>::type
             storage_sequence_type;
@@ -82,7 +85,7 @@ namespace kodo
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
-                m_mapping.resize(max_symbols, 0);
+                m_data.resize(max_symbols, 0);
             }
 
         /// @copydoc final_coder_factory::initialize()
@@ -90,7 +93,7 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                std::fill(m_mapping.begin(), m_mapping.end(), (value_ptr) 0);
+                std::fill(m_data.begin(), m_data.end(), (value_ptr) 0);
             }
 
         /// @param index the index number of the raw symbol
@@ -107,7 +110,14 @@ namespace kodo
             {
                 assert(index < SuperCoder::symbols());
 
-                return m_mapping[index];
+                return m_data[index];
+            }
+
+        /// Set the symbols by swapping the std::vector
+        void swap_symbols(symbol_storage_type &symbols)
+            {
+                assert(m_data.size() == symbols.size());
+                m_data.swap(symbols);
             }
 
         /// Sets the storage
@@ -136,7 +146,7 @@ namespace kodo
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 
-                m_mapping[index] = cast_storage<value_type>(symbol);
+                m_data[index] = cast_storage<value_type>(symbol);
             }
 
         /// Overload of the copy_storage() function for this symbol storage.
@@ -153,7 +163,9 @@ namespace kodo
 
                 while(data_to_copy > 0)
                 {
-                    uint32_t copy_size = std::min(data_to_copy, SuperCoder::symbol_size());
+                    uint32_t copy_size =
+                        std::min(data_to_copy, SuperCoder::symbol_size());
+
                     data_to_copy -= copy_size;
 
                     const_storage src_storage =
@@ -173,7 +185,7 @@ namespace kodo
     protected:
 
         /// Symbol mapping
-        std::vector<value_ptr> m_mapping;
+        symbol_storage_type m_data;
 
     };
 

@@ -10,36 +10,6 @@
 
 namespace kodo
 {
-
-    template<typename> struct any_return { typedef void type; };
-
-
-    template<typename B, template <class...> class D, typename Sfinae = void>
-    struct has: std::false_type {};
-
-
-    template<class T>
-    void has_helper(T *){}
-
-    template<template <class> class T, class Args>
-    void has_helper(T<Args> *){}
-
-    template<template <class, class> class T, class Arg1, class Arg2>
-    void has_helper(T<Arg1, Arg2> *){}
-
-    template
-    <
-        template <class, class, class> class T,
-        class Arg1, class Arg2, class Arg3
-        >
-    void has_helper(T<Arg1, Arg2, Arg3> *){}
-
-    template<typename B, template <class...> class  D>
-    struct has<B, D,
-        typename any_return< decltype( has_helper<D>(static_cast<B*>( 0 )) ) >::type
-        >: std::true_type {};
-
-
     /// Type trait helper allows compile time detection of whether an
     /// encoder / decoder contains the deep_symbol_storage layer
     ///
@@ -52,61 +22,17 @@ namespace kodo
     ///     // Do something here
     /// }
     ///
-    // template<class T>
-    // struct has_deep_symbol_storage
-    // {
-    //     template<template <class> class V, class U>
-    //     static uint8_t test(const kodo::shallow_symbol_storage<V,U> *);
+    template<class T>
+    struct has_deep_symbol_storage
+    {
+        template<class U>
+        static uint8_t test(const kodo::deep_symbol_storage<U> *);
 
-    //     static uint32_t test(...);
+        static uint32_t test(...);
 
-    //     static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
-    // };
+        static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
+    };
 
-    // template<class E, class T>
-    // struct has
-    // {
-    //     static uint8_t test(const T *);
-
-    //     static uint32_t test(...);
-
-    //     static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
-    // };
-
-    
-    // template<class E, template <class...> class T>
-    // struct has
-    // {
-    //     template<class... Args>
-    //     static uint8_t test(const T<Args...> *);
-
-    //     static uint32_t test(...);
-
-    //     static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
-    // };
-
-    // template<class E, template <class, class> class T>
-    // struct has
-    // {
-    //     template<class U, class V>
-    //     static uint8_t test(const T<U, V> *);
-
-    //     static uint32_t test(...);
-
-    //     static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
-
-    // };
-
-    // template<class E, template <class,class> class T>
-    // struct has
-    // {
-    //     template<class U, class V>
-    //     static uint8_t test(const T<U, V> *);
-
-    //     static uint32_t test(...);
-
-    //     static const bool value = sizeof(test(static_cast<E*>(0))) == 1;
-    // };
 
 }
 

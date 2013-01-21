@@ -26,6 +26,11 @@ namespace kodo
     {
     public:
 
+        /// The container used to store the coding symbols
+        typedef std::vector<uint8_t> symbol_storage_type;
+
+    public:
+
         /// @copydoc final_coder_factory::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
@@ -70,6 +75,13 @@ namespace kodo
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
+        /// Set the symbols by swapping the std::vector
+        void swap_symbols(symbol_storage_type &symbols)
+            {
+                assert(m_data.size() == symbols.size());
+                m_data.swap(symbols);
+            }
+        
         /// @copydoc symbol_storage_shallow::set_symbols()
         void set_symbols(const const_storage &symbol_storage)
             {
@@ -81,7 +93,7 @@ namespace kodo
                 /// Use the copy function
                 copy_storage(storage(m_data), symbol_storage);
             }
-
+        
         /// @copydoc symbol_storage_shallow::set_symbol()
         void set_symbol(uint32_t index, const const_storage &symbol)
             {
@@ -124,7 +136,7 @@ namespace kodo
     private:
 
         /// Storage for the symbol data
-        std::vector<uint8_t> m_data;
+        symbol_storage_type m_data;
     };
 }
 
