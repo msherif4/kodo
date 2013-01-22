@@ -12,13 +12,13 @@
 /// of intermediate nodes in the network to recode packets as they traverse
 /// them. In Kodo it is possible to recode packets in decoders which provide the
 /// recode() function. One layer implementing this functionality is the
-/// full_vector_recoder.hpp.  
+/// full_vector_recoder.hpp.
 ///
 /// This example shows how to use one encoder and two decoders to simulate a
 /// simple relay network as shown below (for simplicity we have error free
 /// links, i.e. no data packets are lost when being sent from encoder to
 /// decoder_1 and decoder_1 to decoder_2):
-/// 
+///
 ///         +-----------+      +-----------+      +------------+
 ///         |  encoder  |+---->| decoder_1 |+---->|  decoder_2 |
 ///         +-----------+      | (recoder) |      +------------+
