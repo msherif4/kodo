@@ -23,6 +23,8 @@ TEST(TestFileEncoder, test_file_encoder)
         std::string encode_filename = temp_file.string() + "-encode-file";
         std::string decode_filename = temp_file.string() + "-decode-file";
 
+        std::cout << "Encode filename " << encode_filename << std::endl;
+        
         // Write a test file
         std::ofstream encode_file;
         encode_file.open (encode_filename, std::ios::binary);
