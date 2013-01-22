@@ -45,9 +45,10 @@ namespace kodo
                     uint32_t data_size)
             {
                 m_file = boost::make_shared<std::ifstream>();
-                m_file->open(filename.c_str(),
-                            std::ios::in|std::ios::binary);
+                m_file->open(filename, std::ios::binary);
 
+                std::cout << "In file reader open " << filename << std::endl;
+                
                 assert(m_file->is_open());
 
                 // Improve error handing by throwing an exception
