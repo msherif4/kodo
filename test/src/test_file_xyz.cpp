@@ -20,8 +20,8 @@ TEST(TestFileEncoder, test_file_encoder)
         // Get a filename
         auto temp_file = boost::filesystem::unique_path();
 
-        std::string encode_filename = temp_file.string() + "-encode-file";
-        std::string decode_filename = temp_file.string() + "-decode-file";
+        std::string encode_filename = temp_file.string() + "encode-file";
+        std::string decode_filename = temp_file.string() + "decode-file";
 
         std::cout << "Encode filename " << encode_filename << std::endl;
         
