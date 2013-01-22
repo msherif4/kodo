@@ -9,7 +9,6 @@
 
 #include <kodo/has_block_info.hpp>
 #include <kodo/final_coder_factory.hpp>
-#include <kodo/storage.hpp>
 #include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/has_shallow_symbol_storage.hpp>
@@ -70,7 +69,7 @@ void test_std_vector(CoderType coder)
     {
         std::vector<DataType> v_in(vector_size, fill_value);
 
-        kodo::set_symbols(kodo::storage(v_in), coder);
+        coder->set_symbols(sak::storage(v_in));
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
@@ -78,7 +77,7 @@ void test_std_vector(CoderType coder)
         }
 
         std::vector<DataType> v_out(vector_size);
-        kodo::copy_symbols(kodo::storage(v_out), coder);
+        coder->copy_symbols(sak::storage(v_out));
 
         EXPECT_TRUE( std::equal(v_in.begin(), v_in.end(), v_out.begin()));
     }
@@ -89,8 +88,8 @@ void test_std_vector(CoderType coder)
         for(uint32_t i = 0; i < vector_size; ++i)
             v_in[i] = rand_value<DataType>();
 
-        kodo::mutable_storage_sequence storage_sequence =
-            kodo::split_storage(kodo::storage(v_in), coder->symbol_size());
+        auto storage_sequence =
+            sak::split_storage(sak::storage(v_in), coder->symbol_size());
 
         for(uint32_t i = 0; i < storage_sequence.size(); ++i)
         {
@@ -99,7 +98,7 @@ void test_std_vector(CoderType coder)
 
         std::vector<DataType> v_out(vector_size);
 
-        kodo::copy_symbols(kodo::storage(v_out), coder);
+        coder->copy_symbols(sak::storage(v_out));
 
         EXPECT_TRUE( std::equal(v_in.begin(), v_in.end(), v_out.begin()));
 
@@ -120,7 +119,7 @@ void test_pointer_to_data(CoderType coder)
 
         std::fill_n(d_in.get(), vector_size, fill_value);
 
-        coder->set_symbols(kodo::storage(d_in.get(), vector_size*sizeof(DataType)));
+        coder->set_symbols(sak::storage(d_in.get(), vector_size*sizeof(DataType)));
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
@@ -128,7 +127,7 @@ void test_pointer_to_data(CoderType coder)
         }
 
         boost::shared_array<DataType> d_out(new DataType[vector_size]);
-        coder->copy_symbols(kodo::storage(d_out.get(), vector_size*sizeof(DataType)));
+        coder->copy_symbols(sak::storage(d_out.get(), vector_size*sizeof(DataType)));
 
         EXPECT_TRUE( std::equal(d_in.get(), d_in.get() + vector_size, d_out.get()) );
     }
@@ -229,7 +228,7 @@ void test_partial_std_vector(CoderType coder)
     {
         std::vector<DataType> v_in(partial_vector_length, fill_value);
 
-        kodo::set_symbols(kodo::storage(v_in), coder);
+        coder->set_symbols(sak::storage(v_in));
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
@@ -238,9 +237,9 @@ void test_partial_std_vector(CoderType coder)
 
         std::vector<DataType> v_out(vector_length, 0);
 
-        kodo::mutable_storage ms = kodo::storage(v_out);
+        auto ms = sak::storage(v_out);
 
-        kodo::copy_symbols(ms, coder);
+        coder->copy_symbols(ms);
 
         // Check whether the beginning of the partial vector
         // is now in the beginning at the output vector
@@ -344,10 +343,8 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
                     kodo::deep_coder<fifi::binary16> >::value);
 
     EXPECT_FALSE(kodo::has_shallow_symbol_storage<int>::value);
-    
-    EXPECT_FALSE(kodo::has_shallow_symbol_storage<fifi::binary8>::value);
 
-    
+    EXPECT_FALSE(kodo::has_shallow_symbol_storage<fifi::binary8>::value);
 }
 
 
@@ -384,7 +381,7 @@ TEST(TestSymbolStorage, test_has_deep_symbol_storage)
                     kodo::deep_coder<fifi::binary16> >::value);
 
     EXPECT_FALSE(kodo::has_deep_symbol_storage<int>::value);
-    
+
     EXPECT_FALSE(kodo::has_deep_symbol_storage<fifi::binary8>::value);
 
 }

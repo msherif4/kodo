@@ -6,12 +6,8 @@
 #ifndef KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
 #define KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
-
-#include <boost/shared_array.hpp>
-
-#include <fifi/fifi_utils.hpp>
 
 #include "shallow_symbol_storage.hpp"
 
@@ -42,10 +38,6 @@ namespace kodo
 
         /// Pointer to the value_type elements
         typedef typename Super::value_ptr value_ptr;
-
-        /// The sequence of storage elements used
-        typedef typename Super::storage_sequence_type
-            storage_sequence_type;
 
         /// Pointer produced by the factory
         typedef typename Super::pointer pointer;
@@ -101,11 +93,8 @@ namespace kodo
             {
                 Super::construct(max_symbols, max_symbol_size);
 
-                // uint32_t max_symbol_length =
-                //     fifi::elements_needed<field_type>(max_symbol_size);
+                assert(max_symbol_size > 0);
 
-                assert(max_symbol_size > 0); 
-                
                 m_partial_symbol = boost::make_shared<symbol_type>();
                 m_partial_symbol->resize(max_symbol_size, 0);
             }
@@ -119,10 +108,10 @@ namespace kodo
 
         /// Sets the storage
         /// @param symbol_storage a const storage container
-        void set_symbols(const const_storage &symbol_storage)
+        void set_symbols(const sak::const_storage &symbol_storage)
             {
-                storage_sequence_type symbol_sequence =
-                    split_storage(symbol_storage, Super::symbol_size());
+                auto symbol_sequence =
+                    sak::split_storage(symbol_storage, Super::symbol_size());
 
                 uint32_t sequence_size = symbol_sequence.size();
                 uint32_t last_index = sequence_size - 1;
@@ -132,12 +121,12 @@ namespace kodo
                     Super::set_symbol(i, symbol_sequence[i]);
                 }
 
-                const_storage last_symbol = symbol_sequence[last_index];
+                auto last_symbol = symbol_sequence[last_index];
 
                 if(last_symbol.m_size < Super::symbol_size())
                 {
-                    mutable_storage partial_symbol = storage(*m_partial_symbol);
-                    copy_storage(partial_symbol, last_symbol);
+                    auto partial_symbol = sak::storage(*m_partial_symbol);
+                    sak::copy_storage(partial_symbol, last_symbol);
                     Super::set_symbol(last_index, partial_symbol);
                 }
                 else
@@ -145,7 +134,7 @@ namespace kodo
                     Super::set_symbol(last_index, last_symbol);
                 }
 
-                const_storage zero_symbol = storage(*m_zero_symbol);
+                auto zero_symbol = sak::storage(*m_zero_symbol);
 
                 for(uint32_t i = last_index + 1; i < Super::symbols(); ++i)
                 {

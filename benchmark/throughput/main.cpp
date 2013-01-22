@@ -190,7 +190,7 @@ struct throughput_benchmark : public gauge::time_benchmark
             kodo::random_uniform<uint8_t> fill_data;
             fill_data.generate(&m_encoded_data[0], m_encoded_data.size());
 
-            kodo::set_symbols(kodo::storage(m_encoded_data), m_encoder);
+            m_encoder->set_symbols(sak::storage(m_encoded_data));
 
             // Prepare storage to the encoded payloads
             uint32_t payload_count = symbols * 10;
@@ -207,7 +207,7 @@ struct throughput_benchmark : public gauge::time_benchmark
 
     void encode_payloads()
         {
-            kodo::set_symbols(kodo::storage(m_encoded_data), m_encoder);
+            m_encoder->set_symbols(sak::storage(m_encoded_data));
 
             // We switch any systematic operations off so we code
             // symbols from the beginning

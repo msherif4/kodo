@@ -96,7 +96,7 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
         fifi::apply_prefix(sak::storage(encode_data), prefix);
     }
 
-    kodo::set_symbols(kodo::storage(encode_data), encoder);
+    encoder->set_symbols(sak::storage(encode_data));
 
     // Set the encoder non-systematic
     if(kodo::is_systematic_encoder(encoder))
@@ -111,7 +111,7 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     }
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-    kodo::copy_symbols(kodo::storage(data_out), decoder);
+    decoder->copy_symbols(sak::storage(data_out));
 
     if(fifi::is_prime2325<typename Encoder::field_type>::value)
     {
@@ -144,7 +144,7 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
     kodo::random_uniform<uint8_t> fill_data;
     fill_data.generate(&data_in[0], data_in.size());
 
-    kodo::set_symbols(kodo::storage(data_in), encoder);
+    encoder->set_symbols(sak::storage(data_in));
 
     if(kodo::is_systematic_encoder(encoder))
         kodo::set_systematic_off(encoder);
@@ -170,7 +170,7 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->block_size(), decoder->block_size());
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-    kodo::copy_symbols(kodo::storage(data_out), decoder);
+    decoder->copy_symbols(sak::storage(data_out));
 
     EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 
@@ -209,7 +209,7 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         kodo::random_uniform<uint8_t> fill_data;
         fill_data.generate(&data_in[0], data_in.size());
 
-        kodo::set_symbols(kodo::storage(data_in), encoder);
+        encoder->set_symbols(sak::storage(data_in));
 
         // Set the encoder non-systematic
         if(kodo::is_systematic_encoder(encoder))
@@ -224,7 +224,7 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         }
 
         std::vector<uint8_t> data_out(block_size, '\0');
-        kodo::copy_symbols(kodo::storage(data_out), decoder);
+        decoder->copy_symbols(sak::storage(data_out));
 
         EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 
@@ -254,7 +254,7 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     kodo::random_uniform<uint8_t> fill_data;
     fill_data.generate(&data_in[0], data_in.size());
 
-    kodo::set_symbols(kodo::storage(data_in), encoder);
+    encoder->set_symbols(sak::storage(data_in));
 
     // Ensure encoder systematic
     EXPECT_TRUE(kodo::is_systematic_encoder(encoder));
@@ -273,7 +273,7 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(pkg_count == encoder->symbols());
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-    kodo::copy_symbols(kodo::storage(data_out), decoder);
+    decoder->copy_symbols(sak::storage(data_out));
 
     EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 

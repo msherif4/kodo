@@ -16,6 +16,8 @@
 #include <fifi/default_field_impl.hpp>
 #include <fifi/is_binary.hpp>
 
+#include <sak/storage.hpp>
+
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
 #include "../finite_field_math.hpp"
@@ -24,7 +26,6 @@
 #include "../systematic_decoder.hpp"
 #include "../has_bytes_used.hpp"
 #include "../has_block_info.hpp"
-#include "../storage.hpp"
 #include "../partial_shallow_symbol_storage.hpp"
 #include "../deep_symbol_storage.hpp"
 #include "../generators/block.hpp"

@@ -21,9 +21,9 @@ namespace kodo
     class storage_encoder : public
         object_encoder
             <
+            storage_reader<EncoderType>,
             EncoderType,
-            BlockPartitioning,
-            storage_reader<EncoderType>
+            BlockPartitioning
             >
     {
     public:
@@ -32,13 +32,14 @@ namespace kodo
         /// @param factory the encoder factory to use
         /// @param object the object to encode
         storage_encoder(typename EncoderType::factory &factory,
-                        const const_storage &data)
+                        const sak::const_storage &data)
             : object_encoder
                   <
+                  storage_reader<EncoderType>,
                   EncoderType,
-                  BlockPartitioning,
-                  storage_reader<EncoderType>
-        >(factory, storage_reader<EncoderType>(data))
+                  BlockPartitioning
+                  >
+              (factory, storage_reader<EncoderType>(data))
             {}
     };
 }

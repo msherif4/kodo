@@ -21,9 +21,9 @@ namespace kodo
     class file_encoder : public
         object_encoder
             <
+            file_reader<EncoderType>,
             EncoderType,
-            BlockPartitioning,
-            file_reader<EncoderType>
+            BlockPartitioning
             >
     {
     public:
@@ -40,11 +40,12 @@ namespace kodo
                      const std::string &filename)
             : object_encoder
                   <
+                  file_reader<EncoderType>,
                   EncoderType,
-                  BlockPartitioning,
-                  file_reader<EncoderType>
-        >(factory, file_reader<EncoderType>(
-              filename, factory.max_symbols(), factory.max_symbol_size()))
+                  BlockPartitioning
+                  >
+              (factory, file_reader<EncoderType>(
+                  filename, factory.max_symbols() * factory.max_symbol_size()))
             {}
     };
 }

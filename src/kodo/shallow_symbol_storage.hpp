@@ -13,7 +13,7 @@
 
 #include <fifi/fifi_utils.hpp>
 
-#include "storage.hpp"
+#include <sak/storage.hpp>
 
 namespace kodo
 {
@@ -29,7 +29,7 @@ namespace kodo
         typedef const value_type* value_ptr;
 
         /// storage type
-        typedef const_storage storage_type;
+        typedef sak::const_storage storage_type;
 
     };
 
@@ -45,7 +45,7 @@ namespace kodo
         typedef value_type* value_ptr;
 
         /// storage type
-        typedef mutable_storage storage_type;
+        typedef sak::mutable_storage storage_type;
 
     };
 
@@ -61,10 +61,10 @@ namespace kodo
 
         /// The storage traits
         typedef StorageTraits storage_trait;
-        
+
         /// The value type used
         typedef typename storage_trait::value_type value_type;
-        
+
         /// The pointer used
         typedef typename storage_trait::value_ptr value_ptr;
 
@@ -72,11 +72,7 @@ namespace kodo
         typedef typename storage_trait::storage_type storage_type;
 
         /// The symbol storage container
-        typedef std::vector<value_ptr> symbol_storage_type;
-        
-        /// A sequence of storage types
-        typedef typename storage_sequence<storage_type>::type
-            storage_sequence_type;
+        typedef std::vector<value_ptr> symbol_container_type;
 
     public:
 
@@ -114,7 +110,7 @@ namespace kodo
             }
 
         /// Set the symbols by swapping the std::vector
-        void swap_symbols(symbol_storage_type &symbols)
+        void swap_symbols(symbol_container_type &symbols)
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
@@ -124,8 +120,8 @@ namespace kodo
         /// @param symbol_storage a const storage container
         void set_symbols(const storage_type &symbol_storage)
             {
-                storage_sequence_type symbol_sequence =
-                    split_storage(symbol_storage, SuperCoder::symbol_size());
+                auto symbol_sequence =
+                    sak::split_storage(symbol_storage, SuperCoder::symbol_size());
 
                 uint32_t sequence_size = symbol_sequence.size();
                 assert(sequence_size == SuperCoder::symbols());
@@ -142,16 +138,15 @@ namespace kodo
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
-//                std::cout << symbol.m_size << " " << SuperCoder::symbol_size() << std::endl;
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 
-                m_data[index] = cast_storage<value_type>(symbol);
+                m_data[index] = sak::cast_storage<value_type>(symbol);
             }
 
         /// Overload of the copy_storage() function for this symbol storage.
         /// @param dest_storage destination buffer
-        void copy_symbols(mutable_storage dest_storage)
+        void copy_symbols(sak::mutable_storage dest_storage)
             {
                 assert(dest_storage.m_size > 0);
                 assert(dest_storage.m_data != 0);
@@ -168,10 +163,10 @@ namespace kodo
 
                     data_to_copy -= copy_size;
 
-                    const_storage src_storage =
-                        storage(symbol(symbol_index), copy_size);
+                    sak::const_storage src_storage =
+                        sak::storage(symbol(symbol_index), copy_size);
 
-                    copy_storage(dest_storage, src_storage);
+                    sak::copy_storage(dest_storage, src_storage);
 
                     dest_storage.m_size -= copy_size;
                     dest_storage.m_data += copy_size;
@@ -185,7 +180,7 @@ namespace kodo
     protected:
 
         /// Symbol mapping
-        symbol_storage_type m_data;
+        symbol_container_type m_data;
 
     };
 

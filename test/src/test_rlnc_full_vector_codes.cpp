@@ -273,7 +273,7 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     kodo::random_uniform<uint8_t> fill_data;
     fill_data.generate(&data_in[0], data_in.size());
 
-    kodo::set_symbols(kodo::storage(data_in), encoder);
+    encoder->set_symbols(sak::storage(data_in));
 
     // Set the encoder non-systematic
     if(kodo::is_systematic_encoder(encoder))
@@ -290,8 +290,8 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 
     std::vector<uint8_t> data_out_one(decoder_one->block_size(), '\0');
     std::vector<uint8_t> data_out_two(decoder_two->block_size(), '\0');
-    kodo::copy_symbols(kodo::storage(data_out_one), decoder_one);
-    kodo::copy_symbols(kodo::storage(data_out_two), decoder_two);
+    decoder_one->copy_symbols(sak::storage(data_out_one));
+    decoder_two->copy_symbols(sak::storage(data_out_two));
 
     EXPECT_TRUE(
         std::equal(data_out_one.begin(), data_out_one.end(), data_in.begin()));

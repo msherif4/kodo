@@ -23,7 +23,7 @@ template<
 void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t multiplier)
 {
 
-    typedef kodo::object_encoder<Encoder, Partitioning, ObjectData> object_encoder;
+    typedef kodo::object_encoder<ObjectData, Encoder, Partitioning> object_encoder;
     typedef kodo::object_decoder<Decoder, Partitioning> object_decoder;
 
     std::vector<char> data_in(max_symbols * max_symbol_size * multiplier);
@@ -35,7 +35,7 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
     typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
     typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);
 
-    object_encoder obj_encoder(encoder_factory, kodo::storage(data_in));
+    object_encoder obj_encoder(encoder_factory, sak::storage(data_in));
     object_decoder obj_decoder(decoder_factory, obj_encoder.object_size());
 
     EXPECT_EQ(multiplier, obj_encoder.encoders());
@@ -68,10 +68,10 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 
         }
 
-        kodo::mutable_storage storage = kodo::storage(
+        auto storage = sak::storage(
             &data_out[0] + (i * encoder->block_size()), encoder->block_size());
 
-        kodo::copy_symbols(storage, decoder);
+        decoder->copy_symbols(storage);
 
     }
 
@@ -206,122 +206,6 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 //     test_object_coders(symbols, symbol_size, multiplier);
 // }
 
-#include <type_traits>
-
-namespace kodo
-{
-
-    
-template<class EncoderType>
-class storage_reader
-{
-public:
-
-    typedef typename EncoderType::pointer pointer;
-    
-public:
-
-    storage_reader(const const_storage &storage)
-        : m_storage(storage)
-        {
-            assert(m_storage.m_size > 0);
-            assert(m_storage.m_data != 0);
-        }
-
-    uint32_t size() const
-        {
-            return m_storage.m_size;
-        }
-
-    void read(pointer &encoder, uint32_t offset, uint32_t size)
-        {
-            assert(encoder);
-            assert(offset < m_storage.m_size);
-            assert(size > 0);
-            
-            uint32_t remaining_bytes = m_storage.m_size - offset;
-            
-            assert(size <= remaining_bytes);
-            
-            const_storage storage;
-            storage.m_data = m_storage.m_data + offset;
-            storage.m_size = size;
-            
-            encoder->set_symbols(storage);
-            
-            // We require that encoders includes the has_bytes_used
-            // layer to support partially filled encoders
-            encoder->set_bytes_used(size);
-        }
-    
-
-private:
-
-    const_storage m_storage;
-    
-};
-
-    
-}
-// template<template <class> class T, class Coder>
-// inline void has_layer(const Coder& coder)
-// {
-//     std::cout << std::is_base_of<T, Coder>::value << std::endl;
-// }
-
-// class object_reader
-// {
-// public:
-
-//     template<template <class> class T, class U>
-//     void read(kodo::symbol_storage_shallow<T,U> &shallow)
-//         {
-//             std::cout << "Works" << std::endl;
-//         }
-    
-// };
-
-// template
-// <
-//     class EncoderType,
-//     class BlockPartitioning
-// >
-// class storage_encoder : public object_encoder<EncoderType, BlockPartitioning>
-// {
-
-    
-// };
-
-
-
-
-
-
-// TEST(TestObjectCoder, test_object_reader)
-// {
-//     typedef kodo::full_rlnc8_encoder encoder_t;
-
-//     encoder_t::factory f(10,10);
-//     encoder_t::pointer e = f.build(10,10);
-
-//     typedef kodo::full_rlnc8_decoder decoder_t;
-        
-//     decoder_t::factory fd(10,10);
-//     decoder_t::pointer d = fd.build(10,10);
-
-//     // std::cout << "Has shallow " << kodo::has_shallow_storage(e) << std::endl;
-//     // std::cout << "Has shallow " << kodo::has_shallow_storage(d) << std::endl;
-
-//     std::cout << kodo::has_shallow_symbol_storage<encoder_t>::value << std::endl;
-//     std::cout << kodo::has_shallow_symbol_storage<decoder_t>::value << std::endl;
-    
-//     static_assert(kodo::has_shallow_symbol_storage<encoder_t>::value,
-//                   "Mush use shallow");
-
-//     object_reader reader(10,10);
-//     //reader(10,10,d);
-    
-// }
 
 
 

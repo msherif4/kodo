@@ -30,8 +30,6 @@ TEST(TestReedSolomonCodes, test_construct)
 
         kodo::rs8_decoder::factory fdec(255, 1600);
         kodo::rs8_decoder::pointer pdec = fdec.build(128, 1600);
-
-
     }
 
 }
@@ -70,7 +68,7 @@ TEST(TestReedSolomonCodes, test_encode_decode)
         kodo::random_uniform<uint8_t> fill_data;
         fill_data.generate(&data_in[0], data_in.size());
 
-        kodo::set_symbols(kodo::storage(data_in), encoder);
+        encoder->set_symbols(sak::storage(data_in));
 
         uint32_t symbol_count = 0;
         while( !decoder->is_complete() )
@@ -86,7 +84,7 @@ TEST(TestReedSolomonCodes, test_encode_decode)
         EXPECT_EQ(symbol_count, symbols);
 
         std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-        kodo::copy_symbols(kodo::storage(data_out), decoder);
+        decoder->copy_symbols(sak::storage(data_out));
 
         EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
 

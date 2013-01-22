@@ -433,7 +433,7 @@ public:
             m_payload_buffer.resize(m_encoder->payload_size(), 0);
             m_encoded_data.resize(m_encoder->block_size(), 'x');
 
-            kodo::set_symbols(kodo::storage(m_encoded_data), m_encoder);
+            m_encoder->set_symbols(sak::storage(m_encoded_data));
         }
 
     /// Returns the measurement - checks which operation we want to

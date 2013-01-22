@@ -67,7 +67,7 @@ int main()
 
     // Assign the data buffer to the encoder so that we may start
     // to produce encoded symbols from it
-    kodo::set_symbols(kodo::storage(data_in), encoder);
+    encoder->set_symbols(sak::storage(data_in));
 
     while( !decoder_2->is_complete() )
     {
@@ -90,8 +90,8 @@ int main()
     std::vector<uint8_t> data_out_1(decoder_1->block_size());
     std::vector<uint8_t> data_out_2(decoder_2->block_size());
 
-    kodo::copy_symbols(kodo::storage(data_out_1), decoder_1);
-    kodo::copy_symbols(kodo::storage(data_out_2), decoder_2);
+    decoder_1->copy_symbols(sak::storage(data_out_1));
+    decoder_2->copy_symbols(sak::storage(data_out_2));
 
     // Check we properly decoded the data
     if (std::equal(data_out_1.begin(), data_out_1.end(), data_in.begin()) &&

@@ -6,12 +6,12 @@
 #ifndef KODO_OBJECT_ENCODER_HPP
 #define KODO_OBJECT_ENCODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
 
-#include "storage.hpp"
+#include "rfc5052_partitioning_scheme.hpp"
 
 namespace kodo
 {
@@ -47,9 +47,9 @@ namespace kodo
     ///                         +---------------+
     template
     <
+        class ObjectData,
         class EncoderType,
-        class BlockPartitioning,
-        class ObjectData
+        class BlockPartitioning = rfc5052_partitioning_scheme
     >
     class object_encoder : boost::noncopyable
     {
@@ -60,9 +60,6 @@ namespace kodo
 
         /// Pointer to an encoder
         typedef typename EncoderType::pointer pointer_type;
-
-        /// The storage type used
-        typedef typename EncoderType::symbol_storage_type symbol_storage_type;
 
         /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;

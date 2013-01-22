@@ -6,26 +6,30 @@
 #ifndef KODO_OBJECT_DECODER_HPP
 #define KODO_OBJECT_DECODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
 
-#include "storage.hpp"
+#include "rfc5052_partitioning_scheme.hpp"
 
 namespace kodo
 {
     /// Object decoder
-    template<class DecoderType, class BlockPartitioning>
+    template
+    <
+        class DecoderType,
+        class BlockPartitioning = rfc5052_partitioning_scheme
+    >
     class object_decoder : boost::noncopyable
     {
     public:
 
         /// The type of factory used to build decoders
-        typedef typename DecoderType::factory factory_type;
+        typedef typename DecoderType::factory factory;
 
         /// Pointer to a decoder
-        typedef typename DecoderType::pointer pointer_type;
+        typedef typename DecoderType::pointer pointer;
 
         /// The block partitioning scheme used
         typedef BlockPartitioning block_partitioning;
@@ -35,8 +39,8 @@ namespace kodo
         /// Constructs a new object decoder
         /// @param factory the decoder factory to use
         /// @param object_size size in bytes of the object to be decoded
-        object_decoder(factory_type &factory, uint32_t object_size)
-            : m_factory(factory),
+        object_decoder(factory &decoder_factory, uint32_t object_size)
+            : m_factory(decoder_factory),
               m_object_size(object_size)
             {
                 assert(m_object_size > 0);
@@ -56,7 +60,7 @@ namespace kodo
         /// Builds a specific decoder
         /// @param decoder_id specifies the decoder to build
         /// @return the initialized decoder
-        pointer_type build(uint32_t decoder_id)
+        pointer build(uint32_t decoder_id)
             {
                 assert(decoder_id < m_partitioning.blocks());
 
@@ -66,7 +70,7 @@ namespace kodo
                 uint32_t symbol_size =
                     m_partitioning.symbol_size(decoder_id);
 
-                pointer_type decoder = m_factory.build(symbols, symbol_size);
+                pointer decoder = m_factory.build(symbols, symbol_size);
 
                 // Set bytes used
                 uint32_t bytes_used =
@@ -86,7 +90,7 @@ namespace kodo
     private:
 
         /// The decoder factory
-        factory_type &m_factory;
+        factory &m_factory;
 
         /// The block partitioning scheme used
         block_partitioning m_partitioning;

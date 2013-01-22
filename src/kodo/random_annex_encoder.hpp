@@ -6,12 +6,13 @@
 #ifndef KODO_RANDOM_ANNEX_ENCODER_HPP
 #define KODO_RANDOM_ANNEX_ENCODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
 
-#include "storage.hpp"
+#include <sak/storage.hpp>
+
 #include "random_annex_base.hpp"
 
 namespace kodo
@@ -48,7 +49,7 @@ namespace kodo
         /// @param factory the encoder factory to use
         /// @param object the object to encode
         random_annex_encoder(uint32_t annex_size, factory_type &factory,
-                             const const_storage &object)
+                             const sak::const_storage &object)
             : m_annex_size(annex_size),
               m_factory(factory),
               m_object(object)
@@ -114,7 +115,7 @@ namespace kodo
 
                 assert(size <= remaining_bytes);
 
-                const_storage storage;
+                sak::const_storage storage;
                 storage.m_data = m_object.m_data + offset;
                 storage.m_size = size;
 
@@ -183,8 +184,8 @@ namespace kodo
                         assert(from_encoder->symbol_size() == to_encoder->symbol_size());
                         assert(annex.m_symbol_id < from_encoder->symbols() - m_annex_size);
 
-                        const_storage symbol =
-                            kodo::storage(from_encoder->symbol(annex.m_symbol_id),
+                        sak::const_storage symbol =
+                            sak::storage(from_encoder->symbol(annex.m_symbol_id),
                                           from_encoder->symbol_size());
 
                         assert(symbol.m_data != 0);
@@ -216,7 +217,7 @@ namespace kodo
         block_partitioning m_partitioning;
 
         /// Store the total object storage
-        const_storage m_object;
+        sak::const_storage m_object;
 
         /// Vector for all the encoders
         std::vector<pointer_type> m_encoders;

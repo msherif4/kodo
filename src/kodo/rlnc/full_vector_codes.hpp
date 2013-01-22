@@ -6,7 +6,7 @@
 #ifndef KODO_RLNC_FULL_VECTOR_CODES_HPP
 #define KODO_RLNC_FULL_VECTOR_CODES_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/make_shared.hpp>
@@ -24,7 +24,6 @@
 #include "../systematic_decoder.hpp"
 #include "../has_bytes_used.hpp"
 #include "../has_block_info.hpp"
-#include "../storage.hpp"
 #include "../partial_shallow_symbol_storage.hpp"
 #include "../deep_symbol_storage.hpp"
 #include "../generators/block.hpp"
@@ -61,7 +60,7 @@ namespace kodo
                  linear_block_vector_generator<block_cache_lookup_uniform,
                  linear_block_encoder<
                  finite_field_math<fifi::default_field_impl,
-                 partial_shallow_symbol_storage<
+                 deep_symbol_storage<
                  has_bytes_used<
                  has_block_info<
                  final_coder_factory_pool<full_rlnc_encoder<Field>, Field>

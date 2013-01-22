@@ -112,7 +112,7 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     //std::cout << "annex size " << annex_size << std::endl;
 
     random_annex_encoder obj_encoder(
-        annex_size, encoder_factory, kodo::storage(data_in));
+        annex_size, encoder_factory, sak::storage(data_in));
 
     //std::cout << "encoders " << obj_encoder.encoders() << std::endl;
 
@@ -151,10 +151,10 @@ void invoke_random_annex_partial(uint32_t max_symbols,
             decoder->decode( &payload[0] );
         }
 
-        kodo::mutable_storage storage = kodo::storage(
+        sak::mutable_storage storage = sak::storage(
             &data_out[0] + bytes_used, decoder->bytes_used());
 
-        kodo::copy_symbols(storage, decoder.unwrap());
+        decoder.unwrap()->copy_symbols(storage);
 
         bytes_used += decoder->bytes_used();
     }

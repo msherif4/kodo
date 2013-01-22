@@ -6,14 +6,15 @@
 #ifndef KODO_RANDOM_ANNEX_DECODER_HPP
 #define KODO_RANDOM_ANNEX_DECODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
-#include "storage.hpp"
+#include <sak/storage.hpp>
+
 #include "random_annex_base.hpp"
 
 namespace kodo
