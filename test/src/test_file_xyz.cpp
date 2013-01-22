@@ -22,8 +22,8 @@ TEST(TestFileEncoder, test_file_encoder)
         auto temp_file = boost::filesystem::unique_path();
         auto full_path = temp_dir / temp_file;
 
-        std::string encode_filename = full_path.native() + "-encode-file";
-        std::string decode_filename = full_path.native() + "-decode-file";
+        std::string encode_filename = full_path.string() + "-encode-file";
+        std::string decode_filename = full_path.string() + "-decode-file";
 
         // Write a test file
         std::ofstream encode_file;
