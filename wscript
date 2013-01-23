@@ -16,6 +16,9 @@ def recurse_helper(ctx, name):
 
 def options(opt):
 
+    opt.add_option('--install-path', action='store', default=False,
+                   help='Change the install_path option')
+
     import waflib.extras.wurf_dependency_bundle as bundle
     import waflib.extras.wurf_dependency_resolve as resolve
     import waflib.extras.wurf_configure_output
@@ -69,6 +72,7 @@ def configure(conf):
 
         conf.load_external_tool('mkspec', 'wurf_cxx_mkspec_tool')
         conf.load_external_tool('runners', 'wurf_runner')
+        conf.load_external_tool('install_path', 'wurf_install_path')
 
         recurse_helper(conf, 'boost')
         recurse_helper(conf, 'gtest')
@@ -105,8 +109,6 @@ def build(bld):
     bld(includes = './src',
         export_includes = './src',
         name = 'kodo_includes')
-
-
 
 
 
