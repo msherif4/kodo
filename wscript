@@ -16,9 +16,6 @@ def recurse_helper(ctx, name):
 
 def options(opt):
 
-    opt.add_option('--install-path', action='store', default=False,
-                   help='Change the install_path option')
-
     import waflib.extras.wurf_dependency_bundle as bundle
     import waflib.extras.wurf_dependency_resolve as resolve
     import waflib.extras.wurf_configure_output
