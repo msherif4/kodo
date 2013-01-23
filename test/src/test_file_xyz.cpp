@@ -17,13 +17,8 @@ TEST(TestFileEncoder, test_file_encoder)
 {
 
     {
-        // Get a filename
-        auto temp_file = boost::filesystem::unique_path();
-
         std::string encode_filename = "encode-file";
         std::string decode_filename = "decode-file";
-
-        std::cout << "Encode filename " << encode_filename << std::endl;
         
         // Write a test file
         std::ofstream encode_file;
