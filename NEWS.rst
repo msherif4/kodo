@@ -6,7 +6,7 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Updated waf to 1.7.9 and enabled use of the wurf_install_path tool.
 
 7.0.1
 -----
