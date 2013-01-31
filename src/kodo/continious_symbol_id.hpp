@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CONTINIOUS_ID_ITERATOR_HPP
-#define KODO_CONTINIOUS_ID_ITERATOR_HPP
+#ifndef KODO_CONTINIOUS_ID_HPP
+#define KODO_CONTINIOUS_ID_HPP
 
 
 namespace kodo
@@ -16,22 +16,41 @@ namespace kodo
     {
     public:
 
+        /// The field used
         typedef typename Field::value_type value_type;
 
-        struct iterator;
+    public:
 
-        continious_symbol_id(uint8_t *data);
+        /// @param index the index of the coffecient to return
+        /// @param vector buffer where the coefficients are stored
+        /// @return the coefficient for a specific symbol index
+        value_type coefficient(uint32_t index);
 
-        /// @return the
-        uint8_t* data() const;
+        /// Sets the coefficient for a specific symbol index
+        /// @param index the index of the symbol coefficient
+        /// @param vector buffer where the coefficient should be set
+        /// @param coefficient to assign
+        void set_coefficient(uint32_t index,
+                             value_type coefficient);
 
-        ///
-        void set(uint32_t index, value_type value)
-            {
-            }
+        void set_coefficients(value_type *coefficient);
 
-        std::vector<uint8_t> m_data;
+
+
+        /// Needed to store the encoding vector for a certain number
+        /// of symbols in a specific field. Used when several elements
+        /// are packed into a single value_type, currently only used
+        /// for the binary field.
+        /// @param symbols the number of symbols
+        /// @return the length of a vector in value_type elements
+        static uint32_t length(uint32_t symbols);
+
+        /// @param symbols the number of symbols
+        /// @return the size of  vector in bytes
+        static uint32_t size(uint32_t symbols);
+
     };
+
 
     template<class SuperCoder>
     class symbol_id_math : public SuperCoder
