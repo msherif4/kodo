@@ -7,8 +7,6 @@
 
 #include <gtest/gtest.h>
 
-
-
 struct null_flag
 {
     struct flags
@@ -190,54 +188,40 @@ TEST(TestXYZSymbolId, test)
 
 namespace kodo
 {
-    /// Generates full encoding vectors where every coding coefficient
+    /// The Symbol ID Generator Concept API:
+    /// generate(symbol_index, symbol_id, size)
+    /// A symbol ID generator must _always_ return the same symbol id
+    /// for the same symbol_index
+
+
+    /// Generates symbol IDs where every coding coefficient
     /// is chosen uniformly random.
     template<class SuperCoder>
-    class random_uniform : public SuperCoder
+    class random_uniform_id : public SuperCoder
     {
     public:
 
-        /// Typedef for the value type
-        typedef typename SuperCoder::value_type value_type;
-
-    public:
-
-        /// Fills the vector buffer with random bytes
-        /// @param buffer pointer to the destination of the symbol
-        /// @param length of the the symbol in elements
-        void generate(uint32_t seed, value_type *symbol_id, uint32_t size)
-            {
-                m_random_generator.seed(seed);
-                generate(symbol_id);
-            }
+        void generate(uint32_t symbol_index, uint8_t* symbol_id, uint32_t symbols);
 
         ///
-        void generate(uint8_t *value_type)
+        uint8_t* generate(uint32_t symbol_index, uint8_t *symbol_id)
             {
-                value_type *id =
-                    reinterpret_cast<value_type*>(symbol_id);
+                assert(symbol_id != 0);
 
-                assert(id != 0);
+                m_random_generator.seed(symbol_index);
+
+                uint32_t size = SuperCoder::symbols();
 
                 for(uint32_t i = 0; i < m_symbol_id_length; ++i)
                 {
-                    id[i] = m_distribution(m_random_generator);
+                    symbol_id[i] = m_distribution(m_random_generator);
                 }
-
-            }
-
-        void seed(uint32_t seed_value)
-            {
-                m_random_generator.seed(seed_value);
             }
 
     protected:
 
-        /// The length of the symbol id
-        uint32_t m_symbol_id_length;
-
         /// The distribution wrapping the random generator
-        boost::random::uniform_int_distribution<value_type> m_distribution;
+        boost::random::uniform_int_distribution<uint8_t> m_distribution;
 
         /// The random generator
         boost::random::mt19937 m_random_generator;
