@@ -174,7 +174,17 @@ TEST(TestXYZSymbolId, test)
 
 
 
-
+/// CoefficientWriter conept API:
+///
+/// You can use the coefficient API to set the individual coefficients
+/// individually.
+/// void set_coefficient(pos, value)
+/// uint32_t length()
+///
+/// Or you can access the raw cofficients and update the entire buffer
+/// in one go.
+/// uint8_t* data()
+/// uint32_t size()
 
 
 
@@ -190,37 +200,41 @@ namespace kodo
         /// Typedef for the value type
         typedef typename SuperCoder::value_type value_type;
 
-        /// @copydoc final_coder_factory::initialize()
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
-
-                // Get the length of the symbol coefficients
-                m_length = SuperCoder::symbol_id_
-
-            }
+    public:
 
         /// Fills the vector buffer with random bytes
         /// @param buffer pointer to the destination of the symbol
         /// @param length of the the symbol in elements
-        void generate(value_type *buffer, uint32_t length)
+        void generate(uint32_t seed, value_type *symbol_id, uint32_t size)
             {
-                assert(buffer != 0);
-                assert(length >  0);
-
-                for(uint32_t i = 0; i < length; ++i)
-                {
-                    buffer[i] = m_distribution(m_random_generator);
-                }
+                m_random_generator.seed(seed);
+                generate(symbol_id);
             }
 
-        /// @param seed_value the value of the seed for symbol generation
+        ///
+        void generate(uint8_t *value_type)
+            {
+                value_type *id =
+                    reinterpret_cast<value_type*>(symbol_id);
+
+                assert(id != 0);
+
+                for(uint32_t i = 0; i < m_symbol_id_length; ++i)
+                {
+                    id[i] = m_distribution(m_random_generator);
+                }
+
+            }
+
         void seed(uint32_t seed_value)
             {
                 m_random_generator.seed(seed_value);
             }
 
-    private:
+    protected:
+
+        /// The length of the symbol id
+        uint32_t m_symbol_id_length;
 
         /// The distribution wrapping the random generator
         boost::random::uniform_int_distribution<value_type> m_distribution;
@@ -231,4 +245,47 @@ namespace kodo
 }
 
 
+class rle_symbol_id_encoder
+{
+public:
 
+    void encode(uint8_t *symbol_id, uint8_t *symbol)
+        {
+            SuperCoder::generate(m_count, &m_symbol_id[0]);
+
+            bool rle_ok = rle_compress(symbol_id, m_symbol_id);
+
+            /// Put flag
+
+            SuperCoder::encode(&m_symbol_id[0], symbol);
+            }
+
+        }
+
+
+protected:
+
+    bool rle_compress(uint8_t *symbol_id, uint8_t* full_symbol_id)
+        {
+
+
+        }
+
+
+private:
+
+    /// The symbol id buffer
+    std::vector<uint8_t> m_symbol_id;
+
+};
+
+
+TEST(TestXYZSymbolId, test2)
+{
+    typedef kodo::random_uniform<kodo::null_coder> test;
+
+    test t;
+
+
+
+}
