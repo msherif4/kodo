@@ -43,6 +43,23 @@ public:
 \endcode
 
 
+# encode
+
+\code
+uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+\endcode
+
+
+## Parameters
+
+-------------------------------------------------------------------
+symbol_data  | The buffer where the encoded symbol should be stored
+symbol_id    | The buffer where the Symbol ID should be stored
+-------------------------------------------------------------------
+
+## Return
+
+
 uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
 ---------------------------------------------------------
 symbol_data  | The buffer where the encoded symbol should be stored
