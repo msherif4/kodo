@@ -1,4 +1,7 @@
 @defgroup encoder_api Encoder API
+
+The encoder API produces the symbol ID and the encoded symbol.
+
 These layers implement the following API:
 \code
 // @param symbol_data the memory buffer where the encoded symbol will
@@ -40,8 +43,8 @@ public:
 \endcode
 
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
-
+uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+---------------------------------------------------------
+symbol_data  | The buffer where the encoded symbol should be stored
+symbol_id    | The buffer where the Symbol ID should be stored
+return       | Returns the number of bytes used from the symbol_id buffer
