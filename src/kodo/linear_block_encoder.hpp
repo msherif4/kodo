@@ -17,6 +17,8 @@ namespace kodo
     /// A linear block encoder. This type of encoder iterates
     /// over a coefficient vector and combines symbols according
     /// to the coefficients selected.
+    ///
+    /// @ingroup coding_layer_api
     template<class SuperCoder>
     class linear_block_encoder : public SuperCoder
     {
@@ -75,7 +77,7 @@ namespace kodo
 
                 value_type *symbol =
                     reinterpret_cast<value_type*>(symbol_data);
-                
+
                 const value_type *id =
                     reinterpret_cast<const value_type*>(symbol_id);
 

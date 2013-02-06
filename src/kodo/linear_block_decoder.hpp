@@ -23,6 +23,8 @@ namespace kodo
     /// expects that an encoded symbol is described by a vector of coefficients.
     /// Using these coefficients the block decoder subtracts incomming symbols
     /// until the original data has been recreated.
+    ///
+    /// @ingroup coding_layer_api
     template<class SuperCoder>
     class linear_block_decoder : public SuperCoder
     {

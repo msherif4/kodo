@@ -6,11 +6,13 @@
 #ifndef KODO_PAYLOAD_ENCODER_HPP
 #define KODO_PAYLOAD_ENCODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
-    /// Payload encoder splits payload buffer into payload_data and payload_header
+    /// The payload encoder splits payload buffer into symbol_id and symbol
+    /// buffers.
+    /// @ingroup payload_layer_api
     template<class SuperCoder>
     class payload_encoder : public SuperCoder
     {

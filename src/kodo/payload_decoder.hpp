@@ -6,13 +6,13 @@
 #ifndef KODO_PAYLOAD_DECODER_HPP
 #define KODO_PAYLOAD_DECODER_HPP
 
-#include <stdint.h>
-
-#include "systematic_base_coder.hpp"
+#include <cstdint>
 
 namespace kodo
 {
-    /// Systematic encoder layer
+    /// The payload decoder splits payload buffer into symbol_id and symbol
+    /// buffers.
+    /// @ingroup payload_layer_api
     template<class SuperCoder>
     class payload_decoder : public SuperCoder
     {
