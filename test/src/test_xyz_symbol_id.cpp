@@ -307,7 +307,10 @@ namespace kodo
                 assert(m_id_size > 0);
             }
 
+        /// Some other code
+        ///
         /// @copydoc null_symbol_id_api::write_id()
+        /// @copydoc hide_commonstuff
         void write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients)
             {
                 assert(symbol_id != 0);
