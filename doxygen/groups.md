@@ -44,13 +44,6 @@ Before showing the typical layered structure of a encoder and decoder
 implemented in Kodo is ...
 
 
-@defgroup symbol_id_layer_api Symbol ID API
-@ingroup api_layer
-@brief The symbol id describes how an encoded symbol has been produced. The
-decoder uses this information during decoding. The symbol id API allows
-different representations of the symbol id to be implemented.
-
-
 @defgroup factory_layer_api Factory API
 @ingroup api_layer
 @brief The factory API is responsible for construction and initialization of
