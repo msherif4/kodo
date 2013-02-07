@@ -1,10 +1,13 @@
-@defgroup coding_layer_api Coding API
-@brief The coding API implements encoding and decoding algorithms.
+@defgroup coding_layer_api Coding Layer API
+@ingroup api_layer
+@brief The coding layer API implements encoding and decoding algorithms.
+
+\tableofcontents
 
 A large part of the funcitonality of the encoding algorithms are implemented by
 implementation of this API.
 
-# encode
+### encode
 
 \code
 uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)

@@ -238,10 +238,6 @@ namespace kodo
             }
 
 
-        uint32_t symbol_id_size() const
-            {
-                return m_id_size;
-            }
 
 
     protected:
@@ -252,11 +248,12 @@ namespace kodo
 
     };
 
-    /// Generates symbol IDs where every coding coefficient
-    /// is chosen uniformly random.
-    /// @concept generator
+    /// @brief Generates uniformly random coding coefficients and write
+    ///        all coefficients to the symbol id buffer.
+    ///
+    /// @ingroup symbol_id_layer_api
     template<class SuperCoder>
-    class random_uniform_generator : public SuperCoder
+    class random_uniform_symbol_id : public SuperCoder
     {
     public:
 
@@ -269,10 +266,49 @@ namespace kodo
         /// The value type
         typedef typename SuperCoder::value_type value_type;
 
+        /// The value type
+        typedef typename SuperCoder::field_type field_type;
+
     public:
 
-        ///
-        void generate(uint8_t *symbol_id)
+        /// The factory layer associated with this coder.
+        /// Maintains the block generator needed for the encoding vectors.
+        class factory : public SuperCoder::factory
+        {
+        public:
+
+            /// @copydoc final_coder_factory::factory::factory()
+            factory(uint32_t max_symbols, uint32_t max_symbol_size)
+                : SuperCoder::factory(max_symbols, max_symbol_size)
+                { }
+
+
+            /// @return the maximum required symbol id buffer size in bytes
+            uint32_t max_symbol_id_size() const
+                {
+                    uint32_t max_symbol_id_size =
+                        fifi::bytes_needed<field_type>(
+                            SuperCoder::factory::max_symbols());
+
+                    assert(max_symbol_id_size > 0);
+
+                    return max_symbol_id_size;
+                }
+        };
+
+    public:
+
+        /// @copydoc final_coder_factory::initialize()
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+
+                m_id_size = fifi::bytes_needed<field_type>(symbols);
+                assert(m_id_size > 0);
+            }
+
+        /// @copydoc null_symbol_id_api::write_id()
+        void write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients)
             {
                 assert(symbol_id != 0);
 
@@ -285,14 +321,21 @@ namespace kodo
                 {
                     id[i] = m_distribution(m_random_generator);
                 }
+
+                *symbol_id_coefficients = symbol_id;
             }
+
+        /// @copydoc null_symbol_id_api::read_id()
+        void read_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
+
+        /// @copydoc null_symbol_id_api::symbol_id_size()
+        uint32_t symbol_id_size() const;
 
     protected:
 
-        void seed(result_type seed)
-            {
-                m_random_generator.seed(seed);
-            }
+        /// Seeds the random generator used
+        /// @param seed The seed used for the random generator
+        void seed(result_type seed);
 
     protected:
 
@@ -301,7 +344,35 @@ namespace kodo
 
         /// The random generator
         generator_type m_random_generator;
+
+        /// The number of bytes needed to store the symbol id
+        /// coding coefficients
+        uint32_t m_id_size;
+
     };
+
+    template<class SuperCoder>
+    inline void random_uniform_symbol_id<SuperCoder>::read_id(
+        uint8_t *symbol_id,
+        uint8_t **symbol_id_coefficients)
+    {
+        assert(symbol_id != 0);
+        assert(symbol_id_coefficient != 0);
+
+        *symbol_id_coefficients = symbol_id;
+    }
+
+    template<class SuperCoder>
+    inline uint32_t random_uniform_symbol_id<SuperCoder>::symbol_id_size() const
+    {
+        return m_id_size;
+    }
+
+    template<class SuperCoder>
+    inline void random_uniform_symbol_id<SuperCoder>::seed(result_type seed)
+    {
+        return m_random_generator.seed(seed);
+    }
 
     /// @brief
     /// @ingroup symbol_id_generator
@@ -380,13 +451,24 @@ namespace kodo
 
 // };
 
+template<class Field>
+class null_generator
+{
+public:
 
-// TEST(TestXYZSymbolId, test2)
-// {
-//     typedef kodo::random_uniform<kodo::null_coder> test;
+    typedef Field field_type;
+    typedef typename field_type::value_type value_type;
 
-//     test t;
-
+};
 
 
-// }
+TEST(TestXYZSymbolId, test2)
+{
+    typedef kodo::random_uniform_symbol_id<null_generator<fifi::binary> > test;
+
+    test t;
+
+
+
+
+}
