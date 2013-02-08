@@ -17,6 +17,7 @@
 namespace kodo
 {
     /// Terminates the layered coder and contains the coder allocation policy
+    /// @ingroup factory_layers
     template<class FINAL, class Field>
     class final_coder_factory : boost::noncopyable
     {

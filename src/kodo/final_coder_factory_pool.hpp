@@ -21,6 +21,7 @@ namespace kodo
     /// Terminates the layered coder and contains the coder final factory. The
     /// pool factory uses a memory pool to recycle encoders/decoders, and
     /// thereby minimize memory consumption.
+    /// @ingroup factory_layers
     template<class FINAL, class Field>
     class final_coder_factory_pool : boost::noncopyable
     {

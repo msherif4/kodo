@@ -44,9 +44,68 @@ Before showing the typical layered structure of a encoder and decoder
 implemented in Kodo is ...
 
 
-@defgroup factory_layer_api Factory API
+@defgroup factory Factory
 @ingroup api_layer
-@brief The factory API is responsible for construction and initialization of
+@brief The factories are responsible for construction and initialization of
 encoders and decoders.
+
+@defgroup factory_api API
+@ingroup factory
+@brief The API used by factory layers.
+
+
+@defgroup factory_layers Layers
+@ingroup factory
+@brief Implementations of the factory API.
+
+
+@defgroup math Finite Field Math
+@ingroup api_layer
+@brief The finite field math layers preform computations on symbols and symbol coefficients.
+
+
+@defgroup math_api API
+@ingroup math
+@brief The API used by math layers.
+
+
+@defgroup factory_layers Layers
+@ingroup math
+@brief Implementations of the math API.
+
+
+@defgroup symbol_id Symbol IDs
+@ingroup api_layer
+@brief The symbol id describes how an encoded symbol has been produced.
+
+The symbol id uniquely describes the coding coefficients which are used
+by the encoder to create and encoded symbol as linear combinations of
+a set of original source symbols. By transmitting the symbol id to the
+decoder it can re-create the coding coefficients used to generate the encoded
+symbol and by solving a linear system re-produce the original source symbols.
+
+@note In its simplest from the symbol id is the actual coding coefficients.
+      This type of symbol id is produced by the
+      \link kodo::random_uniform_symbol_id<SuperCoder>  class.
+      However for efficiency reasons you may want to limit the amount of data
+      transmitted between an encoder and decoder by transmitting an smaller id.
+      One example of this is to use the \link seed_symbol_id which only transmits
+      the seed for the pseudo-random number generator used to generate the coding
+      coefficients.
+
+
+@note In Network Coding applications the symbol id is often referred to as the
+      encoding vector.
+
+
+@defgroup symbol_id_api API
+@ingroup symbol_id
+@brief The API used by symbol id layers.
+
+
+@defgroup symbol_id_layers Layers
+@ingroup symbol_id
+@brief Implementations of the symbol id API.
+
 
 
