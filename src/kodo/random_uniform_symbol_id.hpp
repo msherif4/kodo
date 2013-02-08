@@ -45,25 +45,25 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @layer_factory{factory}
             factory(uint32_t max_symbols, uint32_t max_symbol_size);
 
-            /// @copydoc layer::factory::max_symbol_id_size()
+            /// @layer_factory{max_symbol_id_size}
             uint32_t max_symbol_id_size() const;
         };
 
     public:
 
-        /// @copydoc layer::initialize()
+        /// @layer{initialize}
         void initialize(uint32_t symbols, uint32_t symbol_size);
 
-        /// @copydoc layer::write_id()
+        /// @layer{write_id}
         void write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
 
-        /// @copydoc null_symbol_id_api::read_id()
+        /// @layer{read_id}
         void read_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
 
-        /// @copydoc null_symbol_id_api::symbol_id_size()
+        /// @layer{symbol_id_size}
         uint32_t symbol_id_size() const;
 
     protected:

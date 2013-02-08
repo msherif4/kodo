@@ -51,6 +51,10 @@ public:
     /// @param symbol_size the size of each symbol in bytes
     void initialize(uint32_t symbols, uint32_t symbol_size);
 
+    //
+    // SYMBOL ID API
+    //
+
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
     /// @param symbol_id The buffer where the symbol id is written. This id
@@ -80,6 +84,44 @@ public:
     /// @brief Can be reimplemented by a Symbol ID layer
     /// @return the size in bytes required for the symbol id buffer.
     uint32_t symbol_id_size();
+
+    //
+    // CODING_INFO API
+    //
+
+    /// @ingroup coding_info_api
+    /// @return the number of symbols in this block coder
+    uint32_t symbols() const;
+
+    /// @ingroup coding_info_api
+    /// @return the symbol size of a symbol in bytes
+    uint32_t symbol_size() const;
+
+    /// @ingroup coding_info_api
+    /// @return the length of the symbol in value_type elements
+    uint32_t symbol_length() const;
+
+    /// @ingroup coding_info_api
+    /// @concept block_size
+    /// @return the block size i.e. the total size in bytes
+    ///         that this coder operates on. Users may
+    ///         use the bytes_used() function provided in the
+    ///         symbol storage layers to see how many of those
+    ///         bytes are then used.
+    uint32_t block_size() const;
+
+    /// @ingroup coding_info_api
+    /// Sets the number of bytes used
+    /// @param bytes_used number of bytes used of the total coders block size
+    void set_bytes_used(uint32_t bytes_used);
+
+    /// @ingroup coding_info_api
+    /// @return the number of bytes used
+    uint32_t bytes_used() const;
+
+    /// @ingroup coding_info_api
+    bool symbol_exists(uint32_t index);
+
 
 };
 

@@ -193,7 +193,10 @@ TAB_SIZE               = 8
 # will result in a user-defined paragraph with heading "Side Effects:".
 # You can put \n's in the value part of an alias to insert newlines.
 
-ALIASES                += "concept=\xrefitem concept \"Concept\" \"Concepts\" "
+ALIASES                += "layer{1}=\xrefitem \1 \"API List layer::\1 \" \"API List layer::\1 \" \see layer::\1() \copydoc layer::\1() "
+
+ALIASES                += "layer_factory{1}=\xrefitem \1 \"API List layer::factory::\1 \" \"API List factory::layer::\1 \" \see layer::factory::\1() \copydoc layer::factory::\1() "
+
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding

@@ -30,7 +30,7 @@ namespace kodo
               m_symbol_length(0)
             {}
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @layer{initialize}
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -45,29 +45,25 @@ namespace kodo
                     fifi::elements_needed<field_type>(symbol_size);
             }
 
-        /// @return the number of symbols in this block coder
+        /// @layer{symbols}
         uint32_t symbols() const
             {
                 return m_symbols;
             }
 
-        /// @return the symbol size of a symbol in bytes
+        /// @layer{symbol_size}
         uint32_t symbol_size() const
             {
                 return m_symbol_size;
             }
 
-        /// @return the length of the symbol in value_type elements
+        /// @layer{symbol_length}
         uint32_t symbol_length() const
             {
                 return m_symbol_length;
             }
 
-        /// @return the block size i.e. the total size in bytes
-        ///         that this coder operates on. Users may
-        ///         use the bytes_used() function provided in the
-        ///         symbol storage layers to see how many of those
-        ///         bytes are then used.
+        /// @layer{block_size}
         uint32_t block_size() const
             {
                 return m_symbols * m_symbol_size;

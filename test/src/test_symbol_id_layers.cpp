@@ -78,7 +78,8 @@ TEST(TestSymbolIdLayers, test_random_uniform_symbol_id)
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
 
-    test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(symbols, symbol_size);
+    test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(
+        symbols, symbol_size);
 }
 
 

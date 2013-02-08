@@ -69,7 +69,7 @@ encoders and decoders.
 @brief The API used by math layers.
 
 
-@defgroup factory_layers Layers
+@defgroup math_layers Layers
 @ingroup math
 @brief Implementations of the math API.
 
@@ -106,6 +106,19 @@ symbol and by solving a linear system re-produce the original source symbols.
 @defgroup symbol_id_layers Layers
 @ingroup symbol_id
 @brief Implementations of the symbol id API.
+
+
+
+@defgroup coding_info Coding Info
+@ingroup api_layer
+@brief Information about encoders and decoders
+
+
+@defgroup coding_info_api API
+@ingroup coding_info
+@brief The coding information API.
+
+
 
 
 
