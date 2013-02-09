@@ -193,9 +193,37 @@ TAB_SIZE               = 8
 # will result in a user-defined paragraph with heading "Side Effects:".
 # You can put \n's in the value part of an alias to insert newlines.
 
-ALIASES                += "layer{1}=\xrefitem \1 \"API List layer::\1 \" \"API List layer::\1 \" \see layer::\1() \copydoc layer::\1() "
+#ALIASES                += "layer{1}=\xrefitem \1 \"API List layer::\1 \" \"API List layer::\1 \" \see layer::\1() \copydoc layer::\1() "
 
-ALIASES                += "layer_factory{1}=\xrefitem \1 \"API List layer::factory::\1 \" \"API List factory::layer::\1 \" \see layer::factory::\1() \copydoc layer::factory::\1() "
+#ALIASES                += "layer_factory{1}=\xrefitem \1 \"API List layer::factory::\1 \" \"API List factory::layer::\1 \" \see layer::factory::\1() \copydoc layer::factory::\1() "
+
+
+ALIASES += prototype="@code                                         \
+                                                                    \
+template<class SuperCoder>\nclass layer : public SuperCoder\n\
+{\n\
+public: // We may if needed use typedefs from lower Layers\n\
+\n\
+    // The field we use\n\
+    typedef typename SuperCoder::field_type field_type;\n\
+\n\
+public: // We may if need define a factory\n\
+\n\
+    class factory : public SuperCoder::factory\n\
+    {\n\
+        // Do stuff ..\n\
+    };\n\
+\n\
+public: // Implement layer API here or your custom functionality.\n\
+\n\
+    // Part of our secret API - ssshhh\n\
+    void enable_warp_drive()\n\
+    {\n\
+       // Implementation hidden\n\
+    }\n\
+\n\
+};\n\
+@endcode"
 
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
@@ -692,7 +720,7 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = groups_functionality.md
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

@@ -24,7 +24,7 @@ namespace kodo
 
         /// The value type
         typedef uint8_t value_type;
-        
+
         /// value type pointer
         typedef const value_type* value_ptr;
 
@@ -76,7 +76,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -84,7 +84,7 @@ namespace kodo
                 m_data.resize(max_symbols, 0);
             }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);

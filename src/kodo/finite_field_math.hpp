@@ -12,6 +12,7 @@
 
 namespace kodo
 {
+    /// @ingroup math_layers
     /// Basic layer performing common finite field operation
     template<template <class> class FieldImpl, class SuperCoder>
     class finite_field_math : public SuperCoder
@@ -33,13 +34,14 @@ namespace kodo
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
 
+        /// @ingroup factory_layers
         /// The factory layer associated with this coder. We create
         /// an instance of the used field and share this with all coders
         class factory : public SuperCoder::factory
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -47,7 +49,7 @@ namespace kodo
                 }
 
             /// Forwards the build function and sets the finite field
-            /// @copydoc final_coder_factory::factory::build()
+            /// @copydoc layer::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
@@ -66,7 +68,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -84,12 +86,7 @@ namespace kodo
                 m_temp_symbol.resize(max_symbol_length, 0);
             }
 
-        /// Multiplies the symbol with the coefficient
-        ///     symbol_dest = symbol_dest * coefficient
-        ///
-        /// @param symbol_dest the destination buffer for the source symbol
-        /// @param coefficient the multiplicative constant
-        /// @param symbol_length the length of the symbol in value_type elements
+        /// @copydoc layer::multiply()
         void multiply(value_type *symbol_dest, value_type coefficient,
                       uint32_t symbol_length)
             {
@@ -101,14 +98,7 @@ namespace kodo
                                         symbol_dest, symbol_length);
             }
 
-        /// Multiplies the source symbol with the coefficient and adds it to the
-        /// destination symbol i.e.:
-        ///     symbol_dest = symbol_dest + symbol_src * coefficient
-        ///
-        /// @param symbol_dest the destination buffer for the source symbol
-        /// @param symbol_src the source buffer for the
-        /// @param coefficient the multiplicative constant
-        /// @param symbol_length the length of the symbol in value_type elements
+        /// @copydoc layer::multipy_add()
         void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length)
             {
@@ -122,12 +112,7 @@ namespace kodo
                                    symbol_length);
             }
 
-        /// Adds the source symbol adds to the destination symbol i.e.:
-        ///     symbol_dest = symbol_dest + symbol_src
-        ///
-        /// @param symbol_dest the destination buffer holding the resulting symbol
-        /// @param symbol_src the source symbol
-        /// @param symbol_length the length of the symbol in value_type elements
+        /// @copydoc layer::add()
         void add(value_type *symbol_dest, const value_type *symbol_src,
                  uint32_t symbol_length)
             {
@@ -139,14 +124,7 @@ namespace kodo
                 fifi::add(*m_field, symbol_dest, symbol_src, symbol_length);
             }
 
-        /// Multiplies the source symbol with the coefficient and subtracts it from the
-        /// destination symbol i.e.:
-        ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
-        ///
-        /// @param symbol_dest the destination buffer for the source symbol
-        /// @param symbol_src the source buffer for the
-        /// @param coefficient the multiplicative constant
-        /// @param symbol_length the length of the symbol in value_type elements
+        /// @copydoc layer::multiply_subtract()
         void multiply_subtract(value_type *symbol_dest, const value_type *symbol_src,
                                value_type coefficient, uint32_t symbol_length)
             {
@@ -162,12 +140,7 @@ namespace kodo
                     &m_temp_symbol[0], symbol_length);
             }
 
-        /// Subtracts the source symbol from the destination symbol i.e.:
-        ///     symbol_dest = symbol_dest - symbol_src
-        ///
-        /// @param symbol_dest the destination buffer holding the resulting symbol
-        /// @param symbol_src the source symbol
-        /// @param symbol_length the length of the symbol in value_type elements
+        /// @copydoc layer::subtract()
         void subtract(value_type *symbol_dest, const value_type *symbol_src,
                       uint32_t symbol_length)
             {
@@ -179,9 +152,7 @@ namespace kodo
                 fifi::subtract(*m_field, symbol_dest, symbol_src, symbol_length);
             }
 
-        /// Inverts the field element
-        /// @param value the finite field vale to be inverted.
-        /// @return the inverse
+        /// @copydoc layer::invert()
         value_type invert(value_type value)
             {
                 assert(m_field);
