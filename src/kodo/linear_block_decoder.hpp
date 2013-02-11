@@ -19,12 +19,14 @@
 
 namespace kodo
 {
-    /// Implementes basic linear block decoder. The linear block decoder
-    /// expects that an encoded symbol is described by a vector of coefficients.
-    /// Using these coefficients the block decoder subtracts incomming symbols
-    /// until the original data has been recreated.
+
+    /// @ingroup codec_layers
+    /// @brief Implements basic linear block decoder.
     ///
-    /// @ingroup coding_layer_api
+    /// The linear block decoder
+    /// expects that an encoded symbol is described by a vector of
+    /// coefficients. Using these coefficients the block decoder subtracts
+    /// incoming symbols until the original data has been recreated.
     template<class SuperCoder>
     class linear_block_decoder : public SuperCoder
     {
@@ -47,7 +49,7 @@ namespace kodo
               m_maximum_pivot(0)
             { }
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -56,7 +58,7 @@ namespace kodo
                 m_coded.resize(max_symbols, false);
             }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -71,7 +73,8 @@ namespace kodo
         /// The decode function which consumes an incomming symbol and
         /// the corresponding symbol_id
         /// @param symbol_data the encoded symbol
-        /// @param symbol_id the coefficients used to create the encoded symbol
+        /// @param symbol_id the coefficients used to create the encoded
+        ///        symbol
         void decode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -90,7 +93,8 @@ namespace kodo
         /// specific uncoded symbols.
         /// @param symbol_data the uncoded symbol
         /// @param symbol_index the index of this uncoded symbol
-        void decode_raw(const uint8_t *symbol_data, uint32_t symbol_index)
+        void decode_symbol(const uint8_t *symbol_data,
+                           uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);

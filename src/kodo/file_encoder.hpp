@@ -13,17 +13,19 @@
 namespace kodo
 {
 
+    /// @brief A file encoder creates a number of encoders
+    ///        over the data of a file.
     template
     <
         class EncoderType,
         class BlockPartitioning = rfc5052_partitioning_scheme
     >
     class file_encoder : public
-        object_encoder
+            object_encoder
             <
-            file_reader<EncoderType>,
-            EncoderType,
-            BlockPartitioning
+                file_reader<EncoderType>,
+                EncoderType,
+                BlockPartitioning
             >
     {
     public:
@@ -45,8 +47,9 @@ namespace kodo
                   BlockPartitioning
                   >
               (factory, file_reader<EncoderType>(
-                  filename, factory.max_symbols() * factory.max_symbol_size()))
-            {}
+                  filename,
+                  factory.max_symbols() * factory.max_symbol_size()))
+            { }
     };
 }
 

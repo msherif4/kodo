@@ -33,10 +33,10 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
     EXPECT_TRUE(symbols == encoder_factory.max_symbols());
     EXPECT_TRUE(symbol_size == encoder_factory.max_symbol_size());
@@ -54,9 +54,14 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(encoder->block_size() == symbols * symbol_size);
     EXPECT_TRUE(decoder->block_size() == symbols * symbol_size);
 
-    EXPECT_TRUE(encoder_factory.max_payload_size() >= encoder->payload_size());
-    EXPECT_TRUE(decoder_factory.max_payload_size() >= decoder->payload_size());
-    EXPECT_EQ(encoder_factory.max_payload_size(), decoder_factory.max_payload_size());
+    EXPECT_TRUE(encoder_factory.max_payload_size() >=
+                encoder->payload_size());
+
+    EXPECT_TRUE(decoder_factory.max_payload_size() >=
+                decoder->payload_size());
+
+    EXPECT_EQ(encoder_factory.max_payload_size(),
+              decoder_factory.max_payload_size());
 
     // Encode/decode operations
     EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
@@ -119,21 +124,20 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
         fifi::apply_prefix(sak::storage(data_out), prefix);
     }
 
-    EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+    EXPECT_TRUE(std::equal(data_out.begin(),
+                           data_out.end(),
+                           data_in.begin()));
 }
 
 template<class Encoder, class Decoder>
 inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 {
-
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder =
-        encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder =
-        decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
     // Encode/decode operations
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
@@ -161,8 +165,20 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
         {
             uint32_t symbol_id = rand() % encoder->symbols();
 
-            encoder->encode_raw(&payload[0], symbol_id);
-            decoder->decode_raw(&payload[0], symbol_id);
+            ASSERT_TRUE(encoder->symbol_size() <= payload.size());
+
+            encoder->copy_symbol(
+                symbol_id, sak::storage(payload));
+
+            const uint8_t *symbol_src = encoder->symbol(symbol_id);
+            const uint8_t *symbol_dest = &payload[0];
+
+            EXPECT_TRUE(std::equal(symbol_src,
+                                   symbol_src + encoder->symbol_size(),
+                                   symbol_dest));
+
+
+            decoder->decode_symbol(&payload[0], symbol_id);
 
         }
     }
@@ -172,7 +188,9 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
     decoder->copy_symbols(sak::storage(data_out));
 
-    EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+    EXPECT_TRUE(std::equal(data_out.begin(),
+                           data_out.end(),
+                           data_in.begin()));
 
 }
 
@@ -226,7 +244,9 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         std::vector<uint8_t> data_out(block_size, '\0');
         decoder->copy_symbols(sak::storage(data_out));
 
-        EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+        EXPECT_TRUE(std::equal(data_out.begin(),
+                               data_out.end(),
+                               data_in.begin()));
 
     }
 
@@ -240,10 +260,10 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
     // Encode/decode operations
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
@@ -275,7 +295,9 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
     decoder->copy_symbols(sak::storage(data_out));
 
-    EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+    EXPECT_TRUE(std::equal(data_out.begin(),
+                           data_out.end(),
+                           data_in.begin()));
 
 }
 

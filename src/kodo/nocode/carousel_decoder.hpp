@@ -54,7 +54,7 @@ namespace kodo
 
                 id_type id = sak::big_endian::get<id_type>(symbol_id);
 
-                SuperCoder::decode_raw(symbol_data, id);
+                SuperCoder::decode_symbol(symbol_data, id);
             }
 
         /// @return the required symbol_id buffer size in bytes

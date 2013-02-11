@@ -149,9 +149,11 @@ public:
     /// @ingroup codec_info_api
     bool symbol_exists(uint32_t index);
 
+
     //
     // CODEC API
     //
+
 
     /// @ingroup codec_api
     /// Encodes a symbol according to the symbol id
@@ -163,8 +165,8 @@ public:
                        const uint8_t *symbol_id_coefficients);
 
     /// @ingroup codec_api
-    /// Decodes an encoded symbol according to the coding coefficients stored in
-    /// the corresponding symbol_id.
+    /// Decodes an encoded symbol according to the coding coefficients
+    /// stored in the corresponding symbol_id.
     ///
     /// @param symbol_data The encoded symbol
     /// @param symbol_id The coding coefficients used to create the encoded
@@ -172,9 +174,20 @@ public:
     void decode_symbol(uint8_t *symbol_data,
                        uint8_t *symbol_id_coefficients);
 
+
+    /// @ingroup codec_api
+    /// The decode function for systematic packets i.e. specific uncoded
+    /// symbols.
+    /// @param symbol_data The uncoded source symbol.
+    /// @param symbol_index The index of this uncoded symbol in the data
+    ///                     block.
+    void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
+
+
     //
     // MATH API
     //
+
 
     /// @ingroup math_api
     /// Multiplies the symbol with the coefficient
@@ -205,7 +218,8 @@ public:
     /// Adds the source symbol adds to the destination symbol i.e.:
     ///     symbol_dest = symbol_dest + symbol_src
     ///
-    /// @param symbol_dest the destination buffer holding the resulting symbol
+    /// @param symbol_dest the destination buffer holding the resulting
+    ///        symbol
     /// @param symbol_src the source symbol
     /// @param symbol_length the length of the symbol in value_type elements
     void add(value_type *symbol_dest,
@@ -213,8 +227,8 @@ public:
              uint32_t symbol_length);
 
     /// @ingroup math_api
-    /// Multiplies the source symbol with the coefficient and subtracts it from
-    /// the destination symbol i.e.:
+    /// Multiplies the source symbol with the coefficient and subtracts
+    /// it from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
     ///
     /// @param symbol_dest the destination buffer for the source symbol
@@ -230,7 +244,8 @@ public:
     /// Subtracts the source symbol from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - symbol_src
     ///
-    /// @param symbol_dest the destination buffer holding the resulting symbol
+    /// @param symbol_dest the destination buffer holding the resulting
+    ///        symbol
     /// @param symbol_src the source symbol
     /// @param symbol_length the length of the symbol in value_type elements
     void subtract(value_type *symbol_dest,
@@ -242,6 +257,26 @@ public:
     /// @param value the finite field vale to be inverted.
     /// @return the inverse
     value_type invert(value_type value);
+
+    //
+    // SYMBOL STORAGE API
+    //
+
+    /// @ingroup storage_api
+    /// Copies the encoded / decoded symbols.
+    /// @param dest The destination buffer where the symbols should be
+    ///        copied. The function will copy block_size() bytes or until
+    ///        the dest buffer is full.
+    void copy_symbols(sak::mutable_storage dest) const;
+
+    /// @ingroup storage_api
+    /// Copies an encoded / decoded symbols.
+    /// @param index The index of the symbol to be copied
+    /// @param dest The destination buffer where the symbols should be
+    ///        copied. The function will copy symbol_size() bytes or until
+    ///        the dest buffer is full.
+    void copy_symbol(uint32_t index, sak::mutable_storage dest) const;
+
 
 };
 

@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include <sak/convert_endian.hpp>
+#include <sak/storage.hpp>
 
 #include <boost/type_traits/is_base_of.hpp>
 
@@ -40,7 +41,8 @@ namespace kodo
     public:
 
         /// The factory layer associated with this coder.
-        /// In this case only needed to provide the max_payload_size() function.
+        /// In this case only needed to provide the max_payload_size()
+        /// function.
         class factory : public SuperCoder::factory
         {
         public:
@@ -66,7 +68,7 @@ namespace kodo
               m_systematic(true)
             { }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -132,7 +134,8 @@ namespace kodo
 
         /// Encodes a systematic packet
         /// @copydoc linear_block_encode::encode_with_vector()
-        uint32_t encode_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
+        uint32_t encode_systematic(uint8_t *symbol_data,
+                                   uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
@@ -146,7 +149,12 @@ namespace kodo
                     m_count, symbol_id + sizeof(flag_type));
 
                 /// Copy the symbol
-                SuperCoder::encode_raw(symbol_data, m_count);
+                assert(m_count < SuperCoder::symbols());
+
+                sak::mutable_storage dest =
+                    sak::storage(symbol_data, SuperCoder::symbol_size());
+
+                SuperCoder::copy_symbol(m_count, dest);
 
                 ++m_count;
 
@@ -155,14 +163,15 @@ namespace kodo
 
         /// Encodes a non-systematic packets
         /// @copydoc linear_block_encode::encode_with_vector()
-        uint32_t encode_non_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
+        uint32_t encode_non_systematic(uint8_t *symbol_data,
+                                       uint8_t *symbol_id)
             {
                 /// Flag non_systematic packet
                 sak::big_endian::put<flag_type>(
                     systematic_base_coder::non_systematic_flag, symbol_id);
 
-                uint32_t bytes_consumed =
-                    SuperCoder::encode(symbol_data, symbol_id + sizeof(flag_type));
+                uint32_t bytes_consumed = SuperCoder::encode(
+                    symbol_data, symbol_id + sizeof(flag_type));
 
                 return bytes_consumed + sizeof(flag_type);
             }
@@ -170,7 +179,8 @@ namespace kodo
     protected:
 
         /// Keeps track of the number of symbol sent allows us to switch to
-        /// non-systematic encoding after sending all source symbols systematically
+        /// non-systematic encoding after sending all source symbols
+        /// systematically
         counter_type m_count;
 
         /// Allows the systematic mode to be disabled at runtime

@@ -6,7 +6,7 @@
 #ifndef KODO_LINEAR_BLOCK_DECODER_DELAYED_HPP
 #define KODO_LINEAR_BLOCK_DECODER_DELAYED_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -17,10 +17,14 @@
 
 namespace kodo
 {
-    /// Linear block decoder with delayer backwards substitution
-    /// The delayed backwards substitution can reduce the fill-in effect and can
-    /// therefore improve the decoding throughput when decoding sparse symbols,
-    /// in particular if the generation size is large.
+
+    /// @ingroup codec_layers
+    /// @brief Linear block decoder with delayer backwards substitution.
+    ///
+    /// The delayed backwards substitution can reduce the fill-in
+    /// effect and can therefore improve the decoding throughput when
+    /// decoding sparse symbols, in particular if the generation size
+    /// is large.
     template<class SuperCoder>
     class linear_block_decoder_delayed : public SuperCoder
     {
@@ -54,8 +58,8 @@ namespace kodo
         /// decode raw takes systematic packets inserts them into the decoder
         /// for this specific coder no backwards substitution are performed
         /// until the decoder reaches full rank.
-        /// @copydoc linear_block_decoder::decode_raw()
-        void decode_raw(const uint8_t *symbol_data, uint32_t symbol_index)
+        /// @copydoc layer::decode_symbol()
+        void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);

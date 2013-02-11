@@ -15,6 +15,7 @@
 
 namespace kodo
 {
+
     /// Object encoder, allows easy encoding of objects too
     /// large for a single block encoder.
     ///
@@ -79,12 +80,14 @@ namespace kodo
 
                 assert(m_data.size() > 0);
 
-                m_partitioning = block_partitioning(m_factory.max_symbols(),
-                                                    m_factory.max_symbol_size(),
-                                                    m_data.size());
+                m_partitioning =
+                    block_partitioning(m_factory.max_symbols(),
+                                       m_factory.max_symbol_size(),
+                                       m_data.size());
             }
 
-        /// @return the number of encoders which may be created for this object
+        /// @return the number of encoders which may be created for
+        ///         this object
         uint32_t encoders() const
             {
                 return m_partitioning.blocks();

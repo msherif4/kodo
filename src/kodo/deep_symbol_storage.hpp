@@ -23,12 +23,7 @@ namespace kodo
     {
     public:
 
-        /// The container used to store the coding symbols
-        typedef std::vector<uint8_t> symbol_container_type;
-
-    public:
-
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -40,20 +35,12 @@ namespace kodo
                 m_data.resize(max_data_needed, 0);
             }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
                 std::fill(m_data.begin(), m_data.end(), 0);
-            }
-
-        /// @copydoc symbol_storage_shallow::raw_symbol()
-        const uint8_t* raw_symbol(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return reinterpret_cast<const uint8_t*>(
-                    symbol(index));
             }
 
         /// @param index the index number of the symbol
@@ -73,12 +60,12 @@ namespace kodo
             }
 
         /// Set the symbols by swapping the std::vector
-        void swap_symbols(symbol_container_type &symbols)
+        void swap_symbols(std::vector<uint8_t> &symbols)
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
             }
-        
+
         /// @copydoc symbol_storage_shallow::set_symbols()
         void set_symbols(const sak::const_storage &symbol_storage)
             {
@@ -90,7 +77,7 @@ namespace kodo
                 /// Use the copy function
                 copy_storage(sak::storage(m_data), symbol_storage);
             }
-        
+
         /// @copydoc symbol_storage_shallow::set_symbol()
         void set_symbol(uint32_t index, const sak::const_storage &symbol)
             {
@@ -104,7 +91,7 @@ namespace kodo
                 data += offset;
 
                 /// Copy the data
-                copy_storage(data, symbol);
+                sak::copy_storage(data, symbol);
             }
 
         /// @copydoc symbol_storage_shallow::copy_symbols()
@@ -113,14 +100,30 @@ namespace kodo
                 assert(dest_storage.m_size > 0);
                 assert(dest_storage.m_data != 0);
 
-                uint32_t data_to_copy = std::min(dest_storage.m_size,
-                                                 SuperCoder::block_size());
+                uint32_t data_to_copy =
+                    std::min(dest_storage.m_size, SuperCoder::block_size());
 
                 /// Wrap our buffer in a storage object
-                sak::const_storage src_storage = sak::storage(data(), data_to_copy);
+                sak::const_storage src_storage =
+                    sak::storage(data(), data_to_copy);
 
                 /// Use the copy_storage() function to copy the data
                 sak::copy_storage(dest_storage, src_storage);
+            }
+
+        /// @copydoc layer::copy_symbol()
+        void copy_symbol(uint32_t index, sak::mutable_storage dest) const
+            {
+                assert(dest.m_size > 0);
+                assert(dest.m_data != 0);
+
+                uint32_t data_to_copy =
+                    std::min(dest.m_size, SuperCoder::symbol_size());
+
+                sak::const_storage src =
+                    sak::storage(symbol(index), data_to_copy);
+
+                sak::copy_storage(dest, src);
             }
 
         /// Access to the data of the block
@@ -133,7 +136,8 @@ namespace kodo
     private:
 
         /// Storage for the symbol data
-        symbol_container_type m_data;
+        std::vector<uint8_t> m_data;
+
     };
 }
 

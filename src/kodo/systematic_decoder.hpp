@@ -76,7 +76,7 @@ namespace kodo
                     counter_type symbol_index =
                         sak::big_endian::get<counter_type>(symbol_id);
 
-                    SuperCoder::decode_raw(symbol_data, symbol_index);
+                    SuperCoder::decode_symbol(symbol_data, symbol_index);
                 }
                 else
                 {

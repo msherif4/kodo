@@ -21,6 +21,9 @@ may take a look at the \ref mixin_example.
 Before showing the typical layered structure of a encoder and decoder
 implemented in Kodo is ...
 
+//
+// FACTORY
+//
 
 @defgroup factory Factory
 @ingroup api_layer
@@ -99,6 +102,25 @@ symbol and by solving a linear system re-produce the original source symbols.
 @defgroup coding_info_api API
 @ingroup coding_info
 @brief The coding information API.
+
+
+@defgroup storage Storage
+@ingroup api_layer
+@brief Handles storage of encoding and decoding symbols.
+
+
+@defgroup storage_api API
+@ingroup storage
+@brief The API used by storage layers.
+
+The prototype of a layer is the following:
+
+@prototype
+
+
+@defgroup storage_layers Layers
+@ingroup storage
+@brief Implementations of the math API.
 
 
 

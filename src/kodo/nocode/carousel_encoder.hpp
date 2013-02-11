@@ -70,7 +70,12 @@ namespace kodo
                     m_current_symbol, symbol_id);
 
                 /// Copy the symbol
-                SuperCoder::encode_raw(symbol_data, m_current_symbol);
+                assert(m_current_symbol < SuperCoder::symbols());
+
+                sak::mutable_storage dest =
+                    sak::storage(symbol_data, SuperCoder::symbol_size());
+
+                SuperCoder::copy_symbol(m_current_symbol, dest);
 
                 m_current_symbol =
                     (m_current_symbol + 1) % SuperCoder::symbols();

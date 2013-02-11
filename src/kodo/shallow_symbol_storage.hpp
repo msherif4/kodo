@@ -49,6 +49,7 @@ namespace kodo
 
     };
 
+    /// @ingroup storage_layers
     /// The shallow storage implementation. In this context shallow
     /// means that the symbol storage only contains pointers to some
     /// external data structure. This is useful in cases where data to
@@ -71,9 +72,6 @@ namespace kodo
         /// The storage type used
         typedef typename storage_trait::storage_type storage_type;
 
-        /// The symbol storage container
-        typedef std::vector<value_ptr> symbol_container_type;
-
     public:
 
         /// @copydoc layer::construct()
@@ -92,25 +90,40 @@ namespace kodo
                 std::fill(m_data.begin(), m_data.end(), (value_ptr) 0);
             }
 
-        /// @param index the index number of the raw symbol
-        /// @return uint8_t pointer to the symbol
-        const uint8_t* raw_symbol(uint32_t index) const
+        /// @param index the index number of the symbol
+        /// @return value_type pointer to the symbol
+        template<class T = value_ptr>
+        typename std::enable_if<
+            std::is_const<
+                typename std::remove_pointer<T>::type>::value, T>::type
+        symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
-                return symbol(index);
+
+                // Did you forget to set the symbol
+                assert(m_data[index]);
+
+                return m_data[index];
             }
 
         /// @param index the index number of the symbol
         /// @return value_type pointer to the symbol
-        value_ptr symbol(uint32_t index) const
+        template<class T = value_ptr>
+        typename std::enable_if<
+            !std::is_const<
+                typename std::remove_pointer<T>::type>::value, T>::type
+        symbol(uint32_t index)
             {
                 assert(index < SuperCoder::symbols());
+
+                // Did you forget to set the symbol
+                assert(m_data[index]);
 
                 return m_data[index];
             }
 
         /// Set the symbols by swapping the std::vector
-        void swap_symbols(symbol_container_type &symbols)
+        void swap_symbols(std::vector<value_ptr> &symbols)
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
@@ -120,8 +133,8 @@ namespace kodo
         /// @param symbol_storage a const storage container
         void set_symbols(const storage_type &symbol_storage)
             {
-                auto symbol_sequence =
-                    sak::split_storage(symbol_storage, SuperCoder::symbol_size());
+                auto symbol_sequence = sak::split_storage(
+                    symbol_storage, SuperCoder::symbol_size());
 
                 uint32_t sequence_size = symbol_sequence.size();
                 assert(sequence_size == SuperCoder::symbols());
@@ -132,7 +145,8 @@ namespace kodo
                 }
             }
 
-        /// Sets a symbol - by copying it into the right location in the buffer
+        /// Sets a symbol - by copying it into the right location in
+        /// the buffer.
         /// @param index the index of the symbol into the coding block
         /// @param symbol the actual data of that symbol
         void set_symbol(uint32_t index, const storage_type &symbol)
@@ -144,15 +158,14 @@ namespace kodo
                 m_data[index] = sak::cast_storage<value_type>(symbol);
             }
 
-        /// Overload of the copy_storage() function for this symbol storage.
-        /// @param dest_storage destination buffer
-        void copy_symbols(sak::mutable_storage dest_storage)
+        /// @copydoc layer::copy_symbols()
+        void copy_symbols(sak::mutable_storage dest) const
             {
-                assert(dest_storage.m_size > 0);
-                assert(dest_storage.m_data != 0);
+                assert(dest.m_size > 0);
+                assert(dest.m_data != 0);
 
-                uint32_t data_to_copy = std::min(dest_storage.m_size,
-                                                 SuperCoder::block_size());
+                uint32_t data_to_copy =
+                    std::min(dest.m_size, SuperCoder::block_size());
 
                 uint32_t symbol_index = 0;
 
@@ -166,10 +179,10 @@ namespace kodo
                     sak::const_storage src_storage =
                         sak::storage(symbol(symbol_index), copy_size);
 
-                    sak::copy_storage(dest_storage, src_storage);
+                    sak::copy_storage(dest, src_storage);
 
-                    dest_storage.m_size -= copy_size;
-                    dest_storage.m_data += copy_size;
+                    dest.m_size -= copy_size;
+                    dest.m_data += copy_size;
 
                     ++symbol_index;
 
@@ -177,10 +190,26 @@ namespace kodo
 
             }
 
+        /// @copydoc layer::copy_symbol()
+        void copy_symbol(uint32_t index, sak::mutable_storage dest) const
+            {
+                assert(dest.m_size > 0);
+                assert(dest.m_data != 0);
+
+                uint32_t data_to_copy =
+                    std::min(dest.m_size, SuperCoder::symbol_size());
+
+                sak::const_storage src =
+                    sak::storage(symbol(index), data_to_copy);
+
+                sak::copy_storage(dest, src);
+            }
+
+
     protected:
 
         /// Symbol mapping
-        symbol_container_type m_data;
+        std::vector<value_ptr> m_data;
 
     };
 

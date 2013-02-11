@@ -100,7 +100,9 @@ void test_std_vector(CoderType coder)
 
         coder->copy_symbols(sak::storage(v_out));
 
-        EXPECT_TRUE( std::equal(v_in.begin(), v_in.end(), v_out.begin()));
+        EXPECT_TRUE( std::equal(v_in.begin(),
+                                v_in.end(),
+                                v_out.begin()));
 
     }
 
@@ -119,7 +121,8 @@ void test_pointer_to_data(CoderType coder)
 
         std::fill_n(d_in.get(), vector_size, fill_value);
 
-        coder->set_symbols(sak::storage(d_in.get(), vector_size*sizeof(DataType)));
+        coder->set_symbols(
+            sak::storage(d_in.get(), vector_size*sizeof(DataType)));
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
@@ -127,9 +130,12 @@ void test_pointer_to_data(CoderType coder)
         }
 
         boost::shared_array<DataType> d_out(new DataType[vector_size]);
-        coder->copy_symbols(sak::storage(d_out.get(), vector_size*sizeof(DataType)));
+        coder->copy_symbols(
+            sak::storage(d_out.get(), vector_size*sizeof(DataType)));
 
-        EXPECT_TRUE( std::equal(d_in.get(), d_in.get() + vector_size, d_out.get()) );
+        EXPECT_TRUE( std::equal(d_in.get(),
+                                d_in.get() + vector_size,
+                                d_out.get()) );
     }
 }
 
@@ -166,21 +172,41 @@ TEST(TestSymbolStorage, test_set_storage_function)
     uint32_t symbol_size = ((rand() % 1000) + 1) * 16;
 
     {
-        test_coder<kodo::shallow_const_coder<fifi::binary> >(symbols, symbol_size);
-        test_coder<kodo::shallow_const_coder<fifi::binary8> >(symbols, symbol_size);
-        test_coder<kodo::shallow_const_coder<fifi::binary16> >(symbols, symbol_size);
+        test_coder<kodo::shallow_const_coder<fifi::binary> >(
+            symbols, symbol_size);
 
-        test_coder<kodo::shallow_mutable_coder<fifi::binary> >(symbols, symbol_size);
-        test_coder<kodo::shallow_mutable_coder<fifi::binary8> >(symbols, symbol_size);
-        test_coder<kodo::shallow_mutable_coder<fifi::binary16> >(symbols, symbol_size);
+        test_coder<kodo::shallow_const_coder<fifi::binary8> >(
+            symbols, symbol_size);
 
-        test_coder<kodo::deep_coder<fifi::binary> >(symbols, symbol_size);
-        test_coder<kodo::deep_coder<fifi::binary8> >(symbols, symbol_size);
-        test_coder<kodo::deep_coder<fifi::binary16> >(symbols, symbol_size);
+        test_coder<kodo::shallow_const_coder<fifi::binary16> >(
+            symbols, symbol_size);
 
-        test_coder<kodo::shallow_partial_coder<fifi::binary> >(symbols, symbol_size);
-        test_coder<kodo::shallow_partial_coder<fifi::binary8> >(symbols, symbol_size);
-        test_coder<kodo::shallow_partial_coder<fifi::binary16> >(symbols, symbol_size);
+        test_coder<kodo::shallow_mutable_coder<fifi::binary> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::shallow_mutable_coder<fifi::binary8> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::shallow_mutable_coder<fifi::binary16> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::deep_coder<fifi::binary> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::deep_coder<fifi::binary8> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::deep_coder<fifi::binary16> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::shallow_partial_coder<fifi::binary> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::shallow_partial_coder<fifi::binary8> >(
+            symbols, symbol_size);
+
+        test_coder<kodo::shallow_partial_coder<fifi::binary16> >(
+            symbols, symbol_size);
     }
 }
 
@@ -385,6 +411,86 @@ TEST(TestSymbolStorage, test_has_deep_symbol_storage)
     EXPECT_FALSE(kodo::has_deep_symbol_storage<fifi::binary8>::value);
 
 }
+
+template<class Coder>
+void test_mutable(uint32_t symbols, uint32_t symbol_size)
+{
+    typename Coder::factory factory(symbols, symbol_size);
+
+    auto coder = factory.build(symbols, symbol_size);
+
+    std::vector<uint8_t> data(coder->block_size());
+    coder->set_symbols(sak::storage(data));
+
+    uint8_t *symbol_mutable = coder->symbol(0);
+    const uint8_t *symbol_const = coder->symbol(0);
+
+    (void)symbol_mutable;
+    (void)symbol_const;
+
+}
+
+template<template <class> class Coder>
+void test_mutable(uint32_t symbols, uint32_t symbol_size)
+{
+    test_mutable<Coder<fifi::binary> >(
+        symbols, symbol_size);
+
+    test_mutable<Coder<fifi::binary8> >(
+        symbols, symbol_size);
+
+    test_mutable<Coder<fifi::binary16> >(
+        symbols, symbol_size);
+}
+
+template<class Coder>
+void test_const(uint32_t symbols, uint32_t symbol_size)
+{
+    typename Coder::factory factory(symbols, symbol_size);
+
+    auto coder = factory.build(symbols, symbol_size);
+
+    std::vector<uint8_t> data(coder->block_size());
+    coder->set_symbols(sak::storage(data));
+
+    const uint8_t *symbol_const = coder->symbol(0);
+    (void)symbol_const;
+}
+
+template<template <class> class Coder>
+void test_const(uint32_t symbols, uint32_t symbol_size)
+{
+    test_const<Coder<fifi::binary> >(
+        symbols, symbol_size);
+
+    test_const<Coder<fifi::binary8> >(
+        symbols, symbol_size);
+
+    test_const<Coder<fifi::binary16> >(
+        symbols, symbol_size);
+}
+
+
+
+// // Test that the layer::symbol(uint32_t index) function works
+// TEST(TestSymbolStorage, test_shallow_symbol_storage_symbol_access)
+// {
+//     uint32_t symbols = 10;
+//     uint32_t symbol_size = 10;
+
+//     test_mutable<kodo::shallow_mutable_coder>(
+//         symbols, symbol_size);
+
+//     test_mutable<kodo::deep_coder>(
+//         symbols, symbol_size);
+
+//     test_const<kodo::shallow_const_coder>(
+//         symbols, symbol_size);
+
+//     test_const<kodo::shallow_partial_coder>(
+//         symbols, symbol_size);
+// }
+
 
 
 // template<class StorageType>

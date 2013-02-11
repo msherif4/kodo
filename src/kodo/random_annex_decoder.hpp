@@ -209,10 +209,11 @@ namespace kodo
 
                 // Get the symbol data
                 const uint8_t *symbol_data =
-                    m_decoders[from_decoder]->raw_symbol(from_symbol);
+                    m_decoders[from_decoder]->symbol(from_symbol);
 
                 // Pass it to the other decoder
-                m_decoders[to_decoder]->decode_raw(symbol_data, to_symbol);
+                m_decoders[to_decoder]->decode_symbol(
+                    symbol_data, to_symbol);
             }
 
         void decoder_complete(uint32_t decoder_id)
@@ -233,7 +234,8 @@ namespace kodo
 
                 // Now we use the reverse annex info to further pass symbols to
                 // decoders with our decoded block in their annex
-                uint32_t reverse_annex_size = m_reverse_annex[from_decoder].size();
+                uint32_t reverse_annex_size =
+                    m_reverse_annex[from_decoder].size();
 
                 for(uint32_t to_decoder = 0; to_decoder < reverse_annex_size; ++to_decoder)
                 {
