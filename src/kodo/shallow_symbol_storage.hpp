@@ -17,20 +17,20 @@
 
 namespace kodo
 {
+
     /// Storage traits class for the const storage
     class shallow_const_trait
     {
     public:
 
-        /// The value type
-        typedef uint8_t value_type;
-
         /// value type pointer
-        typedef const value_type* value_ptr;
+        typedef const uint8_t* value_ptr;
 
         /// storage type
         typedef sak::const_storage storage_type;
 
+        /// is const
+        static constexpr bool is_const = true;
     };
 
     /// Storage traits class for the mutable storage
@@ -38,14 +38,14 @@ namespace kodo
     {
     public:
 
-        /// The value type
-        typedef uint8_t value_type;
-
         /// value type pointer
-        typedef value_type* value_ptr;
+        typedef uint8_t* value_ptr;
 
         /// storage type
         typedef sak::mutable_storage storage_type;
+
+        /// is const
+        static constexpr bool is_const = false;
 
     };
 
@@ -60,17 +60,11 @@ namespace kodo
     {
     public:
 
-        /// The storage traits
-        typedef StorageTraits storage_trait;
-
-        /// The value type used
-        typedef typename storage_trait::value_type value_type;
-
         /// The pointer used
-        typedef typename storage_trait::value_ptr value_ptr;
+        typedef typename StorageTraits::value_ptr value_ptr;
 
         /// The storage type used
-        typedef typename storage_trait::storage_type storage_type;
+        typedef typename StorageTraits::storage_type storage_type;
 
     public:
 
@@ -90,13 +84,8 @@ namespace kodo
                 std::fill(m_data.begin(), m_data.end(), (value_ptr) 0);
             }
 
-        /// @param index the index number of the symbol
-        /// @return value_type pointer to the symbol
-        template<class T = value_ptr>
-        typename std::enable_if<
-            std::is_const<
-                typename std::remove_pointer<T>::type>::value, T>::type
-        symbol(uint32_t index) const
+        /// @copydoc layer::symbol(uint32_t index) const
+        const uint8_t* symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
 
@@ -106,12 +95,15 @@ namespace kodo
                 return m_data[index];
             }
 
-        /// @param index the index number of the symbol
-        /// @return value_type pointer to the symbol
-        template<class T = value_ptr>
-        typename std::enable_if<
-            !std::is_const<
-                typename std::remove_pointer<T>::type>::value, T>::type
+        /// To maximize code re-use the shallow_symbol_storage class implements both
+        /// the const and mutable APIs. To enable the non-const layer::symbol() function
+        /// we use a bit of SFINAE magic to conditinally enable/disable this function
+        /// depending on whether we are instantiating the shallow_symbol_storage as const
+        /// or mutable.
+        ///
+        /// @copydoc layer::symbol()
+        template<class T = StorageTraits>
+        typename std::enable_if<!T::value, uint8_t*>::type
         symbol(uint32_t index)
             {
                 assert(index < SuperCoder::symbols());
@@ -122,15 +114,14 @@ namespace kodo
                 return m_data[index];
             }
 
-        /// Set the symbols by swapping the std::vector
+        /// @copydoc layer::swap_symbols()
         void swap_symbols(std::vector<value_ptr> &symbols)
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
             }
 
-        /// Sets the storage
-        /// @param symbol_storage a const storage container
+        /// @copydoc layer::set_symbols()
         void set_symbols(const storage_type &symbol_storage)
             {
                 auto symbol_sequence = sak::split_storage(
@@ -145,17 +136,15 @@ namespace kodo
                 }
             }
 
-        /// Sets a symbol - by copying it into the right location in
-        /// the buffer.
-        /// @param index the index of the symbol into the coding block
-        /// @param symbol the actual data of that symbol
+        /// @copydoc layer::set_symbol()
         void set_symbol(uint32_t index, const storage_type &symbol)
             {
                 assert(symbol.m_data != 0);
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 
-                m_data[index] = sak::cast_storage<value_type>(symbol);
+		// Assign the pointer
+                m_data[index] = symbol.m_data;
             }
 
         /// @copydoc layer::copy_symbols()
@@ -204,7 +193,6 @@ namespace kodo
 
                 sak::copy_storage(dest, src);
             }
-
 
     protected:
 

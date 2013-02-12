@@ -262,14 +262,14 @@ public:
     // SYMBOL STORAGE API
     //
 
-    /// @ingroup storage_api
+    /// @ingroup base_storage_api
     /// Copies the encoded / decoded symbols.
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy block_size() bytes or until
     ///        the dest buffer is full.
     void copy_symbols(sak::mutable_storage dest) const;
 
-    /// @ingroup storage_api
+    /// @ingroup base_storage_api
     /// Copies an encoded / decoded symbols.
     /// @param index The index of the symbol to be copied
     /// @param dest The destination buffer where the symbols should be
@@ -277,6 +277,71 @@ public:
     ///        the dest buffer is full.
     void copy_symbol(uint32_t index, sak::mutable_storage dest) const;
 
+    /// @ingroup shallow_mutable_storage_api
+    /// @param index the index number of the symbol
+    /// @return pointer to the symbol
+    uint8_t* symbol(uint32_t index);
+
+    // Duplicate of above function (to make doxygen include it in two groups)
+    /// @ingroup deep_storage_api
+    /// @copydoc symbol(uint32_t index)
+    uint8_t* symbol(uint32_t index);
+
+    /// @ingroup base_storage_api
+    /// @param index the index number of the symbol
+    /// @return const pointer to the symbol
+    const uint8_t* symbol(uint32_t index) const;
+
+    /// @ingroup shallow_const_storage_api
+    /// Sets the storage for the source symbols
+    /// @param symbol_storage A sak::const_storage container initialized with
+    ///        the buffer to be use as encoding buffer.
+    void set_symbols(const sak::const_storage &symbol_storage);
+
+    // Duplicate of above function (to make doxygen include it in two groups)
+    /// @ingroup deep_storage_api
+    /// @copydoc set_symbols(const sak::const_storage &symbol_storage)
+    void set_symbols(const sak::const_storage &symbol_storage);
+
+    /// @ingroup base_storage_api
+    /// Sets the storage for the source symbols
+    /// @param symbol_storage A sak::mutable_storage container initialized with
+    ///        the buffer to be use as encoding / decoding buffer.
+    void set_symbols(const sak::mutable_storage &symbol_storage);
+
+    /// @ingroup base_storage_api
+    /// Sets a symbol - by copying it into the right location in
+    /// the buffer.
+    /// @param index the index of the symbol into the coding block
+    /// @param symbol the actual data of that symbol
+    void set_symbol(uint32_t index, const sak::mutable_storage &symbol);
+
+    /// @ingroup shallow_const_storage_api
+    /// Sets a symbol - by copying it into the right location in
+    /// the buffer.
+    /// @param index the index of the symbol into the coding block
+    /// @param symbol the actual data of that symbol
+    void set_symbol(uint32_t index, const sak::const_storage &symbol);
+
+    // Duplicate of above function (to make doxygen include it in two groups)
+    /// @ingroup deep_storage_api
+    /// Sets a symbol - by copying it into the right location in
+    /// the buffer.
+    /// @param index the index of the symbol into the coding block
+    /// @param symbol the actual data of that symbol
+    void set_symbol(uint32_t index, const sak::const_storage &symbol);
+
+    /// @ingroup shallow_const_storage_api
+    /// @param symbols. A std::vector initialized with pointers to every symbol
+    void swap_symbols(std::vector<const uint8_t*> &symbols);
+
+    /// @ingroup shallow_mutable_storage_api
+    /// @param symbols. A std::vector initialized with pointers to every symbol
+    void swap_symbols(std::vector<uint8_t*> &symbols);
+
+    /// @ingroup deep_storage_api
+    /// @param index the index number of the symbol
+    void swap_symbols(std::vector<uint8_t> &symbols);
 
 };
 

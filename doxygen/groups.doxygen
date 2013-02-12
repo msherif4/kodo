@@ -148,16 +148,41 @@
 /// @defgroup storage Storage
 /// @ingroup api_layer
 /// @brief Handles storage of encoding and decoding symbols.
-
+///
+/// The storage layers are special as they
 
 /// @defgroup storage_api API
 /// @ingroup storage
 /// @brief The API used by storage layers.
+
+
+/// @defgroup base_storage_api Base
+/// @ingroup storage_api
+/// @brief The base API used by storage layers.
 ///
 /// The prototype of a layer is the following:
 ///
 /// @prototype
 
+
+/// @defgroup shallow_mutable_storage_api Shallow mutable
+/// @ingroup storage_api
+/// @brief The mutable API used by codecs that do need to modify the symbol
+///        data stored in the storage layer.
+
+/// @defgroup shallow_const_storage_api Shallow const
+/// @ingroup storage_api
+/// @brief The const API used by storage layers which do not modify the symbol
+///        memory.
+
+// @defgroup shallow_storage_api Shallow
+// @ingroup storage_api
+// @brief The shallow storage API is used by storage layers that operate over user provided memory buffers.
+
+/// @defgroup deep_storage_api Deep
+/// @ingroup storage_api
+/// @brief The deep storage API is used by storage layers which allocates and maintains the memory used
+///        encoders and decoders.
 
 /// @defgroup storage_layers Layers
 /// @ingroup storage

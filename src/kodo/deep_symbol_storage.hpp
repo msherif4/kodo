@@ -14,6 +14,8 @@
 
 namespace kodo
 {
+
+    /// @ingroup storage_layers
     /// The deep storage implementation. In this context deep
     /// means that the symbol storage contains the entire coding buffer
     /// internally. This is useful in cases where incoming data is to be
@@ -43,16 +45,14 @@ namespace kodo
                 std::fill(m_data.begin(), m_data.end(), 0);
             }
 
-        /// @param index the index number of the symbol
-        /// @return value_type pointer to the symbol
+        /// @copydoc layer::symbol()
         uint8_t* symbol(uint32_t index)
             {
                 assert(index < SuperCoder::symbols());
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
-        /// @param index the index number of the symbol
-        /// @return value_type pointer to the symbol
+        /// @copydoc layer::symbol(uint32_t index) const
         const uint8_t* symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());

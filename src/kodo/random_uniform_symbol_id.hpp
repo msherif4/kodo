@@ -40,30 +40,31 @@ namespace kodo
 
     public:
 
+        /// @ingroup factory_layers
         /// The factory layer associated with this coder.
         class factory : public SuperCoder::factory
         {
         public:
 
-            /// @layer_factory{factory}
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size);
 
-            /// @layer_factory{max_symbol_id_size}
+            /// @copydoc layer::factory::max_symbol_id_size()
             uint32_t max_symbol_id_size() const;
         };
 
     public:
 
-        /// @layer{initialize}
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size);
 
-        /// @layer{write_id}
+        /// @copydoc layer::write_id()
         void write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
 
-        /// @layer{read_id}
+        /// @copydoc layer::read_id()
         void read_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
 
-        /// @layer{symbol_id_size}
+        /// @copydoc layer::symbol_id_size()
         uint32_t symbol_id_size() const;
 
     protected:

@@ -13,6 +13,8 @@
 
 namespace kodo
 {
+
+    /// @ingroup storage_layers
     /// The shallow storage _partial_ implementation.
     /// Essentially the same as the shallow storage however the
     /// shallow storage only allows buffers which are exactly the
@@ -30,12 +32,6 @@ namespace kodo
         /// Easy access to SuperCoder
         typedef const_shallow_symbol_storage<SuperCoder> Super;
 
-        // /// The field we are in
-        // typedef typename Super::field_type field_type;
-
-        /// The value type used
-        typedef typename Super::value_type value_type;
-
         /// Pointer to the value_type elements
         typedef typename Super::value_ptr value_ptr;
 
@@ -43,7 +39,7 @@ namespace kodo
         typedef typename Super::pointer pointer;
 
         /// Partial and zero symbol types
-        typedef std::vector<value_type> symbol_type;
+        typedef std::vector<uint8_t> symbol_type;
 
         /// Symbol data wrapped in smart ptr
         typedef boost::shared_ptr<symbol_type> symbol_ptr;
