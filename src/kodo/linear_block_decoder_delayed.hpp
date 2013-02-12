@@ -41,7 +41,7 @@ namespace kodo
         /// The decode function which consumes an incomming symbol and
         /// the corresponding symbol_id
         /// @copydoc linear_block_decoder::decode()
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        void decode_symbol(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
                 assert(symbol_id != 0);
@@ -59,7 +59,7 @@ namespace kodo
         /// for this specific coder no backwards substitution are performed
         /// until the decoder reaches full rank.
         /// @copydoc layer::decode_symbol()
-        void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index)
+        void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
                 assert(symbol_data != 0);

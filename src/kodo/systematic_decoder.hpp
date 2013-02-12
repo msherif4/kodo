@@ -33,6 +33,8 @@ namespace kodo
         typedef typename systematic_base_coder::flag_type
             flag_type;
 
+        using SuperCoder::decode_symbol;
+
     public:
 
         /// The factory layer associated with this coder.
@@ -80,7 +82,7 @@ namespace kodo
                 }
                 else
                 {
-                    SuperCoder::decode(symbol_data, symbol_id);
+                    SuperCoder::decode_symbol(symbol_data, symbol_id);
                 }
             }
 

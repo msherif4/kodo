@@ -75,18 +75,19 @@ namespace kodo
         /// @param symbol_data the encoded symbol
         /// @param symbol_id the coefficients used to create the encoded
         ///        symbol
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        void decode_symbol(uint8_t *symbol_data,
+                           uint8_t *symbol_coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
 
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
-                value_type *vector
-                    = reinterpret_cast<value_type*>(symbol_id);
+                value_type *coefficients
+                    = reinterpret_cast<value_type*>(symbol_coefficients);
 
-                decode_with_vector(symbol, vector);
+                decode_with_vector(symbol, coefficients);
             }
 
         /// The decode function for systematic packets i.e.

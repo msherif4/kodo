@@ -55,7 +55,8 @@ namespace kodo
         {
         public:
 
-            call_proxy(const internal_pointer_type &c, const is_complete_handler &h)
+            call_proxy(const internal_pointer_type &c,
+                       const is_complete_handler &h)
                 : m_c(c),
                   m_h(h)
                 {
@@ -92,7 +93,8 @@ namespace kodo
             wrap_coder()
                 { };
 
-            wrap_coder(const internal_pointer_type &c,  const is_complete_handler &h)
+            wrap_coder(const internal_pointer_type &c,
+                       const is_complete_handler &h)
                 : m_c(c),
                   m_h(h)
                 { }
@@ -119,9 +121,11 @@ namespace kodo
     public:
 
         /// Constructs a new random annex decoder
-        /// @param annex_size the number of symbols used for the random annex
+        /// @param annex_size the number of symbols used for the
+        ///        random annex
         /// @param factory the decoder factory to use
-        /// @param object_size size in bytes of the object that is to be decoded
+        /// @param object_size size in bytes of the object that is to
+        ///        be decoded
         random_annex_decoder(uint32_t annex_size, factory_type &factory,
                              uint32_t object_size)
             : m_annex_size(annex_size),
@@ -137,9 +141,10 @@ namespace kodo
                 assert(m_annex_size < m_factory.max_symbols());
                 m_base_size = m_factory.max_symbols() - m_annex_size;
 
-                m_partitioning = block_partitioning(m_base_size,
-                                                    m_factory.max_symbol_size(),
-                                                    m_object_size);
+                m_partitioning =
+                    block_partitioning(m_base_size,
+                                       m_factory.max_symbol_size(),
+                                       m_object_size);
 
                 // Build the annex
                 Base::build_annex(m_annex_size, m_partitioning);
@@ -186,7 +191,7 @@ namespace kodo
                 std::set<annex_info> &annex = m_annex[from_decoder];
 
                 // For every entry in the annex
-                for(annex_iterator it = annex.begin(); it != annex.end(); ++it)
+                for(auto it = annex.begin(); it != annex.end(); ++it)
                 {
                     forward_symbol(from_symbol, from_decoder,
                                    it->m_symbol_id, it->m_coder_id);
@@ -232,8 +237,9 @@ namespace kodo
                 assert(from_decoder < m_annex.size());
                 assert(from_decoder < m_reverse_annex.size());
 
-                // Now we use the reverse annex info to further pass symbols to
-                // decoders with our decoded block in their annex
+                // Now we use the reverse annex info to further pass
+                // symbols to decoders with our decoded block in
+                // their annex
                 uint32_t reverse_annex_size =
                     m_reverse_annex[from_decoder].size();
 

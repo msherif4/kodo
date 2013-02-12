@@ -39,8 +39,8 @@ public:
 
     /// @ingroup factory_api
     /// @brief Constructs the coder with the maximum parameters it will ever
-    ///        see. A coder may only be constructed ONCE, but initialized many
-    ///        times.
+    ///        see. A coder may only be constructed ONCE, but initialized
+    ///        many times.
     /// @param max_symbols the maximum symbols this coder can expect
     /// @param max_symbol_size the maximum size of a symbol in bytes
     void construct(uint32_t max_symbols, uint32_t max_symbol_size);
@@ -72,9 +72,9 @@ public:
     uint32_t decode(uint8_t *symbol_data, uint8_t *symbol_header)
 
     /// @ingroup symbol_header_api
-    /// @brief Can be reimplemented by a symbol header API layer to ensure that
-    ///        enough space is available in the header for some layer specific
-    ///        data.
+    /// @brief Can be reimplemented by a symbol header API layer to
+    ///        ensure that enough space is available in the header for
+    ///        some layer specific data.
     /// @return The size in bytes required for the symbol header buffer.
     uint32_t symbol_header_size();
 
@@ -113,42 +113,6 @@ public:
     /// @return the size in bytes required for the symbol id buffer.
     uint32_t symbol_id_size();
 
-    //
-    // CODEC INFO API
-    //
-
-    /// @ingroup codec_info_api
-    /// @return the number of symbols in this block coder
-    uint32_t symbols() const;
-
-    /// @ingroup codec_info_api
-    /// @return the symbol size of a symbol in bytes
-    uint32_t symbol_size() const;
-
-    /// @ingroup codec_info_api
-    /// @return the length of the symbol in value_type elements
-    uint32_t symbol_length() const;
-
-    /// @ingroup codec_info_api
-    /// @return the block size i.e. the total size in bytes
-    ///         that this coder operates on. Users may
-    ///         use the bytes_used() function provided in the
-    ///         symbol storage layers to see how many of those
-    ///         bytes are then used.
-    uint32_t block_size() const;
-
-    /// @ingroup codec_info_api
-    /// Sets the number of bytes used
-    /// @param bytes_used number of bytes used of the total coders block size
-    void set_bytes_used(uint32_t bytes_used);
-
-    /// @ingroup codec_info_api
-    /// @return the number of bytes used
-    uint32_t bytes_used() const;
-
-    /// @ingroup codec_info_api
-    bool symbol_exists(uint32_t index);
-
 
     //
     // CODEC API
@@ -169,10 +133,10 @@ public:
     /// stored in the corresponding symbol_id.
     ///
     /// @param symbol_data The encoded symbol
-    /// @param symbol_id The coding coefficients used to create the encoded
-    ///                  symbol
+    /// @param symbol_coefficients The coding coefficients used to
+    ///        create the encoded symbol
     void decode_symbol(uint8_t *symbol_data,
-                       uint8_t *symbol_id_coefficients);
+                       uint8_t *symbol_coefficients);
 
 
     /// @ingroup codec_api
@@ -323,7 +287,8 @@ public:
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::const_storage &symbol);
 
-    // Duplicate of above function (to make doxygen include it in two groups)
+    // Duplicate of above function (to make doxygen include it in two
+    // groups)
     /// @ingroup deep_storage_api
     /// Sets a symbol - by copying it into the right location in
     /// the buffer.
@@ -332,16 +297,54 @@ public:
     void set_symbol(uint32_t index, const sak::const_storage &symbol);
 
     /// @ingroup shallow_const_storage_api
-    /// @param symbols. A std::vector initialized with pointers to every symbol
+    /// @param symbols. A std::vector initialized with pointers to every
+    ///        symbol
     void swap_symbols(std::vector<const uint8_t*> &symbols);
 
     /// @ingroup shallow_mutable_storage_api
-    /// @param symbols. A std::vector initialized with pointers to every symbol
+    /// @param symbols. A std::vector initialized with pointers to every
+    ///        symbol
     void swap_symbols(std::vector<uint8_t*> &symbols);
 
     /// @ingroup deep_storage_api
     /// @param index the index number of the symbol
     void swap_symbols(std::vector<uint8_t> &symbols);
+
+    /// @ingroup base_storage_api
+    /// @return the number of symbols in this block coder
+    uint32_t symbols() const;
+
+    /// @ingroup base_storage_api
+    /// @return the symbol size of a symbol in bytes
+    uint32_t symbol_size() const;
+
+    /// @ingroup base_storage_api
+    /// @return the length of the symbol in value_type elements
+    uint32_t symbol_length() const;
+
+    /// @ingroup base_storage_api
+    /// @return the block size i.e. the total size in bytes
+    ///         that this coder operates on. Users may
+    ///         use the bytes_used() function provided in the
+    ///         symbol storage layers to see how many of those
+    ///         bytes are then used.
+    uint32_t block_size() const;
+
+    /// @ingroup base_storage_api
+    /// Sets the number of bytes used
+    /// @param bytes_used number of bytes used of the total coders
+    ///        block size
+    void set_bytes_used(uint32_t bytes_used);
+
+    /// @ingroup base_storage_api
+    /// @return the number of bytes used
+    uint32_t bytes_used() const;
+
+    /// @ingroup base_storage_api
+    /// @param index The index of the symbol to check.
+    /// @return true if the symbol has been initialized
+    bool symbol_exists(uint32_t index);
+
 
 };
 

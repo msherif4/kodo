@@ -49,7 +49,9 @@ inline void invoke_max_annex_size(uint32_t max_symbols,
 
     for(uint32_t i = 0; i < scheme.blocks(); ++i)
     {
-        uint32_t remaining_symbols = scheme.total_symbols() - scheme.symbols(i);
+        uint32_t remaining_symbols =
+            scheme.total_symbols() - scheme.symbols(i);
+
         ASSERT_TRUE(remaining_symbols >= max_annex);
     }
 }
@@ -57,12 +59,23 @@ inline void invoke_max_annex_size(uint32_t max_symbols,
 
 TEST(TestRandomAnnexBase, max_annex)
 {
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(1, 1000, 1000);
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(1, 1000, 2000);
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(2, 1000, 1000);
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(1, 10000, 1000);
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(32, 1400, 423432);
-    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(48, 676, 24768);
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        1, 1000, 1000);
+
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        1, 1000, 2000);
+
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        2, 1000, 1000);
+
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        1, 10000, 1000);
+
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        32, 1400, 423432);
+
+    invoke_max_annex_size<kodo::rfc5052_partitioning_scheme>(
+        48, 676, 24768);
 }
 
 
@@ -160,7 +173,9 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     }
 
     EXPECT_EQ(bytes_used, object_size);
-    EXPECT_TRUE(std::equal(data_in.begin(), data_in.end(), data_out.begin()));
+    EXPECT_TRUE(std::equal(data_in.begin(),
+                           data_in.end(),
+                           data_out.begin()));
 
 }
 
@@ -173,17 +188,20 @@ void test_random_annex_coders(uint32_t symbols, uint32_t symbol_size,
     invoke_random_annex_partial<
         kodo::full_rlnc2_encoder,
         kodo::full_rlnc2_decoder,
-            kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
+            kodo::rfc5052_partitioning_scheme>(
+                symbols, symbol_size, multiplier);
 
     invoke_random_annex_partial<
         kodo::full_rlnc8_encoder,
         kodo::full_rlnc8_decoder,
-            kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
+            kodo::rfc5052_partitioning_scheme>(
+                symbols, symbol_size, multiplier);
 
     invoke_random_annex_partial<
         kodo::full_rlnc16_encoder,
         kodo::full_rlnc16_decoder,
-            kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
+            kodo::rfc5052_partitioning_scheme>(
+                symbols, symbol_size, multiplier);
 
 }
 
