@@ -82,6 +82,7 @@ namespace kodo
                 }
                 else
                 {
+                    /// @todo call decode(..) here not decode_symbol()
                     SuperCoder::decode_symbol(symbol_data, symbol_id);
                 }
             }

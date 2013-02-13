@@ -5,6 +5,12 @@ class layer
 {
 public:
 
+    /// @typedef value_type
+    /// The value type storing the field elements used for the
+    /// specified field. E.g. the binary extension field 2^8 uses
+    /// uint8_t as the value_type.
+    typedef field::value_type value_type;
+
     class factory
     {
     public:
@@ -53,6 +59,7 @@ public:
 
     //
     // SYMBOL HEADER API
+    /// @todo RENAME TO CODEC HEADER API
     //
 
     /// @ingroup symbol_header_api
@@ -117,16 +124,18 @@ public:
     //
     // CODEC API
     //
+    // Here we could add linear block as a sub-group
+    // under linear block we put Linear Block Codec, Symbol IDs, Coding Coefficient Storage
 
 
     /// @ingroup codec_api
     /// Encodes a symbol according to the symbol id
     ///
     /// @param symbol_data The destination buffer for the encoded symbol
-    /// @param symbol_id At this point the symbol id should be initialized
-    ///        with the desired coding coefficients.
+    /// @param symbol_coefficients At this point the symbol id should be
+    ///        initialized with the desired coding coefficients.
     void encode_symbol(uint8_t *symbol_data,
-                       const uint8_t *symbol_id_coefficients);
+                       const uint8_t *symbol_coefficients);
 
     /// @ingroup codec_api
     /// Decodes an encoded symbol according to the coding coefficients
@@ -138,7 +147,6 @@ public:
     void decode_symbol(uint8_t *symbol_data,
                        uint8_t *symbol_coefficients);
 
-
     /// @ingroup codec_api
     /// The decode function for systematic packets i.e. specific uncoded
     /// symbols.
@@ -147,11 +155,34 @@ public:
     ///                     block.
     void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
 
+    /// @ingroup codec_api
+    /// @return The number of bytes needed to store the symbol coefficients.
+    uint32_t coefficients_size() const;
+
+    /// @ingroup codec_api
+    /// @return The number of layer::value_type elements needed to store
+    ///         the symbol coefficients.
+    uint32_t coefficients_length() const;
+
+    /// @param index the index in the vector
+    /// @return the specified vector
+    value_type* coefficients_value(uint32_t index);
+
+    /// @param index the index in the vector
+    /// @return the specified vector
+    const value_type* coefficients_value(uint32_t index) const;
+
+    /// @param index the index in the vector
+    /// @return the specified vector
+    uint8_t* coefficients(uint32_t index);
+
+    /// @param index the index in the vector
+    /// @return the specified vector
+    const uint8_t* coefficients(uint32_t index) const;
 
     //
     // MATH API
     //
-
 
     /// @ingroup math_api
     /// Multiplies the symbol with the coefficient
@@ -159,7 +190,8 @@ public:
     ///
     /// @param symbol_dest the destination buffer for the source symbol
     /// @param coefficient the multiplicative constant
-    /// @param symbol_length the length of the symbol in value_type elements
+    /// @param symbol_length the length of the symbol in layer::value_type
+    ///        elements
     void multiply(value_type *symbol_dest,
                   value_type coefficient,
                   uint32_t symbol_length);
@@ -218,7 +250,7 @@ public:
 
     /// @ingroup math_api
     /// Inverts the field element
-    /// @param value the finite field vale to be inverted.
+    /// @param value the finite field value to be inverted.
     /// @return the inverse
     value_type invert(value_type value);
 
@@ -243,7 +275,8 @@ public:
 
     /// @ingroup shallow_mutable_storage_api
     /// @param index the index number of the symbol
-    /// @return pointer to the symbol
+    /// @return Returns a pointer to the symbol data. The size of
+    ///         the symbol data is provided by the symbol_size() function.
     uint8_t* symbol(uint32_t index);
 
     // Duplicate of above function (to make doxygen include it in two groups)
@@ -253,8 +286,28 @@ public:
 
     /// @ingroup base_storage_api
     /// @param index the index number of the symbol
-    /// @return const pointer to the symbol
+    /// @return Returns a const pointer to the symbol data. The size of
+    ///         the symbol data is provided by the symbol_size() function.
     const uint8_t* symbol(uint32_t index) const;
+
+    /// @ingroup shallow_mutable_storage_api
+    /// @param index the index number of the symbol
+    /// @return Returns a layer::value_type pointer to the symbol data.
+    ///         The length of the symbol data is provided by the
+    ///         symbol_length() function.
+    value_type* symbol_value(uint32_t index);
+
+    // Duplicate of above function (to make doxygen include it in two groups)
+    /// @ingroup deep_storage_api
+    /// @copydoc symbol(uint32_t index)
+    value_type* symbol_value(uint32_t index);
+
+    /// @ingroup base_storage_api
+    /// @param index the index number of the symbol
+    /// @return Returns a const layer::value_type pointer to the symbol data.
+    ///         The length of the symbol data is provided by the
+    ///         symbol_length() function.
+    const value_type* symbol_value(uint32_t index) const;
 
     /// @ingroup shallow_const_storage_api
     /// Sets the storage for the source symbols
@@ -319,7 +372,7 @@ public:
     uint32_t symbol_size() const;
 
     /// @ingroup base_storage_api
-    /// @return the length of the symbol in value_type elements
+    /// @return the length of the symbol in layer::value_type elements
     uint32_t symbol_length() const;
 
     /// @ingroup base_storage_api

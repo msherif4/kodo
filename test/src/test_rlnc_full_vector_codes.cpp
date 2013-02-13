@@ -64,8 +64,6 @@ TEST(TestRlncFullVectorCodes, basic_api)
     test_coders(32, 1600);
     test_coders(1, 1600);
 
-    srand(static_cast<uint32_t>(time(0)));
-
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
 

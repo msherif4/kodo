@@ -111,7 +111,7 @@ namespace kodo
         /// to keep alignment of the individual vectors. This is
         /// needed when using SSE etc. instructions for fast
         /// computations with the vectors
-        std::vector<std::vector<value_type> > m_vector_storage;
+        std::vector< std::vector<value_type> > m_vector_storage;
 
         /// The length of a vector in value_type elements
         uint32_t m_vector_length;

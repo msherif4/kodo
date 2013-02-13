@@ -13,44 +13,49 @@
 
 namespace kodo
 {
-    /// Implementes basic linear block decoder. The linear block decoder
-    /// expects that an encoded symbol is described by a vector of coefficients.
-    /// Using these coefficients the block decoder subtracts incomming symbols
-    /// until the original data has been recreated.
+    /// @ingroup codec_layers
+    /// @brief Aligns the symbol coefficient buffer if necessary
     template<class SuperCoder>
     class align_symbol_id_decoder : public SuperCoder
     {
     public:
 
-        /// @copydoc final_coder_factory::initialize()
+        // Make sure all overloads of the decode symbol function is available
+        using SuperCoder::decode_symbol;
+
+    public:
+
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
-                m_temp_id.resize(SuperCoder::symbol_id_size());
+                m_aligned_coefficients.resize(SuperCoder::symbol_id_size());
 
-                assert(sak::is_aligned(&m_temp_id[0]));
+                assert(sak::is_aligned(&m_aligned_coefficients[0]));
             }
 
-        /// The decode function which consumes an incomming symbol and
-        /// the corresponding symbol_id
-        /// @param symbol_data the encoded symbol
-        /// @param symbol_id the coefficients used to create the encoded symbol
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// @copydoc layer::decode_symbol()
+        void decode_symbol(uint8_t *symbol_data,
+                           uint8_t *symbol_coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
 
-                if(sak::is_aligned(symbol_id) == false)
+                if(sak::is_aligned(symbol_coefficients) == false)
                 {
-                    std::copy(symbol_id,
-                              symbol_id + SuperCoder::symbol_id_size(),
-                              &m_temp_id[0]);
+                    /// @todo chanage the symbol_id_size to coefficient_size
+                    ///
+                    std::copy(symbol_coefficients,
+                              symbol_coefficients + SuperCoder::symbol_id_size(),
+                              &m_aligned_coefficients[0]);
 
-                    SuperCoder::decode(symbol_data, &m_temp_id[0]);
+                    SuperCoder::decode_symbol(
+                        symbol_data, &m_aligned_coefficients[0]);
                 }
                 else
                 {
-                    SuperCoder::decode(symbol_data, symbol_id);
+                    SuperCoder::decode_symbol(
+                        symbol_data, symbol_coefficients);
                 }
             }
 
@@ -63,7 +68,7 @@ namespace kodo
     protected:
 
         /// Temp symbol id (with aligned memory)
-        aligned_vector m_temp_id;
+        aligned_vector m_aligned_coefficients;
 
     };
 }

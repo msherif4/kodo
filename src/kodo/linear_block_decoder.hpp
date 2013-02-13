@@ -70,11 +70,7 @@ namespace kodo
                 m_maximum_pivot = 0;
             }
 
-        /// The decode function which consumes an incomming symbol and
-        /// the corresponding symbol_id
-        /// @param symbol_data the encoded symbol
-        /// @param symbol_id the coefficients used to create the encoded
-        ///        symbol
+        /// @copydoc layer::decode_symbol()
         void decode_symbol(uint8_t *symbol_data,
                            uint8_t *symbol_coefficients)
             {
@@ -90,10 +86,7 @@ namespace kodo
                 decode_with_vector(symbol, coefficients);
             }
 
-        /// The decode function for systematic packets i.e.
-        /// specific uncoded symbols.
-        /// @param symbol_data the uncoded symbol
-        /// @param symbol_index the index of this uncoded symbol
+        /// @copydoc layer::decode_symbol()
         void decode_symbol(const uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
