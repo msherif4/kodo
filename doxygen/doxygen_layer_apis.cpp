@@ -125,7 +125,7 @@ public:
     // CODEC API
     //
     // Here we could add linear block as a sub-group
-    // under linear block we put Linear Block Codec, Symbol IDs, Coding Coefficient Storage
+    // under linear block we put Codec, Symbol IDs, Coding Coefficient Storage
 
 
     /// @ingroup codec_api
