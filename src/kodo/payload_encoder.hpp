@@ -10,9 +10,11 @@
 
 namespace kodo
 {
+
+    /// @ingroup payload_codec_layers
+    /// @ingroup factory_layers
     /// The payload encoder splits payload buffer into symbol_id and symbol
     /// buffers.
-    /// @ingroup payload_layer_api
     template<class SuperCoder>
     class payload_encoder : public SuperCoder
     {
@@ -25,22 +27,23 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the maximum required payload buffer size in bytes
+            /// @copydoc layer::factory::max_payload_size()
             uint32_t max_payload_size() const
                 {
                     return SuperCoder::factory::max_symbol_size() +
-                        SuperCoder::factory::max_symbol_id_size();
+                        SuperCoder::factory::max_header_size();
                 }
         };
 
     public:
 
-        /// Encodes a symbol to the provided buffer using the following layout:
+        /// Encodes a symbol to the provided buffer using the following
+        /// layout:
         ///
         /// @code
         ///   +-------------------+---------------+
@@ -48,14 +51,12 @@ namespace kodo
         ///   +-------------------+---------------+
         /// @endcode
         ///
-        /// The reason the symbol data is placed first in the payload buffer is
-        /// to enable 16 byte-alignment of the symbol data. If the variable
-        /// length id would be place in front of the symbol it would easily
-        /// become unaligned. Unaligned symbol data access will most likely
-        /// result in very bad performance.
-        /// @param payload buffer which should contain the encoded symbol and
-        /// symbol header.
-        /// @return the total bytes used from the payload buffer
+        /// The reason the symbol data is placed first in the payload
+        /// buffer is to enable 16 byte-alignment of the symbol data.
+        /// If the variable length id would be place in front of the
+        /// symbol it would easily become unaligned. Unaligned symbol
+        /// data access will most likely result in very bad performance.
+        /// @copydoc layer::encode(uint8_t*)
         uint32_t encode(uint8_t *payload)
             {
                 assert(payload != 0);
@@ -69,11 +70,11 @@ namespace kodo
                     + SuperCoder::symbol_size();
             }
 
-        /// @return the required payload buffer size in bytes
+        /// @copydoc layer::payload_size()
         uint32_t payload_size() const
             {
                 return SuperCoder::symbol_size() +
-                    SuperCoder::symbol_id_size();
+                    SuperCoder::header_size();
             }
     };
 }

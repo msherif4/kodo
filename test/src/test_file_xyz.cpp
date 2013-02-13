@@ -13,13 +13,15 @@
 
 #include <boost/filesystem.hpp>
 
+// Tests that encoding and decoding a file withe the file encoder
+// works.
 TEST(TestFileEncoder, test_file_encoder)
 {
 
     {
         std::string encode_filename = "encode-file";
         std::string decode_filename = "decode-file";
-        
+
         // Write a test file
         std::ofstream encode_file;
         encode_file.open (encode_filename, std::ios::binary);
@@ -48,10 +50,14 @@ TEST(TestFileEncoder, test_file_encoder)
         uint32_t max_symbols = 10;
         uint32_t max_symbol_size = 10;
 
-        file_encoder_t::factory encoder_factory(max_symbols, max_symbol_size);
+        file_encoder_t::factory encoder_factory(
+            max_symbols, max_symbol_size);
+
         file_encoder_t file_encoder(encoder_factory, encode_filename);
 
-        object_decoder_t::factory decoder_factory(max_symbols, max_symbol_size);
+        object_decoder_t::factory decoder_factory(
+            max_symbols, max_symbol_size);
+
         object_decoder_t object_decoder(decoder_factory, size);
 
         EXPECT_EQ(object_decoder.decoders(), file_encoder.encoders());
@@ -87,7 +93,8 @@ TEST(TestFileEncoder, test_file_encoder)
             std::vector<uint8_t> data_out(decoder->block_size());
             decoder->copy_symbols(sak::storage(data_out));
 
-            decode_file.write(reinterpret_cast<char*>(&data_out[0]), decoder->bytes_used());
+            decode_file.write(
+                reinterpret_cast<char*>(&data_out[0]), decoder->bytes_used());
 
         }
 

@@ -47,31 +47,74 @@ namespace kodo
         public:
 
             /// @copydoc layer::factory::factory()
-            factory(uint32_t max_symbols, uint32_t max_symbol_size);
+            factory(uint32_t max_symbols, uint32_t max_symbol_size)
+                : SuperCoder::factory(max_symbols, max_symbol_size)
+                { }
 
-            /// @copydoc layer::factory::max_symbol_id_size()
-            uint32_t max_symbol_id_size() const;
+            /// @copydoc layer::factory::max_id_size()
+            uint32_t max_id_size() const
+                {
+                    uint32_t max_symbol_id_size =
+                        fifi::bytes_needed<field_type>(
+                            SuperCoder::factory::max_symbols());
+
+                    assert(max_symbol_id_size > 0);
+
+                    return max_symbol_id_size;
+                }
         };
 
     public:
 
         /// @copydoc layer::initialize()
-        void initialize(uint32_t symbols, uint32_t symbol_size);
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+
+                m_id_size = fifi::bytes_needed<field_type>(symbols);
+                assert(m_id_size > 0);
+            }
+
 
         /// @copydoc layer::write_id()
-        void write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
+        uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+            {
+                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
+
+                for(uint32_t i = 0; i < m_id_size; ++i)
+                {
+                    symbol_id[i] = m_distribution(m_random_generator);
+                }
+
+                *symbol_coefficients = symbol_id;
+
+                return m_id_size;
+            }
 
         /// @copydoc layer::read_id()
-        void read_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
+        void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+            {
+                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
 
-        /// @copydoc layer::symbol_id_size()
-        uint32_t symbol_id_size() const;
+                *symbol_coefficients = symbol_id;
+            }
+
+        /// @copydoc layer::id_size()
+        uint32_t id_size() const
+            {
+                return m_id_size;
+            }
 
     protected:
 
         /// Seeds the random generator used
         /// @param seed The seed used for the random generator
-        void seed(result_type seed);
+        void seed(result_type seed)
+            {
+                return m_random_generator.seed(seed);
+            }
 
     protected:
 
@@ -86,83 +129,6 @@ namespace kodo
         uint32_t m_id_size;
 
     };
-
-
-    template<class SuperCoder>
-    inline random_uniform_symbol_id<SuperCoder>::factory::factory(
-        uint32_t max_symbols,
-        uint32_t max_symbol_size)
-        : SuperCoder::factory(max_symbols, max_symbol_size)
-    { }
-
-
-    template<class SuperCoder>
-    inline uint32_t
-    random_uniform_symbol_id<SuperCoder>::factory::max_symbol_id_size() const
-    {
-        uint32_t max_symbol_id_size =
-            fifi::bytes_needed<field_type>(
-                SuperCoder::factory::max_symbols());
-
-        assert(max_symbol_id_size > 0);
-
-                    return max_symbol_id_size;
-    }
-
-
-    template<class SuperCoder>
-    inline void random_uniform_symbol_id<SuperCoder>::initialize(
-        uint32_t symbols,
-        uint32_t symbol_size)
-    {
-        SuperCoder::initialize(symbols, symbol_size);
-
-        m_id_size = fifi::bytes_needed<field_type>(symbols);
-        assert(m_id_size > 0);
-    }
-
-
-    template<class SuperCoder>
-    inline void random_uniform_symbol_id<SuperCoder>::write_id(
-        uint8_t *symbol_id,
-        uint8_t **symbol_id_coefficients)
-    {
-        assert(symbol_id != 0);
-        assert(symbol_id_coefficients != 0);
-
-        for(uint32_t i = 0; i < m_id_size; ++i)
-        {
-            symbol_id[i] = m_distribution(m_random_generator);
-        }
-
-        *symbol_id_coefficients = symbol_id;
-    }
-
-
-    template<class SuperCoder>
-    inline void random_uniform_symbol_id<SuperCoder>::read_id(
-        uint8_t *symbol_id,
-        uint8_t **symbol_id_coefficients)
-    {
-        assert(symbol_id != 0);
-        assert(symbol_id_coefficients != 0);
-
-        *symbol_id_coefficients = symbol_id;
-    }
-
-
-    template<class SuperCoder>
-    inline uint32_t random_uniform_symbol_id<SuperCoder>::symbol_id_size() const
-    {
-        return m_id_size;
-    }
-
-
-    template<class SuperCoder>
-    inline void random_uniform_symbol_id<SuperCoder>::seed(result_type seed)
-    {
-        return m_random_generator.seed(seed);
-    }
 
 }
 

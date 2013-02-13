@@ -36,26 +36,23 @@ namespace kodo
 
     public:
 
-        /// Encodes a symbol according to the encoding vector
-        /// @param symbol_data the destination buffer for the encoded symbol
-        /// @param symbol_id the encoding vector - note at this point the
-        ///        coding vector should already be initialized with coding
-        ///        coefficients
-        void encode(uint8_t *symbol_data, const uint8_t *symbol_id)
+        /// @copydoc layer::encode_symbol()
+        void encode_symbol(uint8_t *symbol_data,
+                           const uint8_t *symbol_coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
 
                 value_type *symbol =
                     reinterpret_cast<value_type*>(symbol_data);
 
-                const value_type *id =
-                    reinterpret_cast<const value_type*>(symbol_id);
+                const value_type *coefficients =
+                    reinterpret_cast<const value_type*>(symbol_coefficients);
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
                     auto coefficient =
-                        vector_type::coefficient(i, id);
+                        vector_type::coefficient(i, coefficients);
 
                     if(coefficient)
                     {

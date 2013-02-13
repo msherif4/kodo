@@ -36,11 +36,35 @@ public:
         /// @return the maximum symbol size in bytes
         uint32_t max_symbol_size() const;
 
+        /// @ingroup codec_header_api
+        /// @brief Can be reimplemented by a symbol header API layer to
+        ///        ensure that enough space is available in the header for
+        ///        some layer specific data.
+        ///
+        /// @note If you implement this function you most likely also have
+        ///       to implement the layer::header_size() function.
+        ///
+        /// @return The size in bytes required for the symbol header buffer.
+        uint32_t max_header_size();
+
         /// @ingroup symbol_id_api
         /// @brief Can be reimplemented by a Factory Symbol ID layer
+        ///
+        /// @note If you implement this function you most likely also have
+        ///       to implement the layer::header_size() function.
+        ///
         /// @return The maximum size in bytes required for a symbol id.
         /// @see factory_layer_api
-        uint32_t max_symbol_id_size();
+        uint32_t max_id_size();
+
+        /// @ingroup payload_codec_api
+        ///
+        /// @note If you implement this function you most likely also have
+        ///       to implement the layer::payload_size() function.
+        ///
+        /// @return the maximum required payload buffer size in bytes
+        uint32_t max_payload_size() const;
+
     };
 
     /// @ingroup factory_api
@@ -57,38 +81,44 @@ public:
     /// @param symbol_size the size of each symbol in bytes
     void initialize(uint32_t symbols, uint32_t symbol_size);
 
+
     //
-    // SYMBOL HEADER API
-    /// @todo RENAME TO CODEC HEADER API
+    // CODEC HEADER API
     //
 
-    /// @ingroup symbol_header_api
-    /// Writes the symbol header.
+
+    /// @ingroup codec_header_api
+    /// @brief Writes the symbol header.
     /// @param symbol_data The destination buffer for the encoded symbol.
     /// @param symbol_header At this point the symbol header should be
     ///        initialized.
     /// @return The number of bytes used from symbol_header buffer.
     uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header);
 
-    /// @ingroup symbol_header_api
-    /// Reads the symbol header.
+    /// @ingroup codec_header_api
+    /// @brief Reads the symbol header.
     /// @param symbol_data The destination buffer for the encoded symbol.
     /// @param symbol_header At this point the symbol header should be
     ///        initialized.
     /// @return The number of bytes used from symbol_header buffer.
-    uint32_t decode(uint8_t *symbol_data, uint8_t *symbol_header)
+    uint32_t decode(uint8_t *symbol_data, uint8_t *symbol_header);
 
-    /// @ingroup symbol_header_api
+    /// @ingroup codec_header_api
     /// @brief Can be reimplemented by a symbol header API layer to
     ///        ensure that enough space is available in the header for
     ///        some layer specific data.
+    ///
+    /// @note If you implement this function you most likely also have
+    ///       to implement the layer::factory::max_header_size() function.
+    ///
     /// @return The size in bytes required for the symbol header buffer.
-    uint32_t symbol_header_size();
+    uint32_t header_size() const;
 
 
     //
     // SYMBOL ID API
     //
+
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
@@ -97,28 +127,32 @@ public:
     ///                  used to generate an encoded symbol. It is therefore
     ///                  sufficient to transmit only the symbol id and not
     ///                  necessarily all coding coefficients to decoders.
-    /// @param symbol_id_coefficient Pointer to a pointer of symbol id
+    /// @param symbol_coefficient Pointer to a pointer of symbol id
     ///                  coefficients. After the call to write_id the
     ///                  symbol_id_coefficient pointer will point to memory
     ///                  storing all coding coefficients corresponding to
     ///                  the symbol id written to the symbol_id buffer.
     /// @return The number of bytes used from the symbol_id buffer.
-    uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
+    uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients);
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
     /// @param symbol_id Contains the symbol id for an encoded symbol.
-    /// @param symbol_id_coefficient Pointer to pointer of symbol id
+    /// @param symbol_coefficient Pointer to pointer of symbol id
     ///        coefficients. After the call to read_id the
     ///        symbol_id_coefficient pointer will point to memory storing
     ///        all coding coefficients corresponding to the symbol id
     ///        read from the symbol_id buffer.
-    void read_id(uint8_t *symbol_id, uint8_t **symbol_id_coefficients);
+    void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients);
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
+    ///
+    /// @note If you implement this function you most likely also have
+    ///       to implement the layer::factory::max_id_size() function.
+    ///
     /// @return the size in bytes required for the symbol id buffer.
-    uint32_t symbol_id_size();
+    uint32_t id_size();
 
 
     //
@@ -129,7 +163,7 @@ public:
 
 
     /// @ingroup codec_api
-    /// Encodes a symbol according to the symbol id
+    /// Encodes a symbol according to the symbol coefficients
     ///
     /// @param symbol_data The destination buffer for the encoded symbol
     /// @param symbol_coefficients At this point the symbol id should be
@@ -322,8 +356,8 @@ public:
 
     /// @ingroup base_storage_api
     /// Sets the storage for the source symbols
-    /// @param symbol_storage A sak::mutable_storage container initialized with
-    ///        the buffer to be use as encoding / decoding buffer.
+    /// @param symbol_storage A sak::mutable_storage container initialized
+    ///        with the buffer to be use as encoding / decoding buffer.
     void set_symbols(const sak::mutable_storage &symbol_storage);
 
     /// @ingroup base_storage_api
@@ -397,6 +431,34 @@ public:
     /// @param index The index of the symbol to check.
     /// @return true if the symbol has been initialized
     bool symbol_exists(uint32_t index);
+
+
+
+    //
+    // PAYLOAD API
+    //
+
+
+
+    /// @ingroup payload_codec_api
+    /// Encodes a symbol into the provided buffer.
+    /// @param payload. The buffer which should contain the encoded
+    ///        symbol.
+    /// @return the total bytes used from the payload buffer
+    uint32_t encode(uint8_t *payload);
+
+    /// @ingroup payload_codec_api
+    /// Decodes an encoded symbol stored in the payload buffer
+    /// @param payload. The buffer storing the payload of an encoded symbol
+    void decode(uint8_t *payload);
+
+    /// @ingroup payload_codec_api
+    ///
+    /// @note If you implement this function you most likely also have
+    ///       to implement the layer::factory::max_header_size() function.
+    ///
+    /// @return the required payload buffer size in bytes
+    uint32_t payload_size() const;
 
 
 };

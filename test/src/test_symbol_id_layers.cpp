@@ -18,7 +18,8 @@ namespace kodo
     template<class Field>
     class test_random_uniform_symbol_id
         : public random_uniform_symbol_id<
-                 final_coder_factory<test_random_uniform_symbol_id<Field>, Field>
+                 final_coder_factory<
+                     test_random_uniform_symbol_id<Field>, Field>
                  >
     { };
 
@@ -28,13 +29,13 @@ template<class SymbolIdLayer>
 void test_symbol_id_layer(uint32_t symbols, uint32_t symbol_size)
 {
     typename SymbolIdLayer::factory f(symbols, symbol_size);
-    EXPECT_TRUE(f.max_symbol_id_size() > 0);
+    EXPECT_TRUE(f.max_id_size() > 0);
 
     auto layer = f.build(symbols, symbol_size);
-    EXPECT_TRUE(layer->symbol_id_size());
-    EXPECT_TRUE(f.max_symbol_id_size() >= layer->symbol_id_size());
+    EXPECT_TRUE(layer->id_size());
+    EXPECT_TRUE(f.max_id_size() >= layer->id_size());
 
-    std::vector<uint8_t> symbol_id(layer->symbol_id_size());
+    std::vector<uint8_t> symbol_id(layer->id_size());
     uint8_t *symbol_id_coefficients = 0;
 
     layer->write_id(&symbol_id[0], &symbol_id_coefficients);

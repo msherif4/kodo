@@ -33,6 +33,8 @@
 #include "../payload_decoder.hpp"
 #include "../align_symbol_id_decoder.hpp"
 #include "../align_symbol_id_encoder.hpp"
+#include "../symbol_id_encoder.hpp"
+#include "../random_uniform_symbol_id.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -50,15 +52,21 @@
 
 namespace kodo
 {
+
     /// @copydoc full_vector_encoder
     template<class Field>
     class full_rlnc_encoder
-        : public payload_encoder<
+        : public // Payload API
+                 payload_encoder<
+                 // Codec header API
                  systematic_encoder<
+                 symbol_id_encoder<
+                 // Codec API
                  zero_symbol_encoder<
-                 full_vector_encoder<
-                 linear_block_vector_generator<block_cache_lookup_uniform,
                  linear_block_encoder<
+                 // Symbol ID API
+                 random_uniform_symbol_id<
+                 // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  deep_symbol_storage<
                  has_bytes_used<

@@ -10,26 +10,26 @@
 
 namespace kodo
 {
-    /// Zeros the incoming symbol buffers
+
+    /// @ingroup codec_layers
+    /// @brief Zeros the symbol data buffer
     template<class SuperCoder>
     class zero_symbol_encoder : public SuperCoder
     {
     public:
 
-        /// Zero the incoming symbol buffers and forward
-        /// call.
-        /// @param symbol_data symbol storage
-        /// @param symbol_id symbol id storage
-        /// @return the number of byes used by the underlying coding layers
-        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// Zero the incoming symbol data buffer and forward
+        /// the encode_symbol() call.
+        ///
+        /// @copydoc layer::encode_symbol()
+        void encode_symbol(uint8_t *symbol_data, uint8_t *symbol_coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
 
                 std::fill_n(symbol_data, SuperCoder::symbol_size(), 0);
-                std::fill_n(symbol_id, SuperCoder::symbol_id_size(), 0);
 
-                return SuperCoder::encode(symbol_data, symbol_id);
+                SuperCoder::encode_symbol(symbol_data, symbol_coefficients);
             }
     };
 }

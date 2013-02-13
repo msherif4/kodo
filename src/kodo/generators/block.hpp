@@ -115,7 +115,7 @@ namespace kodo
         void fill(uint32_t block_id, value_type *buffer)
             {
                 // to suppress compiler warning
-                (void*) block_id;
+                (void) block_id;
 
                 assert(buffer != 0);
                 m_random_generator.generate(buffer, SuperBlock::block_length());

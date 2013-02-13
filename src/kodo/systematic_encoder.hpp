@@ -18,6 +18,9 @@
 
 namespace kodo
 {
+
+    /// @ingroup codec_header_layers
+    /// @ingroup factory_layers
     /// Systematic encoder layer
     template<class SuperCoder>
     class systematic_encoder : public SuperCoder
@@ -40,6 +43,7 @@ namespace kodo
 
     public:
 
+        /// @ingroup factory_layers
         /// The factory layer associated with this coder.
         /// In this case only needed to provide the max_payload_size()
         /// function.
@@ -47,15 +51,15 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required symbol_id buffer size in bytes
-            uint32_t max_symbol_id_size() const
+            /// @copydoc layer::max_header_size()
+            uint32_t max_header_size() const
                 {
-                    return SuperCoder::factory::max_symbol_id_size() +
+                    return SuperCoder::factory::max_header_size() +
                         sizeof(flag_type) + sizeof(counter_type);
                 }
         };
@@ -78,10 +82,7 @@ namespace kodo
                 m_systematic = true;
             }
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
-        /// @copydoc linear_block_encoder::encode_with_vector()
-        /// @return used amount of buffer in bytes
+        /// @copydoc layer::encode(uint8_t*, uint8_t*)
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
             {
                 assert(symbol_data != 0);
@@ -117,10 +118,10 @@ namespace kodo
                 m_systematic = false;
             }
 
-        /// @return the required symbol_id buffer size in bytes
-        uint32_t symbol_id_size() const
+        /// @copydoc layer::header_size()
+        uint32_t header_size() const
             {
-                return SuperCoder::symbol_id_size() +
+                return SuperCoder::header_size() +
                     sizeof(flag_type) + sizeof(counter_type);
             }
 

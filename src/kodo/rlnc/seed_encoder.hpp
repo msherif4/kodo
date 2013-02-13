@@ -96,7 +96,7 @@ namespace kodo
 
                 ++m_seed_id;
 
-                SuperCoder::encode(symbol_data, &m_symbol_id[0]);
+                SuperCoder::encode_symbol(symbol_data, &m_symbol_id[0]);
 
                 return symbol_id_size();
             }

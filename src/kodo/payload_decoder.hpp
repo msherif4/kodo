@@ -10,9 +10,12 @@
 
 namespace kodo
 {
-    /// The payload decoder splits payload buffer into symbol_id and symbol
-    /// buffers.
-    /// @ingroup payload_layer_api
+
+    /// @ingroup payload_codec_layers
+    /// @ingroup factory_layers
+    ///
+    /// @brief The payload decoder splits payload buffer into
+    ///        symbol_header and symbol.
     template<class SuperCoder>
     class payload_decoder : public SuperCoder
     {
@@ -25,24 +28,24 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required payload buffer size in bytes
+            /// @copydoc layer::factory::max_payload_size()
             uint32_t max_payload_size() const
                 {
                     return SuperCoder::factory::max_symbol_size() +
-                        SuperCoder::factory::max_symbol_id_size();
+                        SuperCoder::factory::max_header_size();
                 }
         };
 
     public:
 
-        /// Unpacks the symbol data and symbol id from the payload
-        /// buffer. @see payload_encoder::encode() for memory layout.
-        /// @param payload the buffer from which we take the data and id
+        /// Unpacks the symbol data and symbol header from the payload
+        /// buffer.
+        /// @copydoc layer::decode(uint8_t*)
         void decode(uint8_t *payload)
             {
                 assert(payload != 0);
@@ -53,11 +56,11 @@ namespace kodo
                 return SuperCoder::decode(symbol_data, symbol_id);
             }
 
-        /// @return the required payload buffer size in bytes
+        /// @copydoc layer::payload_size()
         uint32_t payload_size() const
             {
                 return SuperCoder::symbol_size() +
-                    SuperCoder::symbol_id_size();
+                    SuperCoder::header_size();
             }
     };
 }
