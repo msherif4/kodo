@@ -22,8 +22,8 @@
 #include "../systematic_encoder.hpp"
 #include "../non_systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
-#include "../has_bytes_used.hpp"
-#include "../has_block_info.hpp"
+#include "../storage_bytes_used.hpp"
+#include "../storage_block_info.hpp"
 #include "../partial_shallow_symbol_storage.hpp"
 #include "../deep_symbol_storage.hpp"
 #include "../generators/block.hpp"
@@ -68,9 +68,11 @@ namespace kodo
                  random_uniform_symbol_id<
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
+                 // Storage API
                  deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
                  final_coder_factory_pool<full_rlnc_encoder<Field>, Field>
                      > > > > > > > > > >
     {};
@@ -99,8 +101,8 @@ namespace kodo
                  linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
                  deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
+                 storage_bytes_used<
+                 storage_block_info<
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
                      > > > > > > > > > > >
     {};
@@ -129,8 +131,8 @@ namespace kodo
                  linear_block_vector_storage<
                  finite_field_math<fifi::default_field_impl,
                  deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
+                 storage_bytes_used<
+                 storage_block_info<
                  final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
                      > > > > > > > > > > > >
     {};

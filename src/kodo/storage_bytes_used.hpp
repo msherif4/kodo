@@ -1,38 +1,37 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf ApS 2011-2013.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_HAS_BYTES_USED_HPP
-#define KODO_HAS_BYTES_USED_HPP
+#ifndef KODO_STORAGE_BYTES_USED_HPP
+#define KODO_STORAGE_BYTES_USED_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
 
-    /// @todo remove this class has been replaced by bytes_used.hpp
-    /// Provides access to the number of bytes used out of the
-    /// total size of the coders storage
+    /// @ingroup storage_layers
+    /// @brief Provides access to the number of useful bytes used out of the
+    /// total size of the encoders or decoders storage.
     template<class SuperCoder>
-    class has_bytes_used : public SuperCoder
+    class storage_bytes_used : public SuperCoder
     {
     public:
 
         /// Constructor
-        has_bytes_used()
+        storage_bytes_used()
             : m_bytes_used(0)
             {}
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
                 m_bytes_used = 0;
             }
 
-        /// Sets the number of bytes used
-        /// @param bytes_used number of bytes used of the total coders block size
+        /// @copydoc layer::set_bytes_used()
         void set_bytes_used(uint32_t bytes_used)
             {
                 assert(bytes_used > 0);
@@ -41,7 +40,7 @@ namespace kodo
                 m_bytes_used = bytes_used;
             }
 
-        /// @return the number of bytes used
+        /// @copydoc layer::bytes_used()
         uint32_t bytes_used() const
             {
                 return m_bytes_used;

@@ -57,8 +57,7 @@ namespace kodo
                     if(coefficient)
                     {
                         const value_type *symbol_i =
-                            reinterpret_cast<const value_type*>(
-                                SuperCoder::symbol( i ));
+                                SuperCoder::symbol_value( i );
 
                         // Did you forget to set the data on the encoder?
                         assert(symbol_i != 0);

@@ -25,6 +25,11 @@ namespace kodo
     {
     public:
 
+        /// @copydoc layer::value_type
+        typedef typename SuperCoder::value_type value_type;
+
+    public:
+
         /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
@@ -52,6 +57,13 @@ namespace kodo
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
+        /// @copydoc layer::symbol_value(uint32_t index)
+        value_type* symbol_value(uint32_t index)
+            {
+                return reinterpret_cast<value_type*>(symbol(index));
+            }
+
+
         /// @copydoc layer::symbol(uint32_t index) const
         const uint8_t* symbol(uint32_t index) const
             {
@@ -59,7 +71,13 @@ namespace kodo
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
-        /// Set the symbols by swapping the std::vector
+        /// @copydoc layer::symbol_value(uint32_t index) const
+        const value_type* symbol_value(uint32_t index) const
+            {
+                return reinterpret_cast<const value_type*>(symbol(index));
+            }
+
+        /// @copydoc layer::swap_symbols(std::vector<uint8_t> &)
         void swap_symbols(std::vector<uint8_t> &symbols)
             {
                 assert(m_data.size() == symbols.size());

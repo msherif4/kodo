@@ -3,35 +3,33 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_HAS_BLOCK_INFO_HPP
-#define KODO_HAS_BLOCK_INFO_HPP
-
-#include <stdint.h>
+#ifndef KODO_STORAGE_BLOCK_INFO_HPP
+#define KODO_STORAGE_BLOCK_INFO_HPP
 
 #include <fifi/fifi_utils.hpp>
 
 namespace kodo
 {
-    /// @todo remove this class has been changed to storage_block_info
-    /// Defines several functions to retrieve info about the block size
+    /// @ingroup storage_layers
+    /// @brief Defines several functions to retrieve info about the block size
     template<class SuperCoder>
-    class has_block_info : public SuperCoder
+    class storage_block_info : public SuperCoder
     {
     public:
 
-        /// Define the field type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
     public:
 
         /// Constructor
-        has_block_info()
+        storage_block_info()
             : m_symbols(0),
               m_symbol_size(0),
               m_symbol_length(0)
             {}
 
-        /// @layer{initialize}
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -46,25 +44,25 @@ namespace kodo
                     fifi::elements_needed<field_type>(symbol_size);
             }
 
-        /// @layer{symbols}
+        /// @copydoc layer::symbols()
         uint32_t symbols() const
             {
                 return m_symbols;
             }
 
-        /// @layer{symbol_size}
+        /// @copydoc layer::symbol_size()
         uint32_t symbol_size() const
             {
                 return m_symbol_size;
             }
 
-        /// @layer{symbol_length}
+        /// @copydoc layer::symbol_length()
         uint32_t symbol_length() const
             {
                 return m_symbol_length;
             }
 
-        /// @layer{block_size}
+        /// @copydoc layer::block_size()
         uint32_t block_size() const
             {
                 return m_symbols * m_symbol_size;
