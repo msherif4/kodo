@@ -21,16 +21,16 @@ namespace kodo
 
     /// @ingroup codec_header_layers
     /// @ingroup factory_layers
-    /// Systematic encoder layer
+    /// @brief Systematic encoding layer. 
     template<class SuperCoder>
     class systematic_encoder : public SuperCoder
     {
     public:
 
-        /// The field type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// The value type
+        /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
         /// The symbol count type
@@ -83,20 +83,20 @@ namespace kodo
             }
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
-        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
 
                 if(m_systematic && ( m_count < SuperCoder::symbols() ))
                 {
                     return encode_systematic(symbol_data,
-                                             symbol_id);
+                                             symbol_header);
                 }
                 else
                 {
                     return encode_non_systematic(symbol_data,
-                                                 symbol_id);
+                                                 symbol_header);
                 }
             }
 

@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ALIGN_SYMBOL_ID_DECODER_HPP
-#define KODO_ALIGN_SYMBOL_ID_DECODER_HPP
+#ifndef KODO_ALIGN_COEFFICIENT_DECODER_HPP
+#define KODO_ALIGN_COEFFICIENT_DECODER_HPP
 
 #include <cstdint>
 
@@ -15,9 +15,8 @@ namespace kodo
 {
     /// @ingroup codec_layers
     /// @brief Aligns the symbol coefficient buffer if necessary
-    /// @todo delete this
     template<class SuperCoder>
-    class align_symbol_id_decoder : public SuperCoder
+    class align_coefficient_decoder : public SuperCoder
     {
     public:
 

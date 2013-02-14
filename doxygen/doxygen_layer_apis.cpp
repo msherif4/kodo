@@ -4,6 +4,11 @@
 class layer
 {
 public:
+    
+    /// @typedef field_type
+    /// The finite field type used e.g. fifi::binary8 for the Finite
+    /// Field 2^8
+    typedef fifi_finite_field _type;
 
     /// @typedef value_type
     /// The value type storing the field elements used for the
@@ -100,8 +105,7 @@ public:
     /// @param symbol_data The destination buffer for the encoded symbol.
     /// @param symbol_header At this point the symbol header should be
     ///        initialized.
-    /// @return The number of bytes used from symbol_header buffer.
-    uint32_t decode(uint8_t *symbol_data, uint8_t *symbol_header);
+    void decode(uint8_t *symbol_data, uint8_t *symbol_header);
 
     /// @ingroup codec_header_api
     /// @brief Can be reimplemented by a symbol header API layer to

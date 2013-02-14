@@ -15,6 +15,7 @@ namespace kodo
 {
     /// Looks at the symbol id buffer and checks whether it is aligned
     /// if not it makes a copy into an aligned buffer.
+    /// @todo delete this
     template<class SuperCoder>
     class align_symbol_id_encoder : public SuperCoder
     {

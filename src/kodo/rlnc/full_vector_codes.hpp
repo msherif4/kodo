@@ -31,9 +31,10 @@
 #include "../generators/block_cache_lookup.hpp"
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
-#include "../align_symbol_id_decoder.hpp"
+#include "../align_coefficient_decoder.hpp"
 #include "../align_symbol_id_encoder.hpp"
 #include "../symbol_id_encoder.hpp"
+#include "../symbol_id_decoder.hpp"
 #include "../random_uniform_symbol_id.hpp"
 
 #include "../linear_block_encoder.hpp"
@@ -58,7 +59,7 @@ namespace kodo
     class full_rlnc_encoder
         : public // Payload API
                  payload_encoder<
-                 // Codec header API
+                 // Codec Header API
                  systematic_encoder<
                  symbol_id_encoder<
                  // Codec API
@@ -93,49 +94,49 @@ namespace kodo
     template<class Field>
     class full_rlnc_decoder
         : public full_vector_recoder<recode_proxy, random_uniform,
+                 // Payload API
                  payload_decoder<
+                 // Codec Header API
                  systematic_decoder<
-                 align_symbol_id_decoder<
+                 symbol_id_decoder<
+                 // Codec API
+                 align_coefficient_decoder<
                  full_vector_decoder<
                  linear_block_decoder<
                  linear_block_vector_storage<
+                 // Symbol ID API
+                 random_uniform_symbol_id<
+                 // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
+                 // Storage API 
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > >
+                     > > > > > > > > > > > > >
     {};
 
-    /// Common typedefs
-    typedef full_rlnc_encoder<fifi::binary> full_rlnc2_encoder;
-    typedef full_rlnc_decoder<fifi::binary> full_rlnc2_decoder;
-
-    typedef full_rlnc_encoder<fifi::binary8> full_rlnc8_encoder;
-    typedef full_rlnc_decoder<fifi::binary8> full_rlnc8_decoder;
-
-    typedef full_rlnc_encoder<fifi::binary16> full_rlnc16_encoder;
-    typedef full_rlnc_decoder<fifi::binary16> full_rlnc16_decoder;
 
     /// A RLNC decoder with delayed backwards substitute. The decoder decodes
     /// according to a full encoding vector.
-    template<class Field>
-    class full_rlnc_decoder_delayed
-        : public full_vector_recoder<recode_proxy, random_uniform,
-                 payload_decoder<
-                 systematic_decoder<
-                 align_symbol_id_decoder<
-                 full_vector_decoder<
-                 linear_block_decoder_delayed<
-                 linear_block_decoder<
-                 linear_block_vector_storage<
-                 finite_field_math<fifi::default_field_impl,
-                 deep_symbol_storage<
-                 storage_bytes_used<
-                 storage_block_info<
-                 final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
-                     > > > > > > > > > > > >
-    {};
+    // template<class Field>
+    // class full_rlnc_decoder_delayed
+    //     : public full_vector_recoder<recode_proxy, random_uniform,
+    //              payload_decoder<
+    //              systematic_decoder<
+    //              align_symbol_id_decoder<
+    //              full_vector_decoder<
+    //              linear_block_decoder_delayed<
+    //              linear_block_decoder<
+    //              linear_block_vector_storage<
+    //              finite_field_math<fifi::default_field_impl,
+    //              deep_symbol_storage<
+    //              storage_bytes_used<
+    //              storage_block_info<
+    //              final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
+    //                  > > > > > > > > > > > >
+    // {};
 }
 
 #endif

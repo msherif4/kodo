@@ -56,7 +56,7 @@ namespace kodo
                 return SuperCoder::decode(symbol_data, symbol_id);
             }
 
-        /// @copydoc layer::payload_size()
+        /// @copydoc layer::payload_size() const
         uint32_t payload_size() const
             {
                 return SuperCoder::symbol_size() +

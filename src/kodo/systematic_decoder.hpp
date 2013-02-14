@@ -6,23 +6,25 @@
 #ifndef KODO_SYSTEMATIC_DECODER_HPP
 #define KODO_SYSTEMATIC_DECODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <sak/convert_endian.hpp>
 
 #include "systematic_base_coder.hpp"
 
 namespace kodo
 {
-    /// Systematic encoder layer
+    /// @ingroup codec_header_layers
+    /// @ingroup factory_layers
+    /// @brief Systematic decoding layer. 
     template<class SuperCoder>
     class systematic_decoder : public SuperCoder
     {
     public:
 
-        /// The field type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// The value type
+        /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
         /// The symbol count type
@@ -33,8 +35,6 @@ namespace kodo
         typedef typename systematic_base_coder::flag_type
             flag_type;
 
-        using SuperCoder::decode_symbol;
-
     public:
 
         /// The factory layer associated with this coder.
@@ -44,46 +44,46 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required payload buffer size in bytes
-            uint32_t max_symbol_id_size() const
+            /// @copydoc layer::max_header_size()
+            uint32_t max_header_size() const
                 {
-                    return SuperCoder::factory::max_symbol_id_size() +
+                    return SuperCoder::factory::max_header_size() +
                         sizeof(flag_type) + sizeof(counter_type);
                 }
         };
 
     public:
 
-        /// Iterates over the symbols stored in the encoding symbol id part
-        /// of the payload id, and calls the encode_symbol function.
-        /// @copydoc linear_block_decoder::decode()
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// Looks for the systematic flag in the symbol_header. If the
+        /// symbol is systematic directly pass it to the Codec Layers
+        /// otherwise pass it to the next Codec Header Layer.
+        ///
+        /// @copydoc layer::decode(uint8_t*, uint8_t*)
+        void decode(uint8_t *symbol_data, uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
 
-                flag_type flag =
-                    sak::big_endian::get<flag_type>(symbol_id);
+                flag_type flag = sak::big_endian::get<flag_type>(symbol_header);
 
-                symbol_id += sizeof(flag_type);
+                symbol_header += sizeof(flag_type);
 
                 if(flag == systematic_base_coder::systematic_flag)
                 {
                     /// Get symbol index and copy the symbol
                     counter_type symbol_index =
-                        sak::big_endian::get<counter_type>(symbol_id);
+                        sak::big_endian::get<counter_type>(symbol_header);
 
                     SuperCoder::decode_symbol(symbol_data, symbol_index);
                 }
                 else
                 {
-                    /// @todo call decode(..) here not decode_symbol()
-                    SuperCoder::decode_symbol(symbol_data, symbol_id);
+                    SuperCoder::decode(symbol_data, symbol_header);
                 }
             }
 
