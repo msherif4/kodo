@@ -4,11 +4,11 @@
 class layer
 {
 public:
-    
+
     /// @typedef field_type
     /// The finite field type used e.g. fifi::binary8 for the Finite
     /// Field 2^8
-    typedef fifi_finite_field _type;
+    typedef fifi_finite_field field_type;
 
     /// @typedef value_type
     /// The value type storing the field elements used for the
@@ -33,11 +33,11 @@ public:
         /// @return pointer to an instantiation of an encoder or decoder
         pointer build(uint32_t symbols, uint32_t symbol_size);
 
-        /// @ingroup factory_api
+        /// @ingroup base_storage_api
         /// @return the maximum number of symbols in a block
         uint32_t max_symbols() const;
 
-        /// @ingroup factory_api
+        /// @ingroup base_storage_api
         /// @return the maximum symbol size in bytes
         uint32_t max_symbol_size() const;
 
@@ -69,6 +69,14 @@ public:
         ///
         /// @return the maximum required payload buffer size in bytes
         uint32_t max_payload_size() const;
+
+        /// @ingroup codec_api
+        ///
+        /// @note If you implement this function you most likely also have
+        ///       to implement the layer::coefficients_size() function.
+        ///
+        /// @return The maximum required coefficients buffer size in bytes
+        uint32_t max_coefficients_size() const;
 
     };
 
@@ -194,6 +202,10 @@ public:
     void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
 
     /// @ingroup codec_api
+    ///
+    /// @note If you implement this function you most likely also have
+    ///       to implement the layer::factory::max_coefficients_size() function.
+    ///
     /// @return The number of bytes needed to store the symbol coefficients.
     uint32_t coefficients_size() const;
 
@@ -202,18 +214,22 @@ public:
     ///         the symbol coefficients.
     uint32_t coefficients_length() const;
 
+    /// @ingroup codec_api
     /// @param index the index in the vector
     /// @return the specified vector
     value_type* coefficients_value(uint32_t index);
 
+    /// @ingroup codec_api
     /// @param index the index in the vector
     /// @return the specified vector
     const value_type* coefficients_value(uint32_t index) const;
 
+    /// @ingroup codec_api
     /// @param index the index in the vector
     /// @return the specified vector
     uint8_t* coefficients(uint32_t index);
 
+    /// @ingroup codec_api
     /// @param index the index in the vector
     /// @return the specified vector
     const uint8_t* coefficients(uint32_t index) const;

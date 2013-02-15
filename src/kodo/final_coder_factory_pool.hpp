@@ -18,20 +18,20 @@
 
 namespace kodo
 {
-    /// Terminates the layered coder and contains the coder final factory. The
-    /// pool factory uses a memory pool to recycle encoders/decoders, and
-    /// thereby minimize memory consumption.
+
     /// @ingroup factory_layers
+    /// Terminates the layered coder and contains the coder final
+    /// factory. The pool factory uses a memory pool to recycle
+    /// encoders/decoders, and thereby minimize memory consumption.
     template<class FINAL, class Field>
     class final_coder_factory_pool : boost::noncopyable
     {
     public:
 
-        /// Define the field type
+        /// @copydoc layer::field_type
         typedef Field field_type;
 
-        /// The value type used i.e. the finite field elements are stored using
-        /// this data type
+        /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder
@@ -42,18 +42,16 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size),
-                  m_pool(boost::bind(&factory::make_coder, max_symbols,
+                : m_pool(boost::bind(&factory::make_coder, max_symbols,
                                      max_symbol_size))
                 {
-                    assert(m_max_symbols > 0);
-                    assert(m_max_symbol_size > 0);
+                    assert(max_symbols > 0);
+                    assert(max_symbol_size > 0);
                 }
 
-            /// @copydoc final_coder_factory::factory::build()
+            /// @copydoc layer::factory::build(uint32_t,uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
@@ -65,17 +63,13 @@ namespace kodo
                     return coder;
                 }
 
-            /// @copydoc final_coder_factory::factory::max_symbols()
-            uint32_t max_symbols() const
-                { return m_max_symbols; }
-
-            /// @copydoc final_coder_factory::factory::max_symbol_size()
-            uint32_t max_symbol_size() const
-                { return m_max_symbol_size; }
-
         private:
 
-            /// @copydoc final_coder_factory::factory::pointer()
+            /// Factory function used by the resource pool to
+            /// build new coders if needed.
+            /// @param max_symbols The maximum symbols that are supported
+            /// @param max_symbol_size The maximum size of a symbol in
+            ///        bytes
             static pointer make_coder(uint32_t max_symbols,
                                       uint32_t max_symbol_size)
                 {
@@ -90,12 +84,6 @@ namespace kodo
 
         private:
 
-            /// The maximum number of symbols
-            uint32_t m_max_symbols;
-
-            /// The maximum symbol size
-            uint32_t m_max_symbol_size;
-
             /// Resource pool for the coders
             sak::resource_pool<FINAL> m_pool;
 
@@ -103,20 +91,18 @@ namespace kodo
 
     public:
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
-                // This is just the factory layer so we do nothing
-
+                // This is the final factory layer so we do nothing
                 (void) max_symbols;
                 (void) max_symbol_size;
             }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
-                // This is just the factory layer so we do nothing
-
+                // This is the final factory layer so we do nothing
                 (void) symbols;
                 (void) symbol_size;
             }

@@ -3,6 +3,10 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
+
+/// @file test_rlnc_full_vector_codes.cpp Unit tests for the full
+///       vector codes (i.e. Network Coding encoders and decoders).
+
 #include <ctime>
 
 #include <gtest/gtest.h>
@@ -50,15 +54,16 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
+    /// @todo re-enable the delayed coders
     // The delayed decoders
-    test_coders<
-        kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed
-        >(symbols, symbol_size);
+    // test_coders<
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder_delayed
+    //     >(symbols, symbol_size);
 }
 
-// Tests the basic API functionality this mean basic encoding
-// and decoding
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
 TEST(TestRlncFullVectorCodes, basic_api)
 {
     test_coders(32, 1600);
@@ -70,8 +75,11 @@ TEST(TestRlncFullVectorCodes, basic_api)
     test_coders(symbols, symbol_size);
 }
 
-template<template <class> class Encoder,
-         template <class> class Decoder>
+template
+    <
+    template <class> class Encoder,
+    template <class> class Decoder
+    >
 void test_initialize(uint32_t symbols, uint32_t symbol_size)
 {
     invoke_initialize
@@ -107,16 +115,17 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_encoder,
         kodo::full_rlnc_decoder>(symbols, symbol_size);
 
+    /// @todo re-enable the delayed coders
     // The delayed decoders
-    test_initialize<
-        kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+    // test_initialize<
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
 
 }
 
-// Test that the encoders and decoders initialize() function can be used
-// to reset the state of an encoder and decoder and that they therefore can be
-// safely reused.
+/// Test that the encoders and decoders initialize() function can be used
+/// to reset the state of an encoder and decoder and that they therefore
+/// can be safely reused.
 TEST(TestRlncFullVectorCodes, initialize_function)
 {
     test_coders(32, 1600);
@@ -156,6 +165,7 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
 
 }
 
+
 void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
 {
     test_coders_systematic<
@@ -163,11 +173,12 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
+    /// @todo re-enable the delayed coders
     // The delayed decoders
-    test_coders_systematic<
-        kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed
-        >(symbols, symbol_size);
+    // test_coders_systematic<
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder_delayed
+    //     >(symbols, symbol_size);
 
 }
 
@@ -219,11 +230,12 @@ void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
+    /// @todo re-enable the delayed coders
     // The delayed decoders
-    test_coders_raw<
-        kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed
-        >(symbols, symbol_size);
+    // test_coders_raw<
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder_delayed
+    //     >(symbols, symbol_size);
 }
 
 /// Tests whether mixed un-coded and coded packets are correctly handled
@@ -320,14 +332,21 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 
 void test_recoders(uint32_t symbols, uint32_t symbol_size)
 {
-    test_recoders<kodo::full_rlnc_encoder, kodo::full_rlnc_decoder>(
-        symbols, symbol_size);
 
-    test_recoders<kodo::full_rlnc_encoder, kodo::full_rlnc_decoder_delayed>(
-        symbols, symbol_size);
+    test_recoders
+        <
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder>(symbols, symbol_size);
+
+    /// @todo re-enable the delayed coders
+    // test_recoders<
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
 }
 
-/// Tests that the recoding function works, this is done by using one encoder
+/// @todo re-enable this test
+/// Tests that the recoding function works, this is done by using one
+/// encoder
 /// and two decoders:
 ///
 ///    +------------+      +------------+      +------------+
@@ -337,16 +356,16 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 /// Where the encoder passes data to the first decoder which then
 /// recodes and passes data to the second decoder
 ///
-TEST(TestRlncFullVectorCodes, recoding_simple)
-{
-    test_recoders(32, 1600);
-    test_recoders(1, 1600);
+// TEST(TestRlncFullVectorCodes, recoding_simple)
+// {
+//     test_recoders(32, 1600);
+//     test_recoders(1, 1600);
 
-    srand(static_cast<uint32_t>(time(0)));
+//     srand(static_cast<uint32_t>(time(0)));
 
-    uint32_t symbols = rand_symbols();
-    uint32_t symbol_size = rand_symbol_size();
+//     uint32_t symbols = rand_symbols();
+//     uint32_t symbol_size = rand_symbol_size();
 
-    test_recoders(symbols, symbol_size);
-}
+//     test_recoders(symbols, symbol_size);
+// }
 

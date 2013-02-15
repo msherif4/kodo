@@ -36,6 +36,8 @@
 #include "../symbol_id_encoder.hpp"
 #include "../symbol_id_decoder.hpp"
 #include "../random_uniform_symbol_id.hpp"
+#include "../coefficient_storage.hpp"
+#include "../coefficient_info.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -62,11 +64,12 @@ namespace kodo
                  // Codec Header API
                  systematic_encoder<
                  symbol_id_encoder<
+                 // Symbol ID API
+                 random_uniform_symbol_id<
                  // Codec API
                  zero_symbol_encoder<
                  linear_block_encoder<
-                 // Symbol ID API
-                 random_uniform_symbol_id<
+                 coefficient_info<
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  // Storage API
@@ -75,7 +78,7 @@ namespace kodo
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > >
+                     > > > > > > > > > > >
     {};
 
     /// Intermediate layer utilized by the re-coding functionality
@@ -99,22 +102,24 @@ namespace kodo
                  // Codec Header API
                  systematic_decoder<
                  symbol_id_decoder<
+                 // Symbol ID API
+                 random_uniform_symbol_id<
                  // Codec API
                  align_coefficient_decoder<
                  full_vector_decoder<
                  linear_block_decoder<
                  linear_block_vector_storage<
-                 // Symbol ID API
-                 random_uniform_symbol_id<
+                 coefficient_storage<
+                 coefficient_info<
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
-                 // Storage API 
+                 // Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > >
     {};
 
 

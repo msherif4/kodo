@@ -15,7 +15,7 @@ namespace kodo
 {
     /// @ingroup codec_header_layers
     /// @ingroup factory_layers
-    /// @brief Systematic decoding layer. 
+    /// @brief Systematic decoding layer.
     template<class SuperCoder>
     class systematic_decoder : public SuperCoder
     {
@@ -69,7 +69,8 @@ namespace kodo
                 assert(symbol_data != 0);
                 assert(symbol_header != 0);
 
-                flag_type flag = sak::big_endian::get<flag_type>(symbol_header);
+                flag_type flag =
+                    sak::big_endian::get<flag_type>(symbol_header);
 
                 symbol_header += sizeof(flag_type);
 
@@ -87,10 +88,10 @@ namespace kodo
                 }
             }
 
-        /// @return the required payload buffer size in bytes
-        uint32_t symbol_id_size() const
+        /// @copydoc layer::header_size() const
+        uint32_t header_size() const
             {
-                return SuperCoder::symbol_id_size() +
+                return SuperCoder::header_size() +
                     sizeof(flag_type) + sizeof(counter_type);
             }
     };

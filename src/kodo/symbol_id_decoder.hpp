@@ -34,7 +34,7 @@ namespace kodo
             /// @copydoc layer::factory::max_header_size()
             uint32_t max_header_size() const
                 {
-                    return SuperCoder::max_id_size();
+                    return SuperCoder::factory::max_id_size();
                 }
 
         };

@@ -12,6 +12,8 @@
 
 namespace kodo
 {
+
+    /// @todo delete this
     /// Wraps the memory of the coding coefficients,
     /// corresponding to a specific encoded symbol.
     /// This representation assumes that each original

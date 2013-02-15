@@ -9,6 +9,8 @@
 
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/random_uniform_symbol_id.hpp>
+#include <kodo/storage_block_info.hpp>
+#include <kodo/coefficient_info.hpp>
 
 #include "basic_api_test_helper.hpp"
 
@@ -18,9 +20,11 @@ namespace kodo
     template<class Field>
     class test_random_uniform_symbol_id
         : public random_uniform_symbol_id<
+                 coefficient_info<
+                 storage_block_info<
                  final_coder_factory<
                      test_random_uniform_symbol_id<Field>, Field>
-                 >
+                     > > >
     { };
 
 }
@@ -49,12 +53,14 @@ void test_symbol_id_layer(uint32_t symbols, uint32_t symbol_size)
 
     for(uint32_t i = 0; i < symbols; ++i)
     {
-        typename field_type::order_type v = fifi::get_value<field_type>(c, i);
+        typename field_type::order_type v =
+            fifi::get_value<field_type>(c, i);
 
         EXPECT_TRUE(v <= field_type::max_value);
 
-        // Since values are unsigned and min_value of all field types are zero
-        // v can never be less than - so we don't bother testing for it.
+        // Since values are unsigned and min_value of all field types
+        // are zero v can never be less than - so we don't bother
+        // testing for it.
     }
 
 }
@@ -63,16 +69,23 @@ void test_symbol_id_layer(uint32_t symbols, uint32_t symbol_size)
 template<template <class Field> class SymbolIdLayer>
 void test_symbol_id_layer(uint32_t symbols, uint32_t symbol_size)
 {
-    test_symbol_id_layer<SymbolIdLayer<fifi::binary> >(symbols, symbol_size);
-    test_symbol_id_layer<SymbolIdLayer<fifi::binary8> >(symbols, symbol_size);
-    test_symbol_id_layer<SymbolIdLayer<fifi::binary16> >(symbols, symbol_size);
-    test_symbol_id_layer<SymbolIdLayer<fifi::prime2325> >(symbols, symbol_size);
+    test_symbol_id_layer<SymbolIdLayer<fifi::binary> >(
+        symbols, symbol_size);
+
+    test_symbol_id_layer<SymbolIdLayer<fifi::binary8> >(
+        symbols, symbol_size);
+
+    test_symbol_id_layer<SymbolIdLayer<fifi::binary16> >(
+        symbols, symbol_size);
+
+    test_symbol_id_layer<SymbolIdLayer<fifi::prime2325> >(
+        symbols, symbol_size);
 }
 
 
 TEST(TestSymbolIdLayers, test_random_uniform_symbol_id)
 {
-    test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(10,10);
+    test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(10,12);
     test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(32,1600);
     test_symbol_id_layer<kodo::test_random_uniform_symbol_id>(1,1600);
 

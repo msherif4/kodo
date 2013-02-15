@@ -16,18 +16,19 @@
 
 namespace kodo
 {
-    /// Terminates the layered coder and contains the coder allocation policy
+
     /// @ingroup factory_layers
+    /// Terminates the layered coder and contains the coder allocation
+    /// policy
     template<class FINAL, class Field>
     class final_coder_factory : boost::noncopyable
     {
     public:
 
-        /// Define the field type
+        /// @copydoc layer::field_type
         typedef Field field_type;
 
-        /// The value type used i.e. the finite field elements are stored using
-        /// this data type
+        /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder
@@ -38,9 +39,7 @@ namespace kodo
         {
         public:
 
-            /// Constructor
-            /// @param max_symbols the maximum symbols this coder can expect
-            /// @param max_symbol_size the maximum size of a symbol in bytes
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
                   m_max_symbol_size(max_symbol_size)
@@ -49,10 +48,7 @@ namespace kodo
                     assert(m_max_symbol_size > 0);
                 }
 
-            /// Builds the actual coder
-            /// @param symbols the symbols this coder will use
-            /// @param symbol_size the size of a symbol in bytes
-            /// @return pointer to an instantiation of what the factory build
+            /// @copydoc layer::factory::build(uint32_t,uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
@@ -66,18 +62,6 @@ namespace kodo
                     return coder;
                 }
 
-            /// @return the maximum number of symbols in a block
-            uint32_t max_symbols() const
-                {
-                    return m_max_symbols;
-                }
-
-            /// @return the maximum symbol size in bytes
-            uint32_t max_symbol_size() const
-                {
-                    return m_max_symbol_size;
-                }
-
         private:
 
             /// The maximum number of symbols
@@ -85,31 +69,22 @@ namespace kodo
 
             /// The maximum symbol size
             uint32_t m_max_symbol_size;
-
         };
 
     public:
 
-        /// Constructs the coder with the maximum parameters it will ever
-        /// see. A coder may only be constructed ONCE, but initialized many
-        /// times.
-        /// @param max_symbols the maximum symbols this coder can expect
-        /// @param max_symbol_size the maximum size of a symbol in bytes
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
-                /// This is just the factory layer so we do nothing
-
+                /// This is the final factory layer so we do nothing
                 (void) max_symbols;
                 (void) max_symbol_size;
             }
 
-        /// Initializes the coder
-        /// @param symbols the number of symbols the coder should store
-        /// @param symbol_size the size of each symbol in bytes
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
-                /// This is just the factory layer so we do nothing
-
+                /// This is the final factory layer so we do nothing
                 (void) symbols;
                 (void) symbol_size;
             }

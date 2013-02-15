@@ -12,6 +12,7 @@
 
 namespace kodo
 {
+    /// @todo delete this
     /// A linear block vector generator - this generator
     /// produces linear block vector coding coefficients.
     /// See the layout of a linear_block_vector object in

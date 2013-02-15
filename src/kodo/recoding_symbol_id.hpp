@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RANDOM_UNIFORM_SYMBOL_ID_HPP
-#define KODO_RANDOM_UNIFORM_SYMBOL_ID_HPP
+#ifndef KODO_RECODING_SYMBOL_ID_HPP
+#define KODO_RECODING_SYMBOL_ID_HPP
 
 #include <cstdint>
 
@@ -16,13 +16,13 @@
 namespace kodo
 {
 
-    /// @brief Generates uniformly random coding coefficients and write
-    ///        all coefficients to the symbol id buffer.
+    /// @brief Randomly recombines existing coding coefficients to
+    ///        allow a decoder to produce recoded packets.
     ///
     /// @ingroup symbol_id_layers
     /// @ingroup factory_layers
     template<class SuperCoder>
-    class random_uniform_symbol_id : public SuperCoder
+    class recoding_symbol_id : public SuperCoder
     {
     public:
 
@@ -54,7 +54,7 @@ namespace kodo
             /// @copydoc layer::factory::max_id_size()
             uint32_t max_id_size() const
                 {
-                    return SuperCoder::factory::max_coefficients_size();
+                    return SuperCoder::max_coefficients_size();
                 }
         };
 
@@ -69,7 +69,11 @@ namespace kodo
                 assert(m_id_size > 0);
             }
 
-
+        /// Will write the recoded encoding vector (symbol id) into the
+        /// symbol_id buffer. The coding coefficients used to produce the
+        /// recoded encoding vector will be available in the
+        /// symbol_coefficient buffer.
+        ///
         /// @copydoc layer::write_id()
         uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
             {
@@ -86,14 +90,6 @@ namespace kodo
                 return m_id_size;
             }
 
-        /// @copydoc layer::read_id()
-        void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
-
-                *symbol_coefficients = symbol_id;
-            }
 
         /// @copydoc layer::id_size()
         uint32_t id_size() const
@@ -110,6 +106,20 @@ namespace kodo
                 return m_random_generator.seed(seed);
             }
 
+    private:
+
+        /// Initialize the coefficient storage
+        void Initialize_storage(uint32_t max_coefficients_size)
+            {
+                assert(max_coefficients_size > 0);
+
+                // Note, that resize will not re-allocate anything
+                // as long as the sizes are not larger than
+                // previously. So this call should only have an
+                // effect the first time this function is called.
+                m_coefficients_storage.resize(max_coefficients_size);
+            }
+
     protected:
 
         /// The distribution wrapping the random generator
@@ -122,6 +132,8 @@ namespace kodo
         /// coding coefficients
         uint32_t m_id_size;
 
+        /// Buffer for the recoding coefficients
+        std::vector<uint8_t> m_coefficients;
     };
 
 }

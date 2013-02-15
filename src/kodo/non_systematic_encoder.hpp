@@ -47,9 +47,9 @@ namespace kodo
                 { }
 
             /// @return the required symbol_id buffer size in bytes
-            uint32_t max_symbol_id_size() const
+            uint32_t max_header_size() const
                 {
-                    return SuperCoder::factory::max_symbol_id_size() +
+                    return SuperCoder::factory::max_header_size() +
                         sizeof(flag_type);
                 }
         };
@@ -77,9 +77,9 @@ namespace kodo
             }
 
         /// @return the required symbol_id buffer size in bytes
-        uint32_t symbol_id_size() const
+        uint32_t header_size() const
             {
-                return SuperCoder::symbol_id_size() +
+                return SuperCoder::header_size() +
                     sizeof(flag_type);
             }
     };
