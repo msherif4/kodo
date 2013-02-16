@@ -57,21 +57,21 @@ namespace kodo
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
-        /// @copydoc layer::symbol_value(uint32_t index)
+        /// @copydoc layer::symbol_value(uint32_t)
         value_type* symbol_value(uint32_t index)
             {
                 return reinterpret_cast<value_type*>(symbol(index));
             }
 
 
-        /// @copydoc layer::symbol(uint32_t index) const
+        /// @copydoc layer::symbol(uint32_t) const
         const uint8_t* symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
                 return &m_data[index * SuperCoder::symbol_size()];
             }
 
-        /// @copydoc layer::symbol_value(uint32_t index) const
+        /// @copydoc layer::symbol_value(uint32_t) const
         const value_type* symbol_value(uint32_t index) const
             {
                 return reinterpret_cast<const value_type*>(symbol(index));
@@ -123,7 +123,7 @@ namespace kodo
 
                 /// Wrap our buffer in a storage object
                 sak::const_storage src_storage =
-                    sak::storage(data(), data_to_copy);
+                    sak::storage(&m_data[0], data_to_copy);
 
                 /// Use the copy_storage() function to copy the data
                 sak::copy_storage(dest_storage, src_storage);
@@ -142,13 +142,6 @@ namespace kodo
                     sak::storage(symbol(index), data_to_copy);
 
                 sak::copy_storage(dest, src);
-            }
-
-        /// Access to the data of the block
-        /// @return a pointer to the data of the block
-        const uint8_t* data() const
-            {
-                return &m_data[0];
             }
 
     private:

@@ -32,9 +32,6 @@ namespace kodo
         /// Easy access to SuperCoder
         typedef const_shallow_symbol_storage<SuperCoder> Super;
 
-        /// Pointer to the value_type elements
-        typedef typename Super::value_ptr value_ptr;
-
         /// Pointer produced by the factory
         typedef typename Super::pointer pointer;
 
@@ -69,7 +66,8 @@ namespace kodo
             /// @copydoc final_coder_factory::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
-                    pointer coder = Super::factory::build(symbols, symbol_size);
+                    pointer coder =
+                        Super::factory::build(symbols, symbol_size);
 
                     coder->m_zero_symbol = m_zero_symbol;
                     return coder;

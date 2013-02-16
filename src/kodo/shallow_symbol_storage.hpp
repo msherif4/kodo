@@ -6,48 +6,13 @@
 #ifndef KODO_SHALLOW_SYMBOL_STORAGE_HPP
 #define KODO_SHALLOW_SYMBOL_STORAGE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
-
-#include <boost/shared_array.hpp>
-
-#include <fifi/fifi_utils.hpp>
 
 #include <sak/storage.hpp>
 
 namespace kodo
 {
-
-    /// Storage traits class for the const storage
-    class shallow_const_trait
-    {
-    public:
-
-        /// value type pointer
-        typedef const uint8_t* value_ptr;
-
-        /// storage type
-        typedef sak::const_storage storage_type;
-
-        /// is const
-        static constexpr bool is_const = true;
-    };
-
-    /// Storage traits class for the mutable storage
-    class shallow_mutable_trait
-    {
-    public:
-
-        /// value type pointer
-        typedef uint8_t* value_ptr;
-
-        /// storage type
-        typedef sak::mutable_storage storage_type;
-
-        /// is const
-        static constexpr bool is_const = false;
-
-    };
 
     /// @ingroup storage_layers
     /// The shallow storage implementation. In this context shallow
@@ -55,16 +20,34 @@ namespace kodo
     /// external data structure. This is useful in cases where data to
     /// be encoded already has been read into memory or if a user requires
     /// incoming data to be directly decoded into a specific buffer.
-    template<class StorageTraits, class SuperCoder>
+    template<bool IsConst, class SuperCoder>
     class shallow_symbol_storage : public SuperCoder
     {
     public:
 
-        /// The pointer used
-        typedef typename StorageTraits::value_ptr value_ptr;
+        /// The data pointer used will be either:
+        /// IsConst = true -> const uint8_t*
+        /// IsConst = false -> uint8_t*
+        using data_ptr =
+            typename std::conditional<IsConst,
+            // If const
+            typename std::add_pointer<
+            typename std::add_const<uint8_t>::type >::type,
+            // Else
+            typename std::add_pointer<uint8_t>::type >::type;
 
-        /// The storage type used
-        typedef typename StorageTraits::storage_type storage_type;
+        /// The storage type used will be either:
+        /// IsConst = true -> sak::const_storage
+        /// IsConst = false -> sak::mutable_storage
+        using storage_type =
+            typename std::conditional<IsConst,
+                // If const
+                sak::const_storage,
+                // Else
+                sak::mutable_storage>::type;
+
+        /// @copydoc layer::value_type
+        using value_type = typename SuperCoder::value_type;
 
     public:
 
@@ -81,10 +64,10 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                std::fill(m_data.begin(), m_data.end(), (value_ptr) 0);
+                std::fill(m_data.begin(), m_data.end(), (data_ptr) 0);
             }
 
-        /// @copydoc layer::symbol(uint32_t index) const
+        /// @copydoc layer::symbol(uint32_t) const
         const uint8_t* symbol(uint32_t index) const
             {
                 assert(index < SuperCoder::symbols());
@@ -95,15 +78,22 @@ namespace kodo
                 return m_data[index];
             }
 
-        /// To maximize code re-use the shallow_symbol_storage class implements both
-        /// the const and mutable APIs. To enable the non-const layer::symbol() function
-        /// we use a bit of SFINAE magic to conditinally enable/disable this function
-        /// depending on whether we are instantiating the shallow_symbol_storage as const
-        /// or mutable.
+        /// @copydoc layer::symbol_value(uint32_t) const
+        const value_type* symbol_value(uint32_t index) const
+            {
+                return reinterpret_cast<const value_type*>(symbol(index));
+            }
+
+        /// To maximize code re-use the shallow_symbol_storage class
+        /// implements both the const and mutable APIs. To enable the
+        /// non-const layer::symbol() function we use a bit of SFINAE
+        /// magic to conditinally enable/disable this function depending
+        /// on whether we are instantiating the shallow_symbol_storage
+        /// as const or mutable.
         ///
-        /// @copydoc layer::symbol()
-        template<class T = StorageTraits>
-        typename std::enable_if<!T::value, uint8_t*>::type
+        /// @copydoc layer::symbol(uint32_t)
+        template<bool Value = IsConst>
+        typename std::enable_if<!Value, uint8_t*>::type
         symbol(uint32_t index)
             {
                 assert(index < SuperCoder::symbols());
@@ -114,8 +104,16 @@ namespace kodo
                 return m_data[index];
             }
 
+        /// @copydoc layer::symbol_value(uint32_t)
+        template<bool Value = IsConst>
+        typename std::enable_if<!Value, value_type*>::type
+        symbol_value(uint32_t index)
+            {
+                return reinterpret_cast<value_type*>(symbol(index));
+            }
+
         /// @copydoc layer::swap_symbols()
-        void swap_symbols(std::vector<value_ptr> &symbols)
+        void swap_symbols(std::vector<data_ptr> &symbols)
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
@@ -197,25 +195,33 @@ namespace kodo
     protected:
 
         /// Symbol mapping
-        std::vector<value_ptr> m_data;
+        std::vector<data_ptr> m_data;
 
     };
 
     /// Defines a coding layer for 'const' symbol storage. Only useful
     /// for encoders since these to modify the buffers / data they
     /// operate on.
-    template<class SuperCoder>
-    class const_shallow_symbol_storage
-        : public shallow_symbol_storage<shallow_const_trait, SuperCoder>
-    {};
+    // template<class SuperCoder>
+    // class const_shallow_symbol_storage
+    //     : public shallow_symbol_storage<shallow_const_trait, SuperCoder>
+    // {};
 
-    /// Defines a coding layer for 'mutable' symbol storage. Allows the
-    /// buffer data to be modified i.e. useful in decoders which need to
-    /// access and modify the incoming symbols
+    // /// Defines a coding layer for 'mutable' symbol storage. Allows the
+    // /// buffer data to be modified i.e. useful in decoders which need to
+    // /// access and modify the incoming symbols
+    // template<class SuperCoder>
+    // class mutable_shallow_symbol_storage
+    //     : public shallow_symbol_storage<shallow_mutable_trait, SuperCoder>
+    // {};
+
     template<class SuperCoder>
-    class mutable_shallow_symbol_storage
-        : public shallow_symbol_storage<shallow_mutable_trait, SuperCoder>
-    {};
+    using const_shallow_symbol_storage =
+        shallow_symbol_storage<true, SuperCoder>;
+
+    template<class SuperCoder>
+    using mutable_shallow_symbol_storage =
+        shallow_symbol_storage<false, SuperCoder>;
 
 }
 
