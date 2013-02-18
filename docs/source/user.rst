@@ -1,4 +1,5 @@
 .. _guide-connecting:
+
 User Documentation
 ==================
 This part of the documentation introduces how Kodo may be use in your
@@ -39,15 +40,18 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
+
   ::
   mkdir dev
   cd dev
 
 2. Clone and download the Fifi libraries by running:
+
   ::
   git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Boost C++ libraries by running:
+
   ::
   git clone git://github.com/steinwurf/external-boost.git
 
@@ -56,6 +60,7 @@ github.com/steinwurf.
  Boost way of installing Boost @todo improve.
 
 4. Clone and download the Kodo libraries by running:
+
   ::
   git clone git://github.com/steinwurf/kodo.git
 
@@ -102,6 +107,7 @@ The symbol_size denotes the number of bytes in every symbol and also represents
 the size of an encoded symbol in bytes. The _symbols_ parameter
 specifies the number of symbols contained in a block. A single
 block may therefore contain:
+
 ::
    bytes in block = symbols * symbol_size
 
@@ -114,6 +120,7 @@ You can read more about how you may adapt it to your specific application
 
 
 @todo: Janus can I include this from some source code?
+
 ::
   #include <kodo/rlnc/full_vector_codes.h>
 
@@ -222,6 +229,7 @@ look conceptually as shown in the following diagram.
 
 The user calls the encode and decoder function respectively, this is
 then processed though the different layers as shown below:
+
 ::
 
                     User calls                   User calls

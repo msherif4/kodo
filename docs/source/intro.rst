@@ -1,6 +1,8 @@
-.. _introduction:
 Introduction
 ============
+
+.. _introduction:
+
 In this document we will to introduce new users to the Kodo library.
 
 Features
@@ -65,6 +67,7 @@ that you also install the following:
 Download tools (Ubuntu or other Debian based distros)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Get the dependencies using the following command:
+
 ::
   sudo apt-get install g++ python git-core
 
@@ -99,16 +102,18 @@ Recommended: Clone the git repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. Create a suitable directory for the projects (optional)
+
    ::
      mkdir dev
      cd dev
 
 2. Clone and download the Kodo libraries by running:
+
    ::
      git clone git://github.com/steinwurf/kodo.git
 
 Alternative: Download the source code as archives
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download the zip or tar.gz archive from the following location and
 extract it to a desired location.
@@ -134,8 +139,11 @@ A Waf project contains two types of files:
           in your favorite command-line shell.
 
 
+
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------
+
+.. _getting_started:
 
 If you are primarily interested in quickly trying some Kodo examples
 or building the unit-tests, we have tried to make that really easy.
@@ -147,10 +155,12 @@ Provided that you have the `Tools Needed`_ installed.
 
 
 1. Navigate to the directory containing the Kodo sources:
+
    ::
      cd dev/kodo/
 
 2. Invoke ``waf`` to build the Kodo unit-tests and examples.
+
    ::
      python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
 
@@ -165,6 +175,7 @@ Provided that you have the `Tools Needed`_ installed.
    store the libraries there.
 
 3. Invoke ``waf`` to build the unit-tests and examples.
+
    ::
      python waf build
 
