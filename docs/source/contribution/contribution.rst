@@ -1,14 +1,14 @@
 Contributing
 ++++++++++++
 
-We encourage and appreciate contributions by all users e.g. in the form of bug reports, bug fixes, adding features, providing examples, improving documentation, etc. To be acknowledged for your contribution you may add yourselves to the top of the **contributors.txt** file.
+We encourage and appreciate contributions by all users e.g. in the form of bug reports, bug fixes, adding features, providing examples, improving documentation, etc. To be acknowledged for your contribution you may add yourselves to the top of the **contributors.rst** file.
 
-If your contribution involves changes to the Kodo code or other of our projects under our research license, we ask that you sign over the copyright of your change to us.
+If your contribution involves changes to the Kodo code or other of our projects under our research license, we ask that you sign over the copyright of your changes to us.
 
 We require this in order to maintain clear title to the Kodo code and prevent the introduction of code with incompatible licenses or other entanglements that might cause legal problems for us and our users. In order to manage this you can choose to use either of the two methods below:
 
 1. Sign-off each of your pull requests.
-2. Sign a copyright assignment covering the project you wish to contribute to.
+2. Sign a copyright assignment covering all your future contributions to Kodo..
 
 See **ASSIGNEMENT.rst** or **SIGNOFF.rst**, and **LICENSE.rst** (all of which are appended at the end of this page) and the following description.
 
@@ -30,7 +30,7 @@ Signoff
 
 .. _signoff: http://gerrit.googlecode.com/svn/documentation/2.0/user-signedoffby.html
 
-The copyright signoff is intended for a per pull copyright sign-off, and as such is a more temporary solution and/or better suited for developers who for whatever reason do not which to sign a copyright assignment. It is based on this signoff_ procedure.
+The copyright signoff is intended for a per pull copyright sign-off, and as such is a more temporary solution and/or better suited for developers who for whatever reason do not wish to sign a permanent copyright assignment. It is based on this signoff_ procedure.
 
 a. Read our signoff statement in **SIGNOFF.rst**.
 b. Whenever you make a pull request you must add a signoff line as the last line of your commit message saying.
