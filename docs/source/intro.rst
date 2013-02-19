@@ -69,6 +69,7 @@ Download tools (Ubuntu or other Debian based distros)
 Get the dependencies using the following command:
 
 ::
+
   sudo apt-get install g++ python git-core
 
 Download tools (Windows)
@@ -104,12 +105,14 @@ Recommended: Clone the git repository
 1. Create a suitable directory for the projects (optional)
 
    ::
+
      mkdir dev
      cd dev
 
 2. Clone and download the Kodo libraries by running:
 
    ::
+
      git clone git://github.com/steinwurf/kodo.git
 
 Alternative: Download the source code as archives
@@ -157,11 +160,13 @@ Provided that you have the `Tools Needed`_ installed.
 1. Navigate to the directory containing the Kodo sources:
 
    ::
+
      cd dev/kodo/
 
 2. Invoke ``waf`` to build the Kodo unit-tests and examples.
 
    ::
+
      python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
 
    The ``waf configure`` ensures that all tools needed by Kodo are
@@ -177,6 +182,7 @@ Provided that you have the `Tools Needed`_ installed.
 3. Invoke ``waf`` to build the unit-tests and examples.
 
    ::
+
      python waf build
 
 4. Run the produced executables depending on the host platform.
@@ -187,4 +193,20 @@ Provided that you have the `Tools Needed`_ installed.
    b. **Windows**: Run unit-tests from the Kodo directory by running
       ``build/win32/test/kodo_tests.exe`` in your command prompt.
 
+Customize the build
+-------------------
+
+You may customize the build process. The list below describes the most
+common changes you may want for you build.
+
+.. note:: You may skip this section if you just want to quickly start with Kodo.
+
+* You may change the compiler.
+ 
+  To change compiler, set the ``CXX`` variable to you preferred compiler.
+  In case you want to use clang++, add ``CXX=clang++`` in front of ``waf configure``.
+  
+  ::
+
+    CXX=clang++ python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
 

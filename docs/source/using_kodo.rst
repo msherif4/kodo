@@ -46,22 +46,26 @@ github.com/steinwurf.
 1. Create a suitable directory for the projects (optional)
 
    ::
+
      mkdir dev
      cd dev
 
 2. Clone and download the Fifi libraries by running:
 
    ::
+
      git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Sak libraries by running:
 
    ::
+
      git clone git://github.com/steinwurf/sak.git
 
 4. Clone and download the Boost C++ libraries by running:
 
    ::
+
      git clone git://github.com/steinwurf/external-boost.git
 
   .. note:: Boost can be installed in many different ways.
@@ -84,7 +88,6 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
 
 
 ..
-
    Example using Waf (extended)
    ----------------------------
 
@@ -112,8 +115,5 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
    http://code.google.com/p/waf/ the following example shows one
    possible way of using it to build an application with Kodo.
 
-   This example is available at:
-
-   *
 
 

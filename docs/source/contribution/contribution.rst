@@ -73,5 +73,4 @@ The copyright assignment is the permanent solution if you which to contribute cu
 ----
 
 
-..
-   include:: contributors.rst
+.. include:: contributors.rst
