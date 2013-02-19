@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 
+#include <kodo/storage_bytes_used.hpp>
 #include <kodo/storage_block_info.hpp>
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/partial_shallow_symbol_storage.hpp>
@@ -23,33 +24,37 @@ namespace kodo
     template<class Field>
     class shallow_const_coder
         : public const_shallow_symbol_storage<
+                 storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<shallow_const_coder<Field>, Field>
-                     > >
+                     > > >
     {};
 
     template<class Field>
     class shallow_mutable_coder
         : public mutable_shallow_symbol_storage<
+                 storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<shallow_mutable_coder<Field>, Field>
-                     > >
+                     > > >
     {};
 
     template<class Field>
     class deep_coder
         : public deep_symbol_storage<
+                 storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<deep_coder<Field>, Field>
-                     > >
+                     > > >
     {};
 
     template<class Field>
     class shallow_partial_coder
         : public partial_shallow_symbol_storage<
+                 storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<shallow_partial_coder<Field>, Field>
-                     > >
+                     > > >
     {};
 
 }
@@ -579,6 +584,8 @@ template<class CoderPointer>
 void check_copy_symbol(const CoderPointer &coder,
                        const sak::const_storage &check_storage)
 {
+    coder->set_symbols(check_storage);
+
     std::vector<uint8_t> data(coder->symbol_size());
 
     auto symbol_storage =
@@ -601,6 +608,8 @@ template<class CoderPointer>
 void check_copy_symbols(const CoderPointer &coder,
                         const sak::const_storage &check_storage)
 {
+    coder->set_symbols(check_storage);
+
     std::vector<uint8_t> data(coder->block_size());
     coder->copy_symbols(sak::storage(data));
 
@@ -623,12 +632,12 @@ void check_symbols(const CoderPointer &coder,
     for(uint32_t i = 0; i < coder->symbols(); ++i)
     {
         auto symbol =
-            sak::storage(coder->symbol(), coder->symbol_size());
+            sak::storage(coder->symbol(i), coder->symbol_size());
 
         EXPECT_TRUE(sak::equal(symbol_storage[i], symbol));
 
         auto symbol_value =
-            sak::storage(coder->symbol_value(), coder->symbol_size());
+            sak::storage(coder->symbol_value(i), coder->symbol_size());
 
         EXPECT_TRUE(sak::equal(symbol_storage[i], symbol));
     }
@@ -649,6 +658,9 @@ void check_set_symbol(const CoderPointer &coder,
     {
         coder->set_symbol(i, symbol_storage[i]);
     }
+
+    // Check that the symbols match
+    check_symbols(coder, check_storage);
 }
 
 /// Tests that using the layer::set_symbols() function works
@@ -660,6 +672,9 @@ void check_set_symbols(const CoderPointer &coder,
 {
     // Invoke the set_symbols() function
     coder->set_symbols(check_storage);
+
+    // Check that the symbols match
+    check_symbols(coder, check_storage);
 }
 
 /// Tests that using layer::copy_symbols() function returns the
@@ -787,26 +802,18 @@ void run_test_base_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(coder->symbol_size(), symbol_size);
     EXPECT_EQ(const_coder->symbols(), symbols);
     EXPECT_EQ(const_coder->symbol_size(), symbol_size);
+    EXPECT_EQ(const_coder->block_size(), symbols*symbol_size);
 
     // Get some test data
     auto vector = random_vector(symbols, symbol_size);
+    coder->set_bytes_used(symbols*symbol_size);
+    EXPECT_EQ(coder->bytes_used(), symbols*symbol_size);
 
     // Check we can set and get the symbols
-    coder->set_symbols(sak::storage(vector));
-    // check_symbols(coder, sak::storage(vector));
-
-
-    // check_set_symbol(const_coder, sak::storage(vector));
-    // check_symbol(const_coder, sak::storage(vector));
-
-    // check_set_symbols(const_coder, sak::storage(vector));
-    // check_symbol(const_coder, sak::storage(vector));
-
-    // check_set_symbols(const_coder, sak::storage(vector));
-    // check_copy_symbol(const_coder, sak::storage(vector));
-
-    // check_set_symbols(const_coder, sak::storage(vector));
-    // check_copy_symbols(const_coder, sak::storage(vector));
+    check_set_symbols(coder, sak::storage(vector));
+    check_set_symbol(coder, sak::storage(vector));
+    check_copy_symbols(coder, sak::storage(vector));
+    check_copy_symbol(coder, sak::storage(vector));
 }
 
 
