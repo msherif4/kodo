@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-#include <kodo/has_block_info.hpp>
+#include <kodo/storage_block_info.hpp>
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/deep_symbol_storage.hpp>
@@ -23,7 +23,7 @@ namespace kodo
     template<class Field>
     class shallow_const_coder
         : public const_shallow_symbol_storage<
-                 has_block_info<
+                 storage_block_info<
                  final_coder_factory<shallow_const_coder<Field>, Field>
                      > >
     {};
@@ -31,7 +31,7 @@ namespace kodo
     template<class Field>
     class shallow_mutable_coder
         : public mutable_shallow_symbol_storage<
-                 has_block_info<
+                 storage_block_info<
                  final_coder_factory<shallow_mutable_coder<Field>, Field>
                      > >
     {};
@@ -39,7 +39,7 @@ namespace kodo
     template<class Field>
     class deep_coder
         : public deep_symbol_storage<
-                 has_block_info<
+                 storage_block_info<
                  final_coder_factory<deep_coder<Field>, Field>
                      > >
     {};
@@ -47,7 +47,7 @@ namespace kodo
     template<class Field>
     class shallow_partial_coder
         : public partial_shallow_symbol_storage<
-                 has_block_info<
+                 storage_block_info<
                  final_coder_factory<shallow_partial_coder<Field>, Field>
                      > >
     {};
@@ -396,9 +396,9 @@ TEST(TestSymbolStorage, test_has_deep_symbol_storage)
 template<class Coder>
 void test_mutable_symbol_access(uint32_t symbols, uint32_t symbol_size)
 {
-    using factory_type = typename Coder::factory;
-    using pointer_type = typename Coder::pointer;
-    using value_type = typename Coder::value_type;
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
 
     factory_type factory(symbols, symbol_size);
     pointer_type coder = factory.build(symbols, symbol_size);
@@ -439,9 +439,9 @@ void test_mutable_symbol_access(uint32_t symbols, uint32_t symbol_size)
 template<class Coder>
 void test_const_symbol_access(uint32_t symbols, uint32_t symbol_size)
 {
-    using factory_type = typename Coder::factory;
-    using pointer_type = typename Coder::pointer;
-    using value_type = typename Coder::value_type;
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
 
     factory_type factory(symbols, symbol_size);
     pointer_type coder = factory.build(symbols, symbol_size);
@@ -500,9 +500,9 @@ TEST(TestSymbolStorage, test_symbol_access)
 template<class Coder>
 void test_mutable_swap(uint32_t symbols, uint32_t symbol_size)
 {
-    using factory_type = typename Coder::factory;
-    using pointer_type = typename Coder::pointer;
-    using value_type = typename Coder::value_type;
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
 
     factory_type factory(symbols, symbol_size);
     pointer_type coder = factory.build(symbols, symbol_size);
@@ -541,9 +541,9 @@ void test_mutable_swap(uint32_t symbols, uint32_t symbol_size)
 template<class Coder>
 void test_const_swap(uint32_t symbols, uint32_t symbol_size)
 {
-    using factory_type = typename Coder::factory;
-    using pointer_type = typename Coder::pointer;
-    using value_type = typename Coder::value_type;
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
 
     factory_type factory(symbols, symbol_size);
     pointer_type coder = factory.build(symbols, symbol_size);
@@ -571,6 +571,32 @@ void test_const_swap(uint32_t symbols, uint32_t symbol_size)
         symbols, symbol_size);
 }
 
+/// Tests that using layer::copy_symbol() function returns the
+/// same data as is stored in the check_storage object.
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
+template<class CoderPointer>
+void check_copy_symbol(const CoderPointer &coder,
+                       const sak::const_storage &check_storage)
+{
+    std::vector<uint8_t> data(coder->symbol_size());
+
+    auto symbol_storage =
+        sak::split_storage(check_storage, coder->symbol_size());
+
+    for(uint32_t i = 0; i < coder->symbols(); ++i)
+    {
+        coder->copy_symbol(i, sak::storage(data));
+
+        EXPECT_TRUE(sak::equal(symbol_storage[i], sak::storage(data)));
+
+    }
+}
+
+/// Tests that using layer::copy_symbols() function returns the
+/// same data as is stored in the check_storage object.
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
 template<class CoderPointer>
 void check_copy_symbols(const CoderPointer &coder,
                         const sak::const_storage &check_storage)
@@ -578,7 +604,77 @@ void check_copy_symbols(const CoderPointer &coder,
     std::vector<uint8_t> data(coder->block_size());
     coder->copy_symbols(sak::storage(data));
 
+    EXPECT_TRUE(sak::equal(check_storage, sak::storage(data)));
 }
+
+/// Tests that using const layer::symbol() layer::symbol_value() function
+/// returns the same data as is stored in the check_storage object.
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
+template<class CoderPointer>
+void check_symbols(const CoderPointer &coder,
+                   const sak::const_storage &check_storage)
+{
+    std::vector<uint8_t> data(coder->symbol_size());
+
+    auto symbol_storage =
+        sak::split_storage(check_storage, coder->symbol_size());
+
+    for(uint32_t i = 0; i < coder->symbols(); ++i)
+    {
+        auto symbol =
+            sak::storage(coder->symbol(), coder->symbol_size());
+
+        EXPECT_TRUE(sak::equal(symbol_storage[i], symbol));
+
+        auto symbol_value =
+            sak::storage(coder->symbol_value(), coder->symbol_size());
+
+        EXPECT_TRUE(sak::equal(symbol_storage[i], symbol));
+    }
+}
+
+/// Tests that using the layer::set_symbol() function works
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
+template<class CoderPointer>
+void check_set_symbol(const CoderPointer &coder,
+                      const sak::mutable_storage &check_storage)
+{
+
+    auto symbol_storage =
+        sak::split_storage(check_storage, coder->symbol_size());
+
+    for(uint32_t i = 0; i < coder->symbols(); ++i)
+    {
+        coder->set_symbol(i, symbol_storage[i]);
+    }
+}
+
+/// Tests that using the layer::set_symbols() function works
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
+template<class CoderPointer>
+void check_set_symbols(const CoderPointer &coder,
+                       const sak::mutable_storage &check_storage)
+{
+    // Invoke the set_symbols() function
+    coder->set_symbols(check_storage);
+}
+
+/// Tests that using layer::copy_symbols() function returns the
+/// same data as is stored in the check_storage object.
+/// @param coder A pointer to an encoder or decoder
+/// @param check_storage Data used for comparison
+// template<class CoderPointer>
+// void check_swap_symbols(const CoderPointer &coder,
+//                         const sak::const_storage &check_storage)
+// {
+//     std::vector<uint8_t> data();
+//     coder->swap_symbols(sak::storage(data));
+
+//     EXPECT_TRUE(sak::equal(check_storage, sak::storage(data)));
+// }
 
 std::vector<uint8_t> random_vector(uint32_t symbols, uint32_t symbol_size)
 {
@@ -593,9 +689,9 @@ std::vector<uint8_t> random_vector(uint32_t symbols, uint32_t symbol_size)
 template<class Coder>
 void test_deep_swap(uint32_t symbols, uint32_t symbol_size)
 {
-    using factory_type = typename Coder::factory;
-    using pointer_type = typename Coder::pointer;
-    using value_type = typename Coder::value_type;
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
 
     factory_type factory(symbols, symbol_size);
     pointer_type coder = factory.build(symbols, symbol_size);
@@ -670,6 +766,72 @@ void test_deep_swap(uint32_t symbols, uint32_t symbol_size)
 
     test_deep_swap<Coder<fifi::binary16> >(
         symbols, symbol_size);
+}
+
+template<class Coder>
+void run_test_base_api(uint32_t symbols, uint32_t symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(symbols, symbol_size);
+
+    EXPECT_EQ(factory.max_symbols(), symbols);
+    EXPECT_EQ(factory.max_symbol_size(), symbol_size);
+
+    pointer_type coder = factory.build(symbols, symbol_size);
+    const pointer_type &const_coder = coder;
+
+    EXPECT_EQ(coder->symbols(), symbols);
+    EXPECT_EQ(coder->symbol_size(), symbol_size);
+    EXPECT_EQ(const_coder->symbols(), symbols);
+    EXPECT_EQ(const_coder->symbol_size(), symbol_size);
+
+    // Get some test data
+    auto vector = random_vector(symbols, symbol_size);
+
+    // Check we can set and get the symbols
+    coder->set_symbols(sak::storage(vector));
+    // check_symbols(coder, sak::storage(vector));
+
+
+    // check_set_symbol(const_coder, sak::storage(vector));
+    // check_symbol(const_coder, sak::storage(vector));
+
+    // check_set_symbols(const_coder, sak::storage(vector));
+    // check_symbol(const_coder, sak::storage(vector));
+
+    // check_set_symbols(const_coder, sak::storage(vector));
+    // check_copy_symbol(const_coder, sak::storage(vector));
+
+    // check_set_symbols(const_coder, sak::storage(vector));
+    // check_copy_symbols(const_coder, sak::storage(vector));
+}
+
+
+template<template <class> class Coder>
+void run_test_deep_symbol_storage(uint32_t symbols, uint32_t symbol_size)
+{
+    run_test_base_api<Coder<fifi::binary> >(
+        symbols, symbol_size);
+
+    run_test_base_api<Coder<fifi::binary8> >(
+        symbols, symbol_size);
+
+    run_test_base_api<Coder<fifi::binary16> >(
+        symbols, symbol_size);
+}
+
+
+TEST(TestSymbolStorage, test_deep_symbol_storage)
+{
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    run_test_deep_symbol_storage<kodo::deep_coder>(
+        symbols, symbol_size);
+
 }
 
 

@@ -28,26 +28,24 @@ namespace kodo
         /// The data pointer used will be either:
         /// IsConst = true -> const uint8_t*
         /// IsConst = false -> uint8_t*
-        using data_ptr =
-            typename std::conditional<IsConst,
-            // If const
-            typename std::add_pointer<
-            typename std::add_const<uint8_t>::type >::type,
-            // Else
-            typename std::add_pointer<uint8_t>::type >::type;
+        typedef typename std::conditional<IsConst,
+                // If const
+                typename std::add_pointer<
+                typename std::add_const<uint8_t>::type >::type,
+                // Else
+                typename std::add_pointer<uint8_t>::type >::type data_ptr;
 
         /// The storage type used will be either:
         /// IsConst = true -> sak::const_storage
         /// IsConst = false -> sak::mutable_storage
-        using storage_type =
-            typename std::conditional<IsConst,
+        typedef typename std::conditional<IsConst,
                 // If const
                 sak::const_storage,
                 // Else
-                sak::mutable_storage>::type;
+                sak::mutable_storage>::type storage_type;
 
         /// @copydoc layer::value_type
-        using value_type = typename SuperCoder::value_type;
+        typedef typename SuperCoder::value_type value_type;
 
     public:
 
@@ -202,26 +200,18 @@ namespace kodo
     /// Defines a coding layer for 'const' symbol storage. Only useful
     /// for encoders since these to modify the buffers / data they
     /// operate on.
-    // template<class SuperCoder>
-    // class const_shallow_symbol_storage
-    //     : public shallow_symbol_storage<shallow_const_trait, SuperCoder>
-    // {};
-
-    // /// Defines a coding layer for 'mutable' symbol storage. Allows the
-    // /// buffer data to be modified i.e. useful in decoders which need to
-    // /// access and modify the incoming symbols
-    // template<class SuperCoder>
-    // class mutable_shallow_symbol_storage
-    //     : public shallow_symbol_storage<shallow_mutable_trait, SuperCoder>
-    // {};
-
     template<class SuperCoder>
-    using const_shallow_symbol_storage =
-        shallow_symbol_storage<true, SuperCoder>;
+    class const_shallow_symbol_storage : public
+        shallow_symbol_storage<true, SuperCoder>
+    {};
 
+    /// Defines a coding layer for 'mutable' symbol storage. Allows the
+    /// buffer data to be modified i.e. useful in decoders which need to
+    /// access and modify the incoming symbols
     template<class SuperCoder>
-    using mutable_shallow_symbol_storage =
-        shallow_symbol_storage<false, SuperCoder>;
+    class mutable_shallow_symbol_storage : public
+        shallow_symbol_storage<false, SuperCoder>
+    {};
 
 }
 

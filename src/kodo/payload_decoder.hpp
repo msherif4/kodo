@@ -43,6 +43,7 @@ namespace kodo
 
     public:
 
+        /// @todo error here return statement should go
         /// Unpacks the symbol data and symbol header from the payload
         /// buffer.
         /// @copydoc layer::decode(uint8_t*)
