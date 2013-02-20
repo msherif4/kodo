@@ -165,24 +165,47 @@
 /// @prototype
 
 
-/// @defgroup shallow_mutable_storage_api Shallow mutable
-/// @ingroup storage_api
-/// @brief The mutable API used by codecs that do need to modify the symbol
-///        data stored in the storage layer.
+// @defgroup shallow_mutable_storage_api Shallow mutable
+// @ingroup storage_api
+// @brief The mutable API used by codecs that do need to modify the symbol
+//        data stored in the storage layer.
 
-/// @defgroup shallow_const_storage_api Shallow const
+// @defgroup shallow_const_storage_api Shallow const
+// @ingroup storage_api
+// @brief The const API used by storage layers which do not modify the
+//        symbol memory.
+
+/// @defgroup const_access_storage_api Const Symbol Access
 /// @ingroup storage_api
-/// @brief The const API used by storage layers which do not modify the symbol
-///        memory.
+/// @brief The const symbol access API is implemented by layers that
+///        provide non modifiable memory access (const pointers) to
+///        the stored symbols.
+
+/// @defgroup const_source_storage_api Const Symbol Source
+/// @ingroup storage_api
+/// @brief The const symbol source API is implemented by layers that can
+///        use non-modifiable (const) memory as source for e.g. an
+///        encoder.
+
+/// @defgroup mutable_access_storage_api Mutable Symbol Access
+/// @ingroup storage_api
+/// @brief The mutable symbol access API is implemented by layers that
+///        provide modifiable memory access to the stored symbols.
+
+/// @defgroup mutable_source_storage_api Mutable Symbol Source
+/// @ingroup storage_api
+/// @brief The mutable symbol source API is implemented by layers that can
+///        can utlize a non const memory as source for coding symbols.
+
 
 // @defgroup shallow_storage_api Shallow
 // @ingroup storage_api
 // @brief The shallow storage API is used by storage layers that operate over user provided memory buffers.
 
-/// @defgroup deep_storage_api Deep
+/// @defgroup deep_storage_api Deep Storage
 /// @ingroup storage_api
-/// @brief The deep storage API is used by storage layers which allocates and maintains the memory used
-///        encoders and decoders.
+/// @brief The deep storage API is used by storage layers which allocates
+///        and maintains the memory used encoders and decoders.
 
 /// @defgroup storage_layers Layers
 /// @ingroup storage

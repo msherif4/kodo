@@ -15,16 +15,36 @@
 #include <kodo/generators/random_uniform.hpp>
 #include <kodo/systematic_encoder.hpp>
 
-/// @return a random number of symbols to use in the tests
-inline uint32_t rand_symbols()
+/// @param max_symbols The maximum symbols an encoder or decoder should
+///        support.
+/// @return a random number up to max_symbols to use in the tests
+inline uint32_t rand_symbols(uint32_t max_symbols = 256)
 {
-    return (rand() % 256) + 1;
+    return (rand() % max_symbols) + 1;
 }
 
-/// @return a random symbol size to use in the tests
-inline uint32_t rand_symbol_size()
+/// Returns a random symbol size. The symbol size has to be chosen as a
+/// multiple of finite field elements that we use. E.g using a field 2^16
+/// the symbol size must be a multiple of two bytes.
+/// Currently the biggest field we support is 2^32 so we just always make
+/// sure that the symbol size is a multiple of 4 bytes.
+///
+/// @param max_symbol_size The maximum symbol size in bytes that we support.
+/// @return a random symbol size up to max_symbol_size to use in the tests
+inline uint32_t rand_symbol_size(uint32_t max_symbol_size = 1000)
 {
-    return ((rand() % 1000) + 1) * 4;
+    assert(max_symbol_size >= 4);
+
+    uint32_t elements = max_symbol_size / 4;
+
+    uint32_t symbol_size = ((rand() % elements) + 1) * 4;
+    assert(symbol_size > 0);
+    assert((symbol_size % 4) == 0);
+
+    std::cout << "max = " << max_symbol_size << std::endl;
+    std::cout << "size = " << symbol_size << std::endl;
+
+    return symbol_size;
 }
 
 template<class Encoder, class Decoder>

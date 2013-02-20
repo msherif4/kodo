@@ -327,88 +327,64 @@ public:
     ///        the dest buffer is full.
     void copy_symbol(uint32_t index, sak::mutable_storage dest) const;
 
-    /// @ingroup shallow_mutable_storage_api
+    /// @ingroup mutable_access_storage_api
     /// @param index the index number of the symbol
     /// @return Returns a pointer to the symbol data. The size of
     ///         the symbol data is provided by the symbol_size() function.
     uint8_t* symbol(uint32_t index);
 
-    // Duplicate of above function (to make doxygen include it in two groups)
-    /// @ingroup deep_storage_api
-    /// @copydoc symbol(uint32_t index)
-    uint8_t* symbol(uint32_t index);
-
-    /// @ingroup base_storage_api
+    /// @ingroup const_access_storage_api
     /// @param index the index number of the symbol
     /// @return Returns a const pointer to the symbol data. The size of
     ///         the symbol data is provided by the symbol_size() function.
     const uint8_t* symbol(uint32_t index) const;
 
-    /// @ingroup shallow_mutable_storage_api
+    /// @ingroup mutable_access_storage_api
     /// @param index the index number of the symbol
     /// @return Returns a layer::value_type pointer to the symbol data.
     ///         The length of the symbol data is provided by the
     ///         symbol_length() function.
     value_type* symbol_value(uint32_t index);
 
-    // Duplicate of above function (to make doxygen include it in two groups)
-    /// @ingroup deep_storage_api
-    /// @copydoc symbol(uint32_t index)
-    value_type* symbol_value(uint32_t index);
-
-    /// @ingroup base_storage_api
+    /// @ingroup const_access_storage_api
     /// @param index the index number of the symbol
     /// @return Returns a const layer::value_type pointer to the symbol data.
     ///         The length of the symbol data is provided by the
     ///         symbol_length() function.
     const value_type* symbol_value(uint32_t index) const;
 
-    /// @ingroup shallow_const_storage_api
+    /// @ingroup const_source_storage_api
     /// Sets the storage for the source symbols
     /// @param symbol_storage A sak::const_storage container initialized with
     ///        the buffer to be use as encoding buffer.
     void set_symbols(const sak::const_storage &symbol_storage);
 
-    // Duplicate of above function (to make doxygen include it in two groups)
-    /// @ingroup deep_storage_api
-    /// @copydoc set_symbols(const sak::const_storage &symbol_storage)
-    void set_symbols(const sak::const_storage &symbol_storage);
-
-    /// @ingroup base_storage_api
+    /// @ingroup mutable_source_storage_api
     /// Sets the storage for the source symbols
     /// @param symbol_storage A sak::mutable_storage container initialized
     ///        with the buffer to be use as encoding / decoding buffer.
     void set_symbols(const sak::mutable_storage &symbol_storage);
 
-    /// @ingroup base_storage_api
+    /// @ingroup mutable_source_storage_api
     /// Sets a symbol - by copying it into the right location in
     /// the buffer.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::mutable_storage &symbol);
 
-    /// @ingroup shallow_const_storage_api
+    /// @ingroup const_source_storage_api
     /// Sets a symbol - by copying it into the right location in
     /// the buffer.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::const_storage &symbol);
 
-    // Duplicate of above function (to make doxygen include it in two
-    // groups)
-    /// @ingroup deep_storage_api
-    /// Sets a symbol - by copying it into the right location in
-    /// the buffer.
-    /// @param index the index of the symbol into the coding block
-    /// @param symbol the actual data of that symbol
-    void set_symbol(uint32_t index, const sak::const_storage &symbol);
-
-    /// @ingroup shallow_const_storage_api
+    /// @ingroup const_source_storage_api
     /// @param symbols. A std::vector initialized with pointers to every
     ///        symbol
     void swap_symbols(std::vector<const uint8_t*> &symbols);
 
-    /// @ingroup shallow_mutable_storage_api
+    /// @ingroup mutable_source_storage_api
     /// @param symbols. A std::vector initialized with pointers to every
     ///        symbol
     void swap_symbols(std::vector<uint8_t*> &symbols);

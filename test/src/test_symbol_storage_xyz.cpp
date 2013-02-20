@@ -639,7 +639,7 @@ void check_symbols(const CoderPointer &coder,
         auto symbol_value =
             sak::storage(coder->symbol_value(i), coder->symbol_size());
 
-        EXPECT_TRUE(sak::equal(symbol_storage[i], symbol));
+        EXPECT_TRUE(sak::equal(symbol_storage[i], symbol_value));
     }
 }
 
@@ -783,42 +783,251 @@ void test_deep_swap(uint32_t symbols, uint32_t symbol_size)
         symbols, symbol_size);
 }
 
+
+/// Runs the unit test for the Storage Layer Shallow mutable API. We
+/// try to invoke all APIs defined and assert that the result
+/// is as expected.
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
 template<class Coder>
-void run_test_base_api(uint32_t symbols, uint32_t symbol_size)
+void run_test_shallow_mutable_api(
+    uint32_t max_symbols, uint32_t max_symbol_size)
 {
     typedef typename Coder::factory factory_type;
     typedef typename Coder::pointer pointer_type;
     typedef typename Coder::value_type value_type;
 
-    factory_type factory(symbols, symbol_size);
+    factory_type factory(max_symbols, max_symbol_size);
 
-    EXPECT_EQ(factory.max_symbols(), symbols);
-    EXPECT_EQ(factory.max_symbol_size(), symbol_size);
+    // Check shallow mutable
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
 
-    pointer_type coder = factory.build(symbols, symbol_size);
-    const pointer_type &const_coder = coder;
+        // Get some test data
+        auto vector = random_vector(max_symbols, max_symbol_size);
 
-    EXPECT_EQ(coder->symbols(), symbols);
-    EXPECT_EQ(coder->symbol_size(), symbol_size);
-    EXPECT_EQ(const_coder->symbols(), symbols);
-    EXPECT_EQ(const_coder->symbol_size(), symbol_size);
-    EXPECT_EQ(const_coder->block_size(), symbols*symbol_size);
+        coder->set_symbols(sak::storage(vector));
 
-    // Get some test data
-    auto vector = random_vector(symbols, symbol_size);
-    coder->set_bytes_used(symbols*symbol_size);
-    EXPECT_EQ(coder->bytes_used(), symbols*symbol_size);
+        auto vector_symbols =
+            sak::split_storage(sak::storage(vector), coder->symbol_size());
 
-    // Check we can set and get the symbols
-    check_set_symbols(coder, sak::storage(vector));
-    check_set_symbol(coder, sak::storage(vector));
-    check_copy_symbols(coder, sak::storage(vector));
-    check_copy_symbol(coder, sak::storage(vector));
+        // Loop over the symbols and check the non const get symbol
+        // functions
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            uint8_t *symbol = coder->symbol(i);
+
+            auto symbol_storage =
+                sak::storage(symbol, coder->symbol_size());
+
+            EXPECT_TRUE(
+                sak::equal(symbol_storage[i], symbol_storage));
+
+            value_type *symbol_value = coder->symbol_value(i);
+
+            auto symbol_value_storage =
+                sak::storage(symbol_value, coder->symbol_size());
+
+            EXPECT_TRUE(
+                sak::equal(symbol_storage[i], symbol_value_storage));
+        }
+
+    }
+
+    // Check the swap function
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        uint8_t* check_ptr =
+            reinterpret_cast<uint8_t*>(0xdeadbeefU);
+
+        value_type* check_value_ptr =
+            reinterpret_cast<value_type*>(check_ptr);
+
+        std::vector<uint8_t*> swap_vector(max_symbols, check_ptr);
+
+        coder->swap_symbols(swap_vector);
+
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            uint8_t *symbol = coder->symbol(i);
+            EXPECT_EQ(symbol, check_ptr);
+
+            value_type *symbol_value = coder->symbol_value(i);
+            EXPECT_EQ(symbol_value, check_value_ptr);
+        }
+    }
 }
 
 
+/// Runs the unit test for the Storage Layer Shallow const API. We
+/// try to invoke all APIs defined and assert that the result
+/// is as expected.
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void run_test_shallow_const_api(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Get some test data
+    auto vector = random_vector(max_symbols, max_symbol_size);
+    sak::const_storage vector_storage = sak::storage(vector);
+
+    auto vector_symbols =
+        sak::split_storage(vector_storage, max_symbol_size);
+
+
+    // Test the set_symbols() function
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        coder->set_symbols(vector_storage);
+
+        // Loop over the symbols and check the non const get symbol
+        // functions
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            auto symbol_storage =
+                sak::storage(coder->symbol(i), coder->symbol_size());
+
+            EXPECT_TRUE(sak::equal(vector_symbols[i], symbol_storage));
+        }
+    }
+
+    // Test the set_symbol() function
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        // Loop over the symbols and check the non const get symbol
+        // functions
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            coder->set_symbol(i, vector_storage);
+
+            auto symbol_storage =
+                sak::storage(coder->symbol(i), coder->symbol_size());
+
+            EXPECT_TRUE(sak::equal(vector_symbols[i], symbol_storage));
+        }
+    }
+
+    // Test the swap function
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        const uint8_t* check_ptr =
+            reinterpret_cast<const uint8_t*>(0xdeadbeefU);
+
+        const value_type* check_value_ptr =
+            reinterpret_cast<const value_type*>(check_ptr);
+
+        std::vector<const uint8_t*> swap_vector(max_symbols, check_ptr);
+
+        coder->swap_symbols(swap_vector);
+
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            const uint8_t *symbol = coder->symbol(i);
+            EXPECT_EQ(symbol, check_ptr);
+
+            const value_type *symbol_value = coder->symbol_value(i);
+            EXPECT_EQ(symbol_value, check_value_ptr);
+        }
+    }
+}
+
+
+
+/// Runs the unit test for the Storage Layer Base API. We
+/// try to invoke all APIs defined and assert that the result
+/// is as expected.
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void run_test_base_api(uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    EXPECT_EQ(factory.max_symbols(), max_symbols);
+    EXPECT_EQ(factory.max_symbol_size(), max_symbol_size);
+
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        const pointer_type &const_coder = coder;
+
+        EXPECT_EQ(coder->symbols(), max_symbols);
+        EXPECT_EQ(coder->symbol_size(), max_symbol_size);
+        EXPECT_EQ(const_coder->symbols(), max_symbols);
+        EXPECT_EQ(const_coder->symbol_size(), max_symbol_size);
+        EXPECT_EQ(const_coder->block_size(), max_symbols*max_symbol_size);
+
+        // Get some test data
+        auto vector = random_vector(max_symbols, max_symbol_size);
+        EXPECT_EQ(coder->bytes_used(), 0U);
+        coder->set_bytes_used(max_symbols * max_symbol_size);
+        EXPECT_EQ(coder->bytes_used(), max_symbols * max_symbol_size);
+
+        // Check we can set and get the symbols
+        check_set_symbols(coder, sak::storage(vector));
+        check_set_symbol(coder, sak::storage(vector));
+        check_copy_symbols(coder, sak::storage(vector));
+        check_copy_symbol(coder, sak::storage(vector));
+    }
+
+    {
+        // Build with the random symbol and symbol_size
+        uint32_t symbols = rand_symbols(max_symbols);
+        uint32_t symbol_size = rand_symbol_size(max_symbol_size);
+
+        pointer_type coder = factory.build(symbols, symbol_size);
+        const pointer_type &const_coder = coder;
+
+        EXPECT_EQ(coder->symbols(), symbols);
+        EXPECT_EQ(coder->symbol_size(), symbol_size);
+        EXPECT_EQ(const_coder->symbols(), symbols);
+        EXPECT_EQ(const_coder->symbol_size(), symbol_size);
+        EXPECT_EQ(const_coder->block_size(), symbols*symbol_size);
+
+        // Get some test data
+        auto vector = random_vector(symbols, symbol_size);
+        EXPECT_EQ(coder->bytes_used(), 0U);
+        coder->set_bytes_used(symbols * symbol_size);
+        EXPECT_EQ(coder->bytes_used(), symbols * symbol_size);
+
+        // Check we can set and get the symbols
+        check_set_symbols(coder, sak::storage(vector));
+        check_set_symbol(coder, sak::storage(vector));
+        check_copy_symbols(coder, sak::storage(vector));
+        check_copy_symbol(coder, sak::storage(vector));
+    }
+
+}
+
+/// Forwards calls to the test_basic_api with the changing the different
+/// supported fields.
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
 template<template <class> class Coder>
-void run_test_deep_symbol_storage(uint32_t symbols, uint32_t symbol_size)
+void run_test_base_api(uint32_t symbols, uint32_t symbol_size)
 {
     run_test_base_api<Coder<fifi::binary> >(
         symbols, symbol_size);
@@ -830,13 +1039,13 @@ void run_test_deep_symbol_storage(uint32_t symbols, uint32_t symbol_size)
         symbols, symbol_size);
 }
 
-
-TEST(TestSymbolStorage, test_deep_symbol_storage)
+/// The test runner for the Storage Layer Base API
+TEST(TestSymbolStorage, test_base_api)
 {
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
 
-    run_test_deep_symbol_storage<kodo::deep_coder>(
+    run_test_base_api<kodo::deep_coder>(
         symbols, symbol_size);
 
 }
