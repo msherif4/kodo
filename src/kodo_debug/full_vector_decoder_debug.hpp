@@ -6,7 +6,7 @@
 #ifndef KODO_DEBUG_RLNC_FULL_VECTOR_DECODER_DEBUG_HPP
 #define KODO_DEBUG_RLNC_FULL_VECTOR_DECODER_DEBUG_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
@@ -56,11 +56,11 @@ namespace kodo
                     {
 
                         value_type value = vector_type::coefficient( j, vector_i );
-                        std::cout << (uint32_t)value << " ";
+                        out << (uint32_t)value << " ";
                     }
-                    std::cout << std::endl;
+                    out << std::endl;
                 }
-                std::cout << std::endl;
+                out << std::endl;
             }
     };
 }
