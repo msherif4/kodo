@@ -232,7 +232,8 @@ void test_partial_std_vector(CoderType coder)
     uint32_t vector_length = coder->block_size() / sizeof(DataType);
 
     // Make it partial
-    uint32_t partial_vector_length = vector_length - (rand() % vector_length);
+    uint32_t partial_vector_length =
+        vector_length - (rand() % vector_length);
 
     DataType fill_value  = rand_value<DataType>();
 

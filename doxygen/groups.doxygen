@@ -138,85 +138,129 @@
 /// @brief The coding information API.
 
 
-
 //
-// STORAGE
+// STORAGE API LAYERS
 //
-
 
 
 /// @defgroup storage Storage
 /// @ingroup api_layer
 /// @brief Handles storage of encoding and decoding symbols.
-///
-/// The storage layers are special as they
 
-/// @defgroup storage_api API
+// SUB LAYER STORAGE INFO
+
+/// @defgroup storage_info Storage Info
 /// @ingroup storage
-/// @brief The API used by storage layers.
+/// @brief Provides information about the symbol storage
 
+/// @defgroup storage_info_api API
+/// @ingroup storage_info
+/// @brief The API used by storage info layers.
 
-/// @defgroup base_storage_api Base
-/// @ingroup storage_api
-/// @brief The base API used by storage layers.
-///
-/// The prototype of a layer is the following:
-///
-/// @prototype
+/// @defgroup storage_info_layers Layers
+/// @ingroup storage_info
+/// @brief Implementations of the storage info API.
 
+// STORAGE SUB API LAYER: CONST SYMBOL ACCESS
 
-// @defgroup shallow_mutable_storage_api Shallow mutable
-// @ingroup storage_api
-// @brief The mutable API used by codecs that do need to modify the symbol
-//        data stored in the storage layer.
+/// @defgroup const_symbol_access Const Symbol Access
+/// @ingroup storage
+/// @brief Provides const access to the symbols storage
 
-// @defgroup shallow_const_storage_api Shallow const
-// @ingroup storage_api
-// @brief The const API used by storage layers which do not modify the
-//        symbol memory.
-
-/// @defgroup const_access_storage_api Const Symbol Access
-/// @ingroup storage_api
+/// @defgroup const_symbol_access_api API
+/// @ingroup const_symbol_access
 /// @brief The const symbol access API is implemented by layers that
 ///        provide non modifiable memory access (const pointers) to
 ///        the stored symbols.
 
-/// @defgroup const_source_storage_api Const Symbol Source
-/// @ingroup storage_api
-/// @brief The const symbol source API is implemented by layers that can
-///        use non-modifiable (const) memory as source for e.g. an
-///        encoder.
+/// @defgroup const_symbol_access_layers Layers
+/// @ingroup const_symbol_access
+/// @brief Implementations of the const symbol access API.
 
-/// @defgroup mutable_access_storage_api Mutable Symbol Access
-/// @ingroup storage_api
-/// @brief The mutable symbol access API is implemented by layers that
-///        provide modifiable memory access to the stored symbols.
+// STORAGE SUB API LAYER: MUTABLE SYMBOL ACCESS
 
-/// @defgroup mutable_source_storage_api Mutable Symbol Source
-/// @ingroup storage_api
-/// @brief The mutable symbol source API is implemented by layers that can
-///        can utlize a non const memory as source for coding symbols.
-
-
-// @defgroup shallow_storage_api Shallow
-// @ingroup storage_api
-// @brief The shallow storage API is used by storage layers that operate over user provided memory buffers.
-
-/// @defgroup deep_storage_api Deep Storage
-/// @ingroup storage_api
-/// @brief The deep storage API is used by storage layers which allocates
-///        and maintains the memory used encoders and decoders.
-
-/// @defgroup storage_layers Layers
+/// @defgroup mutable_symbol_access Mutable Symbol Access
 /// @ingroup storage
-/// @brief Implementations of the storage API.
+/// @brief Provides mutable access to the symbols storage
 
+/// @defgroup mutable_symbol_access_api API
+/// @ingroup mutable_symbol_access
+/// @brief The mutable symbol access API is implemented by layers that
+///        provide non modifiable memory access (mutable pointers) to
+///        the stored symbols.
+
+/// @defgroup mutable_symbol_access_layers Layers
+/// @ingroup mutable_symbol_access
+/// @brief Implementations of the mutable symbol access API.
+
+// STORAGE SUB API LAYER: CONST SYMBOL SOURCE
+
+/// @defgroup const_symbol_source Const Symbol Source
+/// @ingroup storage
+/// @brief Provides const source to the symbols storage
+
+/// @defgroup const_symbol_source_api API
+/// @ingroup const_symbol_source
+/// @brief The const symbol source API is implemented by layers that
+///        provide non modifiable memory source (const pointers) to
+///        the stored symbols.
+
+/// @defgroup const_symbol_source_layers Layers
+/// @ingroup const_symbol_source
+/// @brief Implementations of the const symbol source API.
+
+// STORAGE SUB API LAYER: MUTABLE SYMBOL SOURCE
+
+/// @defgroup mutable_symbol_source Mutable Symbol Source
+/// @ingroup storage
+/// @brief Provides mutable source to the symbols storage
+
+/// @defgroup mutable_symbol_source_api API
+/// @ingroup mutable_symbol_source
+/// @brief The mutable symbol source API is implemented by layers that
+///        provide non modifiable memory source (mutable pointers) to
+///        the stored symbols.
+
+/// @defgroup mutable_symbol_source_layers Layers
+/// @ingroup mutable_symbol_source
+/// @brief Implementations of the mutable symbol source API.
+
+// STORAGE SUB API LAYER: SYMBOL SWAP
+
+/// @defgroup symbol_swap Symbol Swap
+/// @ingroup storage
+/// @brief The deep symbol source storage API is used by provide storage
+///        the entire symbol buffer layers willstorage layers which
+///        allocates and maintains the memory used encoders and decoders.
+
+/// @defgroup symbol_swap_api API
+/// @ingroup symbol_swap
+/// @brief The swap symbol API is implemented by layers that allow the
+///        symbol data in an encoder or decoder to be swapped.
+
+/// @defgroup symbol_swap_layers Layers
+/// @ingroup symbol_swap
+/// @brief Implementations of the symbol swap API.
+
+// STORAGE SUB API LAYER: SYMBOL STATUS
+
+/// @defgroup symbol_status Symbol Status
+/// @ingroup storage
+/// @brief The symbol status API provides information about the available
+///        symbols in the symbol storage.
+
+/// @defgroup symbol_status_api API
+/// @ingroup symbol_status
+/// @brief The symbol status API.
+
+/// @defgroup symbol_status_layers Layers
+/// @ingroup symbol_status
+/// @brief Implementations of the symbol status API.
 
 
 //
 // CODEC
 //
-
 
 
 /// @defgroup codec Codec

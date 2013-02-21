@@ -10,8 +10,9 @@
 
 namespace kodo
 {
-    /// @ingroup storage_layers
-    /// @brief Defines several functions to retrieve info about the block size
+    /// @ingroup storage_info_layers
+    /// @brief Defines several functions to retrieve info about the
+    ///        symbol storage layers.
     template<class SuperCoder>
     class storage_block_info : public SuperCoder
     {

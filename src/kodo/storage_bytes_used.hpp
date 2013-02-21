@@ -11,9 +11,9 @@
 namespace kodo
 {
 
-    /// @ingroup storage_layers
+    /// @ingroup storage_info_layers
     /// @brief Provides access to the number of useful bytes used out of the
-    /// total size of the encoders or decoders storage.
+    ///        total size of the encoders or decoders storage.
     template<class SuperCoder>
     class storage_bytes_used : public SuperCoder
     {
