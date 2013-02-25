@@ -918,44 +918,54 @@ TEST(TestSymbolStorage, test_api_copy_symbol)
 /// @param max_symbols The maximum number of symbols
 /// @param max_symbol_size The maximum size of a symbol in bytes
 template<class Coder>
-void api_symbol_const(
-    uint32_t max_symbols, uint32_t max_symbol_size)
+struct api_symbol_const
 {
+
     typedef typename Coder::factory factory_type;
     typedef typename Coder::pointer pointer_type;
     typedef typename Coder::value_type value_type;
 
-    factory_type factory(max_symbols, max_symbol_size);
-
-    // Build with max_symbols and max_symbol_size
-    {
-
-        // Build with the max_symbols and max_symbol_size
-        pointer_type coder = factory.build(max_symbols, max_symbol_size);
-
-        // Make sure we call the const version of the function
-        const pointer_type &const_coder = coder;
-
-        auto symbols_in = random_vector(coder->block_size());
-        coder->set_symbols(sak::storage(symbols_in));
-
-        auto symbols_in_vector =
-            sak::split_storage(sak::storage(symbols_in),
-                               coder->symbol_size());
-
-        // Check that we correctly copy out the symbols
-        for(uint32_t i = 0; i < coder->symbols(); ++i)
+    void run(uint32_t max_symbols, uint32_t max_symbol_size)
         {
-            const uint8_t* symbol = const_coder->symbol(i);
 
-            // Compare the storage
-            auto s1 = symbols_in_vector[i];
-            auto s2 = sak::storage(symbol, coder->symbol_size);
-            EXPECT_TRUE(sak::equal(s1, s2));
+            factory_type factory(max_symbols, max_symbol_size);
+
+            // Build with the max_symbols and max_symbol_size
+            pointer_type coder =
+                factory.build(max_symbols, max_symbol_size);
+
+            // Make sure we call the const version of the function
+            const pointer_type &const_coder = coder;
+
+            auto vector_in = random_vector(coder->block_size());
+
+            sak::mutable_storage storage_in = sak::storage(vector_in);
+            coder->set_symbols(storage_in);
+
+            auto symbols =
+                sak::split_storage(storage_in, coder->symbol_size());
+
+            // Check that we correctly copy out the symbols
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                const uint8_t* symbol = const_coder->symbol(i);
+
+                // Compare the storage
+                auto s1 = symbols[i];
+                auto s2 = sak::storage(symbol, coder->symbol_size());
+                EXPECT_TRUE(sak::equal(s1, s2));
+            }
         }
-    }
-}
+};
 
+/// Run the api_symbol_const() test
+TEST(TestSymbolStorage, test_api_symbol_const)
+{
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    run_api_test<kodo::deep_coder, api_symbol_const>(symbols, symbol_size);
+}
 
 /// Tests:
 ///   - layer::symbol(uint32_t index)
