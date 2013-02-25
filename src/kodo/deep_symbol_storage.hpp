@@ -113,7 +113,7 @@ namespace kodo
             }
 
         /// @copydoc symbol_storage_shallow::copy_symbols()
-        void copy_symbols(sak::mutable_storage dest_storage)
+        void copy_symbols(const sak::mutable_storage &dest_storage)
             {
                 assert(dest_storage.m_size > 0);
                 assert(dest_storage.m_data != 0);
@@ -130,7 +130,8 @@ namespace kodo
             }
 
         /// @copydoc layer::copy_symbol()
-        void copy_symbol(uint32_t index, sak::mutable_storage dest) const
+        void copy_symbol(uint32_t index,
+                         const sak::mutable_storage &dest) const
             {
                 assert(dest.m_size > 0);
                 assert(dest.m_data != 0);

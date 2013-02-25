@@ -54,6 +54,12 @@ namespace kodo
                     return m_max_symbol_size;
                 }
 
+            /// @copydoc layer::factory::max_block_size() const
+            uint32_t max_block_size() const
+                {
+                    return m_max_symbols*m_max_symbol_size;
+                }
+
         private:
 
             /// The maximum number of symbols

@@ -3,6 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
+/// @file test_symbol_storage_xyz.cpp Unit tests for the symbol storage
+
 #include <cstdint>
 
 #include <gtest/gtest.h>
@@ -692,9 +694,9 @@ void check_set_symbols(const CoderPointer &coder,
 //     EXPECT_TRUE(sak::equal(check_storage, sak::storage(data)));
 // }
 
-std::vector<uint8_t> random_vector(uint32_t symbols, uint32_t symbol_size)
+std::vector<uint8_t> random_vector(uint32_t size)
 {
-    std::vector<uint8_t> v(symbols*symbol_size);
+    std::vector<uint8_t> v(size);
     for(uint32_t i = 0; i < v.size(); ++i)
     {
         v[i] = rand() % 255;
@@ -714,7 +716,7 @@ void test_deep_swap(uint32_t symbols, uint32_t symbol_size)
     const pointer_type &const_coder = coder;
 
     std::vector<uint8_t> check_data =
-        random_vector(symbols, symbol_size);
+        random_vector(coder->block_size());
 
     auto check_symbols = sak::split_storage(
         sak::storage(check_data), symbol_size);
@@ -784,6 +786,747 @@ void test_deep_swap(uint32_t symbols, uint32_t symbol_size)
         symbols, symbol_size);
 }
 
+/// Helper function with for running tests with different fields.
+/// The helper expects a template template class Coder which has an
+/// unspecified template argument (the finite field or Field) and a
+/// template template class Test which expects the final Coder<Field>
+/// type.
+template<template <class> class Coder, template <class> class Test>
+void run_api_test(uint32_t symbols, uint32_t symbol_size)
+{
+    {
+        Test<Coder<fifi::binary> > test;
+        test.run(symbols, symbol_size);
+    }
+
+    {
+        Test<Coder<fifi::binary8> > test;
+        test.run(symbols, symbol_size);
+    }
+
+    {
+        Test<Coder<fifi::binary16> > test;
+        test.run(symbols, symbol_size);
+    }
+}
+
+
+/// Tests:
+///   - layer::set_symbols(const sak::mutable_storage&)
+///   - layer::copy_symbols(const sak::mutable_storage&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+struct api_copy_symbols
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    void run(uint32_t max_symbols, uint32_t max_symbol_size)
+        {
+            factory_type factory(max_symbols, max_symbol_size);
+
+            // Build with max_symbols and max_symbol_size
+            {
+                // Build with the max_symbols and max_symbol_size
+                pointer_type coder =
+                    factory.build(max_symbols, max_symbol_size);
+
+                auto vector_in = random_vector(coder->block_size());
+                auto vector_out = random_vector(coder->block_size());
+
+                sak::mutable_storage storage_in = sak::storage(vector_in);
+                sak::mutable_storage storage_out = sak::storage(vector_out);
+
+                coder->set_symbols(storage_in);
+                coder->copy_symbols(storage_out);
+
+                EXPECT_TRUE(sak::equal(sak::storage(vector_in),
+                                       sak::storage(vector_out)));
+            }
+        }
+};
+
+/// Run the api_copy_symbols() test
+TEST(TestSymbolStorage, test_api_copy_symbols)
+{
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    run_api_test<kodo::deep_coder, api_copy_symbols>(symbols, symbol_size);
+}
+
+/// Tests:
+///   - layer::set_symbols(const sak::mutable_storage&)
+///   - layer::copy_symbol(uint32_t, const sak::mutable_storage&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+struct api_copy_symbol
+{
+
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    void run(uint32_t max_symbols, uint32_t max_symbol_size)
+        {
+
+            factory_type factory(max_symbols, max_symbol_size);
+
+            // Build with the max_symbols and max_symbol_size
+            pointer_type coder =
+                factory.build(max_symbols, max_symbol_size);
+
+            auto vector_in = random_vector(coder->block_size());
+
+            sak::mutable_storage storage_in = sak::storage(vector_in);
+            coder->set_symbols(storage_in);
+
+            auto symbols =
+                sak::split_storage(storage_in, coder->symbol_size());
+
+            // Prepare buffer for a single symbol
+            auto vector_out = random_vector(coder->symbol_size());
+
+            // Check that we correctly copy out the symbols
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                sak::mutable_storage symbol_out = sak::storage(vector_out);
+                coder->copy_symbol(i, symbol_out);
+
+                EXPECT_TRUE(sak::equal(symbols[i], symbol_out));
+            }
+        }
+};
+
+/// Run the api_copy_symbol() test
+TEST(TestSymbolStorage, test_api_copy_symbol)
+{
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    run_api_test<kodo::deep_coder, api_copy_symbol>(symbols, symbol_size);
+}
+
+/// Tests:
+///   - layer::symbol(uint32_t index) const
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_symbol_const(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        // Make sure we call the const version of the function
+        const pointer_type &const_coder = coder;
+
+        auto symbols_in = random_vector(coder->block_size());
+        coder->set_symbols(sak::storage(symbols_in));
+
+        auto symbols_in_vector =
+            sak::split_storage(sak::storage(symbols_in),
+                               coder->symbol_size());
+
+        // Check that we correctly copy out the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            const uint8_t* symbol = const_coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in_vector[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size);
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+
+/// Tests:
+///   - layer::symbol(uint32_t index)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbol(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto symbols_in = random_vector(coder->block_size());
+        coder->set_symbols(sak::storage(symbols_in));
+
+        auto symbols_in_vector =
+            sak::split_storage(sak::storage(symbols_in),
+                               coder->symbol_size());
+
+        // Check that we correctly copy out the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            uint8_t* symbol = coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in_vector[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size);
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+/// Tests:
+///   - layer::symbol_value(uint32_t index) const
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbol_value_const(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        // Make sure we call the const version of the function
+        const pointer_type &const_coder = coder;
+
+        auto symbols_in = random_vector(coder->block_size());
+        coder->set_symbols(sak::storage(symbols_in));
+
+        auto symbols_in_vector =
+            sak::split_storage(sak::storage(symbols_in),
+                               coder->symbol_size());
+
+        // Check that we correctly copy out the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            const value_type* symbol = const_coder->symbol_value(i);
+
+            // Compare the storage
+            auto s1 = symbols_in_vector[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size);
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+
+/// Tests:
+///   - layer::symbol_value(uint32_t index)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbol_value(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto symbols_in = random_vector(coder->block_size());
+        coder->set_symbols(sak::storage(symbols_in));
+
+        auto symbols_in_vector =
+            sak::split_storage(sak::storage(symbols_in),
+                               coder->symbol_size());
+
+        // Check that we correctly copy out the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            value_type* symbol = coder->symbol_value(i);
+
+            // Compare the storage
+            auto s1 = symbols_in_vector[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size());
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+
+/// Tests:
+///   - layer::set_symbols(const sak::const_storage)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_set_symbols_const_storage(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+
+        sak::const_storage storage_in = sak::storage(vector_in);
+        coder->set_symbols(storage_in);
+
+        auto symbols_in =
+            sak::split_storage(storage_in, coder->symbol_size());
+
+        EXPECT_EQ(symbols_in.size(), coder->symbols());
+
+        // Check that we correctly can access the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            const uint8_t* symbol = coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size());
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+
+    }
+
+}
+
+
+/// Tests:
+///   - layer::set_symbols(const sak::mutable_storage&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_set_symbols_mutable_storage(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+        auto vector_out = random_vector(coder->block_size());
+
+        sak::mutable_storage storage_in = sak::storage(vector_in);
+        coder->set_symbols(storage_in);
+
+        auto symbols_in =
+            sak::split_storage(storage_in, coder->symbol_size());
+
+        EXPECT_EQ(symbols_in.size(), coder->symbols());
+
+        // Check that we correctly can access the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            const uint8_t* symbol = coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size());
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+
+/// Tests:
+///   - layer::set_symbol(uin32_t, const sak::const_storage)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_set_symbol_const_storage(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+
+        sak::const_storage storage_in = sak::storage(vector_in);
+
+        std::vector<sak::const_storage> symbols_in =
+            sak::split_storage(storage_in, coder->symbol_size());
+
+        EXPECT_EQ(symbols_in.size(), coder->symbols());
+
+        // Check that we correctly can access the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            coder->set_symbol(i, symbols_in[i]);
+            const uint8_t* symbol = coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size());
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+
+    }
+
+}
+
+
+/// Tests:
+///   - layer::set_symbols(uint32_t, const sak::mutable_storage&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_set_symbol_mutable_storage(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::value_type value_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+
+        sak::mutable_storage storage_in = sak::storage(vector_in);
+
+        std::vector<sak::mutable_storage> symbols_in =
+            sak::split_storage(storage_in, coder->symbol_size());
+
+        EXPECT_EQ(symbols_in.size(), coder->symbols());
+
+        // Check that we correctly can access the symbols
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            coder->set_symbol(i, symbols_in[i]);
+            const uint8_t* symbol = coder->symbol(i);
+
+            // Compare the storage
+            auto s1 = symbols_in[i];
+            auto s2 = sak::storage(symbol, coder->symbol_size());
+            EXPECT_TRUE(sak::equal(s1, s2));
+        }
+    }
+}
+
+/// Tests:
+///   - layer::swap_symbols(std::vector<const uint8_t*>&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_swap_symbols_const_pointer(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+        auto vector_out = random_vector(coder->block_size());
+
+        std::vector<const uint8_t*> symbols;
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            symbols.push_back(&vector_in[i*coder->symbol_size()]);
+        }
+
+        coder->swap_symbols(symbols);
+        coder->copy_symbols(sak::storage(vector_out));
+
+        EXPECT_TRUE(sak::equal(sak::storage(vector_in),
+                               sak::storage(vector_out)));
+    }
+
+}
+
+/// Tests:
+///   - layer::swap_symbols(std::vector<uint8_t*>&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_swap_symbols_pointer(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+        auto vector_out = random_vector(coder->block_size());
+
+        std::vector<uint8_t*> symbols;
+        for(uint32_t i = 0; i < coder->symbols(); ++i)
+        {
+            symbols.push_back(&vector_in[i*coder->symbol_size()]);
+        }
+
+        coder->swap_symbols(symbols);
+        coder->copy_symbols(sak::storage(vector_out));
+
+        EXPECT_TRUE(sak::equal(sak::storage(vector_in),
+                               sak::storage(vector_out)));
+    }
+
+}
+
+/// Tests:
+///   - layer::swap_symbols(std::vector<uint8_t>&)
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_swap_symbols_data(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    // Build with max_symbols and max_symbol_size
+    {
+        // Build with the max_symbols and max_symbol_size
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        auto vector_in = random_vector(coder->block_size());
+        auto vector_out = random_vector(coder->block_size());
+
+        // Make vector_swap a copy of vector in
+        auto vector_swap = vector_in;
+
+        coder->swap_symbols(vector_swap);
+        coder->copy_symbols(sak::storage(vector_out));
+
+        EXPECT_TRUE(sak::equal(sak::storage(vector_in),
+                               sak::storage(vector_out)));
+    }
+
+}
+
+/// Tests:
+///   - layer::factory_max_symbols()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_factory_max_symbols(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+    EXPECT_EQ(factory.max_symbols(), max_symbols);
+}
+
+/// Tests: layer::factory_max_symbol_size()
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_factory_max_symbol_size(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+    EXPECT_EQ(factory.max_symbol_size(), max_symbol_size);
+}
+
+/// Tests:
+///   - layer::factory_max_block_size()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_factory_max_block_size(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+    EXPECT_EQ(factory.max_block_size(), max_symbols*max_symbol_size);
+}
+
+/// Tests:
+///   - layer::symbols()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbols(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    {
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        EXPECT_EQ(coder->symbol(), max_symbols);
+    }
+}
+
+/// Tests:
+///   - layer::symbol_size()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbol_size(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    {
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        EXPECT_EQ(coder->symbol_size(), max_symbol_size);
+    }
+}
+
+/// Tests:
+///   - layer::symbol_length()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_symbol_length(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+    typedef typename Coder::field_type field_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    {
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+
+        uint32_t length =
+            fifi::bytes_needed<field_type>(coder->symbol_size());
+
+        EXPECT_EQ(coder->symbol_length(), length);
+    }
+}
+
+/// Tests:
+///   - layer::block_size()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_block_size(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    {
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        EXPECT_EQ(coder->block_size(), max_symbols * max_symbol_size);
+    }
+}
+
+/// Tests:
+///   - layer::set_bytes_used(uint32_t)
+///   - layer::bytes_used()
+///
+/// @param max_symbols The maximum number of symbols
+/// @param max_symbol_size The maximum size of a symbol in bytes
+template<class Coder>
+void api_test_bytes_used(
+    uint32_t max_symbols, uint32_t max_symbol_size)
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    factory_type factory(max_symbols, max_symbol_size);
+
+    {
+        pointer_type coder = factory.build(max_symbols, max_symbol_size);
+        coder->set_bytes_used(max_symbols*max_symbol_size);
+
+        EXPECT_EQ(coder->bytes_used(), max_symbols * max_symbol_size);
+    }
+}
+
 
 /// Runs the unit test for the Storage Layer Shallow mutable API. We
 /// try to invoke all APIs defined and assert that the result
@@ -807,7 +1550,7 @@ void run_test_shallow_mutable_api(
         pointer_type coder = factory.build(max_symbols, max_symbol_size);
 
         // Get some test data
-        auto vector = random_vector(max_symbols, max_symbol_size);
+        auto vector = random_vector(coder->block_size());
 
         coder->set_symbols(sak::storage(vector));
 
@@ -881,7 +1624,8 @@ void run_test_shallow_const_api(
     factory_type factory(max_symbols, max_symbol_size);
 
     // Get some test data
-    auto vector = random_vector(max_symbols, max_symbol_size);
+    auto vector = random_vector(factory.max_block_size());
+
     sak::const_storage vector_storage = sak::storage(vector);
 
     auto vector_symbols =
@@ -981,7 +1725,7 @@ void run_test_base_api(uint32_t max_symbols, uint32_t max_symbol_size)
         EXPECT_EQ(const_coder->block_size(), max_symbols*max_symbol_size);
 
         // Get some test data
-        auto vector = random_vector(max_symbols, max_symbol_size);
+        auto vector = random_vector(coder->block_size());
         EXPECT_EQ(coder->bytes_used(), 0U);
         coder->set_bytes_used(max_symbols * max_symbol_size);
         EXPECT_EQ(coder->bytes_used(), max_symbols * max_symbol_size);
@@ -1008,7 +1752,7 @@ void run_test_base_api(uint32_t max_symbols, uint32_t max_symbol_size)
         EXPECT_EQ(const_coder->block_size(), symbols*symbol_size);
 
         // Get some test data
-        auto vector = random_vector(symbols, symbol_size);
+        auto vector = random_vector(coder->block_size());
         EXPECT_EQ(coder->bytes_used(), 0U);
         coder->set_bytes_used(symbols * symbol_size);
         EXPECT_EQ(coder->bytes_used(), symbols * symbol_size);

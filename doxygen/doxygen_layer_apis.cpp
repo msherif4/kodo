@@ -33,13 +33,20 @@ public:
         /// @return pointer to an instantiation of an encoder or decoder
         pointer build(uint32_t symbols, uint32_t symbol_size);
 
-        /// @ingroup base_storage_api
+        /// @ingroup storage_api
         /// @return the maximum number of symbols in a block
         uint32_t max_symbols() const;
 
-        /// @ingroup base_storage_api
+        /// @ingroup storage_api
         /// @return the maximum symbol size in bytes
         uint32_t max_symbol_size() const;
+
+        /// @ingroup storage_api
+        /// @return The maximum amount of data encoded / decoded in bytes.
+        ///         This is calculated by multiplying the maximum number
+        ///         of symbols encoded / decoded by the maximum size of
+        ///         a symbol.
+        uint32_t max_block_size() const;
 
         /// @ingroup codec_header_api
         /// @brief Can be reimplemented by a symbol header API layer to
@@ -313,100 +320,101 @@ public:
     // SYMBOL STORAGE API
     //
 
-    /// @ingroup const_symbol_access_api
+    /// @ingroup storage_api
     /// Copies the encoded / decoded symbols.
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy block_size() bytes or until
     ///        the dest buffer is full.
-    void copy_symbols(sak::mutable_storage dest) const;
+    void copy_symbols(const sak::mutable_storage &dest) const;
 
-    /// @ingroup const_symbol_access_api
+    /// @ingroup storage_api
     /// Copies an encoded / decoded symbols.
     /// @param index The index of the symbol to be copied
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy symbol_size() bytes or until
     ///        the dest buffer is full.
-    void copy_symbol(uint32_t index, sak::mutable_storage dest) const;
+    void copy_symbol(uint32_t index,
+                     const sak::mutable_storage &dest) const;
 
-    /// @ingroup mutable_symbol_access_api
+    /// @ingroup storage_api
     /// @param index the index number of the symbol
     /// @return Returns a pointer to the symbol data. The size of
     ///         the symbol data is provided by the symbol_size() function.
     uint8_t* symbol(uint32_t index);
 
-    /// @ingroup const_symbol_access_api
+    /// @ingroup storage_api
     /// @param index the index number of the symbol
     /// @return Returns a const pointer to the symbol data. The size of
     ///         the symbol data is provided by the symbol_size() function.
     const uint8_t* symbol(uint32_t index) const;
 
-    /// @ingroup mutable_symbol_access_api
+    /// @ingroup storage_api
     /// @param index the index number of the symbol
     /// @return Returns a layer::value_type pointer to the symbol data.
     ///         The length of the symbol data is provided by the
     ///         symbol_length() function.
     value_type* symbol_value(uint32_t index);
 
-    /// @ingroup const_symbol_access_api
+    /// @ingroup storage_api
     /// @param index the index number of the symbol
-    /// @return Returns a const layer::value_type pointer to the symbol data.
-    ///         The length of the symbol data is provided by the
+    /// @return Returns a const layer::value_type pointer to the symbol
+    ///         data. The length of the symbol data is provided by the
     ///         symbol_length() function.
     const value_type* symbol_value(uint32_t index) const;
 
-    /// @ingroup const_symbol_source_api
+    /// @ingroup storage_api
     /// Sets the storage for the source symbols
-    /// @param symbol_storage A sak::const_storage container initialized with
-    ///        the buffer to be use as encoding buffer.
+    /// @param symbol_storage A sak::const_storage container initialized
+    ///        with the buffer to be use as encoding buffer.
     void set_symbols(const sak::const_storage &symbol_storage);
 
-    /// @ingroup mutable_symbol_source__api
+    /// @ingroup storage_api
     /// Sets the storage for the source symbols
     /// @param symbol_storage A sak::mutable_storage container initialized
     ///        with the buffer to be use as encoding / decoding buffer.
     void set_symbols(const sak::mutable_storage &symbol_storage);
 
-    /// @ingroup mutable_symbol_source_api
+    /// @ingroup storage_api
     /// Sets a symbol - by copying it into the right location in
     /// the buffer.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::mutable_storage &symbol);
 
-    /// @ingroup const_symbol_source_api
+    /// @ingroup storage_api
     /// Sets a symbol - by copying it into the right location in
     /// the buffer.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::const_storage &symbol);
 
-    /// @ingroup symbol_swap_api
+    /// @ingroup storage_api
     /// @param symbols. A std::vector initialized with pointers to every
     ///        symbol
     void swap_symbols(std::vector<const uint8_t*> &symbols);
 
-    /// @ingroup symbol_swap_api
+    /// @ingroup storage_api
     /// @param symbols. A std::vector initialized with pointers to every
     ///        symbol
     void swap_symbols(std::vector<uint8_t*> &symbols);
 
-    /// @ingroup symbol_swap_api
+    /// @ingroup storage_api
     /// @param index the index number of the symbol
     void swap_symbols(std::vector<uint8_t> &symbols);
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// @return the number of symbols in this block coder
     uint32_t symbols() const;
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// @return the symbol size of a symbol in bytes
     uint32_t symbol_size() const;
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// @return the length of the symbol in layer::value_type elements
     uint32_t symbol_length() const;
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// @return the block size i.e. the total size in bytes
     ///         that this coder operates on. Users may
     ///         use the bytes_used() function provided in the
@@ -414,17 +422,17 @@ public:
     ///         bytes are then used.
     uint32_t block_size() const;
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// Sets the number of bytes used
     /// @param bytes_used number of bytes used of the total coders
     ///        block size
     void set_bytes_used(uint32_t bytes_used);
 
-    /// @ingroup storage_info_api
+    /// @ingroup storage_api
     /// @return the number of bytes used
     uint32_t bytes_used() const;
 
-    /// @ingroup symbol_status_api
+    /// @ingroup symbol_api
     /// @param index The index of the symbol to check.
     /// @return true if the symbol has been initialized
     bool symbol_exists(uint32_t index);
