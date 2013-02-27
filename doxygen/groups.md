@@ -2,23 +2,23 @@
 @brief Provides an overview of the APIs implemented by different components
 in Kodo.
 
-Kodo is largely built using a C++ design technique called Mixin-Layers.
-Mixin-Layers are a fexible way of seperating functionality into reusable
+Kodo is built using a C++ design technique called Mixin-Layers.
+Mixin-Layers is a flexible way of separating functionality into reusable
 building blocks (called layers).
 
-At each layer a seperate API is specified and in order to customize or add
+At each layer a separate API is specified and in order to customize or add
 functionality to Kodo it is necessary to understand which API layer to look
 at.
 
 @note That is by no means required that a specific encoder and decoder utilize
-or provide all API layers. The API layers main purpose is to facilitat re-use
+or provide all API layers. The API layers main purpose is to facilitate re-use
 between implementations of different encoders and decoders.
 
-If you wish to get a better understanding the the layering techinique used, you
+If you wish to get a better understanding of the layering technique used, you
 may take a look at the \ref mixin_example.
 
 
-Before showing the typical layered structure of a encoder and decoder
+Before showing the typical layered structure of an encoder and decoder
 implemented in Kodo is ...
 
 //
@@ -42,7 +42,7 @@ encoders and decoders.
 
 @defgroup math Finite Field Math
 @ingroup api_layer
-@brief The finite field math layers preform computations on symbols and symbol coefficients.
+@brief The finite field math layers perform computations on symbols and symbol coefficients.
 
 
 @defgroup math_api API
@@ -64,7 +64,7 @@ The prototype of a layer is the following:
 @brief The symbol id describes how an encoded symbol has been produced.
 
 The symbol id uniquely describes the coding coefficients which are used
-by the encoder to create and encoded symbol as linear combinations of
+by the encoder to create an encoded symbol as linear combinations of
 a set of original source symbols. By transmitting the symbol id to the
 decoder it can re-create the coding coefficients used to generate the encoded
 symbol and by solving a linear system re-produce the original source symbols.
@@ -73,7 +73,7 @@ symbol and by solving a linear system re-produce the original source symbols.
       This type of symbol id is produced by the
       \link kodo::random_uniform_symbol_id<SuperCoder>  class.
       However for efficiency reasons you may want to limit the amount of data
-      transmitted between an encoder and decoder by transmitting an smaller id.
+      transmitted between an encoder and decoder by transmitting a smaller id.
       One example of this is to use the \link seed_symbol_id which only transmits
       the seed for the pseudo-random number generator used to generate the coding
       coefficients.

@@ -4,7 +4,7 @@
 
 \tableofcontents
 
-A large part of the funcitonality of the encoding algorithms are implemented by
+A large part of the functionality of the encoding algorithms are implemented by
 implementation of this API.
 
 ### encode
@@ -32,7 +32,7 @@ uint32_t symbol_id_size() const
 \return the size required for the Symbol ID in bytes
 
 The correct implementation of this function must take into account the
-space requirements of the underlying eslayers. E.g. reserving 2 bytes for
+space requirements of the underlying layers. E.g. reserving 2 bytes for
 a specific layer could be implemented as follows:
 
 \code

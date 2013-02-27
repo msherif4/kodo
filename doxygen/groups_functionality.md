@@ -11,7 +11,7 @@ Handle storage of coding symbols and implement different memory management
 strategies, depending on the needs of the applications.
 
 @defgroup debug Debug Functionality
-Implements various debugging functionalies. Typically useful when implementing
+Implements various debugging functionalities. Typically useful when implementing
 new codes or when monitoring the performance of the coding algorithms.
 
 @defgroup utility Utility Functionality
