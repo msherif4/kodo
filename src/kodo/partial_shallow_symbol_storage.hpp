@@ -53,7 +53,7 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : Super::factory(max_symbols, max_symbol_size)
                 {
@@ -63,7 +63,7 @@ namespace kodo
                     m_zero_symbol->resize(max_symbol_size, 0);
                 }
 
-            /// @copydoc final_coder_factory::factory::build()
+            /// @copydoc layer::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
@@ -82,7 +82,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc final_coder_factory::construct()
+        /// @copydoc layer::construct()
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 Super::construct(max_symbols, max_symbol_size);
@@ -93,15 +93,17 @@ namespace kodo
                 m_partial_symbol->resize(max_symbol_size, 0);
             }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize()
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 Super::initialize(symbols, symbol_size);
                 std::fill(m_partial_symbol->begin(), m_partial_symbol->end(), 0);
             }
 
-        /// Sets the storage
-        /// @param symbol_storage a const storage container
+        /// Initializes the symbol storage layer so that the pointers to the
+        /// symbol data are valid. Calling this function will work even without
+        /// providing data enough to initialize all symbol pointers.
+        /// @copydoc layer::set_symbols(const sak::const_storage &)
         void set_symbols(const sak::const_storage &symbol_storage)
             {
                 auto symbol_sequence =
@@ -115,11 +117,19 @@ namespace kodo
                     Super::set_symbol(i, symbol_sequence[i]);
                 }
 
-                auto last_symbol = symbol_sequence[last_index];
+                auto last_symbol =
+                    symbol_sequence[last_index];
+
+                uint32_t symbol_size = Super::symbol_size();
+
+                auto partial_symbol =
+                        sak::storage(&m_partial_symbol->at(0), symbol_size);
+
+                auto zero_symbol =
+                    sak::storage(&m_zero_symbol->at(0), symbol_size);
 
                 if(last_symbol.m_size < Super::symbol_size())
                 {
-                    auto partial_symbol = sak::storage(*m_partial_symbol);
                     sak::copy_storage(partial_symbol, last_symbol);
                     Super::set_symbol(last_index, partial_symbol);
                 }
@@ -127,8 +137,6 @@ namespace kodo
                 {
                     Super::set_symbol(last_index, last_symbol);
                 }
-
-                auto zero_symbol = sak::storage(*m_zero_symbol);
 
                 for(uint32_t i = last_index + 1; i < Super::symbols(); ++i)
                 {

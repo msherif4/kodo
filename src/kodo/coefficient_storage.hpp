@@ -12,11 +12,9 @@
 namespace kodo
 {
 
-    /// @ingroup codec_layers
+    /// @ingroup coefficient_storage_layers
     /// @brief Provides storage and access to the coding coefficients
     ///        used during encoding and decoding.
-    ///
-    /// Implementation of the Codec API (@ref codec_api)
     template<class SuperCoder>
     class coefficient_storage : public SuperCoder
     {

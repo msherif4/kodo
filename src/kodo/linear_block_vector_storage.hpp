@@ -14,6 +14,8 @@
 
 namespace kodo
 {
+
+    /// @todo delete this
     /// Implementes a simple uniform random encoding scheme
     /// where the payload_id carries all coding coefficients
     /// i.e. the "encoding vector"

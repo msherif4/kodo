@@ -139,22 +139,41 @@
 
 
 //
-// STORAGE API LAYERS
+// SYMBOL STORAGE API LAYERS
 //
 
 
-/// @defgroup storage Storage
+/// @defgroup symbol_storage Symbol Storage
 /// @ingroup api_layer
 /// @brief Handles storage of encoding and decoding symbols.
 
 /// @defgroup storage_api API
-/// @ingroup storage
+/// @ingroup symbol_storage
 /// @brief The API used by storage layers.
 
 
-/// @defgroup storage_layers Layers
-/// @ingroup storage
+/// @defgroup symbol_storage_layers Layers
+/// @ingroup symbol_storage
 /// @brief Implementations of the storage API.
+
+//
+// COEFFICIENT STORAGE API LAYERS
+//
+
+
+/// @defgroup coefficient_storage Coefficient Storage
+/// @ingroup api_layer
+/// @brief Handles storage of coding coefficients.
+
+/// @defgroup coefficient_storage_api API
+/// @ingroup coefficient_storage
+/// @brief The API used by storage layers.
+
+
+/// @defgroup coefficient_storage_layers Layers
+/// @ingroup coefficient_storage
+/// @brief Implementations of the storage API.
+
 
 
 //

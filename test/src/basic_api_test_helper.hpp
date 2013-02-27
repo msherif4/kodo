@@ -41,9 +41,6 @@ inline uint32_t rand_symbol_size(uint32_t max_symbol_size = 1000)
     assert(symbol_size > 0);
     assert((symbol_size % 4) == 0);
 
-    std::cout << "max = " << max_symbol_size << std::endl;
-    std::cout << "size = " << symbol_size << std::endl;
-
     return symbol_size;
 }
 

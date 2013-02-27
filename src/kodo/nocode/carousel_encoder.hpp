@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CAROUSEL_ENCODER_HPP
-#define KODO_CAROUSEL_ENCODER_HPP
+#ifndef KODO_NOCODE_CAROUSEL_ENCODER_HPP
+#define KODO_NOCODE_CAROUSEL_ENCODER_HPP
 
 #include <sak/convert_endian.hpp>
 
@@ -12,6 +12,8 @@
 
 namespace kodo
 {
+
+    /// @ingroup codec_header_layers
     /// Simple un-coded scheme not meant for practical use but for simulation
     /// purposes. As it simply produces un-coded symbols.
     ///
@@ -37,41 +39,40 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory()
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required symbol_id buffer size in bytes
-            uint32_t max_symbol_id_size() const
+            /// @copydoc layer::factory::max_header_size()
+            uint32_t max_header_size() const
                 {
                     return sizeof(id_type);
                 }
         };
 
-
     public:
-        /// @copydoc final_coder_factory::initialize()
+
+        /// @copydoc layer::initialize(uint32_t, uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
                 m_current_symbol = 0;
             }
 
-        /// @copydoc linear_block_encoder::encode_with_vector()
-        /// @return the amount of used buffer in bytes
-        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// @copydoc layer::encode(uint8_t*, uint8_t*)
+        uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
 
-                /// Flag systematic packet
+                // Write the symbol id in the header
                 sak::big_endian::put<id_type>(
-                    m_current_symbol, symbol_id);
+                    m_current_symbol, symbol_header);
 
-                /// Copy the symbol
                 assert(m_current_symbol < SuperCoder::symbols());
 
+                // Copy the symbol
                 sak::mutable_storage dest =
                     sak::storage(symbol_data, SuperCoder::symbol_size());
 
@@ -83,8 +84,8 @@ namespace kodo
                 return sizeof(id_type);
             }
 
-        /// @return the required symbol_id buffer size in bytes
-        uint32_t symbol_id_size() const
+        /// @copydoc layer::header_size() const
+        uint32_t header_size() const
             {
                 return sizeof(id_type);
             }
@@ -93,6 +94,7 @@ namespace kodo
 
         /// Keeps track of the current symbol id
         uint32_t m_current_symbol;
+
     };
 }
 

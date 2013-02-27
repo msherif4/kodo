@@ -77,7 +77,7 @@ public:
         /// @return the maximum required payload buffer size in bytes
         uint32_t max_payload_size() const;
 
-        /// @ingroup codec_api
+        /// @ingroup coefficient_storage_api
         ///
         /// @note If you implement this function you most likely also have
         ///       to implement the layer::coefficients_size() function.
@@ -208,7 +208,11 @@ public:
     ///                     block.
     void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
 
-    /// @ingroup codec_api
+    //
+    // COEFFICIENT STORAGE API
+    //
+
+    /// @ingroup coefficient_storage_api
     ///
     /// @note If you implement this function you most likely also have
     ///       to implement the layer::factory::max_coefficients_size()
@@ -217,27 +221,27 @@ public:
     /// @return The number of bytes needed to store the symbol coefficients.
     uint32_t coefficients_size() const;
 
-    /// @ingroup codec_api
+    /// @ingroup coefficient_storage_api
     /// @return The number of layer::value_type elements needed to store
     ///         the symbol coefficients.
     uint32_t coefficients_length() const;
 
-    /// @ingroup codec_api
+    /// @ingroup coefficient_storage_api
     /// @param index the index in the vector
     /// @return the specified vector
     value_type* coefficients_value(uint32_t index);
 
-    /// @ingroup codec_api
+    /// @ingroup coefficient_storage_api
     /// @param index the index in the vector
     /// @return the specified vector
     const value_type* coefficients_value(uint32_t index) const;
 
-    /// @ingroup codec_api
+    /// @ingroup coefficient_storage_api
     /// @param index the index in the vector
     /// @return the specified vector
     uint8_t* coefficients(uint32_t index);
 
-    /// @ingroup codec_api
+    /// @ingroup coefficient_storage_api
     /// @param index the index in the vector
     /// @return the specified vector
     const uint8_t* coefficients(uint32_t index) const;
@@ -432,18 +436,14 @@ public:
     /// @return the number of bytes used
     uint32_t bytes_used() const;
 
-    /// @ingroup symbol_api
+    /// @ingroup storage_api
     /// @param index The index of the symbol to check.
     /// @return true if the symbol has been initialized
-    bool symbol_exists(uint32_t index);
-
-
+    bool symbol_exists(uint32_t index) const;
 
     //
     // PAYLOAD API
     //
-
-
 
     /// @ingroup payload_codec_api
     /// Encodes a symbol into the provided buffer.
@@ -464,7 +464,6 @@ public:
     ///
     /// @return the required payload buffer size in bytes
     uint32_t payload_size() const;
-
 
 };
 

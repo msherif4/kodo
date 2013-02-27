@@ -12,7 +12,7 @@
 namespace kodo
 {
 
-    /// @ingroup codec_layers
+    /// @ingroup coefficient_storage_layers
     /// @brief Provides info about the coding coefficients
     ///        used during encoding and decoding.
     ///

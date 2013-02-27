@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CAROUSEL_DECODER_HPP
-#define KODO_CAROUSEL_DECODER_HPP
+#ifndef KODO_NOCODE_CAROUSEL_DECODER_HPP
+#define KODO_NOCODE_CAROUSEL_DECODER_HPP
 
 #include <sak/convert_endian.hpp>
 
@@ -12,6 +12,8 @@
 
 namespace kodo
 {
+
+    /// @ingroup codec_header_layers
     /// Carousel decoder takes symbols produced by a carousel encoder
     /// and decodes them.
     /// @see carousel_encoder
@@ -32,13 +34,13 @@ namespace kodo
         {
         public:
 
-            /// @copydoc final_coder_factory::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @return the required symbol_id buffer size in bytes
-            uint32_t max_symbol_id_size() const
+            /// @copydoc layer::max_header_size() const
+            uint32_t max_header_size() const
                 {
                     return sizeof(id_type);
                 }
@@ -46,19 +48,19 @@ namespace kodo
 
     public:
 
-        /// @copydoc linear_block_decoder::decode()
-        void decode(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// @copydoc layer::decode(uint8_t*,uint8_t*)
+        void decode(uint8_t *symbol_data, uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
 
-                id_type id = sak::big_endian::get<id_type>(symbol_id);
+                id_type id = sak::big_endian::get<id_type>(symbol_header);
 
                 SuperCoder::decode_symbol(symbol_data, id);
             }
 
-        /// @return the required symbol_id buffer size in bytes
-        uint32_t symbol_id_size() const
+        /// @copydoc layer::header_size() const
+        uint32_t header_size() const
             {
                 return sizeof(id_type);
             }
