@@ -44,6 +44,47 @@ inline uint32_t rand_symbol_size(uint32_t max_symbol_size = 1000)
     return symbol_size;
 }
 
+/// Helper function used extensively in the tests below. This
+/// function returns a std::vector<uint8_t> filled with random data.
+/// @param size The size of the vector in bytes
+inline std::vector<uint8_t> random_vector(uint32_t size)
+{
+    std::vector<uint8_t> v(size);
+    for(uint32_t i = 0; i < v.size(); ++i)
+    {
+        v[i] = rand() % 255;
+    }
+
+    return v;
+}
+
+/// Helper function with for running tests with different fields.
+/// The helper expects a template template class Stack which has an
+/// unspecified template argument (the finite field or Field) and a
+/// template template class Test which expects the final Stack<Field>
+/// type.
+/// @param symbols The number of symbols used in the tests
+/// @param symbol_size The size of a symbol in bytes used in the tests
+template<template <class> class Stack, template <class> class Test>
+inline void run_test(uint32_t symbols, uint32_t symbol_size)
+{
+    {
+        Test<Stack<fifi::binary> > test(symbols, symbol_size);
+        test.run();
+    }
+
+    {
+        Test<Stack<fifi::binary8> > test(symbols, symbol_size);
+        test.run();
+    }
+
+    {
+        Test<Stack<fifi::binary16> > test(symbols, symbol_size);
+        test.run();
+    }
+}
+
+
 template<class Encoder, class Decoder>
 inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 {

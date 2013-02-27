@@ -5,6 +5,7 @@ source = ['src/test_symbol_id_layers.cpp',
           'src/test_file_xyz.cpp',
           'src/test_rlnc_full_vector_codes.cpp',
           'src/test_symbol_storage_xyz.cpp',
+          'src/test_coefficient_storage_xyz.cpp',
           'src/test_carousel_codes.cpp']
 #           'src/test_generators_block_xyz.cpp',
 #           'src/test_object_xyz.cpp',

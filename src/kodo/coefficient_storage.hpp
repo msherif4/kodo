@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <fifi/fifi_utils.hpp>
+#include <sak/storage.hpp>
 
 namespace kodo
 {
@@ -85,6 +86,20 @@ namespace kodo
                 return reinterpret_cast<const value_type*>(
                     coefficients(index));
             }
+
+        /// @copydoc layer::set_coefficients(uint32_t,const sak::const_storage&)
+        void set_coefficients(uint32_t index,
+                              const sak::const_storage &storage)
+            {
+                assert(storage.m_size == SuperCoder::coefficients_size());
+                assert(storage.m_data != 0);
+
+                auto dest = sak::storage(
+                    coefficients(index), SuperCoder::coefficients_size());
+
+                sak::copy_storage(dest, storage);
+            }
+
 
     private:
 

@@ -115,43 +115,6 @@ namespace kodo
 
 }
 
-/// Helper function used extensively in the tests below. This
-/// function returns a std::vector<uint8_t> filled with random data.
-std::vector<uint8_t> random_vector(uint32_t size)
-{
-    std::vector<uint8_t> v(size);
-    for(uint32_t i = 0; i < v.size(); ++i)
-    {
-        v[i] = rand() % 255;
-    }
-
-    return v;
-}
-
-/// Helper function with for running tests with different fields.
-/// The helper expects a template template class Coder which has an
-/// unspecified template argument (the finite field or Field) and a
-/// template template class Test which expects the final Coder<Field>
-/// type.
-template<template <class> class Stack, template <class> class Test>
-void run_test(uint32_t symbols, uint32_t symbol_size)
-{
-    {
-        Test<Stack<fifi::binary> > test(symbols, symbol_size);
-        test.run();
-    }
-
-    {
-        Test<Stack<fifi::binary8> > test(symbols, symbol_size);
-        test.run();
-    }
-
-    {
-        Test<Stack<fifi::binary16> > test(symbols, symbol_size);
-        test.run();
-    }
-}
-
 /// Tests: Setting partial data on a storage object. Any unfilled or partial
 ///        symbols should be available but their memory zero'ed.
 template<class Coder>

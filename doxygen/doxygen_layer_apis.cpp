@@ -246,6 +246,13 @@ public:
     /// @return the specified vector
     const uint8_t* coefficients(uint32_t index) const;
 
+    /// @ingroup coefficient_storage_api
+    /// Sets a coefficient buffer - by copying it into the right location in
+    /// the buffer.
+    /// @param index the index of the coefficients into the coding block
+    /// @param storage The actual data of the coefficients
+    void set_coefficients(uint32_t index, const sak::const_storage &storage);
+
     //
     // MATH API
     //
