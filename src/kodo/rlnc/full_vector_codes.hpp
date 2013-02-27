@@ -59,7 +59,7 @@ namespace kodo
     /// @copydoc full_vector_encoder
     template<class Field>
     class full_rlnc_encoder
-        : public // Payload API
+        : public // Payload Codec API
                  payload_encoder<
                  // Codec Header API
                  systematic_encoder<
@@ -72,7 +72,7 @@ namespace kodo
                  coefficient_info<
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
-                 // Storage API
+                 // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
