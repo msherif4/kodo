@@ -3,15 +3,15 @@
 @brief The payload layer provides users of an encoder or decoder with a
 convenient API.
 
-Creating a layer implementing the payload API makes it possible extend
-encoders and decoders with functionality not neccesarily requiring direct
+Creating a layer implementing the payload API makes it possible to extend
+encoders and decoders with functionality not necessarily requiring direct
 access to the symbol id and coded symbol.
 
 Some examples of this can be seen in the ...
 
 The payload layer also provides a user of an encoder/decoder with a more
-concenient API than the \ref coding_layer_api, which requires the user to
-provided seperate buffers for the symbol id and symbol data. Using the
+convenient API than the \ref coding_layer_api, which requires the user to
+provide separate buffers for the symbol id and symbol data. Using the
 payload layer API the user only provides a single memory buffer, as shown
 in the following example for an encoder:
 

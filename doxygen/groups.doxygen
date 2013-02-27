@@ -8,24 +8,24 @@
 /// @brief Provides an overview of the APIs implemented by different
 /// components in Kodo.
 ///
-/// Kodo is largely built using a C++ design technique called Mixin-Layers.
-/// Mixin-Layers are a fexible way of seperating functionality into reusable
+/// Kodo is built using a C++ design technique called Mixin-Layers.
+/// Mixin-Layers is a flexible way of separating functionality into reusable
 /// building blocks (called layers).
 ///
-/// At each layer a seperate API is specified and in order to customize or
+/// At each layer a separate API is specified and in order to customize or
 /// add functionality to Kodo it is necessary to understand which API
 /// layer to look at.
 ///
 /// @note That is by no means required that a specific encoder and
 ///       decoder utilize or provide all API layers. The API layers main
-///       purpose is to facilitat re-use between implementations of
+///       purpose is to facilitate re-use between implementations of
 ///       different encoders and decoders.
 ///
-/// If you wish to get a better understanding the the layering techinique
+/// If you wish to get a better understanding of the layering technique
 /// used, you may take a look at the \ref mixin_example.
 ///
 ///
-/// Before showing the typical layered structure of a encoder and decoder
+/// Before showing the typical layered structure of an encoder and decoder
 /// implemented in Kodo is ...
 
 
@@ -61,7 +61,7 @@
 
 /// @defgroup math Finite Field Math
 /// @ingroup api_layer
-/// @brief The finite field math layers preform computations on symbols
+/// @brief The finite field math layers perform computations on symbols
 ///        and symbol coefficients.
 
 
@@ -91,7 +91,7 @@
 /// @brief The symbol id describes how an encoded symbol has been produced.
 ///
 /// The symbol id uniquely describes the coding coefficients which are used
-/// by the encoder to create and encoded symbol as linear combinations of
+/// by the encoder to create an encoded symbol as linear combinations of
 /// a set of original source symbols. By transmitting the symbol id to the
 /// decoder it can re-create the coding coefficients used to generate the
 /// encoded symbol and by solving a linear system re-produce the original
@@ -101,7 +101,7 @@
 ///       \link kodo::random_uniform_symbol_id<SuperCoder>  class.
 ///       However for efficiency reasons you may want to limit the
 ///       amount of data transmitted between an encoder and decoder
-///       by transmitting an smaller id.
+///       by transmitting a smaller id.
 ///       One example of this is to use the \link seed_symbol_id
 ///       which only transmits the seed for the pseudo-random number
 ///       generator used to generate the coding coefficients.
@@ -235,13 +235,13 @@
 /// @brief The payload layer provides users of an encoder or decoder with a
 /// convenient API.
 ///
-/// Creating a layer implementing the payload API makes it possible extend
-/// encoders and decoders with functionality not neccesarily requiring direct
+/// Creating a layer implementing the payload API makes it possible to extend
+/// encoders and decoders with functionality not necessarily requiring direct
 /// access to the symbol id and coded symbol.
 ///
 /// The payload layer also provides a user of an encoder/decoder with a more
-/// concenient API than the \ref coding_layer_api, which requires the user to
-/// provided seperate buffers for the symbol id and symbol data. Using the
+/// convenient API than the \ref coding_layer_api, which requires the user to
+/// provide seperate buffers for the symbol id and symbol data. Using the
 /// payload layer API the user only provides a single memory buffer, as shown
 /// in the following example for an encoder:
 ///
