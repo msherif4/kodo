@@ -127,13 +127,13 @@ namespace kodo
                 }
             }
 
-        /// @return true if the decoding is complete
+        /// @copydoc layer::is_complete() const
         bool is_complete() const
             {
                 return m_rank == SuperCoder::symbols();
             }
 
-        /// @return the rank of the decoder
+        /// @copydoc layer::rank() const
         uint32_t rank() const
             {
                 return m_rank;

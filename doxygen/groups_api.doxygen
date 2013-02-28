@@ -1,8 +1,6 @@
-//
+//------------------------------------------------------------------
 // LAYERS
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup api_layer API Layers
 /// @brief Provides an overview of the APIs implemented by different
@@ -28,63 +26,59 @@
 /// Before showing the typical layered structure of an encoder and decoder
 /// implemented in Kodo is ...
 
-
-
-//
+//------------------------------------------------------------------
 // FACTORY
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup factory Factory
 /// @ingroup api_layer
 /// @brief The factories are responsible for construction and
 ///        initialization of encoders and decoders.
 
-
 /// @defgroup factory_api API
 /// @ingroup factory
 /// @brief The API used by factory layers.
-
 
 /// @defgroup factory_layers Layers
 /// @ingroup factory
 /// @brief Implementations of the factory API.
 
-
-
-//
+//------------------------------------------------------------------
 // MATH
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup math Finite Field Math
 /// @ingroup api_layer
 /// @brief The finite field math layers perform computations on symbols
 ///        and symbol coefficients.
 
-
 /// @defgroup math_api API
 /// @ingroup math
 /// @brief The API used by math layers.
-///
-/// The prototype of a layer is the following:
-///
-/// @prototype
-
 
 /// @defgroup math_layers Layers
 /// @ingroup math
 /// @brief Implementations of the math API.
 
+//------------------------------------------------------------------
+// COEFFICIENT GENERATOR API
+//------------------------------------------------------------------
 
+/// @defgroup coefficient_generator Coefficient Generator
+/// @ingroup api_layer
+/// @brief Responsible for generating the coding coefficients.
 
-//
+/// @defgroup coefficient_generator_api API
+/// @ingroup coefficient_generator
+/// @brief The API used by generator layers.
+
+/// @defgroup coefficient_generator_layers Layers
+/// @ingroup coefficient_generator
+/// @brief Implementations of the coefficient generator API.
+
+//------------------------------------------------------------------
 // SYMBOL ID
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup symbol_id Symbol IDs
 /// @ingroup api_layer
@@ -110,38 +104,29 @@
 /// @note In Network Coding applications the symbol id is often referred
 ///       to as the encoding vector.
 
-
 /// @defgroup symbol_id_api API
 /// @ingroup symbol_id
 /// @brief The API used by symbol id layers.
-
 
 /// @defgroup symbol_id_layers Layers
 /// @ingroup symbol_id
 /// @brief Implementations of the symbol id API.
 
-
-
-//
+//------------------------------------------------------------------
 // CODING INFO
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup coding_info Coding Info
 /// @ingroup api_layer
 /// @brief Information about encoders and decoders
 
-
 /// @defgroup coding_info_api API
 /// @ingroup coding_info
 /// @brief The coding information API.
 
-
-//
+//------------------------------------------------------------------
 // SYMBOL STORAGE API LAYERS
-//
-
+//------------------------------------------------------------------
 
 /// @defgroup symbol_storage Symbol Storage
 /// @ingroup api_layer
@@ -151,15 +136,13 @@
 /// @ingroup symbol_storage
 /// @brief The API used by storage layers.
 
-
 /// @defgroup symbol_storage_layers Layers
 /// @ingroup symbol_storage
 /// @brief Implementations of the storage API.
 
-//
+//------------------------------------------------------------------
 // COEFFICIENT STORAGE API LAYERS
-//
-
+//------------------------------------------------------------------
 
 /// @defgroup coefficient_storage Coefficient Storage
 /// @ingroup api_layer
@@ -169,66 +152,45 @@
 /// @ingroup coefficient_storage
 /// @brief The API used by storage layers.
 
-
 /// @defgroup coefficient_storage_layers Layers
 /// @ingroup coefficient_storage
 /// @brief Implementations of the storage API.
 
-
-
-//
+//------------------------------------------------------------------
 // CODEC
-//
-
+//------------------------------------------------------------------
 
 /// @defgroup codec Codec
 /// @ingroup api_layer
 /// @brief Implements encoding and decoding algorithms.
 
-
 /// @defgroup codec_api API
 /// @ingroup codec
 /// @brief The API used by encoding and decoding algorithms.
-///
-/// The prototype of a layer is the following:
-///
-/// @prototype
-
 
 /// @defgroup codec_layers Layers
 /// @ingroup codec
 /// @brief Implementations of the codec API.
 
-
-//
+//------------------------------------------------------------------
 // CODEC HEADER
-//
-
-
+//------------------------------------------------------------------
 
 /// @defgroup codec_header Codec Header
 /// @ingroup api_layer
 /// @brief Implements header information to the coding symbols.
 
-
 /// @defgroup codec_header_api API
 /// @ingroup codec_header
 /// @brief The API used by encoding and decoding algorithms.
-///
-/// The prototype of a layer is the following:
-///
-/// @prototype
-
 
 /// @defgroup codec_header_layers Layers
 /// @ingroup codec_header
 /// @brief Implementations of the codec API.
 
-
-//
-// PAYLOAD
-//
-
+//------------------------------------------------------------------
+// PAYLOAD CODEC
+//------------------------------------------------------------------
 
 /// @defgroup payload_codec Payload Codec
 /// @ingroup api_layer

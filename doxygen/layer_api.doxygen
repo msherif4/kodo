@@ -16,6 +16,12 @@ public:
     /// uint8_t as the value_type.
     typedef field::value_type value_type;
 
+    /// @typedef seed_type
+    /// The data type used for seeding the generators in the Generator API.
+    /// Generators implementing the layer::seed(seed_type) function should
+    /// also provide this typedef.
+    typedef field::value_type value_type;
+
     class factory
     {
     public:
@@ -101,11 +107,9 @@ public:
     /// @param symbol_size the size of each symbol in bytes
     void initialize(uint32_t symbols, uint32_t symbol_size);
 
-
-    //
+    //------------------------------------------------------------------
     // CODEC HEADER API
-    //
-
+    //------------------------------------------------------------------
 
     /// @ingroup codec_header_api
     /// @brief Writes the symbol header.
@@ -133,11 +137,9 @@ public:
     /// @return The size in bytes required for the symbol header buffer.
     uint32_t header_size() const;
 
-
-    //
+    //------------------------------------------------------------------
     // SYMBOL ID API
-    //
-
+    //------------------------------------------------------------------
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
@@ -173,13 +175,33 @@ public:
     /// @return the size in bytes required for the symbol id buffer.
     uint32_t id_size();
 
+    //------------------------------------------------------------------
+    // COEFFICIENT GENERATOR API
+    //------------------------------------------------------------------
 
-    //
+    // @ingroup coefficient_generator_api
+    // @param symbol_coefficient Pointer to the memory where the symbol
+    //        coefficients should be stored. The symbol_coefficient
+    //        buffer should have at least layer::coefficients_size()
+    //        capacity.
+    void generate(uint8_t *symbol_coefficients);
+
+    /// @ingroup coefficient_generator_api
+    /// @copydoc generate(uint8_t*)
+    void generate_partial(uint8_t *symbol_coefficients);
+
+    /// @ingroup coefficient_generator_api
+    /// Set the seed of the coefficient generator used.
+    ///
+    /// @note If you implement this function you most likely also have
+    ///       to provide the layer::seed_type typedef.
+    ///
+    /// @param seed The seed value for the generator.
+    void seed(seed_type seed);
+
+    //------------------------------------------------------------------
     // CODEC API
-    //
-    // Here we could add linear block as a sub-group
-    // under linear block we put Codec, Symbol IDs, Coding Coefficient Storage
-
+    //------------------------------------------------------------------
 
     /// @ingroup codec_api
     /// Encodes a symbol according to the symbol coefficients
@@ -208,9 +230,20 @@ public:
     ///                     block.
     void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
 
-    //
+    /// @ingroup codec_api
+    /// Check whether decoding is complete.
+    /// @return true if the decoding is complete
+    bool is_complete() const;
+
+    /// @ingroup codec_api
+    /// The rank of a decoder states how many symbols have been decoded
+    /// or partially decoded.
+    /// @return the rank of the decoder
+    uint32_t rank() const;
+
+    //------------------------------------------------------------------
     // COEFFICIENT STORAGE API
-    //
+    //------------------------------------------------------------------
 
     /// @ingroup coefficient_storage_api
     ///
@@ -253,9 +286,9 @@ public:
     /// @param storage The actual data of the coefficients
     void set_coefficients(uint32_t index, const sak::const_storage &storage);
 
-    //
+    //------------------------------------------------------------------
     // MATH API
-    //
+    //------------------------------------------------------------------
 
     /// @ingroup math_api
     /// Multiplies the symbol with the coefficient
@@ -327,9 +360,9 @@ public:
     /// @return the inverse
     value_type invert(value_type value);
 
-    //
+    //------------------------------------------------------------------
     // SYMBOL STORAGE API
-    //
+    //------------------------------------------------------------------
 
     /// @ingroup storage_api
     /// Copies the encoded / decoded symbols.
@@ -448,9 +481,9 @@ public:
     /// @return true if the symbol has been initialized
     bool symbol_exists(uint32_t index) const;
 
-    //
+    //------------------------------------------------------------------
     // PAYLOAD API
-    //
+    //------------------------------------------------------------------
 
     /// @ingroup payload_codec_api
     /// Encodes a symbol into the provided buffer.
