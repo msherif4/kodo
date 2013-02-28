@@ -16,6 +16,7 @@
 namespace kodo
 {
 
+    /// @todo: Replaced by plain_symbol_id
     /// @brief Generates uniformly random coding coefficients and write
     ///        all coefficients to the symbol id buffer.
     ///
