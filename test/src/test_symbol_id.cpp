@@ -22,9 +22,10 @@
 
 #include "basic_api_test_helper.hpp"
 
-
+/// Here we define the stacks which should be tested.
 namespace kodo
 {
+
     template<class Field>
     class symbol_id_stack
         : public plain_symbol_id_reader<
@@ -36,6 +37,7 @@ namespace kodo
                  symbol_id_stack<Field>, Field>
                      > > > > >
     { };
+
 }
 
 /// Tests:

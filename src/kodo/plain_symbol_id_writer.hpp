@@ -13,7 +13,10 @@
 namespace kodo
 {
 
-    /// @brief Forward symbol id as coefficients
+    /// @brief Writes the symbol id and initializes the coding
+    ///        coefficients pointer. This implementation is the most
+    ///        basic one where the symbol id simply is the coding
+    ///        coefficients.
     ///
     /// @ingroup symbol_id_layers
     /// @ingroup factory_layers
@@ -22,7 +25,7 @@ namespace kodo
     {
     public:
 
-        /// The finite field type
+        /// @copydoc layer::field_type;
         typedef typename SuperCoder::field_type field_type;
 
     public:
@@ -52,7 +55,7 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_id_size = fifi::bytes_needed<field_type>(symbols);
+                m_id_size = SuperCoder::coefficients_size();
                 assert(m_id_size > 0);
             }
 
@@ -77,7 +80,7 @@ namespace kodo
     protected:
 
         /// The number of bytes needed to store the symbol id
-        /// coding coefficients
+        /// i.e. the coding coefficients
         uint32_t m_id_size;
 
     };

@@ -13,7 +13,10 @@
 namespace kodo
 {
 
-    /// @brief Forward symbol id as coefficients
+    /// @brief Reads the coding coefficients from the symbol id
+    ///        buffer and initializes the symbol coefficients pointer.
+    ///        This implementation is the most basic one
+    ///        where the symbol id simply is the coding coefficients.
     ///
     /// @ingroup symbol_id_layers
     /// @ingroup factory_layers
@@ -22,7 +25,7 @@ namespace kodo
     {
     public:
 
-        /// The finite field type
+        /// @copydoc layer::field_type;
         typedef typename SuperCoder::field_type field_type;
 
     public:
@@ -47,16 +50,16 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_id_size = fifi::bytes_needed<field_type>(symbols);
+                m_id_size = SuperCoder::coefficients_size();
                 assert(m_id_size > 0);
             }
 
-        /// @copydoc layer::read_id()
+        /// @copydoc layer::read_id(uint8_t*,uint8_t**)
         void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
             {
                 assert(symbol_id != 0);
@@ -65,7 +68,7 @@ namespace kodo
                 *symbol_coefficients = symbol_id;
             }
 
-        /// @copydoc layer::id_size()
+        /// @copydoc layer::id_size() const
         uint32_t id_size() const
             {
                 return m_id_size;
@@ -74,7 +77,7 @@ namespace kodo
     protected:
 
         /// The number of bytes needed to store the symbol id
-        /// coding coefficients
+        /// i.e. the coding coefficients
         uint32_t m_id_size;
 
     };
