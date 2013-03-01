@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_coefficient_storage_xyz.cpp Unit tests for the coefficient
-///       storage
+/// @file test_coefficient_storage_xyz.cpp Unit tests for the Coefficient
+///       Storage API and layers
 
 #include <cstdint>
 
@@ -185,7 +185,13 @@ TEST(TestSymbolStorage, test_coefficients_storage_stack)
     uint32_t symbol_size = rand_symbol_size();
 
     // API tests:
-    run_test<kodo::coefficient_storage_stack, api_coefficients_storage>(
-        symbols, symbol_size);
+    run_test<
+        kodo::coefficient_storage_stack,
+        api_coefficients_storage>(symbols, symbol_size);
+
+    run_test<
+        kodo::coefficient_storage_stack_pool,
+        api_coefficients_storage>(symbols, symbol_size);
+
 }
 

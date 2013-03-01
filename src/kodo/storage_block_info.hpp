@@ -10,7 +10,7 @@
 
 namespace kodo
 {
-    /// @ingroup storage_info_layers
+    /// @ingroup symbol_storage_layers
     /// @brief Defines several functions to retrieve info about the
     ///        symbol storage layers.
     template<class SuperCoder>

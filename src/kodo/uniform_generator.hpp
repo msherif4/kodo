@@ -13,7 +13,7 @@
 
 namespace kodo
 {
-     /// @ingroup coefficient_generator_layers
+    /// @ingroup coefficient_generator_layers
     /// Generates an random coefficient (from the chosen Finite Field)
     /// for every symbol.
     template<class SuperCoder>
@@ -23,6 +23,9 @@ namespace kodo
 
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
+
+        /// The random generator used
+        typedef boost::random::mt19937 generator_type;
 
         /// @copydoc layer::seed_type
         typedef generator_type::result_type seed_type;
@@ -36,7 +39,8 @@ namespace kodo
 
                 for(uint32_t i = 0; i < SuperCoder::coefficients_size(); ++i)
                 {
-                    symbol_coefficients[i] = m_distribution(m_random_generator);
+                    symbol_coefficients[i] =
+                        m_distribution(m_random_generator);
                 }
             }
 
