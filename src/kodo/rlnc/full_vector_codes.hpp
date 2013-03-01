@@ -42,16 +42,15 @@
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
 #include "../linear_block_decoder_delayed.hpp"
-#include "../linear_block_vector_storage.hpp"
-#include "../linear_block_vector_generator.hpp"
+//#include "../linear_block_vector_storage.hpp"
+//#include "../linear_block_vector_generator.hpp"
 
-#include "../../kodo_debug/full_vector_decoder_debug.hpp"
+//#include "../../kodo_debug/full_vector_decoder_debug.hpp"
 
-#include "full_vector_encoder.hpp"
-#include "full_vector_decoder.hpp"
-#include "full_vector_recoder.hpp"
-#include "full_vector_payload_recoder.hpp"
-#include "full_vector_systematic_recoder.hpp"
+
+//#include "full_vector_recoder.hpp"
+//#include "full_vector_payload_recoder.hpp"
+//#include "full_vector_systematic_recoder.hpp"
 
 namespace kodo
 {
@@ -69,6 +68,7 @@ namespace kodo
                  // Codec API
                  zero_symbol_encoder<
                  linear_block_encoder<
+                 // Coefficient Storage API
                  coefficient_info<
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
@@ -96,7 +96,7 @@ namespace kodo
     /// @copydoc full_vector_decoder
     template<class Field>
     class full_rlnc_decoder
-        : public full_vector_recoder<recode_proxy, random_uniform,
+        : public //full_vector_recoder<recode_proxy, random_uniform,
                  // Payload API
                  payload_decoder<
                  // Codec Header API
@@ -106,9 +106,8 @@ namespace kodo
                  random_uniform_symbol_id<
                  // Codec API
                  align_coefficient_decoder<
-                 full_vector_decoder<
                  linear_block_decoder<
-                 linear_block_vector_storage<
+                 // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
                  // Finite Field Math API
@@ -119,7 +118,7 @@ namespace kodo
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > //> //>// >
     {};
 
 

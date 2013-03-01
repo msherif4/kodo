@@ -332,11 +332,11 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 
 void test_recoders(uint32_t symbols, uint32_t symbol_size)
 {
-
-    test_recoders
-        <
-        kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder>(symbols, symbol_size);
+    /// @todo enable recoding
+    // test_recoders
+    //     <
+    //     kodo::full_rlnc_encoder,
+    //     kodo::full_rlnc_decoder>(symbols, symbol_size);
 
     /// @todo re-enable the delayed coders
     // test_recoders<

@@ -111,7 +111,7 @@ namespace kodo
 
                     // Backwards substitution
                     value_type *coefficients =
-                        SuperCoder::vector(symbol_index);
+                        SuperCoder::coefficients_value(symbol_index);
 
                     backward_substitute(symbol, coefficients, symbol_index);
 
@@ -216,7 +216,8 @@ namespace kodo
                 value_type *symbol_i =
                     SuperCoder::symbol_value(pivot_index);
 
-                value_type *vector_i = SuperCoder::vector(pivot_index);
+                value_type *vector_i =
+                    SuperCoder::coefficients_value(pivot_index);
 
                 value_type value =
                     fifi::get_value<field_type>(vector_i, pivot_index);
@@ -235,7 +236,7 @@ namespace kodo
                 decode_coefficients(symbol_i, vector_i);
 
                 // The previous vector may still be in memory
-                std::fill_n(vector_i, SuperCoder::vector_length(), 0);
+                std::fill_n(vector_i, SuperCoder::coefficients_length(), 0);
 
                 // Stores the symbol and sets the pivot in the vector
                 store_uncoded_symbol(symbol_data, pivot_index);
@@ -277,7 +278,7 @@ namespace kodo
 
                 // Update symbol and corresponding vector
                 SuperCoder::multiply(symbol_id, inverted_coefficient,
-                                     SuperCoder::vector_length());
+                                     SuperCoder::coefficients_length());
 
                 SuperCoder::multiply(symbol_data, inverted_coefficient,
                                      SuperCoder::symbol_length());
@@ -312,7 +313,7 @@ namespace kodo
                         if( symbol_exists( i ) )
                         {
                             value_type *vector_i =
-                                SuperCoder::vector( i );
+                                SuperCoder::coefficients_value( i );
 
                             value_type *symbol_i =
                                 SuperCoder::symbol_value( i );
@@ -321,7 +322,7 @@ namespace kodo
                             {
                                 SuperCoder::subtract(
                                     symbol_id, vector_i,
-                                    SuperCoder::vector_length());
+                                    SuperCoder::coefficients_length());
 
                                 SuperCoder::subtract(
                                     symbol_data, symbol_i,
@@ -332,7 +333,7 @@ namespace kodo
                                 SuperCoder::multiply_subtract(
                                     symbol_id, vector_i,
                                     current_coefficient,
-                                    SuperCoder::vector_length());
+                                    SuperCoder::coefficients_length());
 
                                 SuperCoder::multiply_subtract(
                                     symbol_data, symbol_i,
@@ -392,7 +393,7 @@ namespace kodo
                     if( symbol_exists(i) )
                     {
                         value_type *vector_i =
-                            SuperCoder::vector(i);
+                            SuperCoder::coefficients_value(i);
 
                         value_type *symbol_i =
                             SuperCoder::symbol_value(i);
@@ -401,7 +402,7 @@ namespace kodo
                         {
                             SuperCoder::subtract(
                                 symbol_id, vector_i,
-                                SuperCoder::vector_length());
+                                SuperCoder::coefficients_length());
 
                             SuperCoder::subtract(
                                 symbol_data, symbol_i,
@@ -411,7 +412,7 @@ namespace kodo
                         {
                             SuperCoder::multiply_subtract(
                                 symbol_id, vector_i, value,
-                                SuperCoder::vector_length());
+                                SuperCoder::coefficients_length());
 
                             SuperCoder::multiply_subtract(
                                 symbol_data, symbol_i, value,
@@ -457,12 +458,11 @@ namespace kodo
                     if( m_coded[i] )
                     {
                         value_type *vector_i =
-                            SuperCoder::vector(i);
+                            SuperCoder::coefficients_value(i);
 
                         value_type value =
                             fifi::get_value<field_type>(
                                 vector_i, pivot_index);
-                        //                         vector_type::coefficient(pivot_index, vector_i);
 
                         if( value )
                         {
@@ -474,7 +474,7 @@ namespace kodo
                             {
                                 SuperCoder::subtract(
                                     vector_i, symbol_id,
-                                    SuperCoder::vector_length());
+                                    SuperCoder::coefficients_length());
 
                                 SuperCoder::subtract(
                                     symbol_i, symbol_data,
@@ -486,7 +486,7 @@ namespace kodo
                                 // Update symbol and corresponding vector
                                 SuperCoder::multiply_subtract(
                                     vector_i, symbol_id, value,
-                                    SuperCoder::vector_length());
+                                    SuperCoder::coefficients_length());
 
                                 SuperCoder::multiply_subtract(
                                     symbol_i, symbol_data, value,
@@ -500,29 +500,30 @@ namespace kodo
         /// Store an encoded symbol and encoding vector with the specified
         /// pivot found.
         /// @param symbol_data buffer containing the encoding symbol
-        /// @param symbol_id buffer containing the encoding vector
+        /// @param symbol_coefficients buffer containing the symbol
+        ///        coefficients
         /// @param pivot_index the pivot index
         void store_coded_symbol(const value_type *symbol_data,
-                                const value_type *symbol_id,
+                                const value_type *symbol_coefficients,
                                 uint32_t pivot_index)
             {
                 assert(m_uncoded[pivot_index] == false);
                 assert(m_coded[pivot_index] == false);
-                assert(symbol_id != 0);
+                assert(symbol_coefficients != 0);
                 assert(symbol_data != 0);
 
-                // Copy it into the vector storage
-                value_type *vector_dest =
-                    SuperCoder::vector( pivot_index );
+                auto coefficient_storage =
+                    sak::storage(symbol_coefficients,
+                                 SuperCoder::coefficients_size());
 
                 auto symbol_storage =
                     sak::storage(symbol_data, SuperCoder::symbol_size());
 
-                std::copy(symbol_id,
-                          symbol_id + SuperCoder::vector_length(),
-                          vector_dest);
+                SuperCoder::set_coefficients(
+                    pivot_index, coefficient_storage);
 
-                SuperCoder::set_symbol(pivot_index, symbol_storage);
+                SuperCoder::set_symbol(
+                    pivot_index, symbol_storage);
             }
 
         /// Stores an uncoded or fully decoded symbol
@@ -536,7 +537,9 @@ namespace kodo
                 assert(m_coded[pivot_index] == false);
 
                 // Update the corresponding vector
-                value_type *vector_dest = SuperCoder::vector( pivot_index );
+                value_type *vector_dest =
+                    SuperCoder::coefficients_value( pivot_index );
+
                 fifi::set_value<field_type>(vector_dest, pivot_index, 1U);
 
                 // Copy it into the symbol storage
