@@ -20,11 +20,15 @@ public:
     /// The data type used for seeding the generators in the Generator API.
     /// Generators implementing the layer::seed(seed_type) function should
     /// also provide this typedef.
-    typedef field::value_type value_type;
+    typedef seed_type seed_type;
 
     class factory
     {
     public:
+
+        //------------------------------------------------------------------
+        // FACTORY API
+        //------------------------------------------------------------------
 
         /// @ingroup factory_api
         /// @brief Factory constructor
@@ -38,6 +42,11 @@ public:
         /// @param symbol_size the size of a symbol in bytes
         /// @return pointer to an instantiation of an encoder or decoder
         pointer build(uint32_t symbols, uint32_t symbol_size);
+
+        //------------------------------------------------------------------
+        // Functions belonging to other APIs but placed required in the
+        // factory in order to correctly build the different layers.
+        //------------------------------------------------------------------
 
         /// @ingroup storage_api
         /// @return the maximum number of symbols in a block
@@ -92,6 +101,10 @@ public:
         uint32_t max_coefficients_size() const;
 
     };
+
+    //------------------------------------------------------------------
+    // CONSTRUCTION API
+    //------------------------------------------------------------------
 
     /// @ingroup factory_api
     /// @brief Constructs the coder with the maximum parameters it will ever
@@ -179,25 +192,35 @@ public:
     // COEFFICIENT GENERATOR API
     //------------------------------------------------------------------
 
-    // @ingroup coefficient_generator_api
-    // @param symbol_coefficient Pointer to the memory where the symbol
-    //        coefficients should be stored. The symbol_coefficient
-    //        buffer should have at least layer::coefficients_size()
-    //        capacity.
+    /// @ingroup coefficient_generator_api
+    /// Fills the input buffer with symbol coefficients used for either
+    /// encoding or decoding a symbol.
+    /// @param symbol_coefficient Pointer to the memory where the symbol
+    ///        coefficients should be stored. The symbol_coefficient
+    ///        buffer should have at least layer::coefficients_size()
+    ///        capacity.
     void generate(uint8_t *symbol_coefficients);
 
     /// @ingroup coefficient_generator_api
+    /// The generate partial function must only generate non-zero symbol
+    /// coefficients for symbols which have been set in the Symbol
+    /// Storage Layer. The primary use-case for generate_partial(uint8_t*)
+    /// is to allow encoding to start prior to having all original source
+    /// symbols available.
     /// @copydoc generate(uint8_t*)
     void generate_partial(uint8_t *symbol_coefficients);
 
     /// @ingroup coefficient_generator_api
-    /// Set the seed of the coefficient generator used.
+    /// Set the seed of the coefficient generator used. Note that not all
+    /// generators provide the seed() function. E.g. a layer using a
+    /// Vandermonde matrix as source for the symbol coefficients will not
+    /// implement the seed() function.
     ///
     /// @note If you implement this function you most likely also have
     ///       to provide the layer::seed_type typedef.
     ///
     /// @param seed The seed value for the generator.
-    void seed(seed_type seed);
+    void seed(seed_type seed_value);
 
     //------------------------------------------------------------------
     // CODEC API
@@ -496,6 +519,14 @@ public:
     /// Decodes an encoded symbol stored in the payload buffer
     /// @param payload. The buffer storing the payload of an encoded symbol
     void decode(uint8_t *payload);
+
+    /// @ingroup payload_codec_api
+    /// Recodes a symbol into the provided buffer. This function is special for
+    /// network codes.
+    /// @param payload. The buffer which should contain the recoded
+    ///        symbol.
+    /// @return the total bytes used from the payload buffer
+    uint32_t recode(uint8_t *payload);
 
     /// @ingroup payload_codec_api
     ///
