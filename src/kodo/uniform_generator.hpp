@@ -17,7 +17,7 @@ namespace kodo
     /// Generates an random coefficient (from the chosen Finite Field)
     /// for every symbol.
     template<class SuperCoder>
-    class random_uniform : public SuperCoder
+    class uniform_generator : public SuperCoder
     {
     public:
 
