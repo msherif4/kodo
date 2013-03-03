@@ -12,6 +12,7 @@
 #include <gtest/gtest.h>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/symbol_storage_tracker.hpp>
 #include <kodo_debug/full_vector_decoder_debug.hpp>
 
 #include "basic_api_test_helper.hpp"
@@ -369,3 +370,133 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 //     test_recoders(symbols, symbol_size);
 // }
 
+
+
+namespace kodo
+{
+
+    template<class Proxy>
+    class final_proxy
+    {
+    public:
+
+        typedef typename Proxy::field_type field_type;
+
+    public:
+
+        final_proxy()
+            : m_proxy(0)
+            { }
+
+
+        void set_proxy(Proxy *proxy)
+            {
+                assert(proxy != 0);
+                m_proxy = proxy;
+            }
+
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+            {
+                assert(m_proxy);
+                m_proxy->construct(max_symbols, max_symbol_size);
+            }
+
+    protected:
+
+        Proxy *m_proxy;
+
+    };
+
+    class dummy
+    {
+    public:
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+            {
+                std::cout << "dummy::construct" << std::endl;
+            }
+
+    };
+
+    template<template <class> class ProxyEncoder, class SuperCoder>
+    class payload_recoder : public SuperCoder
+    {
+    public:
+
+        class proxy : public ProxyEncoder<SuperCoder>
+        { };
+
+
+        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+            {
+                m_proxy.set_proxy(this);
+                m_proxy.construct(max_symbols, max_symbol_size);
+                std::cout << "WORKS" << std::endl;
+
+            }
+
+        /// Helper for defining the proxy type
+        //class proxy : public ProxyEncoder<
+
+    protected:
+
+        proxy m_proxy;
+
+
+    };
+}
+
+
+
+template<class MainStack>
+class recoding_proxy
+    : public kodo::linear_block_encoder<
+             kodo::final_proxy<MainStack> >
+{
+
+public:
+
+};
+
+template<class Field>
+class test
+    : public kodo::payload_recoder<recoding_proxy,
+             // Coefficient Storage API
+             kodo::coefficient_info<
+             // Finite Field Math API
+             kodo::finite_field_math<fifi::default_field_impl,
+             // Symbol Storage API
+             kodo::symbol_storage_tracker<
+             kodo::mutable_shallow_symbol_storage<
+             kodo::storage_bytes_used<
+             kodo::storage_block_info<
+             // Factory API
+             kodo::final_coder_factory<
+             // Final type
+             test<Field>, Field> > > > > > > >
+{};
+
+
+TEST(TestRlncFullVectorCodes, recoding_simple)
+{
+
+    test<fifi::binary>::factory f(10,10);
+    auto p = f.build(10,10);
+
+    std::vector<uint8_t> v(10);
+    sak::mutable_storage vm = sak::storage(v);
+    sak::const_storage vc = sak::storage(v);
+
+    std::cout << "Is set " << p->symbol_exists(0) << std::endl;
+    p->set_symbol(0, vm);
+
+    std::cout << "Is set " << p->symbol_exists(0) << std::endl;
+
+    //uint32_t
+
+
+
+
+//    kodo::payload_recoder<helper, kodo::dummy> enc;
+//    enc.construct(10,10);
+
+}

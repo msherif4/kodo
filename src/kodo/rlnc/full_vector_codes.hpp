@@ -20,7 +20,7 @@
 #include "../finite_field_math.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
-#include "../non_systematic_encoder.hpp"
+//#include "../non_systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
 #include "../storage_bytes_used.hpp"
 #include "../storage_block_info.hpp"
@@ -38,6 +38,9 @@
 #include "../random_uniform_symbol_id.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
+#include "../plain_symbol_id_reader.hpp"
+#include "../plain_symbol_id_writer.hpp"
+#include "../uniform_generator.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -64,7 +67,9 @@ namespace kodo
                  systematic_encoder<
                  symbol_id_encoder<
                  // Symbol ID API
-                 random_uniform_symbol_id<
+                 plain_symbol_id_writer<
+                 // Coefficient Generator API
+                 uniform_generator<
                  // Codec API
                  zero_symbol_encoder<
                  linear_block_encoder<
@@ -77,15 +82,17 @@ namespace kodo
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
-                 final_coder_factory_pool<full_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > > >
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_encoder<Field>, Field>
+                     > > > > > > > > > > > >
     {};
 
     /// Intermediate layer utilized by the re-coding functionality
     /// of a RLNC decoder. This allows us to re-use layers from the
     /// RLNC encoder to build a RLNC recoder
     template<class SuperCoder>
-    class recode_proxy
+    class recode_encoder
         : public payload_encoder<
                  non_systematic_encoder<
                  align_symbol_id_encoder<
@@ -103,7 +110,7 @@ namespace kodo
                  systematic_decoder<
                  symbol_id_decoder<
                  // Symbol ID API
-                 random_uniform_symbol_id<
+                 plain_symbol_id_reader<
                  // Codec API
                  align_coefficient_decoder<
                  linear_block_decoder<

@@ -10,6 +10,8 @@
 
 #include <gtest/gtest.h>
 
+#include <fifi/fifi_utils.hpp>
+
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/final_coder_factory_pool.hpp>
 #include <kodo/coefficient_info.hpp>
@@ -60,6 +62,7 @@ struct api_generate
     typedef typename Coder::factory factory_type;
     typedef typename Coder::pointer pointer_type;
     typedef typename Coder::field_type field_type;
+    typedef typename Coder::value_type value_type;
 
     api_generate(uint32_t max_symbols,
                               uint32_t max_symbol_size)
@@ -95,16 +98,33 @@ struct api_generate
             std::vector<uint8_t> vector_b =
                 random_vector(coder->coefficients_size());
 
-            coder->seed(0);
-            coder->generate(&vector_a[0]);
+            std::vector<uint8_t> vector_c =
+                random_vector(coder->coefficients_size());
+
+             std::vector<uint8_t> vector_d =
+                random_vector(coder->coefficients_size());
 
             coder->seed(0);
+            coder->generate(&vector_a[0]);
             coder->generate(&vector_b[0]);
+
+            coder->seed(0);
+            coder->generate(&vector_c[0]);
+
+            coder->seed(1);
+            coder->generate(&vector_d[0]);
 
             auto storage_a = sak::storage(vector_a);
             auto storage_b = sak::storage(vector_b);
+            auto storage_c = sak::storage(vector_c);
+            auto storage_d = sak::storage(vector_d);
 
-            EXPECT_TRUE(sak::equal(storage_a,storage_b));
+            EXPECT_FALSE(sak::equal(storage_a,storage_b));
+            EXPECT_TRUE(sak::equal(storage_a,storage_c));
+            EXPECT_FALSE(sak::equal(storage_a,storage_d));
+            EXPECT_FALSE(sak::equal(storage_b,storage_c));
+            EXPECT_FALSE(sak::equal(storage_b,storage_d));
+            EXPECT_FALSE(sak::equal(storage_c,storage_d));
         }
 
 private:

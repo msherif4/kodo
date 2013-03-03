@@ -5,6 +5,9 @@
 
 #include <ctime>
 
+/// @file test_xyz_symbol_id.cpp
+/// @todo delete this file
+
 #include <gtest/gtest.h>
 
 struct null_flag

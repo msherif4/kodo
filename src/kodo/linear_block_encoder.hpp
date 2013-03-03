@@ -9,8 +9,7 @@
 #include <cstdint>
 
 #include <fifi/is_binary.hpp>
-
-#include "linear_block_vector.hpp"
+#include <fifi/fifi_utils.hpp>
 
 namespace kodo
 {
@@ -31,9 +30,6 @@ namespace kodo
         /// The value type
         typedef typename field_type::value_type value_type;
 
-        /// The coefficient vector
-        typedef linear_block_vector<field_type> vector_type;
-
     public:
 
         /// @copydoc layer::encode_symbol()
@@ -51,8 +47,8 @@ namespace kodo
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    auto coefficient =
-                        vector_type::coefficient(i, coefficients);
+                    value_type coefficient =
+                        fifi::get_value<field_type>(coefficients, i);
 
                     if(coefficient)
                     {

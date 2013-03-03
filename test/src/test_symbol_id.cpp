@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_coefficient_storage_xyz.cpp Unit tests for the coefficient
-///       storage
+/// @file test_symbol_id.cpp Unit tests for the Symbol ID API
 
 #include <cstdint>
 
@@ -27,14 +26,14 @@ namespace kodo
 {
 
     template<class Field>
-    class symbol_id_stack
+    class plain_uniform_stack
         : public plain_symbol_id_reader<
                  plain_symbol_id_writer<
                  uniform_generator<
                  coefficient_info<
                  storage_block_info<
                  final_coder_factory<
-                 symbol_id_stack<Field>, Field>
+                 plain_uniform_stack<Field>, Field>
                      > > > > >
     { };
 
@@ -52,7 +51,7 @@ struct api_symbol_id
     typedef typename Coder::factory factory_type;
     typedef typename Coder::pointer pointer_type;
     typedef typename Coder::field_type field_type;
-    typedef typename Coder::field_type::value_type value_type;
+    typedef typename Coder::value_type value_type;
 
     api_symbol_id(uint32_t max_symbols, uint32_t max_symbol_size)
         : m_factory(max_symbols, max_symbol_size)
@@ -81,36 +80,35 @@ struct api_symbol_id
         {
             pointer_type coder = m_factory.build(symbols, symbol_size);
 
-            // Make sure we call the const version of the function
-            //const pointer_type &const_coder = coder;
-
             EXPECT_TRUE(m_factory.max_id_size() > 0);
+            EXPECT_TRUE(coder->id_size() > 0);
 
-            EXPECT_TRUE(coder->id_size());
             EXPECT_TRUE(m_factory.max_id_size() >= coder->id_size());
 
-            std::vector<uint8_t> symbol_id(coder->id_size());
-            uint8_t *symbol_id_coefficients = 0;
+            std::vector<uint8_t> id(coder->id_size());
 
-            coder->write_id(&symbol_id[0], &symbol_id_coefficients);
+            uint8_t *coefficients_out = 0;
+            uint8_t *coefficients_in = 0;
 
-            EXPECT_TRUE(symbol_id_coefficients != 0);
+            // Write the symbol id and get the corresponding coefficients
+            uint32_t bytes_used =
+                coder->write_id(&id[0], &coefficients_out);
 
-            value_type *c = reinterpret_cast<value_type*>(symbol_id_coefficients);
+            EXPECT_TRUE(bytes_used > 0);
+            EXPECT_TRUE(coefficients_out != 0);
 
-            for (uint32_t i = 0; i < symbols; ++i)
-            {
-                typename field_type::order_type v =
-                    fifi::get_value<field_type>(c, i);
+            // Read the symbol id and get the corresponding coefficients
+            coder->read_id(&id[0], &coefficients_in);
 
-                EXPECT_TRUE(v <= field_type::max_value);
+            EXPECT_TRUE(coefficients_in != 0);
 
-                // Since values are unsigned and min_value of all field types
-                // are zero v can never be less than - so we don't bother
-                // testing for it.
-            }
+            auto storage_out =
+                sak::storage(coefficients_out, coder->coefficients_size());
 
+            auto storage_in =
+                sak::storage(coefficients_in, coder->coefficients_size());
 
+            EXPECT_TRUE(sak::equal(storage_out, storage_in));
         }
 
 private:
@@ -128,7 +126,7 @@ TEST(TestSymbolId, test_symbol_id_stack)
     uint32_t symbol_size = rand_symbol_size();
 
     // API tests:
-    run_test<kodo::symbol_id_stack, api_symbol_id>(
+    run_test<kodo::plain_uniform_stack, api_symbol_id>(
         symbols, symbol_size);
 }
 

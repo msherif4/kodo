@@ -17,6 +17,7 @@
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/has_shallow_symbol_storage.hpp>
 #include <kodo/has_deep_symbol_storage.hpp>
+#include <kodo/symbol_storage_tracker.hpp>
 
 #include "basic_api_test_helper.hpp"
 
@@ -32,85 +33,93 @@ namespace kodo
     // Deep Symbol Storage
     template<class Field>
     class deep_storage_stack
-        : public deep_symbol_storage<
+        : public symbol_storage_tracker<
+                 deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<
                  deep_storage_stack<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     template<class Field>
     class deep_storage_stack_pool
-        : public deep_symbol_storage<
+        : public symbol_storage_tracker<
+                 deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory_pool<
                  deep_storage_stack_pool<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     // Mutable Shallow Symbol Storage
     template<class Field>
     class mutable_shallow_stack
-        : public mutable_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 mutable_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<
                  mutable_shallow_stack<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     template<class Field>
     class mutable_shallow_stack_pool
-        : public mutable_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 mutable_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory_pool<
                  mutable_shallow_stack_pool<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     // Const Shallow Symbol Storage
     template<class Field>
     class const_shallow_stack
-        : public const_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 const_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<
                  const_shallow_stack<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     template<class Field>
     class const_shallow_stack_pool
-        : public const_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 const_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory_pool<
                  const_shallow_stack_pool<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     // Partial Shallow Symbol Storage
     template<class Field>
     class partial_shallow_stack
-        : public partial_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 partial_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory<
                  partial_shallow_stack<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
     template<class Field>
     class partial_shallow_stack_pool
-        : public partial_shallow_symbol_storage<
+        : public symbol_storage_tracker<
+                 partial_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  final_coder_factory_pool<
                  partial_shallow_stack_pool<Field>, Field>
-                     > > >
+                     > > > >
     {};
 
 }

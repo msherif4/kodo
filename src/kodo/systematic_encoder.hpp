@@ -21,9 +21,14 @@ namespace kodo
 
     /// @ingroup codec_header_layers
     /// @ingroup factory_layers
-    /// @brief Systematic encoding layer. 
-    template<class SuperCoder>
-    class systematic_encoder : public SuperCoder
+    /// @brief Systematic encoding layer.
+    ///
+    /// Specifying the SystematicOn template argument true will initialize the
+    /// systematic encoder to produce systematic packets. If SystematicOn is
+    /// false a user must first call the set_systematic_on() function to
+    /// start producing systematic packets.
+    template<bool SystematicOn, class SuperCoder>
+    class base_systematic_encoder : public SuperCoder
     {
     public:
 
@@ -67,9 +72,9 @@ namespace kodo
     public:
 
         /// Constructor
-        systematic_encoder()
+        base_systematic_encoder()
             : m_count(0),
-              m_systematic(true)
+              m_systematic(SystematicOn)
             { }
 
         /// @copydoc layer::initialize()
@@ -79,7 +84,7 @@ namespace kodo
 
                 /// Reset the state
                 m_count = 0;
-                m_systematic = true;
+                m_systematic = SystematicOn;
             }
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
@@ -188,6 +193,17 @@ namespace kodo
         bool m_systematic;
 
     };
+
+    template<class SuperCoder>
+    class systematic_encoder :
+        public base_systematic_encoder<true, SuperCoder>
+    {};
+
+    template<class SuperCoder>
+    class non_systematic_encoder :
+        public base_systematic_encoder<false, SuperCoder>
+    {};
+
 
     /// Overload for the generic is_systematic_encoder_dispatch(...) function
     ///
