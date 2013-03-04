@@ -18,63 +18,11 @@
 #include <kodo/storage_block_info.hpp>
 #include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/uniform_generator.hpp>
+#include <kodo/fake_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
 
 
-/// @ingroup storage_layers
-/// Implements the Symbol Storage API but only with empty functions.
-/// Useful in unit tests.
-template<class SuperCoder>
-class fake_symbol_storage : public SuperCoder
-{
-public:
-
-    /// @copydoc layer::set_symbols(const sak::const_storage&)
-    void set_symbols(const sak::const_storage &symbol_storage)
-        {
-            (void) symbol_storage;
-        }
-
-    /// @copydoc layer::set_symbols(const sak::mutable_storage&)
-    void set_symbols(const sak::mutable_storage &symbol_storage)
-        {
-            (void) symbol_storage;
-        }
-
-    /// @copydoc layer::set_symbol(uint32_t,const sak::mutable_storage&)
-    void set_symbol(uint32_t index, const sak::mutable_storage &symbol)
-        {
-            (void) index;
-            (void) symbol;
-        }
-
-    /// @copydoc layer::set_symbol(uint32_t, const sak::const_storage&)
-    void set_symbol(uint32_t index, const sak::const_storage &symbol)
-        {
-            (void) index;
-            (void) symbol;
-        }
-
-    /// @copydoc layer::swap_symbols(std::vector<const uint8_t*>&)
-    void swap_symbols(std::vector<const uint8_t *> &symbols)
-        {
-            (void) symbols;
-        }
-
-    /// @copydoc layer::swap_symbols(std::vector<uint8_t*>&)
-    void swap_symbols(std::vector<uint8_t *> &symbols)
-        {
-            (void) symbols;
-        }
-
-        /// @copydoc layer::swap_symbols(std::vector<uint8_t>&)
-    void swap_symbols(std::vector<uint8_t> &symbols)
-        {
-            (void) symbols;
-        }
-
-};
 
 
 /// Defines a number test stacks which contains the layers we wish to

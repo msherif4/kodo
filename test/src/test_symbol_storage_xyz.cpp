@@ -18,6 +18,7 @@
 #include <kodo/has_shallow_symbol_storage.hpp>
 #include <kodo/has_deep_symbol_storage.hpp>
 #include <kodo/symbol_storage_tracker.hpp>
+#include <kodo/fake_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
 
@@ -120,6 +121,27 @@ namespace kodo
                  final_coder_factory_pool<
                  partial_shallow_stack_pool<Field>, Field>
                      > > > >
+    {};
+
+    // Symbol Storage Tracker
+    template<class Field>
+    class storage_tracker_stack
+        : public symbol_storage_tracker<
+                 fake_symbol_storage<
+                 storage_block_info<
+                 final_coder_factory<
+                 storage_tracker_stack<Field>, Field>
+                     > > >
+    {};
+
+    template<class Field>
+    class storage_tracker_stack_pool
+        : public symbol_storage_tracker<
+                 fake_symbol_storage<
+                 storage_block_info<
+                 final_coder_factory_pool<
+                 storage_tracker_stack_pool<Field>, Field>
+                     > > >
     {};
 
 }
@@ -1083,6 +1105,45 @@ private:
 
 };
 
+/// Tests:
+///   - layer::symbol_exists(uint32_t) const
+///   - layer::symbol_count() const
+///   - layer::is_storage_full() const
+template<class Coder>
+struct api_storage_status
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    api_storage_status(uint32_t max_symbols, uint32_t max_symbol_size)
+        : m_factory(max_symbols, max_symbol_size)
+        { }
+
+    void run()
+        {
+            // Build with the max_symbols and max_symbol_size
+            pointer_type coder =
+                m_factory.build(m_factory.max_symbols(),
+                                m_factory.max_symbol_size());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_FALSE(coder->symbol_exists(i));
+            }
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+        }
+
+private:
+
+    // The factory
+    factory_type m_factory;
+
+};
+
+
 /// Helper function for running all the API and related tests
 /// which are compatible with the deep stack.
 template<template <class> class Stack>
@@ -1334,3 +1395,19 @@ TEST(TestSymbolStorage, test_has_deep_symbol_storage)
 
     EXPECT_FALSE(kodo::has_deep_symbol_storage<fifi::binary8>::value);
 }
+
+
+/// Run the tests for the storage tracker
+TEST(TestSymbolStorage, test_storage_tracker)
+{
+    // Run the partial data tests
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    run_test<kodo::storage_tracker_stack, api_storage_status>(
+        symbols, symbol_size);
+
+    run_test<kodo::storage_tracker_stack_pool, api_storage_status>(
+        symbols, symbol_size);
+}
+

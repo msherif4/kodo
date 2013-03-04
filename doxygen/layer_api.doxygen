@@ -504,6 +504,15 @@ public:
     /// @return true if the symbol has been initialized
     bool symbol_exists(uint32_t index) const;
 
+    /// @ingroup storage_api
+    /// @return The number of symbols which have been specified so far
+    uint32_t symbol_count() const;
+
+    /// @ingroup storage_api
+    /// @return true if the all symbols have been specified in the
+    ///         symbol storage, otherwise false
+    bool is_storage_full() const;
+
     //------------------------------------------------------------------
     // PAYLOAD API
     //------------------------------------------------------------------

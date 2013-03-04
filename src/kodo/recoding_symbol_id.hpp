@@ -83,16 +83,22 @@ namespace kodo
                 // Zero the symbol id
                 std::fill_n(symbol_id, m_id_size, 0);
 
-                // if(SuperCoder::symbol_count() == 0)
-                //{
-                //    *symbol_coefficients = symbol_id;
-                //    return;
-                //}
+                // Check the number of symbols stored
+                uint32_t symbol_count = SuperCoder::symbol_count();
 
-                // Generate the coefficients needed for the recoding
-                // We assume that we have a storage aware generator
-                // underneath.
-                SuperCoder::generate(&m_coefficients[0]);
+                if(symbol_count == 0)
+                {
+                    *symbol_coefficients = symbol_id;
+                    return;
+                }
+                else if(symbol_count < SuperCoder::symbols())
+                {
+                    SuperCoder::generate_partial(&m_coefficients[0]);
+                }
+                else
+                {
+                    SuperCoder::generate(&m_coefficients[0]);
+                }
 
                 // Create the recoded symbol id
                 value_type *recode_id
