@@ -16,9 +16,66 @@
 #include <kodo/final_coder_factory_pool.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
+#include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/uniform_generator.hpp>
 
 #include "basic_api_test_helper.hpp"
+
+
+/// @ingroup storage_layers
+/// Implements the Symbol Storage API but only with empty functions.
+/// Useful in unit tests.
+template<class SuperCoder>
+class fake_symbol_storage : public SuperCoder
+{
+public:
+
+    /// @copydoc layer::set_symbols(const sak::const_storage&)
+    void set_symbols(const sak::const_storage &symbol_storage)
+        {
+            (void) symbol_storage;
+        }
+
+    /// @copydoc layer::set_symbols(const sak::mutable_storage&)
+    void set_symbols(const sak::mutable_storage &symbol_storage)
+        {
+            (void) symbol_storage;
+        }
+
+    /// @copydoc layer::set_symbol(uint32_t,const sak::mutable_storage&)
+    void set_symbol(uint32_t index, const sak::mutable_storage &symbol)
+        {
+            (void) index;
+            (void) symbol;
+        }
+
+    /// @copydoc layer::set_symbol(uint32_t, const sak::const_storage&)
+    void set_symbol(uint32_t index, const sak::const_storage &symbol)
+        {
+            (void) index;
+            (void) symbol;
+        }
+
+    /// @copydoc layer::swap_symbols(std::vector<const uint8_t*>&)
+    void swap_symbols(std::vector<const uint8_t *> &symbols)
+        {
+            (void) symbols;
+        }
+
+    /// @copydoc layer::swap_symbols(std::vector<uint8_t*>&)
+    void swap_symbols(std::vector<uint8_t *> &symbols)
+        {
+            (void) symbols;
+        }
+
+        /// @copydoc layer::swap_symbols(std::vector<uint8_t>&)
+    void swap_symbols(std::vector<uint8_t> &symbols)
+        {
+            (void) symbols;
+        }
+
+};
+
 
 /// Defines a number test stacks which contains the layers we wish to
 /// test.
@@ -34,26 +91,31 @@ namespace kodo
     class uniform_generator_stack
         : public uniform_generator<
                  coefficient_info<
+                 symbol_storage_tracker<
+                 fake_symbol_storage<
                  storage_block_info<
                  final_coder_factory<
                  uniform_generator_stack<Field>, Field>
-                     > > >
+                     > > > > >
     {};
 
     template<class Field>
     class uniform_generator_stack_pool
         : public uniform_generator<
                  coefficient_info<
+                 symbol_storage_tracker<
+                 fake_symbol_storage<
                  storage_block_info<
                  final_coder_factory_pool<
                  uniform_generator_stack_pool<Field>, Field>
-                     > > >
+                     > > > > >
     {};
 
 }
 
 /// Tests:
 ///   - layer::generate(uint8_t*)
+///   - layer::generate_partial(uint8_t*)
 ///   - layer::seed(seed_type)
 template<class Coder>
 struct api_generate
@@ -86,6 +148,8 @@ struct api_generate
                 rand_symbol_size(m_factory.max_symbol_size());
 
             run_once(symbols, symbol_size);
+
+            run_partial(symbols, symbol_size);
         }
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
@@ -101,7 +165,7 @@ struct api_generate
             std::vector<uint8_t> vector_c =
                 random_vector(coder->coefficients_size());
 
-             std::vector<uint8_t> vector_d =
+            std::vector<uint8_t> vector_d =
                 random_vector(coder->coefficients_size());
 
             coder->seed(0);
@@ -125,6 +189,54 @@ struct api_generate
             EXPECT_FALSE(sak::equal(storage_b,storage_c));
             EXPECT_FALSE(sak::equal(storage_b,storage_d));
             EXPECT_FALSE(sak::equal(storage_c,storage_d));
+        }
+
+
+    void run_partial(uint32_t symbols, uint32_t symbol_size)
+        {
+            pointer_type coder = m_factory.build(symbols, symbol_size);
+
+            std::vector<uint8_t> vector_a =
+                random_vector(coder->coefficients_size());
+
+            std::vector<uint8_t> vector_b =
+                random_vector(coder->coefficients_size());
+
+            std::vector<uint8_t> vector_c =
+                random_vector(coder->coefficients_size());
+
+            std::vector<uint8_t> vector_d =
+                random_vector(coder->coefficients_size());
+
+            coder->seed(0);
+            coder->generate_partial(&vector_a[0]);
+            coder->generate_partial(&vector_b[0]);
+
+            coder->seed(0);
+            coder->generate_partial(&vector_c[0]);
+
+            coder->seed(1);
+            coder->generate_partial(&vector_d[0]);
+
+            auto storage_a = sak::storage(vector_a);
+            auto storage_b = sak::storage(vector_b);
+            auto storage_c = sak::storage(vector_c);
+            auto storage_d = sak::storage(vector_d);
+
+            std::vector<uint8_t> zero_vector(coder->coefficients_size(), 0);
+
+            auto zero_storage = sak::storage(zero_vector);
+
+            EXPECT_TRUE(sak::equal(storage_a,zero_storage));
+            EXPECT_TRUE(sak::equal(storage_b,zero_storage));
+            EXPECT_TRUE(sak::equal(storage_c,zero_storage));
+            EXPECT_TRUE(sak::equal(storage_d,zero_storage));
+
+            std::vector<uint8_t> symbol_a =
+                random_vector(coder->symbol_size());
+
+            coder->set_symbol(1, sak::storage(symbol_a));
+
         }
 
 private:

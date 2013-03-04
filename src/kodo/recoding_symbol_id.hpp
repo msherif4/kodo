@@ -65,7 +65,7 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_id_size = fifi::bytes_needed<field_type>(symbols);
+                m_id_size = SuperCoder::coefficients_size();
                 assert(m_id_size > 0);
             }
 
@@ -74,19 +74,59 @@ namespace kodo
         /// recoded encoding vector will be available in the
         /// symbol_coefficient buffer.
         ///
-        /// @copydoc layer::write_id()
+        /// @copydoc layer::write_id(uint8_t*, uint8_t*)
         uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
             {
                 assert(symbol_id != 0);
                 assert(symbol_coefficients != 0);
 
-                for(uint32_t i = 0; i < m_id_size; ++i)
+                // Zero the symbol id
+                std::fill_n(symbol_id, m_id_size, 0);
+
+                // if(SuperCoder::symbol_count() == 0)
+                //{
+                //    *symbol_coefficients = symbol_id;
+                //    return;
+                //}
+
+                // Generate the coefficients needed for the recoding
+                // We assume that we have a storage aware generator
+                // underneath.
+                SuperCoder::generate(&m_coefficients[0]);
+
+                // Create the recoded symbol id
+                value_type *recode_id
+                    = reinterpret_cast<value_type*>(symbol_id);
+
+                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    symbol_id[i] = m_distribution(m_random_generator);
+                    value_type c = fifi::get_value<field_type>(recode_id, i);
+
+                    if(!c)
+                    {
+                        continue;
+                    }
+
+                    assert(SuperCoder::symbol_exists(i));
+                    value_type *source_id = SuperCoder::coefficients_value( i );
+
+                    if(fifi::is_binary<field_type>::value)
+                    {
+                        SuperCoder::add(
+                            recode_id, source_id,
+                            SuperCoder::coefficients_length());
+                    }
+                    else
+                    {
+                        SuperCoder::multiply_add(
+                            recode_id, source_id, c,
+                            SuperCoder::coefficients_length());
+
+                    }
                 }
 
-                *symbol_coefficients = symbol_id;
 
+                *symbol_coefficients = &m_coefficients[0];
                 return m_id_size;
             }
 
@@ -117,7 +157,7 @@ namespace kodo
                 // as long as the sizes are not larger than
                 // previously. So this call should only have an
                 // effect the first time this function is called.
-                m_coefficients_storage.resize(max_coefficients_size);
+                m_coefficients.resize(max_coefficients_size);
             }
 
     protected:

@@ -13,6 +13,7 @@
 
 namespace kodo
 {
+
     /// @ingroup coefficient_generator_layers
     /// Generates an random coefficient (from the chosen Finite Field)
     /// for every symbol.
@@ -20,6 +21,9 @@ namespace kodo
     class uniform_generator : public SuperCoder
     {
     public:
+
+        /// @copydoc layer::value_type
+        typedef typename SuperCoder::field_type field_type;
 
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
@@ -32,15 +36,48 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::generate(uint8_t*)
-        void generate(uint8_t * symbol_coefficients)
-            {
-                assert(symbol_coefficients != 0);
+        /// Constructor
+        uniform_generator()
+            : m_distribution(),
+              m_value_distribution(field_type::min_value, field_type::max_value)
+            { }
 
-                for(uint32_t i = 0; i < SuperCoder::coefficients_size(); ++i)
+        /// @copydoc layer::generate(uint8_t*)
+        void generate(uint8_t *coefficients)
+            {
+                assert(coefficients != 0);
+
+                uint32_t size = SuperCoder::coefficients_size();
+                for(uint32_t i = 0; i < size; ++i)
                 {
-                    symbol_coefficients[i] =
+                    coefficients[i] = m_distribution(m_random_generator);
+                }
+            }
+
+        /// @copydoc layer::generate(uint8_t*)
+        void generate_partial(uint8_t *coefficients)
+            {
+                assert(coefficients != 0);
+
+                // Since we will not set all coefficients we should ensure
+                // that the non specified ones are zero
+                std::fill_n(coefficients, SuperCoder::coefficients_size(), 0);
+
+                value_type *c = reinterpret_cast<value_type*>(coefficients);
+
+                uint32_t symbols = SuperCoder::symbols();
+
+                for(uint32_t i = 0; i < symbols; ++i)
+                {
+                    if(!SuperCoder::symbol_exists(i))
+                    {
+                        continue;
+                    }
+
+                    value_type coefficient =
                         m_distribution(m_random_generator);
+
+                    fifi::set_value<field_type>(c, i, coefficient);
                 }
             }
 
@@ -52,8 +89,19 @@ namespace kodo
 
     private:
 
-        /// The distribution wrapping the random generator
-        boost::random::uniform_int_distribution<uint8_t> m_distribution;
+        /// The type of the uint8_t distribution
+        typedef boost::random::uniform_int_distribution<uint8_t>
+            uint8_t_distribution;
+
+        /// Distribution that generates random bytes
+        uint8_t_distribution m_distribution;
+
+        /// The type of the value_type distribution
+        typedef boost::random::uniform_int_distribution<value_type>
+            value_type_distribution;
+
+        /// Distribution that generates random values from a finite field
+        value_type_distribution m_value_distribution;
 
         /// The random generator
         boost::random::mt19937 m_random_generator;

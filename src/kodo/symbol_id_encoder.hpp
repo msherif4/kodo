@@ -41,7 +41,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::encode()
+        /// @copydoc layer::encode(uint8_t*, uint8_t*)
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
@@ -59,7 +59,7 @@ namespace kodo
                 return bytes_used;
             }
 
-        /// @copydoc layer::header_size()
+        /// @copydoc layer::header_size() const
         uint32_t header_size() const
             {
                 return SuperCoder::id_size();
