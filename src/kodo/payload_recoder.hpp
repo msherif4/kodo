@@ -54,9 +54,8 @@ namespace kodo
             /// @copydoc layer::factory::build(uint32_t,uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
-                    // assert(SuperCoder::factory::max_payload_size() ==
-                    //        m_stack_factory.max_payload_size());
-
+                    assert(SuperCoder::factory::max_payload_size() ==
+                           m_stack_factory.max_payload_size());
 
                     auto coder =
                         SuperCoder::factory::build(symbols, symbol_size);
