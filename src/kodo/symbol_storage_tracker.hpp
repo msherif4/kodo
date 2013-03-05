@@ -14,8 +14,7 @@
 namespace kodo
 {
 
-    /// @todo add tests for this class
-    /// @ingroup storage_layers
+    /// @ingroup symbol_storage_layers
     /// The storage tracker layer intercepts the calls used to
     /// initialize the symbol storage and allow us to track
     /// which symbols have been specified.
@@ -51,7 +50,7 @@ namespace kodo
                 std::fill(m_symbols.begin(), m_symbols.end(), true);
 
                 // This should set all symbols
-                assert(m_symbols_count = 0);
+                assert(m_symbols_count == 0);
                 m_symbols_count = SuperCoder::symbols();
             }
 
@@ -62,7 +61,7 @@ namespace kodo
                 std::fill(m_symbols.begin(), m_symbols.end(), true);
 
                 // This should set all symbols
-                assert(m_symbols_count = 0);
+                assert(m_symbols_count == 0);
                 m_symbols_count = SuperCoder::symbols();
             }
 
@@ -101,7 +100,7 @@ namespace kodo
                 std::fill(m_symbols.begin(), m_symbols.end(), true);
 
                 // This should set all symbols
-                assert(m_symbols_count = 0);
+                assert(m_symbols_count == 0);
                 m_symbols_count = SuperCoder::symbols();
             }
 
@@ -112,7 +111,7 @@ namespace kodo
                 std::fill(m_symbols.begin(), m_symbols.end(), true);
 
                 // This should set all symbols
-                assert(m_symbols_count = 0);
+                assert(m_symbols_count == 0);
                 m_symbols_count = SuperCoder::symbols();
             }
 
@@ -123,7 +122,7 @@ namespace kodo
                 std::fill(m_symbols.begin(), m_symbols.end(), true);
 
                 // This should set all symbols
-                assert(m_symbols_count = 0);
+                assert(m_symbols_count == 0);
                 m_symbols_count = SuperCoder::symbols();
             }
 

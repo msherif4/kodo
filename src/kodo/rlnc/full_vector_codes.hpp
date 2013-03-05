@@ -30,6 +30,7 @@
 #include "../generators/block_cache.hpp"
 #include "../generators/block_cache_lookup.hpp"
 #include "../payload_encoder.hpp"
+#include "../payload_recoder.hpp"
 #include "../payload_decoder.hpp"
 #include "../align_coefficient_decoder.hpp"
 #include "../align_symbol_id_encoder.hpp"
@@ -41,6 +42,9 @@
 #include "../plain_symbol_id_reader.hpp"
 #include "../plain_symbol_id_writer.hpp"
 #include "../uniform_generator.hpp"
+#include "../recoding_symbol_id.hpp"
+#include "../proxy_layer.hpp"
+#include "../symbol_storage_tracker.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -86,7 +90,7 @@ namespace kodo
                  // Final type
                  full_rlnc_encoder<Field>, Field>
                      > > > > > > > > > > > >
-    {};
+    { };
 
     /// Intermediate layer utilized by the re-coding functionality
     /// of a RLNC decoder. This allows us to re-use layers from the
@@ -98,13 +102,31 @@ namespace kodo
                  align_symbol_id_encoder<
                  zero_symbol_encoder<SuperCoder
                      > > > >
-    {};
+    { };
+
+    template<class MainStack>
+    class recoding_stack
+        : public // Payload API
+                 payload_encoder<
+                 // Codec Header API
+                 non_systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 recoding_symbol_id<
+                 // Coefficient Generator API
+                 uniform_generator<
+                 // Codec API
+                 linear_block_encoder<
+                 // Proxy
+                 proxy_layer<
+                 recoding_stack<MainStack>, MainStack> > > > > > >
+    { };
 
     /// @copydoc full_vector_decoder
     template<class Field>
     class full_rlnc_decoder
-        : public //full_vector_recoder<recode_proxy, random_uniform,
-                 // Payload API
+        : public // Payload API
+                 payload_recoder<recoding_stack,
                  payload_decoder<
                  // Codec Header API
                  systematic_decoder<
@@ -120,12 +142,13 @@ namespace kodo
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  // Storage API
+                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > //> //>// >
+                     > > > > > > > > > > > > > >
     {};
 
 

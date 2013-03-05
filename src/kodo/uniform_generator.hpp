@@ -39,7 +39,8 @@ namespace kodo
         /// Constructor
         uniform_generator()
             : m_distribution(),
-              m_value_distribution(field_type::min_value, field_type::max_value)
+              m_value_distribution(field_type::min_value,
+                                   field_type::max_value)
             { }
 
         /// @copydoc layer::generate(uint8_t*)
@@ -61,7 +62,8 @@ namespace kodo
 
                 // Since we will not set all coefficients we should ensure
                 // that the non specified ones are zero
-                std::fill_n(coefficients, SuperCoder::coefficients_size(), 0);
+                std::fill_n(
+                    coefficients, SuperCoder::coefficients_size(), 0);
 
                 value_type *c = reinterpret_cast<value_type*>(coefficients);
 

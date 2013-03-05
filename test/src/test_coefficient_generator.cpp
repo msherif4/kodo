@@ -180,10 +180,10 @@ struct api_generate
             EXPECT_TRUE(sak::equal(storage_c,zero_storage));
             EXPECT_TRUE(sak::equal(storage_d,zero_storage));
 
-            std::vector<uint8_t> symbol_a =
-                random_vector(coder->symbol_size());
+            // std::vector<uint8_t> symbol_a =
+            //     random_vector(coder->symbol_size());
 
-            coder->set_symbol(1, sak::storage(symbol_a));
+            // coder->set_symbol(1, sak::storage(symbol_a));
 
         }
 

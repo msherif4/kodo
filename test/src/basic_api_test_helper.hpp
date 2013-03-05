@@ -223,6 +223,11 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
         {
             uint32_t symbol_id = rand() % encoder->symbols();
 
+            if(decoder->symbol_exists(symbol_id))
+            {
+                continue;
+            }
+
             ASSERT_TRUE(encoder->symbol_size() <= payload.size());
 
             encoder->copy_symbol(
