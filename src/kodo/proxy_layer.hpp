@@ -35,22 +35,25 @@ namespace kodo
 
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                {
-                    (void) max_symbols;
-                    (void) max_symbol_size;
-                }
+                : m_proxy_factory(0),
+                  m_max_symbols(max_symbols),
+                  m_max_symbol_size(max_symbol_size)
+                { }
 
             /// Sets the pointer to the proxy stack
             /// @param proxy The stack where calls should be forwarded.
             void set_proxy(typename Proxy::factory *proxy)
                 {
                     assert(proxy != 0);
+                    assert(m_proxy_factory == 0);
                     m_proxy_factory = proxy;
                 }
 
             /// @copydoc layer::factory::build(uint32_t, uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
+                    (void) symbols;
+                    (void) symbol_size;
                     pointer coder = boost::make_shared<FinalType>();
                     return coder;
                 }
@@ -100,6 +103,12 @@ namespace kodo
         private:
 
             typename Proxy::factory *m_proxy_factory;
+
+            /// The maximum number of symbols
+            uint32_t m_max_symbols;
+
+            /// The maximum symbol size
+            uint32_t m_max_symbol_size;
 
         };
 

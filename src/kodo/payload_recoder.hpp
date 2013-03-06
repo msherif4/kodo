@@ -66,14 +66,14 @@ namespace kodo
                     if(!coder->has_recode_stack())
                     {
                         recoder->set_proxy(coder.get());
-                        recoder->construct(
-                            SuperCoder::factory::max_symbols(),
-                            SuperCoder::factory::max_symbol_size());
-
                         coder->set_recode_stack(recoder);
+
+                        coder->construct(SuperCoder::factory::max_symbol_size(),
+                                         SuperCoder::factory::max_symbol_size());
+
+                        coder->initialize(symbols, symbol_size);
+
                     }
-
-
 
                     return coder;
                 }
