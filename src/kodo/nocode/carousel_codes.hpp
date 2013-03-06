@@ -23,6 +23,7 @@
 #include "../align_coefficient_decoder.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
+#include "../symbol_storage_tracker.hpp"
 
 #include "../storage_bytes_used.hpp"
 #include "../storage_block_info.hpp"
@@ -63,13 +64,14 @@ namespace kodo
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  // Symbol Storage API
+                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<
                  nocode_carousel_decoder, fifi::binary>
-                     > > > > > > > > > > >
+                     > > > > > > > > > > > >
     {};
 
 }

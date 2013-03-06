@@ -49,6 +49,8 @@
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
 #include "../linear_block_decoder_delayed.hpp"
+#include "../debug_linear_block_decoder.hpp"
+
 //#include "../linear_block_vector_storage.hpp"
 //#include "../linear_block_vector_generator.hpp"
 
@@ -82,6 +84,7 @@ namespace kodo
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  // Symbol Storage API
+                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -89,7 +92,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  full_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > > > >
+                     > > > > > > > > > > > > >
     { };
 
     /// Intermediate layer utilized by the re-coding functionality
@@ -116,10 +119,11 @@ namespace kodo
                  // Coefficient Generator API
                  uniform_generator<
                  // Codec API
+                 zero_symbol_encoder<
                  linear_block_encoder<
                  // Proxy
                  proxy_layer<
-                 recoding_stack<MainStack>, MainStack> > > > > > >
+                 recoding_stack<MainStack>, MainStack> > > > > > > >
     { };
 
     /// @copydoc full_vector_decoder
@@ -134,6 +138,7 @@ namespace kodo
                  // Symbol ID API
                  plain_symbol_id_reader<
                  // Codec API
+                 debug_linear_block_decoder<
                  align_coefficient_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
@@ -148,7 +153,7 @@ namespace kodo
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > >
     {};
 
 

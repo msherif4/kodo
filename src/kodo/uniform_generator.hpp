@@ -77,7 +77,7 @@ namespace kodo
                     }
 
                     value_type coefficient =
-                        m_distribution(m_random_generator);
+                        m_value_distribution(m_random_generator);
 
                     fifi::set_value<field_type>(c, i, coefficient);
                 }

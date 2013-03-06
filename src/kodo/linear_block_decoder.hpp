@@ -144,11 +144,11 @@ namespace kodo
         /// @param index the symbol index to check
         /// @return true if the symbol with the specified id
         ///         has already been received in the decoder
-        bool symbol_exists(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return m_coded[ index ] || m_uncoded[ index ];
-            }
+        // bool symbol_exists(uint32_t index) const
+        //     {
+        //         assert(index < SuperCoder::symbols());
+        //         return m_coded[ index ] || m_uncoded[ index ];
+        //     }
 
     protected:
 
@@ -226,7 +226,6 @@ namespace kodo
 
                 // Subtract the new pivot symbol
                 fifi::set_value<field_type>(vector_i, pivot_index, 0);
-//                vector_type::set_coefficient(pivot_index, vector_i, 0);
 
                 SuperCoder::subtract(symbol_i, symbol_data,
                                      SuperCoder::symbol_length());
@@ -310,7 +309,7 @@ namespace kodo
                     if( current_coefficient )
                     {
                         // If symbol exists
-                        if( symbol_exists( i ) )
+                        if( SuperCoder::symbol_exists( i ) )
                         {
                             value_type *vector_i =
                                 SuperCoder::coefficients_value( i );
@@ -390,7 +389,7 @@ namespace kodo
                         continue;
                     }
 
-                    if( symbol_exists(i) )
+                    if( SuperCoder::symbol_exists(i) )
                     {
                         value_type *vector_i =
                             SuperCoder::coefficients_value(i);

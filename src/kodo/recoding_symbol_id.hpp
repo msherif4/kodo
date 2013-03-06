@@ -115,10 +115,13 @@ namespace kodo
                 value_type *recode_id
                     = reinterpret_cast<value_type*>(symbol_id);
 
+                value_type *coefficients
+                    = reinterpret_cast<value_type*>(&m_coefficients[0]);
+
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
                     value_type c =
-                        fifi::get_value<field_type>(recode_id, i);
+                        fifi::get_value<field_type>(coefficients, i);
 
                     if(!c)
                     {
@@ -127,7 +130,7 @@ namespace kodo
 
                     assert(SuperCoder::symbol_exists(i));
 
-                    value_type *source_id =
+                    const value_type *source_id =
                         SuperCoder::coefficients_value( i );
 
                     if(fifi::is_binary<field_type>::value)

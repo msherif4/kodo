@@ -296,20 +296,51 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
         encoder->encode( &payload[0] );
         decoder_one->decode( &payload[0] );
 
+        std::cout << "Matrix 1" << std::endl;
+        decoder_one->print_decoding_matrix(std::cout);
+
         decoder_one->recode( &payload[0] );
         decoder_two->decode( &payload[0] );
+
+        std::cout << "Matrix 2" << std::endl;
+        decoder_two->print_decoding_matrix(std::cout);
+
+        std::cout << "one rank: " << decoder_one->rank() << std::endl;
+        std::cout << "two rank: " << decoder_two->rank() << std::endl;
     }
 
     std::vector<uint8_t> data_out_one(decoder_one->block_size(), '\0');
     std::vector<uint8_t> data_out_two(decoder_two->block_size(), '\0');
+
     decoder_one->copy_symbols(sak::storage(data_out_one));
     decoder_two->copy_symbols(sak::storage(data_out_two));
 
-    EXPECT_TRUE(
-        std::equal(data_out_one.begin(), data_out_one.end(), data_in.begin()));
+    EXPECT_TRUE(std::equal(data_out_one.begin(),
+                           data_out_one.end(),
+                           data_in.begin()));
 
-    EXPECT_TRUE(
-        std::equal(data_out_two.begin(), data_out_two.end(), data_in.begin()));
+    EXPECT_TRUE(std::equal(data_out_two.begin(),
+                           data_out_two.end(),
+                           data_in.begin()));
+
+    for(uint32_t i = 0; i < data_in.size(); ++i)
+    {
+        std::cout << (uint32_t) data_in[i] << " ";
+    }
+    std::cout << std::endl;
+
+    for(uint32_t i = 0; i < data_out_one.size(); ++i)
+    {
+        std::cout << (uint32_t) data_out_one[i] << " ";
+    }
+    std::cout << std::endl;
+
+    for(uint32_t i = 0; i < data_out_two.size(); ++i)
+    {
+        std::cout << (uint32_t) data_out_two[i] << " ";
+    }
+    std::cout << std::endl;
+
 }
 
 
@@ -323,14 +354,15 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
     invoke_recoding<Encoder<fifi::binary>, Decoder<fifi::binary> >(
         symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::binary8>, Decoder<fifi::binary8> >(
-        symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::binary16>, Decoder<fifi::binary16> >(
-        symbols, symbol_size);
+    // invoke_recoding<Encoder<fifi::binary8>, Decoder<fifi::binary8> >(
+    //     symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::prime2325>, Decoder<fifi::prime2325> >(
-        symbols, symbol_size);
+    // invoke_recoding<Encoder<fifi::binary16>, Decoder<fifi::binary16> >(
+    //     symbols, symbol_size);
+
+    // invoke_recoding<Encoder<fifi::prime2325>, Decoder<fifi::prime2325> >(
+    //     symbols, symbol_size);
 
 }
 
@@ -362,15 +394,14 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 ///
 TEST(TestRlncFullVectorCodes, recoding_simple)
 {
-    test_recoders(32, 1600);
-    test_recoders(1, 1600);
+//    test_recoders(32, 1600);
+//    test_recoders(1, 1600);
+    test_recoders(1, 8);
 
-    srand(static_cast<uint32_t>(time(0)));
+//    uint32_t symbols = rand_symbols();
+//    uint32_t symbol_size = rand_symbol_size();
 
-    uint32_t symbols = rand_symbols();
-    uint32_t symbol_size = rand_symbol_size();
-
-    test_recoders(symbols, symbol_size);
+//    test_recoders(symbols, symbol_size);
 }
 
 
