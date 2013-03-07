@@ -128,6 +128,7 @@ namespace kodo
                 m_proxy = proxy;
             }
 
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 (void) max_symbols;
@@ -150,7 +151,6 @@ namespace kodo
                 assert(m_proxy);
                 m_proxy->copy_symbols(dest);
             }
-
 
         void copy_symbol(uint32_t index,
                          const sak::mutable_storage &dest) const

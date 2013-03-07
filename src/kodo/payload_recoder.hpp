@@ -60,6 +60,25 @@ namespace kodo
                     auto coder =
                         SuperCoder::factory::build(symbols, symbol_size);
 
+                    // This is a bit more complicated than I would
+                    // like it to be. Anyway here is a brief description
+                    // of what is going on. The recoding stack is
+                    // implemented as a parallel stack i.e. it does
+                    // not affect the public API of the decoding stack
+                    // (the main stack).
+                    // To do this we use the proxy_layer to avoid
+                    // having to re-implement functions from the
+                    // main stack. What complicates this is that,
+                    // the recoding stack also needs to be constructed
+                    // and initialized. We cannot do it from the
+                    // build() function in the proxy factory since
+                    // we at that time have not specified any proxy
+                    // this means build() in the proxy layer cannot call
+                    // construct() and initialize() so we have to do it
+                    // here (after setting the proxy so calls can be
+                    // forwarded). Adding some of complexity in layers
+                    // using a proxy.
+
                     auto recoder =
                         m_stack_factory.build(symbols, symbol_size);
 
@@ -68,10 +87,11 @@ namespace kodo
                         recoder->set_proxy(coder.get());
                         coder->set_recode_stack(recoder);
 
-                        coder->construct(SuperCoder::factory::max_symbol_size(),
-                                         SuperCoder::factory::max_symbol_size());
+                        recoder->construct(
+                            SuperCoder::factory::max_symbols(),
+                            SuperCoder::factory::max_symbol_size());
 
-                        coder->initialize(symbols, symbol_size);
+                        recoder->initialize(symbols, symbol_size);
 
                     }
 

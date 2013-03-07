@@ -39,6 +39,10 @@ namespace kodo
                     max_symbols * max_symbol_size;
 
                 assert(max_data_needed > 0);
+
+                // Construct should only be called once so
+                // m_data.size() should be zero
+                assert(m_data.size() == 0);
                 m_data.resize(max_data_needed, 0);
             }
 
@@ -103,13 +107,15 @@ namespace kodo
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
 
-                sak::mutable_storage data = sak::storage(m_data);
+                sak::mutable_storage dest_data = sak::storage(m_data);
 
                 uint32_t offset = index * SuperCoder::symbol_size();
-                data += offset;
+                dest_data += offset;
+
+                assert(dest_data.m_size >= SuperCoder::symbol_size());
 
                 /// Copy the data
-                sak::copy_storage(data, symbol);
+                sak::copy_storage(dest_data, symbol);
             }
 
         /// @copydoc symbol_storage_shallow::copy_symbols()

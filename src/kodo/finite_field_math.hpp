@@ -104,7 +104,7 @@ namespace kodo
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
-                assert(symbol_src  != 0);
+                assert(symbol_src te != 0);
                 assert(symbol_length > 0);
 
                 fifi::multiply_add(*m_field, coefficient, symbol_dest,
