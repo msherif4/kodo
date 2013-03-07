@@ -40,9 +40,8 @@ namespace kodo
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                m_symbol_data.resize(symbol_size);
-                m_symbol_coefficients.resize(
-                    SuperCoder::coefficients_size());
+                m_data.resize(symbol_size);
+                m_coefficients.resize(SuperCoder::coefficients_size());
             }
 
         /// Prints the decoding matrix to the output stream
@@ -86,21 +85,20 @@ namespace kodo
         void decode_symbol(uint8_t *symbol_data,
                            uint8_t *symbol_coefficients)
             {
-                auto data_dest =
-                    sak::storage(m_symbol_data);
-                auto coefficients_dest =
-                    sak::storage(m_symbol_coefficients);
+                assert(symbol_data != 0);
+                assert(symbol_coefficients != 0);
 
-                auto data_src =
-                    sak::storage(symbol_data,
-                                 SuperCoder::symbol_size());
+                uint32_t symbol_size = SuperCoder::symbol_size();
+                uint32_t coef_size = SuperCoder::coefficients_size();
 
-                auto coefficients_src =
-                    sak::storage(symbol_coefficients,
-                                 SuperCoder::coefficients_size());
+                auto data_dest = sak::storage(m_data);
+                auto coef_dest = sak::storage(m_coefficients);
+
+                auto data_src = sak::storage(symbol_data, symbol_size);
+                auto coef_src = sak::storage(symbol_coefficients, coef_size);
 
                 sak::copy_storage(data_dest, data_src);
-                sak::copy_storage(coefficients_dest, coefficients_src);
+                sak::copy_storage(coef_dest, coef_src);
 
                 m_symbol_coded = true;
 
@@ -111,19 +109,19 @@ namespace kodo
         void decode_symbol(const uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
-                auto data_dest =
-                    sak::storage(m_symbol_data);
+                assert(symbol_data != 0);
+                assert(symbol_index < SuperCoder::symbols());
 
-                auto data_src =
-                    sak::storage(symbol_data, SuperCoder::symbol_size());
+                uint32_t symbol_size = SuperCoder::symbol_size();
+
+                auto data_dest = sak::storage(m_data);
+                auto data_src = sak::storage(symbol_data, symbol_size);
 
                 sak::copy_storage(data_dest, data_src);
 
-                m_symbol_coded =  false;
                 m_symbol_index = symbol_index;
+                m_symbol_coded =  false;
 
-                // Has to be done before calling decode symbol since it
-                // may manipulate the symbol data buffers
                 SuperCoder::decode_symbol(symbol_data, symbol_index);
             }
 
@@ -133,17 +131,14 @@ namespace kodo
             {
                 if( m_symbol_coded )
                 {
-                    out << "Symbol C:" << std::endl<< "\t";
+                    out << "Symbol C:" << std::endl<< "\t Coef.: ";
 
-                    value_type *coefficients =
-                        reinterpret_cast<value_type*>(
-                            &m_symbol_coefficients[0]);
+                    value_type *c =
+                        reinterpret_cast<value_type*>(&m_coefficients[0]);
 
                     for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
                     {
-                        value_type value =
-                            fifi::get_value<field_type>(coefficients, j );
-
+                        value_type value = fifi::get_value<field_type>(c, j);
                         out << (uint32_t)value << " ";
                     }
 
@@ -165,10 +160,10 @@ namespace kodo
         uint32_t m_symbol_index;
 
         /// Stores the data of the decoding symbol
-        std::vector<uint8_t> m_symbol_data;
+        std::vector<uint8_t> m_data;
 
         /// If coded stores the coefficients of the decoding symbol
-        std::vector<uint8_t> m_symbol_coefficients;
+        std::vector<uint8_t> m_coefficients;
 
 
     };

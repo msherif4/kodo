@@ -12,7 +12,8 @@
 
 namespace kodo
 {
-    /// The full vector encoder
+    /// @ingroup coefficient_generator_layers
+    /// @brief Using the Vandermonde matrix to generate the coding coefficients.
     template<class Field>
     class vandermonde_matrix
     {

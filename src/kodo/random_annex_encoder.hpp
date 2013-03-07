@@ -181,8 +181,12 @@ namespace kodo
                         pointer_type from_encoder = m_encoders[annex.m_coder_id];
 
                         assert(from_encoder);
-                        assert(from_encoder->symbol_size() == to_encoder->symbol_size());
-                        assert(annex.m_symbol_id < from_encoder->symbols() - m_annex_size);
+
+                        assert(from_encoder->symbol_size() ==
+                               to_encoder->symbol_size());
+
+                        assert(annex.m_symbol_id <
+                               from_encoder->symbols() - m_annex_size);
 
                         sak::const_storage symbol =
                             sak::storage(from_encoder->symbol(annex.m_symbol_id),

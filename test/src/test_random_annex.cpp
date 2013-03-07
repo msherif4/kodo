@@ -16,9 +16,11 @@
 
 #include "basic_api_test_helper.hpp"
 
-//
-// Tests the build_annex functionality
-//
+/// @file test_random_annex.cpp Unit tests for the Random Annex coding
+///       scheme
+
+
+/// Tests the build_annex functionality
 template<class Partitioning>
 inline void invoke_random_annex_base()
 {
@@ -34,9 +36,7 @@ TEST(TestRandomAnnexBase, build_annex)
     invoke_random_annex_base<kodo::rfc5052_partitioning_scheme>();
 }
 
-//
-// Tests the results returned by the max_annex_size function
-//
+/// Tests the results returned by the max_annex_size function
 template<class Partitioning>
 inline void invoke_max_annex_size(uint32_t max_symbols,
                                   uint32_t max_symbol_size,
@@ -79,10 +79,8 @@ TEST(TestRandomAnnexBase, max_annex)
 }
 
 
-//
 // Tests encoding and decoding with a random annex wrapped
 // encoder / decoder
-//
 template
 <
     class Encoder,
@@ -121,13 +119,8 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
     typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);
 
-    //std::cout << "object size " << data_in.size() << std::endl;
-    //std::cout << "annex size " << annex_size << std::endl;
-
     random_annex_encoder obj_encoder(
         annex_size, encoder_factory, sak::storage(data_in));
-
-    //std::cout << "encoders " << obj_encoder.encoders() << std::endl;
 
     random_annex_decoder obj_decoder(
         annex_size, decoder_factory, obj_encoder.object_size());
@@ -137,8 +130,6 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     EXPECT_TRUE(obj_encoder.encoders() == obj_decoder.decoders());
 
     uint32_t bytes_used = 0;
-
-
 
     for(uint32_t i = 0; i < obj_encoder.encoders(); ++i)
     {
@@ -179,30 +170,44 @@ void invoke_random_annex_partial(uint32_t max_symbols,
 
 }
 
+// Tests encoding and decoding with a random annex wrapped
+// encoder / decoder
+template
+<
+    template <class> class Encoder,
+    template <class> class Decoder,
+    class Partitioning
+>
+void invoke_random_annex_partial(uint32_t max_symbols,
+                                 uint32_t max_symbol_size,
+                                 uint32_t multiplier)
+{
 
+    invoke_random_annex_partial<
+        Encoder<fifi::binary>,
+        Decoder<fifi::binary>,
+        Partitioning>(max_symbols, max_symbol_size, multiplier);
+
+    invoke_random_annex_partial<
+        Encoder<fifi::binary8>,
+        Decoder<fifi::binary8>,
+        Partitioning>(max_symbols, max_symbol_size, multiplier);
+
+    invoke_random_annex_partial<
+        Encoder<fifi::binary16>,
+        Decoder<fifi::binary16>,
+        Partitioning>(max_symbols, max_symbol_size, multiplier);
+
+}
 
 void test_random_annex_coders(uint32_t symbols, uint32_t symbol_size,
                               uint32_t multiplier)
 {
-
     invoke_random_annex_partial<
-        kodo::full_rlnc2_encoder,
-        kodo::full_rlnc2_decoder,
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder,
             kodo::rfc5052_partitioning_scheme>(
                 symbols, symbol_size, multiplier);
-
-    invoke_random_annex_partial<
-        kodo::full_rlnc8_encoder,
-        kodo::full_rlnc8_decoder,
-            kodo::rfc5052_partitioning_scheme>(
-                symbols, symbol_size, multiplier);
-
-    invoke_random_annex_partial<
-        kodo::full_rlnc16_encoder,
-        kodo::full_rlnc16_decoder,
-            kodo::rfc5052_partitioning_scheme>(
-                symbols, symbol_size, multiplier);
-
 }
 
 

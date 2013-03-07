@@ -6,17 +6,9 @@
 #ifndef KODO_RS_REED_SOLOMON_CODES_HPP
 #define KODO_RS_REED_SOLOMON_CODES_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/make_shared.hpp>
-
-#include <fifi/fifi_utils.hpp>
 #include <fifi/default_field_impl.hpp>
-#include <fifi/is_binary.hpp>
-
-#include <sak/storage.hpp>
 
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
@@ -24,9 +16,7 @@
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
-#include "../has_bytes_used.hpp"
-#include "../has_block_info.hpp"
-#include "../partial_shallow_symbol_storage.hpp"
+
 #include "../deep_symbol_storage.hpp"
 #include "../generators/block.hpp"
 #include "../generators/block_cache.hpp"

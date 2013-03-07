@@ -104,7 +104,7 @@ namespace kodo
             {
                 assert(m_field);
                 assert(symbol_dest != 0);
-                assert(symbol_src te != 0);
+                assert(symbol_src != 0);
                 assert(symbol_length > 0);
 
                 fifi::multiply_add(*m_field, coefficient, symbol_dest,
@@ -125,8 +125,10 @@ namespace kodo
             }
 
         /// @copydoc layer::multiply_subtract()
-        void multiply_subtract(value_type *symbol_dest, const value_type *symbol_src,
-                               value_type coefficient, uint32_t symbol_length)
+        void multiply_subtract(value_type *symbol_dest,
+                               const value_type *symbol_src,
+                               value_type coefficient,
+                               uint32_t symbol_length)
             {
                 assert(m_field);
                 assert(symbol_dest != 0);

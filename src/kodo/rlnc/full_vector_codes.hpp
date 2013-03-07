@@ -1,4 +1,4 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf ApS 2011-2013.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
@@ -7,36 +7,24 @@
 #define KODO_RLNC_FULL_VECTOR_CODES_HPP
 
 #include <cstdint>
-#include <boost/shared_ptr.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/make_shared.hpp>
 
-#include <fifi/fifi_utils.hpp>
 #include <fifi/default_field_impl.hpp>
-#include <fifi/is_binary.hpp>
 
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
 #include "../finite_field_math.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
-//#include "../non_systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
 #include "../storage_bytes_used.hpp"
 #include "../storage_block_info.hpp"
-#include "../partial_shallow_symbol_storage.hpp"
 #include "../deep_symbol_storage.hpp"
-#include "../generators/block.hpp"
-#include "../generators/block_cache.hpp"
-#include "../generators/block_cache_lookup.hpp"
 #include "../payload_encoder.hpp"
 #include "../payload_recoder.hpp"
 #include "../payload_decoder.hpp"
 #include "../align_coefficient_decoder.hpp"
-#include "../align_symbol_id_encoder.hpp"
 #include "../symbol_id_encoder.hpp"
 #include "../symbol_id_decoder.hpp"
-#include "../random_uniform_symbol_id.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
 #include "../plain_symbol_id_reader.hpp"
@@ -49,22 +37,18 @@
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
 #include "../linear_block_decoder_delayed.hpp"
-#include "../debug_linear_block_decoder.hpp"
-
-//#include "../linear_block_vector_storage.hpp"
-//#include "../linear_block_vector_generator.hpp"
-
-//#include "../../kodo_debug/full_vector_decoder_debug.hpp"
-
-
-//#include "full_vector_recoder.hpp"
-//#include "full_vector_payload_recoder.hpp"
-//#include "full_vector_systematic_recoder.hpp"
 
 namespace kodo
 {
 
-    /// @copydoc full_vector_encoder
+    /// Complete stack implementing a RLNC encoder. The key features of
+    /// this configuration is the following:
+    /// - Systematic encoding (uncoded symbols produced before switching
+    ///   to coding)
+    /// - Full encoding vectors, this stack uses the plain_symbol_id_writer
+    ///   which sends the full encoding vector with every encoded symbol
+    /// - Deep symbol storage which makes the encoder allocate its own internal
+    ///   memory.
     template<class Field>
     class full_rlnc_encoder
         : public // Payload Codec API
@@ -84,7 +68,6 @@ namespace kodo
                  // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
                  // Symbol Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -92,21 +75,18 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  full_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > > > > >
+                     > > > > > > > > > > > >
     { };
 
-    /// Intermediate layer utilized by the re-coding functionality
-    /// of a RLNC decoder. This allows us to re-use layers from the
-    /// RLNC encoder to build a RLNC recoder
-    template<class SuperCoder>
-    class recode_encoder
-        : public payload_encoder<
-                 non_systematic_encoder<
-                 align_symbol_id_encoder<
-                 zero_symbol_encoder<SuperCoder
-                     > > > >
-    { };
-
+    /// Intermediate stack implementing the recoding functionality of a
+    /// RLNC code. As can be seen we are able to reuse a great deal of
+    /// layers from the encode stack. It is important that the symbols
+    /// produced by the recoder are compatible with the decoder. This
+    /// means we have to use compatible Payload, Codec Header Symbol ID
+    /// layers, between the encoder, recoder and decoder.
+    /// The only layer specific to recoding is the recoding_symbol_id
+    /// layer. Finally the recoder uses a proxy_layer which forwards
+    /// any calls not implemented in the recoding stack to the MainStack.
     template<class MainStack>
     class recoding_stack
         : public // Payload API
@@ -126,7 +106,11 @@ namespace kodo
                  recoding_stack<MainStack>, MainStack> > > > > > > >
     { };
 
-    /// @copydoc full_vector_decoder
+    /// Implementation of a complete RLNC decoder this configuration
+    /// adds the following features (including those described for
+    /// the encoder):
+    /// - Recoding using the recoding_stack
+    /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>
     class full_rlnc_decoder
         : public // Payload API
@@ -138,7 +122,6 @@ namespace kodo
                  // Symbol ID API
                  plain_symbol_id_reader<
                  // Codec API
-                 debug_linear_block_decoder<
                  align_coefficient_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
@@ -153,7 +136,7 @@ namespace kodo
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > >
     {};
 
 

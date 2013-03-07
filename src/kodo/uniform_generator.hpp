@@ -15,7 +15,7 @@ namespace kodo
 {
 
     /// @ingroup coefficient_generator_layers
-    /// Generates an random coefficient (from the chosen Finite Field)
+    /// Generates an uniform random coefficient (from the chosen Finite Field)
     /// for every symbol.
     template<class SuperCoder>
     class uniform_generator : public SuperCoder

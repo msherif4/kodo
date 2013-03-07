@@ -14,6 +14,8 @@
 #include <kodo/has_shallow_symbol_storage.hpp>
 #include <kodo/has_deep_symbol_storage.hpp>
 
+#include "basic_api_test_helper.hpp"
+
 template<
     class Encoder,
     class Decoder,
@@ -26,11 +28,10 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
     typedef kodo::object_encoder<ObjectData, Encoder, Partitioning> object_encoder;
     typedef kodo::object_decoder<Decoder, Partitioning> object_decoder;
 
-    std::vector<char> data_in(max_symbols * max_symbol_size * multiplier);
-    std::vector<char> data_out(max_symbols * max_symbol_size * multiplier, '\0');
+    uint32_t object_size = max_symbols * max_symbol_size * multiplier;
 
-    kodo::random_uniform<char> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<char> data_in = random_vector(object_size);
+    std::vector<char> data_out(object_size, '\0');
 
     typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
     typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);
