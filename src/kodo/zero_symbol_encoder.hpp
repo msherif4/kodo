@@ -6,7 +6,7 @@
 #ifndef KODO_ZERO_SYMBOL_ENCODER_HPP
 #define KODO_ZERO_SYMBOL_ENCODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
@@ -21,8 +21,9 @@ namespace kodo
         /// Zero the incoming symbol data buffer and forward
         /// the encode_symbol() call.
         ///
-        /// @copydoc layer::encode_symbol()
-        void encode_symbol(uint8_t *symbol_data, uint8_t *symbol_coefficients)
+        /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
+        void encode_symbol(uint8_t *symbol_data,
+                           uint8_t *symbol_coefficients)
             {
                 assert(symbol_data != 0);
                 assert(symbol_coefficients != 0);

@@ -6,16 +6,11 @@
 #ifndef KODO_RLNC_SEED_CODES_HPP
 #define KODO_RLNC_SEED_CODES_HPP
 
+
+
 #include <cstdint>
-#include <boost/shared_ptr.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/make_shared.hpp>
 
-#include <fifi/fifi_utils.hpp>
 #include <fifi/default_field_impl.hpp>
-#include <fifi/is_binary.hpp>
-
-#include <sak/storage.hpp>
 
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
@@ -23,66 +18,106 @@
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
-#include "../has_bytes_used.hpp"
-#include "../has_block_info.hpp"
-#include "../partial_shallow_symbol_storage.hpp"
+#include "../storage_bytes_used.hpp"
+#include "../storage_block_info.hpp"
 #include "../deep_symbol_storage.hpp"
-#include "../generators/block.hpp"
 #include "../payload_encoder.hpp"
+#include "../payload_recoder.hpp"
 #include "../payload_decoder.hpp"
+#include "../align_coefficient_decoder.hpp"
+#include "../symbol_id_encoder.hpp"
+#include "../symbol_id_decoder.hpp"
+#include "../coefficient_storage.hpp"
+#include "../coefficient_info.hpp"
+#include "../plain_symbol_id_reader.hpp"
+#include "../seed_symbol_id_writer.hpp"
+#include "../seed_symbol_id_reader.hpp"
+#include "../uniform_generator.hpp"
+#include "../recoding_symbol_id.hpp"
+#include "../proxy_layer.hpp"
+#include "../symbol_storage_tracker.hpp"
+#include "../encode_symbol_tracker.hpp"
+
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
-#include "../linear_block_vector_storage.hpp"
-#include "../linear_block_vector_generator.hpp"
-
-#include "seed_encoder.hpp"
-#include "seed_decoder.hpp"
 
 namespace kodo
 {
-    /// @copydoc seed_encoder
+
+    /// Complete stack implementing a seed based RLNC encoder. The key
+    /// features of this configuration is the following:
+    /// - Systematic encoding (uncoded symbols produced before switching
+    ///   to coding)
+    /// - A seed is sent instead of a full encoding vectors, this reduces
+    ///   the amount of overhead per symbol.
+    /// - Encoding vectors are generated using a random uniform generator.
+    /// - Deep symbol storage which makes the encoder allocate its own
+    ///   internal memory.
     template<class Field>
     class seed_rlnc_encoder
-        : public payload_encoder<
+        : public // Payload Codec API
+                 payload_encoder<
+                 // Codec Header API
                  systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 seed_symbol_id_writer<
+                 // Coefficient Generator API
+                 uniform_generator<
+                 // Codec API
+                 encode_symbol_tracker<
                  zero_symbol_encoder<
-                 seed_encoder<
-                 linear_block_vector_generator<block_uniform,
                  linear_block_encoder<
+                 // Coefficient Storage API
+                 coefficient_info<
+                 // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
-                 partial_shallow_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<seed_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > >
-    {};
+                 // Symbol Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 seed_rlnc_encoder<Field>, Field>
+                     > > > > > > > > > > > > >
+    { };
 
-    /// @copydoc seed_decoder
+    /// Implementation of a seed based RLNC decoder this configuration
+    /// adds the following features (including those described for
+    /// the encoder):
+    /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>
     class seed_rlnc_decoder
-        : public payload_decoder<
+        : public // Payload API
+                 payload_decoder<
+                 // Codec Header API
                  systematic_decoder<
-                 seed_decoder<
-                 linear_block_vector_generator<block_uniform,
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 seed_symbol_id_reader<
+                 // Coefficient Generator API
+                 uniform_generator<
+                 // Codec API
+                 align_coefficient_decoder<
                  linear_block_decoder<
-                 linear_block_vector_storage<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Finite Field Math API
                  finite_field_math<fifi::default_field_impl,
+                 // Storage API
+                 symbol_storage_tracker<
                  deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<seed_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > >
-    {};
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 seed_rlnc_decoder<Field>, Field>
+                     > > > > > > > > > > > > > >
+    { };
 
-    /// Common typedefs
-    typedef seed_rlnc_encoder<fifi::binary> seed_rlnc2_encoder;
-    typedef seed_rlnc_decoder<fifi::binary> seed_rlnc2_decoder;
-
-    typedef seed_rlnc_encoder<fifi::binary8> seed_rlnc8_encoder;
-    typedef seed_rlnc_decoder<fifi::binary8> seed_rlnc8_decoder;
-
-    typedef seed_rlnc_encoder<fifi::binary16> seed_rlnc16_encoder;
-    typedef seed_rlnc_decoder<fifi::binary16> seed_rlnc16_decoder;
 }
 
 #endif

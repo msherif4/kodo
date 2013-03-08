@@ -32,8 +32,8 @@ namespace kodo
 
     public:
 
-        /// The factory layer associated with this coder. Maintains the block
-        /// generator needed for the encoding vectors.
+        /// The factory layer associated with this coder. Maintains
+        /// the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
         private:

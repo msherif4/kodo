@@ -6,9 +6,7 @@
 #include <ctime>
 
 #include <gtest/gtest.h>
-
 #include <kodo/rlnc/seed_codes.hpp>
-#include <kodo_debug/full_vector_decoder_debug.hpp>
 
 #include "basic_api_test_helper.hpp"
 

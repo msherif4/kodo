@@ -46,7 +46,8 @@ namespace kodo
     /// - Systematic encoding (uncoded symbols produced before switching
     ///   to coding)
     /// - Full encoding vectors, this stack uses the plain_symbol_id_writer
-    ///   which sends the full encoding vector with every encoded symbol
+    ///   which sends the full encoding vector with every encoded symbol.
+    ///   Encoding vectors are generated using a random uniform generator.
     /// - Deep symbol storage which makes the encoder allocate its own
     ///   internal memory.
     template<class Field>
@@ -135,7 +136,9 @@ namespace kodo
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
-                 final_coder_factory_pool<full_rlnc_decoder<Field>, Field>
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_decoder<Field>, Field>
                      > > > > > > > > > > > > > >
     {};
 
