@@ -30,8 +30,8 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 
     uint32_t object_size = max_symbols * max_symbol_size * multiplier;
 
-    std::vector<char> data_in = random_vector(object_size);
-    std::vector<char> data_out(object_size, '\0');
+    std::vector<uint8_t> data_in = random_vector(object_size);
+    std::vector<uint8_t> data_out(object_size, '\0');
 
     typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
     typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);

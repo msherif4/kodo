@@ -13,7 +13,8 @@
 namespace kodo
 {
     /// @ingroup coefficient_generator_layers
-    /// @brief Using the Vandermonde matrix to generate the coding coefficients.
+    /// @brief Using the Vandermonde matrix to generate the coding
+    ///        coefficients.
     template<class Field>
     class vandermonde_matrix
     {
@@ -47,9 +48,10 @@ namespace kodo
 
                 // Create the Vandermonde matrix as suggested in RFC 5510.
                 // Excepts we transpose it, if used as suggested the k
-                // coefficients needed when producing a new encoded symbol would
-                // be located disjoint in memory. Memory access will be very
-                // inefficient if coefficients are not in major row order.
+                // coefficients needed when producing a new encoded symbol
+                // would be located disjoint in memory. Memory access will
+                // be very inefficient if coefficients are not in major
+                // row order.
                 //
                 // a is the primitive element (alpha)
                 //

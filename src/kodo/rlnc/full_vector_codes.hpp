@@ -47,8 +47,8 @@ namespace kodo
     ///   to coding)
     /// - Full encoding vectors, this stack uses the plain_symbol_id_writer
     ///   which sends the full encoding vector with every encoded symbol
-    /// - Deep symbol storage which makes the encoder allocate its own internal
-    ///   memory.
+    /// - Deep symbol storage which makes the encoder allocate its own
+    ///   internal memory.
     template<class Field>
     class full_rlnc_encoder
         : public // Payload Codec API

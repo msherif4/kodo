@@ -11,7 +11,7 @@
 
 #include <gtest/gtest.h>
 
-#include <kodo/rs/vandermonde_matrix.hpp>
+#include <kodo/rs/vandermonde_generator.hpp>
 
 // Test function for printing the matrix
 template<class Field>

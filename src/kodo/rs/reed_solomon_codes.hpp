@@ -27,7 +27,7 @@
 #include "../linear_block_decoder.hpp"
 #include "../linear_block_vector_storage.hpp"
 
-#include "vandermonde_matrix.hpp"
+#include "vandermonde_generator.hpp"
 #include "reed_solomon_encoder.hpp"
 #include "reed_solomon_decoder.hpp"
 
