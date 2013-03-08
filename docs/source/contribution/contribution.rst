@@ -1,21 +1,56 @@
 Contributing
 ++++++++++++
 
-If you want to contribute code we ask you to sign over your copyright for that code. In order to manage this you can choose to use either of the two methods:
+We encourage and appreciate contributions by all users e.g. in the form of bug reports, bug fixes, adding features, providing examples, improving documentation, etc. To be acknowledged for your contribution you may add yourselves to the top of the **contributors.rst** file.
 
-1. Sign a copyright assignment covering the project you wish to contribute to.
-2. Sign-off each of your pull requests.
+If your contribution involves changes to the Kodo code or other of our projects under our research license, we ask that you sign over the copyright of your changes to us.
 
-See **ASSIGNEMENT.rst** or **SIGNOFF.rst**, and **LICENSE.rst** (all of which are appended here for convinience) and the following description.
+We require this in order to maintain clear title to the Kodo code and prevent the introduction of code with incompatible licenses or other entanglements that might cause legal problems for us and our users. In order to manage this you can choose to use either of the two methods below:
 
-If you wish to be acknowledged for your contribution you can add yourselves to the **contributors.txt** file.
+1. Sign-off each of your pull requests.
+2. Sign a copyright assignment covering all your future contributions to Kodo..
+
+See **ASSIGNEMENT.rst** or **SIGNOFF.rst**, and **LICENSE.rst** (all of which are appended at the end of this page) and the following description.
 
 
-.. include:: ASSIGNMENT.rst
+Prepare Your Code
+-----------------
+
+.. _style: https://github.com/steinwurf/steinwurf-labs/blob/master/docs/coding_style.rst
+
+__ style_
+
+1. Ensure that your changes conform with our `coding style`__.
+2. Run the unit tests.
+3. Either sign-off or assign your contribution.
+
+
+Signoff
+-------
+
+.. _signoff: http://gerrit.googlecode.com/svn/documentation/2.0/user-signedoffby.html
+
+The copyright signoff is intended for a per pull copyright sign-off, and as such is a more temporary solution and/or better suited for developers who for whatever reason do not wish to sign a permanent copyright assignment. It is based on this signoff_ procedure.
+
+a. Read our signoff statement in **SIGNOFF.rst**.
+b. Whenever you make a pull request you must add a signoff line as the last line of your commit message saying.
+
+::
+
+
+   Signed-off-to-Steinwurf-by: Developer Name <developername@example.org>
+
+
+.. include:: SIGNOFF.rst
+
+
+
+Assignment
+----------
 
 The copyright assignment is the permanent solution if you which to contribute current and future changes to one or multiple of our projects.
 
-#. Carefully read the content of the **ASSIGNMENT.rst** file.
+#. Read the content of the **ASSIGNMENT.rst** file.
 #. Fill out your name and the component(s) you will work on in **ASSIGNMENT.rst**.
 #. Convert it into a pdf (use rst2pdf).
 #. Alternatively you can send your name to copyright@steinwurf.com and we will send you a pdf.
@@ -26,21 +61,9 @@ The copyright assignment is the permanent solution if you which to contribute cu
 #. Store the returned signed document for your records.
 
 
-.. include:: SIGNOFF.rst
-
-----
-
-.. _signoff: http://gerrit.googlecode.com/svn/documentation/2.0/user-signedoffby.html
-
-The copyright signoff is intended for a per pull copyright sign-off, and as such is a more temporary solution and/or better suited for developers who for whatever reason do not which to sign a copyright assignment. It is based on this signoff_ procedure.
-
-a. Carefully read our signoff statement in **SIGNOFF.rst**.
-b. Whenever you make a pull request you must add a signoff line as the last line of your commit message saying.
-
-::
 
 
-   Signed-off-by: Developer Name <developername@example.org>
+.. include:: ASSIGNMENT.rst
 
 
 ----
@@ -50,5 +73,4 @@ b. Whenever you make a pull request you must add a signoff line as the last line
 ----
 
 
-..
-   include:: contributors.rst
+.. include:: contributors.rst

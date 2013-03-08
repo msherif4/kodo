@@ -1,10 +1,13 @@
 .. _using_kodo:
+
 Using Kodo in Your Application
 ==============================
+
 The following describes how you may include Kodo in your own projects.
 
 Dependencies of Kodo
 --------------------
+
 In Kodo we try to not reinvent the wheel we therefore rely on
 a number of external libraries. These must be available in order
 to successfully compile an application using Kodo.
@@ -41,20 +44,28 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
+
    ::
+
      mkdir dev
      cd dev
 
 2. Clone and download the Fifi libraries by running:
+
    ::
+
      git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Sak libraries by running:
+
    ::
+
      git clone git://github.com/steinwurf/sak.git
 
 4. Clone and download the Boost C++ libraries by running:
+
    ::
+
      git clone git://github.com/steinwurf/external-boost.git
 
   .. note:: Boost can be installed in many different ways.
@@ -66,6 +77,7 @@ github.com/steinwurf.
 
 Example using makefile / command-line
 -------------------------------------
+
 If you would like to see an example of building an application with
 Kodo without using any fancy build-system we provide a small makefile
 which shows how to invoke the ``g++`` compiler. The example can be found
@@ -76,7 +88,6 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
 
 
 ..
-
    Example using Waf (extended)
    ----------------------------
 
@@ -103,11 +114,6 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
    If you wish to use a plain Waf version downloaded from
    http://code.google.com/p/waf/ the following example shows one
    possible way of using it to build an application with Kodo.
-
-   This example is available at:
-
-   *
-
 
 
 

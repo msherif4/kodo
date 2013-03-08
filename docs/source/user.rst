@@ -1,4 +1,5 @@
 .. _guide-connecting:
+
 User Documentation
 ==================
 This part of the documentation introduces how Kodo may be use in your
@@ -39,25 +40,33 @@ All dependencies needed are hosted on github.com and may be found at
 github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
+
   ::
-  mkdir dev
-  cd dev
+
+    mkdir dev
+    cd dev
 
 2. Clone and download the Fifi libraries by running:
+
   ::
-  git clone git://github.com/steinwurf/fifi.git
+
+    git clone git://github.com/steinwurf/fifi.git
 
 3. Clone and download the Boost C++ libraries by running:
-  ::
-  git clone git://github.com/steinwurf/external-boost.git
 
- Note, that boost also has its own repositories, if you
- wish you may also use those repositories or another
- Boost way of installing Boost @todo improve.
+  :: 
+
+    git clone git://github.com/steinwurf/external-boost.git
+
+  Note, that boost also has its own repositories, if you
+  wish you may also use those repositories or another
+  Boost way of installing Boost @todo improve.
 
 4. Clone and download the Kodo libraries by running:
+
   ::
-  git clone git://github.com/steinwurf/kodo.git
+
+    git clone git://github.com/steinwurf/kodo.git
 
 Download the source code as archives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,8 +111,10 @@ The symbol_size denotes the number of bytes in every symbol and also represents
 the size of an encoded symbol in bytes. The _symbols_ parameter
 specifies the number of symbols contained in a block. A single
 block may therefore contain:
+
 ::
-   bytes in block = symbols * symbol_size
+
+  bytes in block = symbols * symbol_size
 
 Now lets us see how we may map an encoder to a block of data. In the following
 case we store the data to be encoded in a _std::vector<uint8_t>_, but in
@@ -114,7 +125,9 @@ You can read more about how you may adapt it to your specific application
 
 
 @todo: Janus can I include this from some source code?
+
 ::
+
   #include <kodo/rlnc/full_vector_codes.h>
 
   // Set the number of symbols (i.e. the generation size in RLNC
@@ -158,6 +171,7 @@ found in the kodo/examples/encode_decode_simple folder inside the Kodo
 project.
 
 ::
+
   #include <kodo/rlnc/full_vector_codes.h>
 
   // Set the number of symbols (i.e. the generation size in RLNC
@@ -222,6 +236,7 @@ look conceptually as shown in the following diagram.
 
 The user calls the encode and decoder function respectively, this is
 then processed though the different layers as shown below:
+
 ::
 
                     User calls                   User calls
@@ -246,9 +261,11 @@ layer. The purpose of this layer is to provide a simple encode and decoder
 interface.
 
 ::
+
   void payload_encoder::encode(uint8_t *payload);
 
 ::
+
   void payload_decoder::decode(uint8_t *payload);
 
 The payload_encoder / payload_decoder layers purpose is to split the input
@@ -266,9 +283,11 @@ Typically all layers below the Layer 1 payload encoder/decoder will have the
 following encode and decode signature:
 
 ::
+
   void xyz_layer::encode(uint8_t *symbol, uint8_t *symbol_id);
 
 ::
+
   void xyz_layer::decode(uint8_t *symbol, uint8_t *symbol_id);
 
 This is however only needed if you are interested in the modifying or adding
@@ -302,6 +321,7 @@ that the layers are compatible.
 
 Using Kodo
 ..........
+
 Kodo is a header only library which essentially means that all you have to do to use it in your applications is to set the right include path. However, Kodo itself also has a couple dependencies:
 
 1. Boost C++: Kodo depends on a number of headers from the Boost C++ libraries (this dependency will most likely be removed once we switch to C++11, however we need to ensure compiler support on all our target platforms first).
