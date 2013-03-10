@@ -1,0 +1,23 @@
+/// @mainpage
+/// Welcome to the Kodo API documentation. On these pages you will find the
+/// automatically generated Doxygen documentation for the Kodo project. We
+/// are using Doxygen mainly to create an overview of the functionality and
+/// APIs available in Kodo.
+///
+/// @subsection kodo_arch Kodo Architecture
+/// Kodo is based on a special C++ design technique know an "mixin-layers" or
+/// "parametrized inheritance" if wish to modify or extend the functionality
+/// of Kodo you should first take a look at our manual which describes in
+/// more detail how Kodo's architecture is structured.
+///
+/// - <a href="https://kodo.readthedocs.org/en/latest/">Kodo Manual</a>
+///
+/// You can find or documentation for the API Layers here, or under the
+/// "Modules" section available from either the lefthand side navigation pane
+/// or the top navigation pane.
+///
+/// @subsection building_docs Building the Documentation
+/// The Doxygen documentation for Kodo is located in the "doxygen" folder of
+/// the Kodo project. The API documentation can be built by running the
+/// doxygen command from within the doxygen folder this should generate the
+/// html version of the documentation into the "doxygen/html" folder.
