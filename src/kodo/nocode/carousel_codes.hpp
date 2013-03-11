@@ -13,13 +13,9 @@
 #include "../zero_symbol_encoder.hpp"
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
-#include "../partial_shallow_symbol_storage.hpp"
 #include "../deep_symbol_storage.hpp"
-#include "../has_block_info.hpp"
-#include "../has_bytes_used.hpp"
 #include "../final_coder_factory_pool.hpp"
 #include "../finite_field_math.hpp"
-#include "../linear_block_vector_storage.hpp"
 #include "../align_coefficient_decoder.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
@@ -33,7 +29,10 @@
 
 namespace kodo
 {
-    /// @todo Update this
+
+    /// For testing purposes this encoder implements a simple repetition code
+    /// i.e. the symbols are the original source symbols produced by the
+    /// encoder in a round-robin fashion.
     class nocode_carousel_encoder
         : public // Payload Codec API
                  payload_encoder<
@@ -49,7 +48,9 @@ namespace kodo
                      > > > > >
     {};
 
-    /// @todo Update this
+    /// For testing purposes this decoder will takes symbols produced by the
+    /// carousel encoder and put them in the right order until all symbols
+    /// have been received.
     class nocode_carousel_decoder
         : public // Payload Codec API
                  payload_decoder<
@@ -58,7 +59,7 @@ namespace kodo
                  // Codec API
                  align_coefficient_decoder<
                  linear_block_decoder<
-                 linear_block_vector_storage<
+                 // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
                  // Finite Field Math API
@@ -71,7 +72,7 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  nocode_carousel_decoder, fifi::binary>
-                     > > > > > > > > > > > >
+                     > > > > > > > > > > >
     {};
 
 }
