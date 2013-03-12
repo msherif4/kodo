@@ -34,42 +34,41 @@ namespace kodo
 
         /// @copydoc layer::encode_symbol()
         void encode_symbol(uint8_t *symbol_data,
-                           const uint8_t *symbol_coefficients)
+                           const uint8_t *coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 value_type *symbol =
                     reinterpret_cast<value_type*>(symbol_data);
 
-                const value_type *coefficients =
-                    reinterpret_cast<const value_type*>(symbol_coefficients);
+                const value_type *c =
+                    reinterpret_cast<const value_type*>(coefficients);
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    value_type coefficient =
-                        fifi::get_value<field_type>(coefficients, i);
+                    value_type value = fifi::get_value<field_type>(c, i);
 
-                    if(coefficient)
+                    if(!value)
                     {
-                        const value_type *symbol_i =
-                                SuperCoder::symbol_value( i );
+                        continue;
+                    }
 
-                        // Did you forget to set the data on the encoder?
-                        assert(symbol_i != 0);
+                    const value_type *symbol_i = SuperCoder::symbol_value( i );
 
-                        if(fifi::is_binary<field_type>::value)
-                        {
-                            SuperCoder::add(symbol, symbol_i,
-                                            SuperCoder::symbol_length());
-                        }
-                        else
-                        {
-                            SuperCoder::multiply_add(
-                                symbol, symbol_i,
-                                coefficient,
-                                SuperCoder::symbol_length());
-                        }
+                    // Did you forget to set the data on the encoder?
+                    assert(symbol_i != 0);
+
+                    if(fifi::is_binary<field_type>::value)
+                    {
+                        SuperCoder::add(symbol, symbol_i,
+                                        SuperCoder::symbol_length());
+                    }
+                    else
+                    {
+                        SuperCoder::multiply_add(
+                            symbol, symbol_i, value,
+                            SuperCoder::symbol_length());
                     }
                 }
             }

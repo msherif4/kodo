@@ -22,15 +22,13 @@ namespace kodo
         /// the encode_symbol() call.
         ///
         /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
-        void encode_symbol(uint8_t *symbol_data,
-                           uint8_t *symbol_coefficients)
+        void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 std::fill_n(symbol_data, SuperCoder::symbol_size(), 0);
-
-                SuperCoder::encode_symbol(symbol_data, symbol_coefficients);
+                SuperCoder::encode_symbol(symbol_data, coefficients);
             }
     };
 }

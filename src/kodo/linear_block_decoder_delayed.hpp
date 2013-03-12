@@ -13,8 +13,6 @@
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 
-#include "linear_block_vector.hpp"
-
 namespace kodo
 {
 
@@ -40,17 +38,17 @@ namespace kodo
 
         /// The decode function which consumes an incomming symbol and
         /// the corresponding symbol_id
-        /// @copydoc linear_block_decoder::decode()
-        void decode_symbol(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// @copydoc layer::decode(uint8_t*,uint8_t*)
+        void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(coefficients != 0);
 
                 value_type *symbol
                     = reinterpret_cast<value_type*>(symbol_data);
 
                 value_type *vector
-                    = reinterpret_cast<value_type*>(symbol_id);
+                    = reinterpret_cast<value_type*>(coefficients);
 
                 decode_with_vector(symbol, vector);
             }

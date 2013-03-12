@@ -22,9 +22,6 @@
 
 #include "basic_api_test_helper.hpp"
 
-
-
-
 /// Defines a number test stacks which contains the layers we wish to
 /// test.
 /// The stacks we define below contain the expect layers used in a

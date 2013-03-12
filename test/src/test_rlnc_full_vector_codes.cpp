@@ -16,7 +16,6 @@
 #include <kodo/recoding_symbol_id.hpp>
 #include <kodo/proxy_layer.hpp>
 #include <kodo/payload_recoder.hpp>
-#include <kodo_debug/full_vector_decoder_debug.hpp>
 
 #include "basic_api_test_helper.hpp"
 

@@ -12,8 +12,6 @@ namespace kodo
 {
 
     /// @ingroup payload_codec_layers
-    /// @ingroup factory_layers
-    ///
     /// @brief The payload decoder splits payload buffer into
     ///        symbol_header and symbol.
     template<class SuperCoder>
@@ -43,7 +41,6 @@ namespace kodo
 
     public:
 
-        /// @todo error here return statement should go
         /// Unpacks the symbol data and symbol header from the payload
         /// buffer.
         /// @copydoc layer::decode(uint8_t*)
@@ -54,7 +51,7 @@ namespace kodo
                 uint8_t *symbol_data = payload;
                 uint8_t *symbol_id = payload + SuperCoder::symbol_size();
 
-                return SuperCoder::decode(symbol_data, symbol_id);
+                SuperCoder::decode(symbol_data, symbol_id);
             }
 
         /// @copydoc layer::payload_size() const

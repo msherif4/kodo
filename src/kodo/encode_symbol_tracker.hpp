@@ -31,12 +31,9 @@ namespace kodo
             }
 
         /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
-        void encode_symbol(uint8_t *symbol_data,
-                           uint8_t *symbol_coefficients)
+        void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
             {
-                SuperCoder::encode_symbol(
-                    symbol_data, symbol_coefficients);
-
+                SuperCoder::encode_symbol(symbol_data, coefficients);
                 ++m_counter;
             }
 

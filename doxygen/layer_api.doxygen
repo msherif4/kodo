@@ -230,20 +230,20 @@ public:
     /// Encodes a symbol according to the symbol coefficients
     ///
     /// @param symbol_data The destination buffer for the encoded symbol
-    /// @param symbol_coefficients At this point the symbol id should be
+    /// @param coefficients At this point the symbol id should be
     ///        initialized with the desired coding coefficients.
     void encode_symbol(uint8_t *symbol_data,
-                       const uint8_t *symbol_coefficients);
+                       const uint8_t *coefficients);
 
     /// @ingroup codec_api
     /// Decodes an encoded symbol according to the coding coefficients
     /// stored in the corresponding symbol_id.
     ///
     /// @param symbol_data The encoded symbol
-    /// @param symbol_coefficients The coding coefficients used to
+    /// @param coefficients The coding coefficients used to
     ///        create the encoded symbol
     void decode_symbol(uint8_t *symbol_data,
-                       uint8_t *symbol_coefficients);
+                       uint8_t *coefficients);
 
     /// @ingroup codec_api
     /// The decode function for systematic packets i.e. specific uncoded
