@@ -56,6 +56,8 @@ namespace kodo
 
                 id_type id = sak::big_endian::get<id_type>(symbol_header);
 
+                assert(id < SuperCoder::symbols());
+
                 SuperCoder::decode_symbol(symbol_data, id);
             }
 
@@ -65,10 +67,6 @@ namespace kodo
                 return sizeof(id_type);
             }
 
-    private:
-
-        /// Keeps track of the current symbol id
-        uint32_t m_current_symbol;
     };
 }
 

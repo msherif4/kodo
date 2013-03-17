@@ -6,11 +6,9 @@
 #ifndef KODO_RLNC_SEED_CODES_HPP
 #define KODO_RLNC_SEED_CODES_HPP
 
-
-
 #include <cstdint>
 
-#include <fifi/default_field_impl.hpp>
+#include <fifi/default_field.hpp>
 
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
@@ -71,7 +69,7 @@ namespace kodo
                  // Coefficient Storage API
                  coefficient_info<
                  // Finite Field Math API
-                 finite_field_math<fifi::default_field_impl,
+                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
@@ -105,7 +103,7 @@ namespace kodo
                  coefficient_storage<
                  coefficient_info<
                  // Finite Field Math API
-                 finite_field_math<fifi::default_field_impl,
+                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<

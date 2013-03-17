@@ -6,8 +6,6 @@
 #ifndef KODO_CAROUSEL_CODES_HPP
 #define KODO_CAROUSEL_CODES_HPP
 
-#include <fifi/default_field_impl.hpp>
-
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
 #include "../zero_symbol_encoder.hpp"
@@ -26,6 +24,9 @@
 
 #include "carousel_encoder.hpp"
 #include "carousel_decoder.hpp"
+#include "nocode_encoder.hpp"
+#include "nocode_decoder.hpp"
+
 
 namespace kodo
 {
@@ -38,6 +39,8 @@ namespace kodo
                  payload_encoder<
                  // Codec Header API
                  carousel_encoder<
+                 // Codec API
+                 nocode_encoder<
                  // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
@@ -45,7 +48,7 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  nocode_carousel_encoder, fifi::binary>
-                     > > > > >
+                     > > > > > >
     {};
 
     /// For testing purposes this decoder will takes symbols produced by the
@@ -57,22 +60,15 @@ namespace kodo
                  // Codec Header API
                  carousel_decoder<
                  // Codec API
-                 align_coefficient_decoder<
-                 linear_block_decoder<
-                 // Coefficient Storage API
-                 coefficient_storage<
-                 coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<fifi::default_field_impl,
+                 nocode_decoder<
                  // Symbol Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
                  // Factory API
                  final_coder_factory_pool<
                  nocode_carousel_decoder, fifi::binary>
-                     > > > > > > > > > > >
+                     > > > > > >
     {};
 
 }

@@ -1,10 +1,12 @@
-// Copyright Steinwurf ApS 2011-2013.
+// Copyright Steinwurf ApS 2011-2012.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
 #ifndef KODO_RS_VANDERMONDE_MATRIX_HPP
 #define KODO_RS_VANDERMONDE_MATRIX_HPP
+
+#include <boost/type_traits/is_same.hpp>
 
 #include <fifi/arithmetics.hpp>
 
@@ -14,33 +16,29 @@ namespace kodo
     /// @ingroup coefficient_generator_layers
     /// @brief Using the Vandermonde matrix to generate the coding
     ///        coefficients.
-    template<class Field>
+    template<class FieldImpl>
     class vandermonde_matrix
     {
     public:
 
+        /// The finite field implementation
+        typedef FieldImpl field_impl;
+
         /// The field type
-        typedef Field field_type;
+        typedef typename field_impl::field_type field_type;
 
         /// The value type
         typedef typename field_type::value_type value_type;
 
     public:
 
-        /// @param systematic defines whether the code is systematic
         /// @param symbols the number of symbols in a block
-        /// @param field the used field
-        template<class FieldImpl>
-        vandermonde_matrix(bool systematic, uint32_t symbols,
-                           const boost::shared_ptr<FieldImpl> &field)
-            : m_systematic(systematic),
-              m_symbols(symbols)
+        vandermonde_matrix(uint32_t symbols)
+            :       m_symbols(symbols)
             {
                 assert(m_symbols > 0);
-                assert(field);
 
-                BOOST_STATIC_ASSERT((boost::is_same<field_type,
-                                     typename FieldImpl::field_type>::value));
+                m_field = boost::make_shared<field_impl>();
 
                 /// The maximum number of encoding symbols
                 uint32_t max_symbols = Field::order - 1;
@@ -84,16 +82,6 @@ namespace kodo
                     a_row = field->multiply(a_row, 2U);
                 }
 
-                // if(m_systematic)
-                // {
-                //     set_systematic();
-                // }
-            }
-
-        /// @return true if the matrix is in systematic form
-        bool is_systematic() const
-            {
-                return m_systematic;
             }
 
         /// @return the number of source symbols specified for this matrix
@@ -115,12 +103,6 @@ namespace kodo
             }
 
     private:
-
-        value_type* matrix_row(uint32_t index)
-            {
-                assert(index < field_type::order);
-                return &m_matrix[index * m_symbols];
-            }
 
         // Performs row operations and puts the matrix on systematic form
         // void set_systematic()

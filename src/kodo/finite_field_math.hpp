@@ -6,7 +6,8 @@
 #ifndef KODO_FINITE_FIELD_MATH_HPP
 #define KODO_FINITE_FIELD_MATH_HPP
 
-#include <stdint.h>
+#include <cstdint>
+#include <type_traits>
 
 #include <fifi/arithmetics.hpp>
 
@@ -14,7 +15,7 @@ namespace kodo
 {
     /// @ingroup math_layers
     /// Basic layer performing common finite field operation
-    template<template <class> class FieldImpl, class SuperCoder>
+    template<class FieldImpl, class SuperCoder>
     class finite_field_math : public SuperCoder
     {
     public:
@@ -25,14 +26,25 @@ namespace kodo
         /// The value type
         typedef typename field_type::value_type value_type;
 
-        /// The field implementation selector
-        typedef typename FieldImpl<field_type>::type field_impl;
+        /// The finite field implementation
+        typedef FieldImpl field_impl;
 
         /// Pointer to the finite field implementation
         typedef boost::shared_ptr<field_impl> field_pointer;
 
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
+
+    private:
+
+        /// The field type of the finite field implementation
+        typedef typename field_impl::field_type impl_field_type;
+
+        /// Check that the fields match
+        static_assert(std::is_same<impl_field_type, field_type>::value,
+                      "Chosen field must match.");
+
+    public:
 
         /// @ingroup factory_layers
         /// The factory layer associated with this coder. We create

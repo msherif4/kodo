@@ -236,6 +236,14 @@ public:
                        const uint8_t *coefficients);
 
     /// @ingroup codec_api
+    /// The encode function for systematic packets i.e. specific uncoded
+    /// symbols.
+    /// @param symbol_data The destination of the uncoded source symbol.
+    /// @param symbol_index The index of this uncoded symbol in the data
+    ///                     block.
+    void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index);
+
+    /// @ingroup codec_api
     /// Decodes an encoded symbol according to the coding coefficients
     /// stored in the corresponding symbol_id.
     ///

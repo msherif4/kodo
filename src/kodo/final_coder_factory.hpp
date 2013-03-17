@@ -17,6 +17,8 @@
 namespace kodo
 {
 
+    /// @todo remove the field from these classes - so we don't have to specify
+    ///       a field when it does not make sense
     /// @ingroup factory_layers
     /// Terminates the layered coder and contains the coder allocation
     /// policy
