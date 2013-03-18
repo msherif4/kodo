@@ -1,10 +1,10 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf ApS 2011-2013.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_VANDERMONDE_MATRIX_HPP
-#define KODO_RS_VANDERMONDE_MATRIX_HPP
+#ifndef KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
+#define KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
@@ -16,9 +16,13 @@ namespace kodo
     /// @brief Computes a Vandermonde matrix to generate the coding
     ///        coefficients. The matrix code is
     template<class SuperCoder>
-    class vandermonde_matrix : public SuperCoder
+    class systematic_vandermonde_matrix
+        : public vandermonde_matrix<SuperCoder>
     {
     public:
+
+        /// The actual super
+        typedef vandermonde_matrix<SuperCoder> Super;
 
         /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;

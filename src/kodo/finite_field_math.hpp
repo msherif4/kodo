@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include <fifi/arithmetics.hpp>
+#include <fifi/fifi_utils.hpp>
 
 namespace kodo
 {

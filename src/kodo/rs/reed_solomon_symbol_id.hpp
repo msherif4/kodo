@@ -8,12 +8,11 @@
 
 #include <cstdint>
 
-
 namespace kodo
 {
 
     /// Basic Reed-Solomon encoder
-    template<template <class> class GeneratorMatrix, class SuperCoder>
+    template<class SuperCoder>
     class reed_solomon_symbol_id : public SuperCoder
     {
     public:
@@ -25,7 +24,7 @@ namespace kodo
         typedef typename SuperCoder::value_type value_type;
 
         /// The generator matrix type
-        typedef GeneratorMatrix<field_type> generator_matrix;
+        typedef std::vector<value_type> generator_matrix;
 
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
@@ -36,23 +35,7 @@ namespace kodo
         /// the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
-        private:
-
-            /// Access to the finite field implementation used stored in the
-            /// finite_field_math layer
-            using SuperCoder::factory::m_field;
-
         public:
-
-            /// @copydoc layer::factory::factory(uint32_t, uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                {
-                    // A Reed-Solomon code cannot support more symbols
-                    // than 2^m - 1 where m is the size of the finite
-                    // field
-                    assert(max_symbols < field_type::order);
-                }
 
             /// @copydoc layer::factory::build(uint32_t, uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
@@ -63,8 +46,7 @@ namespace kodo
                     if(m_cache.find(symbols) == m_cache.end())
                     {
                         m_cache[symbols] =
-                            boost::make_shared<generator_matrix>(
-                                false, symbols, m_field);
+                            SuperCoder::factory::construct_matrix(symbols);
                     }
 
                     coder->m_matrix = m_cache[symbols];
