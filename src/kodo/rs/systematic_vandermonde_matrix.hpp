@@ -6,8 +6,7 @@
 #ifndef KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
 #define KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include "vandermonde_matrix.hpp"
 
 namespace kodo
 {
@@ -25,48 +24,56 @@ namespace kodo
         typedef vandermonde_matrix<SuperCoder> Super;
 
         /// @copydoc layer::field_type
-        typedef typename SuperCoder::field_type field_type;
+        typedef typename Super::field_type field_type;
 
         /// @copydoc layer::value_type
-        typedef typename field_type::value_type value_type;
+        typedef typename Super::value_type value_type;
 
         /// The generator matrix type
-        typedef std::vector<value_type> generator_matrix;
+        typedef typename Super::generator_matrix generator_matrix;
 
 
     public:
 
         /// The factory layer associated with this coder. Maintains
         /// the block generator needed for the encoding vectors.
-        class factory : public SuperCoder::factory
+        class factory : public Super::factory
         {
         private:
 
             /// Access to the finite field implementation used stored in
             /// the finite_field_math layer
-            using SuperCoder::factory::m_field;
+            using Super::factory::m_field;
 
         public:
 
-            /// @copydoc layer::factory::factory(uint32_t, uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                {
-                    // A Reed-Solomon code cannot support more symbols
-                    // than 2^m - 1 where m is the size of the finite
-                    // field
-                    assert(max_symbols < field_type::order);
-                }
-
-            /// Constructs a basis Vandermonde matrix. The matrix
-            /// is non-systematic (see RFC 5510).
+            /// Constructs systematic Vandermonde matrix.
             /// @param symbols The number of source symbols to encode
             /// @return The Vandermonde matrix
             boost::shared_ptr<generator_matrix> construct_matrix(
                 uint32_t symbols)
                 {
-                    assert(symbols > 0);
-                    assert(m_field);
+                    boost::shared_ptr<generator_matrix> matrix =
+                        Super::construct_matrix(symbols);
+
+                    for(uint32_t i = 0; i < symbols; ++i)
+                    {
+                        uint32_t row_offset = i * symbols;
+                        value_type pivot = matrix->at(row_offset + i);
+                        pivot = m_field->invert(pivot);
+
+                        for(uint32_t j = 0; j < field_type::order - 1; ++j)
+                        {
+                            if(j == i)
+                                continue;
+
+                            value_type *row_j = &matrix->at(j * symbols);
+
+
+                        }
+
+                    }
+
 
                     /// The maximum number of encoding symbols
                     uint32_t max_symbols = field_type::order - 1;
