@@ -62,7 +62,6 @@ namespace kodo
                      > > >
     { };
 
-
 }
 
 /// Tests:
@@ -117,7 +116,9 @@ TEST(TestVandermondeMatrix, test_matrix_values)
     uint32_t symbol_size = rand_symbol_size();
 
     {
-        typedef api_construct_matrix<kodo::vandermonde_stack<field_type> > test;
+        typedef api_construct_matrix<
+            kodo::vandermonde_stack<field_type> > test;
+
         test runner(symbols, symbol_size);
         runner.run(symbols, test_rs8_10_nonsystematic);
     }

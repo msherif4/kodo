@@ -43,12 +43,12 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @copydoc layer::factory::max_id_size()
+            /// @copydoc layer::factory::max_id_size() const
             uint32_t max_id_size() const
                 {
                     return SuperCoder::factory::max_coefficients_size();
@@ -69,7 +69,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);

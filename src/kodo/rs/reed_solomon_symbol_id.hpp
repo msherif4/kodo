@@ -11,7 +11,11 @@
 namespace kodo
 {
 
-    /// Basic Reed-Solomon encoder
+    /// @brief Base class for the Reed-Solomon symbol id reader and
+    ///        writer. Contains the functionality to cache the
+    ///        generator matrices.
+    ///
+    /// @ingroup symbol_id_layers
     template<class SuperCoder>
     class reed_solomon_symbol_id : public SuperCoder
     {
@@ -24,7 +28,7 @@ namespace kodo
         typedef typename SuperCoder::value_type value_type;
 
         /// The generator matrix type
-        typedef std::vector<value_type> generator_matrix;
+        typedef typename SuperCoder::generator_matrix generator_matrix;
 
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
@@ -50,6 +54,7 @@ namespace kodo
                     }
 
                     coder->m_matrix = m_cache[symbols];
+
                     return coder;
                 }
 
@@ -67,6 +72,20 @@ namespace kodo
 
 
     public:
+
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+
+                assert(m_matrix);
+
+                // The row size of the generator matrix should fit
+                // the expected coefficient buffer size
+                assert(SuperCoder::coefficients_size() ==
+                       m_matrix->row_size());
+            }
+
 
         /// @copydoc layer::id_size() const
         uint32_t id_size() const

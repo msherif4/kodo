@@ -19,7 +19,6 @@ namespace kodo
     ///        coefficients.
     ///
     /// @ingroup symbol_id_layers
-    /// @ingroup factory_layers
     template<class SuperCoder>
     class plain_symbol_id_writer : public SuperCoder
     {

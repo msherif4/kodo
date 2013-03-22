@@ -11,6 +11,7 @@
 namespace kodo
 {
 
+    /// @todo document this / move to fifi?
     /// @brief Simple storage class with a matrix API for finite
     ///        field elements.
     template<class Field>
