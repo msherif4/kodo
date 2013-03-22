@@ -9,8 +9,11 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
+#include "../matrix.hpp"
+
 namespace kodo
 {
+
 
     /// @ingroup user_layers
     /// @brief Computes a Vandermonde matrix to generate the coding
@@ -26,9 +29,8 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
 
-        /// The generator matrix type
-        typedef std::vector<value_type> generator_matrix;
-
+        /// The generator matrix
+        typedef matrix<field_type> generator_matrix;
 
     public:
 
@@ -36,7 +38,7 @@ namespace kodo
         /// the block generator needed for the encoding vectors.
         class factory : public SuperCoder::factory
         {
-        private:
+        protected:
 
             /// Access to the finite field implementation used stored in
             /// the finite_field_math layer
@@ -95,25 +97,22 @@ namespace kodo
         // [a^(0), a^(2)  , a^(4), ... , a^(2*(k-1))]
         // [a^(0), a^(3)  , a^(6), ... , a^(3*(k-1))]
         // [a^(0), a^(4)  , a^(8), ... , a^(4*(k-1))]
-        //                   .
-        //                   .
-        //                   .
+        //                   :
+        //                   :
+        //                   :
         // [a^(0), a^(n-1), a^(2*(n-1)), ... , a^((n-1)*(k-1))]
-        auto matrix = boost::make_shared<generator_matrix>();
-        matrix->resize(symbols * max_symbols, '\0');
+        auto m = boost::make_shared<generator_matrix>(symbols, max_symbols);
 
         // Follows the progress of alpha along the rows
         value_type a_row = 1U;
 
-        for(uint32_t j = 0; j < max_symbols; ++j)
+        for(uint32_t j = 0; j < symbols; ++j)
         {
             value_type a_column = 1U;
 
-            for(uint32_t i = 0; i < symbols; ++i)
+            for(uint32_t i = 0; i < max_symbols; ++i)
             {
-                uint32_t index = (j * symbols) + i;
-
-                matrix->at(index) = a_column;
+                m->set_element(j, i, a_column);
                 a_column = m_field->multiply(a_row, a_column);
             }
 
@@ -122,8 +121,7 @@ namespace kodo
             a_row = m_field->multiply(a_row, 2U);
         }
 
-        return matrix;
-
+        return m;
     }
 
 
