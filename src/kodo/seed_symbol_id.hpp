@@ -10,8 +10,6 @@
 
 #include <fifi/fifi_utils.hpp>
 
-#include "aligned_coefficients_buffer.hpp"
-
 namespace kodo
 {
 
