@@ -9,9 +9,15 @@
 /// simply just test an existing decoding implementation. In that case, it may
 /// be preferred to reuse functionalities in already existing layers while
 /// stripping unrequired functionalities for simplicity.
-/// This example shows how the upper api layers can be removed from the decoder
-/// stack while still maintaining the lower layers. This way, an existing
-/// decoding implementation is tested without introducing unrequired complexity.
+///
+/// This example illustrates how the operations of a RLNC decoder can be
+/// tested in a binary field without introducing unnecessary complexity.
+/// To keep it simple, we want to enter the data to be decoded ourself instead
+/// of relying on an encoder to generate the data.
+/// The functionalities in layers above the "Codec API" is therefore not
+/// required and has been stripped from the stack for simplicity. However,
+/// the layers below the "Codec API" has been kept as they provide
+/// functionalities that we require.
 
 #include <boost/utility/binary.hpp>
 
@@ -37,6 +43,7 @@ namespace fifi
 
 namespace kodo
 {
+    // Simple RLNC decoder
     template<class Field>
     class rlnc_decoder
         : public // Codec API
@@ -77,8 +84,10 @@ int main()
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
 
-
-    // Enter the data used for decoding and validating the output
+    // To illustrate decoding, random data has been filled into the
+    // matrices below. It is crucial that the equation below is correct
+    // if to purpose is to test if the decoder decodes correctly as this
+    // example evaluates in the end of the example.
     //
     // original_symbols (M):    Symbols we expect to obtain from decoding
     //                          encoded_symbols using the symbol_coefficients
