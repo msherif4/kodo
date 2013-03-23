@@ -3,10 +3,10 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_copy_payload Unit test for copy_payload layer
+/// @file test_copy_payload_decoder Unit test for copy_payload_decoder layer
 
 /// Tests:
-///   - layer::construct(uint32_t,uint32_t)
+///   - layer::initialize(uint32_t,uint32_t)
 ///   - layer::decode(const uint8_t*)
 
 #include <cstdint>
@@ -16,7 +16,7 @@
 
 #include <fifi/default_field.hpp>
 
-#include <kodo/copy_payload.hpp>
+#include <kodo/copy_payload_decoder.hpp>
 #include <kodo/payload_decoder.hpp>
 #include <kodo/systematic_decoder.hpp>
 #include <kodo/symbol_id_decoder.hpp>
@@ -37,9 +37,9 @@ namespace kodo
     // Test layer against real api to ensure that we get an error if the layer
     // doesn't complies with the api.
     template<class Field>
-    class copy_payload_stack
+    class copy_payload_decoder_stack
         : public // Payload API
-                 copy_payload<
+                 copy_payload_decoder<
                  payload_decoder<
                  // Codec Header API
                  systematic_decoder<
@@ -61,7 +61,7 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 copy_payload_stack<Field>, Field>
+                 copy_payload_decoder_stack<Field>, Field>
                      > > > > > > > > > > > > >
     {};
 
@@ -70,11 +70,11 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer::construct()
-        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             {
-               (void)max_symbols;
-               m_symbol_size = max_symbol_size;
+                (void)symbols;
+                m_symbol_size = symbol_size;
             }
 
         /// @copydoc layer::decode(uint8_t*)
@@ -83,7 +83,7 @@ namespace kodo
                 assert(payload != 0);
 
                 // Clear payload
-                memset(payload, 0, payload_size());
+                std::fill_n(payload, payload_size(), 0);
             }
 
         /// @copydoc layer::payload_size() const
@@ -99,7 +99,7 @@ namespace kodo
     };
 
     // Test functionality of the individual layer 
-    typedef copy_payload<dummy_api> copy_payload_coder; 
+    typedef copy_payload_decoder<dummy_api> copy_payload_coder; 
 }
 
 // Test the layer itself - confirms that it acts as expected
@@ -107,7 +107,7 @@ void test_layer(uint32_t symbols, uint32_t symbol_size)
 {
     // Create and initialize coder
     kodo::copy_payload_coder coder;
-    coder.construct(symbols, symbol_size);
+    coder.initialize(symbols, symbol_size);
 
     std::vector<uint8_t> payload(coder.payload_size(), 'a');
     std::vector<uint8_t> payload_copy(payload);
@@ -129,7 +129,8 @@ void test_layer(uint32_t symbols, uint32_t symbol_size)
 // Ensure that the layer complies to the API
 void test_stack(uint32_t symbols, uint32_t symbol_size)
 {
-    typedef kodo::copy_payload_stack<fifi::binary8> copy_paylaod_coder_t;
+    typedef kodo::copy_payload_decoder_stack<fifi::binary8>
+        copy_paylaod_coder_t;
     
     copy_paylaod_coder_t::factory coder_factory(symbols, symbol_size);
     copy_paylaod_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
@@ -140,7 +141,7 @@ void test_stack(uint32_t symbols, uint32_t symbol_size)
 }
 
 /// Run the tests
-TEST(TestCopyPayload, test_copy_payload_stack)
+TEST(TestCopyPayloadDecoder, test_copy_payload_decoder_stack)
 {
     uint32_t symbols = 8;
     uint32_t symbol_size = 8;

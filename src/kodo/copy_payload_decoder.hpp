@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_COPY_PAYLOAD_HPP
-#define KODO_COPY_PAYLOAD_HPP
+#ifndef KODO_COPY_PAYLOAD_DECODER_HPP
+#define KODO_COPY_PAYLOAD_DECODER_HPP
 
 #include <cstdint>
 #include <vector>
@@ -16,17 +16,19 @@ namespace kodo
     ///
     /// @brief Make decoder work on a copy of the payload
     ///
-    /// Make decoder work on a copy of the payload to ensure that the
-    /// payload isn't overwritten during decoding
+    /// In the standard API the payload buffer may be modified during decoding,
+    /// this can be problematic if you wish to e.g. pass the same payload to
+    /// multiple decoders. To solve this you may use the copy_payload_decoder
+    /// layer to ensure that the payload is not modified by decoders.
     template<class SuperCoder>
-    class copy_payload : public SuperCoder
+    class copy_payload_decoder : public SuperCoder
     {
     public:
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
             {
-                SuperCoder::construct(max_symbols, max_symbol_size);
+                SuperCoder::initialize(symbols, symbol_size);
 
                 m_payload_copy.resize(SuperCoder::payload_size(), 0);
             }
@@ -38,8 +40,8 @@ namespace kodo
             {
                 assert(payload != 0);
 
-                /// Copy payload
-                memcpy(&m_payload_copy[0], payload, SuperCoder::payload_size());
+                /// Copy payload to m_payload_copy
+                std::copy_n(payload, SuperCoder::payload_size(), &m_payload_copy[0]);
 
                 SuperCoder::decode(&m_payload_copy[0]);
             }
