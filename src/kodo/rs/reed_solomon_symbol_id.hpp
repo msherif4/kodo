@@ -7,6 +7,7 @@
 #define KODO_RS_REED_SOLOMON_SYMBOL_ID_HPP
 
 #include <cstdint>
+#include <map>
 
 namespace kodo
 {
@@ -33,6 +34,10 @@ namespace kodo
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
 
+        /// Pointer the type of this layer
+        typedef boost::shared_ptr<
+            reed_solomon_symbol_id<SuperCoder> > this_pointer;
+
     public:
 
         /// The factory layer associated with this coder. Maintains
@@ -40,6 +45,12 @@ namespace kodo
         class factory : public SuperCoder::factory
         {
         public:
+
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
+            factory(uint32_t max_symbols, uint32_t max_symbol_size)
+                : SuperCoder::factory(max_symbols, max_symbol_size)
+                { }
+
 
             /// @copydoc layer::factory::build(uint32_t, uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
@@ -53,7 +64,13 @@ namespace kodo
                             SuperCoder::factory::construct_matrix(symbols);
                     }
 
-                    coder->m_matrix = m_cache[symbols];
+                    this_pointer this_coder = coder;
+                    this_coder->m_matrix = m_cache[symbols];
+
+                    // The row size of the generator matrix should fit
+                    // the expected coefficient buffer size
+                    assert(coder->coefficients_size() ==
+                           this_coder->m_matrix->row_size());
 
                     return coder;
                 }
@@ -68,24 +85,11 @@ namespace kodo
 
             /// map for blocks
             std::map<uint32_t, boost::shared_ptr<generator_matrix> > m_cache;
+
         };
 
 
     public:
-
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
-
-                assert(m_matrix);
-
-                // The row size of the generator matrix should fit
-                // the expected coefficient buffer size
-                assert(SuperCoder::coefficients_size() ==
-                       m_matrix->row_size());
-            }
-
 
         /// @copydoc layer::id_size() const
         uint32_t id_size() const
@@ -99,6 +103,7 @@ namespace kodo
         boost::shared_ptr<generator_matrix> m_matrix;
 
     };
+
 }
 
 #endif

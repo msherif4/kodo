@@ -9,6 +9,7 @@
 #include <cstdint>
 
 #include <fifi/fifi_utils.hpp>
+#include <sak/convert_endian.hpp>
 
 #include "reed_solomon_symbol_id.hpp"
 

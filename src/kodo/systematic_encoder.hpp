@@ -19,8 +19,8 @@
 namespace kodo
 {
 
+    /// @todo use encode_symbol_tracker
     /// @ingroup codec_header_layers
-    /// @ingroup factory_layers
     /// @brief Systematic encoding layer.
     ///
     /// Specifying the SystematicOn template argument true will initialize the

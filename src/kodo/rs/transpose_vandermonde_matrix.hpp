@@ -25,7 +25,6 @@ namespace kodo
         /// The generator matrix type
         typedef typename SuperCoder::generator_matrix generator_matrix;
 
-
     public:
 
         /// The factory layer associated with this coder. Maintains

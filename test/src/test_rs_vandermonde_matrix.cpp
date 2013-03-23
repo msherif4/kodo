@@ -44,22 +44,20 @@ namespace kodo
 
     template<class Field>
     class vandermonde_stack
-        : public transpose_vandermonde_matrix<
-                 vandermonde_matrix<
+        : public vandermonde_matrix<
                  finite_field_math<typename fifi::default_field<Field>::type,
                  final_coder_factory<
                  vandermonde_stack<Field>, Field>
-                     > > >
+                     > >
     { };
 
     template<class Field>
     class systematic_vandermonde_stack
-        : public transpose_vandermonde_matrix<
-                 systematic_vandermonde_matrix<
+        : public systematic_vandermonde_matrix<
                  finite_field_math<typename fifi::default_field<Field>::type,
                  final_coder_factory<
                  systematic_vandermonde_stack<Field>, Field>
-                     > > >
+                     > >
     { };
 
 }

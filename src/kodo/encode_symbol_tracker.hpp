@@ -11,8 +11,10 @@
 namespace kodo
 {
 
-    /// @ingroup codec_layers
+    /// @todo add a encode_symbol(uint32_t index, uint...) and count it
     /// @brief Counts the number of symbols which have been encoded
+    ///
+    /// @ingroup codec_layers
     template<class SuperCoder>
     class encode_symbol_tracker : public SuperCoder
     {

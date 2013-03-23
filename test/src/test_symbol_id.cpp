@@ -9,6 +9,7 @@
 
 #include <gtest/gtest.h>
 
+#include <fifi/default_field.hpp>
 
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/final_coder_factory_pool.hpp>
@@ -18,6 +19,11 @@
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
+#include <kodo/encode_symbol_tracker.hpp>
+#include <kodo/finite_field_math.hpp>
+#include <kodo/rs/reed_solomon_symbol_id_writer.hpp>
+#include <kodo/rs/reed_solomon_symbol_id_reader.hpp>
+#include <kodo/rs/vandermonde_matrix.hpp>
 
 #include "basic_api_test_helper.hpp"
 
@@ -36,6 +42,21 @@ namespace kodo
                  plain_uniform_stack<Field>, Field>
                      > > > > >
     { };
+
+    template<class Field>
+    class rs_vandermond_nonsystematic_stack
+        : public reed_solomon_symbol_id_reader<
+                 reed_solomon_symbol_id_writer<
+                 vandermonde_matrix<
+                 coefficient_info<
+                 storage_block_info<
+                 encode_symbol_tracker<
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 final_coder_factory<
+                 rs_vandermond_nonsystematic_stack<Field>, Field>
+                     > > > > > > >
+    { };
+
 
 }
 
@@ -120,7 +141,7 @@ private:
 
 
 /// Run the tests typical coefficients stack
-TEST(TestSymbolId, test_symbol_id_stack)
+TEST(TestSymbolId, test_plain_stack)
 {
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
@@ -128,5 +149,19 @@ TEST(TestSymbolId, test_symbol_id_stack)
     // API tests:
     run_test<kodo::plain_uniform_stack, api_symbol_id>(
         symbols, symbol_size);
+
+}
+
+
+/// Run the tests typical coefficients stack
+TEST(TestSymbolId, test_rs_stack)
+{
+    uint32_t symbols = rand_symbols(255);
+    uint32_t symbol_size = rand_symbol_size();
+
+    // API tests:
+    api_symbol_id<kodo::rs_vandermond_nonsystematic_stack<fifi::binary8> > test(symbols, symbol_size);
+    test.run();
+
 }
 

@@ -9,8 +9,9 @@
 #include <cstdint>
 
 #include <fifi/fifi_utils.hpp>
+#include <sak/convert_endian.hpp>
 
-#include "aligned_coefficients_buffer.hpp"
+#include "../aligned_coefficients_buffer.hpp"
 #include "reed_solomon_symbol_id.hpp"
 
 namespace kodo
@@ -22,18 +23,12 @@ namespace kodo
     ///
     /// @ingroup symbol_id_layers
     template<class SuperCoder>
-    class reed_solomon_symbol_id_reader
-        : public aligned_coefficients_buffer<
-                 reed_solomon_symbol_id<SuperCoder> >
+    class reed_solomon_symbol_id_reader_base : public SuperCoder
     {
     public:
 
-        /// Type of SuperCoder with injected symbol_coefficient_buffer
-        typedef aligned_coefficients_buffer<
-            reed_solomon_symbol_id<SuperCoder> > Super;
-
         /// @copydoc layer::value_type
-        typedef typename Super::value_type value_type;
+        typedef typename SuperCoder::value_type value_type;
 
     public:
 
@@ -53,7 +48,7 @@ namespace kodo
                 sak::mutable_storage dest =
                     sak::storage(m_coefficients);
 
-                sak::copy_storage(dest, src)
+                sak::copy_storage(dest, src);
 
                 *symbol_coefficients = &m_coefficients[0];
             }
@@ -61,13 +56,22 @@ namespace kodo
     private:
 
         /// Access Reed-Solomon generator class
-        using Super::m_matrix;
+        using SuperCoder::m_matrix;
 
         /// Access the buffer in the coefficients buffer
         /// layer used by the reed_solomon_symbol_id layer
-        using Super::m_coefficients;
+        using SuperCoder::m_coefficients;
 
     };
+
+    /// @copydoc reed_solomon_symbol_id_reader_base
+    template<class SuperCoder>
+    class reed_solomon_symbol_id_reader
+        : public reed_solomon_symbol_id_reader_base<
+                 aligned_coefficients_buffer<
+                 reed_solomon_symbol_id<SuperCoder> > >
+    { };
+
 
 }
 

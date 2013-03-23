@@ -8,64 +8,104 @@
 
 #include <cstdint>
 
-#include <fifi/default_field_impl.hpp>
+#include <fifi/default_field.hpp>
 
 #include "../final_coder_factory_pool.hpp"
-#include "../final_coder_factory.hpp"
 #include "../finite_field_math.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
-
+#include "../storage_bytes_used.hpp"
+#include "../storage_block_info.hpp"
 #include "../deep_symbol_storage.hpp"
-#include "../generators/block.hpp"
-#include "../generators/block_cache.hpp"
-#include "../generators/block_cache_lookup.hpp"
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
+#include "../align_coefficient_decoder.hpp"
+#include "../symbol_id_encoder.hpp"
+#include "../symbol_id_decoder.hpp"
+#include "../coefficient_storage.hpp"
+#include "../coefficient_info.hpp"
+#include "../symbol_storage_tracker.hpp"
+#include "../encode_symbol_tracker.hpp"
+
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
-#include "../linear_block_vector_storage.hpp"
 
-#include "vandermonde_generator.hpp"
-#include "reed_solomon_encoder.hpp"
-#include "reed_solomon_decoder.hpp"
+#include "reed_solomon_symbol_id_writer.hpp"
+#include "reed_solomon_symbol_id_reader.hpp"
+#include "systematic_vandermonde_matrix.hpp"
+
 
 namespace kodo
 {
-    /// A reed-solomon encoder
+    /// Complete stack implementing a Reed-Solomon encoder. The key features of
+    /// this configuration is the following:
+    /// - Systematic encoding (uncoded symbols produced before switching
+    ///   to coding)
+    /// - Deep symbol storage which makes the encoder allocate its own
+    ///   internal memory.
     template<class Field>
     class rs_encoder
-        : public payload_encoder<
+        : public // Payload Codec API
+                 payload_encoder<
+                 // Codec Header API
+                 systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 reed_solomon_symbol_id_writer<
+                 systematic_vandermonde_matrix<
+                 // Codec API
+                 encode_symbol_tracker<
                  zero_symbol_encoder<
-                 reed_solomon_encoder<vandermonde_matrix,
                  linear_block_encoder<
-                 finite_field_math<fifi::default_field_impl,
-                 partial_shallow_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<rs_encoder<Field>, Field>
-                     > > > > > > > >
-    {};
+                 // Coefficient Storage API
+                 coefficient_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 // Symbol Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 rs_encoder<Field>, Field>
+                     > > > > > > > > > > > > >
+    { };
 
-    /// A reed-solomon decoder
+    /// Implementation of a complete RS decoder this configuration
+    /// adds the following features (including those described for
+    /// the encoder):
+    /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>
     class rs_decoder
-        : public payload_decoder<
-                 reed_solomon_decoder<vandermonde_matrix,
+        : public // Payload API
+                 payload_decoder<
+                 // Codec Header API
+                 systematic_decoder<
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 reed_solomon_symbol_id_reader<
+                 systematic_vandermonde_matrix<
+                 // Codec API
                  linear_block_decoder<
-                 linear_block_vector_storage<
-                 finite_field_math<fifi::default_field_impl,
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 // Storage API
+                 symbol_storage_tracker<
                  deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<rs_decoder<Field>, Field>
-                     > > > > > > > >
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 rs_decoder<Field>, Field>
+                     > > > > > > > > > > > > >
     {};
 
-    /// Common typedefs
-    typedef rs_encoder<fifi::binary8> rs8_encoder;
-    typedef rs_decoder<fifi::binary8> rs8_decoder;
 }
 
 #endif
