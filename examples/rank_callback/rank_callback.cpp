@@ -29,7 +29,12 @@ namespace kodo
                  // Symbol ID API
                  plain_symbol_id_reader<
                  // Codec API
+
+                 // rank_callback layer is inserted in "Codec API" which it
+                 // designed for. It has to be inserted into the stack above
+                 // layers that can change the rank during decoding
                  rank_callback<
+          
                  align_coefficient_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
@@ -67,8 +72,8 @@ void rank_changed_event2(boost::weak_ptr<rlnc_decoder> w_decoder, uint32_t rank)
     /// Lock decoder pointer so that it cannot be freed until we are done
     if ( boost::shared_ptr<rlnc_decoder> decoder = w_decoder.lock() )
     {
-        std::cout << "Rank changed to " << rank <<
-            " (" << decoder << ")" << std::endl;
+        std::cout << "Rank changed to " << rank << "/" << 
+            decoder->symbols() << std::endl;
     }
 }
 
@@ -100,40 +105,38 @@ int main()
     rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
 
 
-    // Specify which callback function that should be used:
-    //  0: rank_changed_event()
-    //  1: rank_changed_event2()
-    //  2: rank_changed_event3()
-    #define CALLBACK_FUNC 0
+    // Uncomment the code block below containing the callback function you wish to
+    // use. 
 
-    #if CALLBACK_FUNC == 0
-        // Set callback for decoder to be a global function
-        decoder->set_rank_changed_callback( rank_changed_event );
 
-    #elif CALLBACK_FUNC == 1
+    // Set callback for decoder to be a global function
+    //{   
+    //    decoder->set_rank_changed_callback( rank_changed_event );
+    //}
+
+    // Set callback for decoder to be a global function that takes a
+    // pointer to the calling decoder as an additional argument
+    {
         // Gets a weak pointer to decoder to ensure that our callback doesn't
         // prevent kodo from freeing memory
         boost::weak_ptr<rlnc_decoder> w_ptr(decoder);
-
-        // Set callback for decoder to be a global function that takes a
-        // pointer to the calling decoder as an additional argument
+    
         decoder->set_rank_changed_callback (
             std::bind( &rank_changed_event2, w_ptr, std::placeholders::_1 )
         );
+    }
 
-    #elif CALLBACK_FUNC == 2
-        // Declare a class to handle callback
-        callback_handler handler;
-
-        // Set callback for decoder using lambda expression
-        decoder->set_rank_changed_callback (
-            [&] (uint32_t rank) { handler.rank_changed_event3( rank ); }
-        );
-
-    #else
-        std::cout << "Decoder will not do any callback on rank changed."
-                  << std::endl;
-    #endif
+    // Set callback for decoder to be a member function of some class
+    // This method is using lambda expressions which is not yet available in
+    // all compilers.
+    //{
+    //    // Declare a class to handle callback
+    //    callback_handler handler;
+    //
+    //    decoder->set_rank_changed_callback (
+    //        [&] (uint32_t rank) { handler.rank_changed_event3( rank ); }
+    //    );
+    //}
 
 
     // Allocate some storage for a "payload" the payload is what we would

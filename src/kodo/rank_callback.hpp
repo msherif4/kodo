@@ -13,10 +13,21 @@
 namespace kodo
 {
     /// @ingroup codec_layers
-    /// Callback on rank changed
+    /// 
+    /// @brief Allows a callback function to be executed after rank changed
+    /// 
+    /// This layer allows a callback function to be assigned to each decoder.
+    /// After the rank has changed in a decoder, it will automatically execute
+    /// the assigned callback function.
     template<class SuperCoder>
     class rank_callback : public SuperCoder
     {
+    public:
+
+        /// The rank changed callback function. The callback is invoked whenever
+        /// the rank changed and provides the current rank as a uint32_t
+        typedef std::function<void (uint32_t)> rank_changed_callback;
+
     public:
 
         /// Constructor
@@ -25,64 +36,49 @@ namespace kodo
             { }
 
         /// Reset rank changed callback function
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
 
-                /// Reset callback function
+                // Reset callback function
                 m_callback_func = nullptr;
             }
 
     public:
 
         /// Invoke rank changed callback
-        /// @copydoc layer::decode_symbol()
+        /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data,
                            uint8_t *symbol_coefficients)
             {
-                /// Rank before decoding
+                // Rank before decoding
                 uint32_t rank = SuperCoder::rank();
 
-                /// Decode symbol
+                // Decode symbol
                 SuperCoder::decode_symbol(symbol_data, symbol_coefficients);
                
-                /// If rank changed during decoding
-                if (rank < SuperCoder::rank())
-                {
-                    /// Execute callback function if a callback function is set
-                    if (m_callback_func)
-                    {
-                        m_callback_func(SuperCoder::rank());
-                    }
-                }
+                // Invoke callback function if rank changed
+                check_current_rank(rank); 
             }
 
         /// Invoke rank changed callback
-        /// @copydoc layer::decode_symbol()
+        /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
         void decode_symbol(const uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
-                /// Rank before decoding
+                // Rank before decoding
                 uint32_t rank = SuperCoder::rank();
 
-                /// Decode symbol
+                // Decode symbol
                 SuperCoder::decode_symbol(symbol_data, symbol_index);
                
-                /// If rank changed during decoding
-                if (rank < SuperCoder::rank())
-                {
-                    /// Execute callback function if set
-                    if (m_callback_func)
-                    {
-                        m_callback_func(SuperCoder::rank());
-                    }
-                }
+                // Invoke callback function if rank changed
+                check_current_rank(rank);
             }
 
         /// Set rank changed callback function
-        void set_rank_changed_callback (
-            std::function<void (uint32_t rank)> func )
+        void set_rank_changed_callback (rank_changed_callback func)
             {
                 assert(func != nullptr);
 
@@ -95,10 +91,27 @@ namespace kodo
                 m_callback_func = nullptr;
             }
 
-        private:
+    private:
+
+        /// Invoke callback function if rank has changed
+        void check_current_rank(uint32_t old_rank)
+            {
+                // If rank changed during decoding
+                if (old_rank < SuperCoder::rank())
+                {
+                    // Execute callback function if set
+                    if (m_callback_func)
+                    {
+                        m_callback_func(SuperCoder::rank());
+                    }
+                }
+            }
+
+    private:
             
-            /// Rank changed callback function
-            std::function<void (uint32_t rank)> m_callback_func;
+        /// Rank changed callback function
+        rank_changed_callback m_callback_func;
+
     };
 }
 
