@@ -36,27 +36,22 @@ namespace kodo
 
     public:
 
-        /// The decode function which consumes an incomming symbol and
-        /// the corresponding symbol_id
-        /// @copydoc layer::decode(uint8_t*,uint8_t*)
+        /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
             {
                 assert(symbol_data != 0);
                 assert(coefficients != 0);
 
-                value_type *symbol
-                    = reinterpret_cast<value_type*>(symbol_data);
+                value_type *s =
+                    reinterpret_cast<value_type*>(symbol_data);
 
-                value_type *vector
-                    = reinterpret_cast<value_type*>(coefficients);
+                value_type *c =
+                    reinterpret_cast<value_type*>(coefficients);
 
-                decode_with_vector(symbol, vector);
+                decode_coefficients(s, c);
             }
 
-        /// decode raw takes systematic packets inserts them into the decoder
-        /// for this specific coder no backwards substitution are performed
-        /// until the decoder reaches full rank.
-        /// @copydoc layer::decode_symbol()
+        /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
         void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
@@ -97,7 +92,6 @@ namespace kodo
 
             }
 
-
     protected:
 
         // Fetch the variables needed
@@ -108,16 +102,21 @@ namespace kodo
 
     protected:
 
-        /// @copydoc linear_block_decoder::decode_with_vector()
-        void decode_with_vector(value_type *symbol_data, value_type *symbol_id)
+        /// Performs the forward substitution, but waits with the final
+        /// backwards substitution until full rank is achieved.
+        /// @param symbol_data The buffer of the encoded symbol
+        /// @param coefficients The coding coefficients used to encode the
+        ///        symbol
+        void decode_coefficients(value_type *symbol_data,
+                                 value_type *coefficients)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(coefficients != 0);
 
                 // See if we can find a pivot
                 boost::optional<uint32_t> pivot_index
-                    = SuperCoder::forward_substitute_to_pivot(symbol_data,
-                                                              symbol_id);
+                    = SuperCoder::forward_substitute_to_pivot(
+                        symbol_data, coefficients);
 
                 if(!pivot_index)
                     return;
@@ -125,12 +124,13 @@ namespace kodo
                 if(!fifi::is_binary<field_type>::value)
                 {
                     // Normalize symbol and vector
-                    SuperCoder::normalize(symbol_data, symbol_id, *pivot_index);
+                    SuperCoder::normalize(
+                        symbol_data, coefficients, *pivot_index);
                 }
 
                 // Now save the received symbol
-                SuperCoder::store_coded_symbol(symbol_data, symbol_id,
-                                               *pivot_index);
+                SuperCoder::store_coded_symbol(
+                    symbol_data, coefficients,*pivot_index);
 
                 // We have increased the rank
                 ++m_rank;
@@ -161,8 +161,11 @@ namespace kodo
 
                 for(uint32_t i = symbols; i --> 0;)
                 {
-                    value_type *vector_i = SuperCoder::vector(i);
-                    value_type *symbol_i = reinterpret_cast<value_type*>(SuperCoder::symbol(i));
+                    value_type *symbol_i =
+                        SuperCoder::symbol_value(i);
+
+                    value_type *vector_i =
+                        SuperCoder::coefficients_value(i);
 
                     SuperCoder::backward_substitute(
                         symbol_i, vector_i, i);

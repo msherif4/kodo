@@ -141,18 +141,9 @@ namespace kodo
                 return m_rank;
             }
 
-        /// @param index the symbol index to check
-        /// @return true if the symbol with the specified id
-        ///         has already been received in the decoder
-        // bool symbol_exists(uint32_t index) const
-        //     {
-        //         assert(index < SuperCoder::symbols());
-        //         return m_coded[ index ] || m_uncoded[ index ];
-        //     }
-
     protected:
 
-        /// Decodes a symbol based on the vector
+        /// Decodes a symbol based on the coefficients
         /// @param symbol_data buffer containing the encoding symbol
         /// @param symbol_id buffer containing the encoding vector
         void decode_coefficients(value_type *symbol_data,

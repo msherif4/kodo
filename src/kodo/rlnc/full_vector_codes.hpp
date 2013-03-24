@@ -149,26 +149,6 @@ namespace kodo
                      > > > > > > > > > > > > > >
     {};
 
-
-    /// A RLNC decoder with delayed backwards substitute. The decoder decodes
-    /// according to a full encoding vector.
-    // template<class Field>
-    // class full_rlnc_decoder_delayed
-    //     : public full_vector_recoder<recode_proxy, random_uniform,
-    //              payload_decoder<
-    //              systematic_decoder<
-    //              align_symbol_id_decoder<
-    //              full_vector_decoder<
-    //              linear_block_decoder_delayed<
-    //              linear_block_decoder<
-    //              linear_block_vector_storage<
-    //              finite_field_math<fifi::default_field_impl,
-    //              deep_symbol_storage<
-    //              storage_bytes_used<
-    //              storage_block_info<
-    //              final_coder_factory_pool<full_rlnc_decoder_delayed<Field>, Field>
-    //                  > > > > > > > > > > > >
-    // {};
 }
 
 #endif

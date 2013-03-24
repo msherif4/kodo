@@ -19,7 +19,6 @@
 namespace kodo
 {
 
-    /// @todo use encode_symbol_tracker, go through this class' doxygen
     /// @ingroup codec_header_layers
     /// @brief Systematic encoding layer.
     ///
@@ -134,21 +133,22 @@ namespace kodo
     protected:
 
         /// Encodes a systematic packet
-        /// @copydoc linear_block_encode::encode_with_vector()
-        uint32_t encode_systematic(uint8_t *symbol_data, uint8_t *symbol_id)
+        /// @copydoc layer::encode(uint8_t*,uint8_t*)
+        uint32_t encode_systematic(uint8_t *symbol_data,
+                                   uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
 
                 uint32_t count = SuperCoder::encode_symbol_count();
 
                 /// Flag systematic packet
                 sak::big_endian::put<flag_type>(
-                    systematic_base_coder::systematic_flag, symbol_id);
+                    systematic_base_coder::systematic_flag, symbol_header);
 
                 /// Set the symbol id
                 sak::big_endian::put<counter_type>(
-                    count, symbol_id + sizeof(flag_type));
+                    count, symbol_header + sizeof(flag_type));
 
                 SuperCoder::encode_symbol(symbol_data, count);
 
@@ -156,23 +156,26 @@ namespace kodo
             }
 
         /// Encodes a non-systematic packets
-        /// @copydoc linear_block_encode::encode_with_vector()
+        /// @copydoc layer::encode(uint8_t*,uint8_t*)
         uint32_t encode_non_systematic(uint8_t *symbol_data,
-                                       uint8_t *symbol_id)
+                                       uint8_t *symbol_header)
             {
+                assert(symbol_data != 0);
+                assert(symbol_header != 0);
+
                 /// Flag non_systematic packet
                 sak::big_endian::put<flag_type>(
-                    systematic_base_coder::non_systematic_flag, symbol_id);
+                    systematic_base_coder::non_systematic_flag, symbol_header);
 
                 uint32_t bytes_consumed = SuperCoder::encode(
-                    symbol_data, symbol_id + sizeof(flag_type));
+                    symbol_data, symbol_header + sizeof(flag_type));
 
                 return bytes_consumed + sizeof(flag_type);
             }
 
     protected:
 
-        /// Allows the systematic mode to be disabled at runtime
+        /// Allows the systematic mode to be disabled at run-time
         bool m_systematic;
 
     };

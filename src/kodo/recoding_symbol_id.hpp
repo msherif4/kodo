@@ -20,16 +20,15 @@ namespace kodo
     ///        allow a decoder to produce recoded packets.
     ///
     /// @ingroup symbol_id_layers
-    /// @ingroup factory_layers
     template<class SuperCoder>
     class recoding_symbol_id : public SuperCoder
     {
     public:
 
-        /// The value type
+        /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
 
-        /// The finite field type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
         /// Pointer to coder produced by the factories
@@ -90,7 +89,11 @@ namespace kodo
                 assert(symbol_coefficients != 0);
 
                 // Zero the symbol id
-                std::fill_n(symbol_id, m_id_size, 0);
+                std::fill_n(m_recode_id.begin(), m_id_size, 0);
+
+                // Prepare the symbol id storage
+                sak::mutable_storage id_storage =
+                    sak::storage(symbol_id, m_id_size);
 
                 // Check the number of symbols stored
                 uint32_t symbol_count = SuperCoder::symbol_count();
@@ -100,6 +103,8 @@ namespace kodo
                     // Nothing we can do - we just return the zero'ed
                     // symbol coefficients and id
                     *symbol_coefficients = symbol_id;
+                    sak::copy_storage(id_storage, sak::storage(m_recode_id));
+
                     return m_id_size;
                 }
                 else if(symbol_count < SuperCoder::symbols())
@@ -113,7 +118,7 @@ namespace kodo
 
                 // Create the recoded symbol id
                 value_type *recode_id
-                    = reinterpret_cast<value_type*>(symbol_id);
+                    = reinterpret_cast<value_type*>(&m_recode_id[0]);
 
                 value_type *coefficients
                     = reinterpret_cast<value_type*>(&m_coefficients[0]);
@@ -144,12 +149,13 @@ namespace kodo
                         SuperCoder::multiply_add(
                             recode_id, source_id, c,
                             SuperCoder::coefficients_length());
-
                     }
                 }
 
 
                 *symbol_coefficients = &m_coefficients[0];
+                sak::copy_storage(id_storage, sak::storage(m_recode_id));
+
                 return m_id_size;
             }
 
@@ -172,6 +178,7 @@ namespace kodo
                 // previously. So this call should only have an
                 // effect the first time this function is called.
                 m_coefficients.resize(max_coefficients_size);
+                m_recode_id.resize(max_coefficients_size);
             }
 
     protected:
@@ -180,8 +187,17 @@ namespace kodo
         /// coding coefficients
         uint32_t m_id_size;
 
+        /// The storage type - we use aligned storage for both buffers
+        /// since if the coefficients are multibyte data types was have
+        /// to ensure the de-referencing the pointers are safe.
+        typedef std::vector<uint8_t, sak::aligned_allocator<uint8_t> >
+            aligned_vector;
+
         /// Buffer for the recoding coefficients
-        std::vector<uint8_t> m_coefficients;
+        aligned_vector m_coefficients;
+
+        /// Buffer for the recoded id
+        aligned_vector m_recode_id;
     };
 
 }
