@@ -35,7 +35,7 @@ namespace kodo
             : m_callback_func(nullptr)
             { }
 
-        /// Reset rank changed callback function
+        /// Reset rank callback function
         /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
@@ -64,7 +64,7 @@ namespace kodo
 
         /// Invoke rank changed callback
         /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
-        void decode_symbol(const uint8_t *symbol_data,
+        void decode_symbol(uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
                 // Rank before decoding
@@ -95,6 +95,7 @@ namespace kodo
     private:
 
         /// Invoke callback function if rank has changed
+        /// @param old_rank rank before decoding
         void check_current_rank(uint32_t old_rank)
             {
                 // If rank changed during decoding
