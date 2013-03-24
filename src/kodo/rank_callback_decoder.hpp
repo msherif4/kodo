@@ -50,13 +50,13 @@ namespace kodo
         /// Invoke rank changed callback
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data,
-                           uint8_t *symbol_coefficients)
+                           uint8_t *coefficients)
             {
                 // Rank before decoding
                 uint32_t rank = SuperCoder::rank();
 
                 // Decode symbol
-                SuperCoder::decode_symbol(symbol_data, symbol_coefficients);
+                SuperCoder::decode_symbol(symbol_data, coefficients);
                
                 // Invoke callback function if rank changed
                 check_current_rank(rank); 
@@ -64,7 +64,7 @@ namespace kodo
 
         /// Invoke rank changed callback
         /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
-        void decode_symbol(uint8_t *symbol_data,
+        void decode_symbol(const uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
                 // Rank before decoding

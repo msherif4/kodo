@@ -111,34 +111,33 @@ int main()
     // use. 
 
 
-    // Set callback for decoder to be a global function
-    //{   
-    //    decoder->set_rank_changed_callback( rank_changed_event );
-    //}
 
+    // // Set callback for decoder to be a global function
+    // decoder->set_rank_changed_callback( rank_changed_event );
+
+
+
+    // Gets a weak pointer to decoder to ensure that our callback doesn't
+    // prevent kodo from freeing memory
+    boost::weak_ptr<rlnc_decoder> w_ptr(decoder);
+    
     // Set callback for decoder to be a global function that takes a
     // pointer to the calling decoder as an additional argument
-    {
-        // Gets a weak pointer to decoder to ensure that our callback doesn't
-        // prevent kodo from freeing memory
-        boost::weak_ptr<rlnc_decoder> w_ptr(decoder);
-    
-        decoder->set_rank_changed_callback (
-            std::bind( &rank_changed_event2, w_ptr, std::placeholders::_1 )
-        );
-    }
+    decoder->set_rank_changed_callback (
+        std::bind( &rank_changed_event2, w_ptr, std::placeholders::_1 )
+    );
 
-    // Set callback for decoder to be a member function of some class
-    // This method is using lambda expressions which is not yet available in
-    // all compilers.
-    //{
-    //    // Declare a class to handle callback
-    //    callback_handler handler;
+
+
+    // // Declare a class to handle callback
+    // callback_handler handler;
     //
-    //    decoder->set_rank_changed_callback (
-    //        [&] (uint32_t rank) { handler.rank_changed_event3( rank ); }
-    //    );
-    //}
+    // // Set callback for decoder to be a member function of some class
+    // // This method is using lambda expressions which is not yet available in
+    // // all compilers.
+    // decoder->set_rank_changed_callback (
+    //     [&] (uint32_t rank) { handler.rank_changed_event3( rank ); }
+    // );
 
 
     // Allocate some storage for a "payload" the payload is what we would
