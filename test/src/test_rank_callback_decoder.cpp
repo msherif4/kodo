@@ -116,7 +116,7 @@ void rank_changed_event(kodo::rank_coder& coder, uint32_t& callback_count, uint3
 }
 
 // Test the layer itself - confirms that it acts as expected
-void test_layer(uint32_t symbols, uint32_t symbol_size)
+void test_rank_callback_decoder_layer(uint32_t symbols, uint32_t symbol_size)
 {
     uint32_t callback_count = 0;
     uint32_t expected_callback_count = 0;
@@ -181,7 +181,7 @@ void test_layer(uint32_t symbols, uint32_t symbol_size)
 }
 
 // Ensure that the layer complies to the API
-void test_stack(uint32_t symbols, uint32_t symbol_size)
+void test_rank_callback_decoder_stack(uint32_t symbols, uint32_t symbol_size)
 {
     std::vector<uint8_t> symbol_coefficients(symbols, 0);
     std::vector<uint8_t> symbol_data(symbol_size, 0);
@@ -202,6 +202,6 @@ TEST(TestRankCallbackDecoder, test_rank_callback_decoder_stack)
     uint32_t symbols = 8;
     uint32_t symbol_size = 8;
 
-    test_stack(symbols, symbol_size);
-    test_layer(symbols, symbol_size);
+    test_rank_callback_decoder_stack(symbols, symbol_size);
+    test_rank_callback_decoder_layer(symbols, symbol_size);
 }
