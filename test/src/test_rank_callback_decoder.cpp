@@ -173,7 +173,7 @@ void test_layer(uint32_t symbols, uint32_t symbol_size)
     coder.reset_rank_changed_callback();
 
 
-    // Test that callback handler isn't executed after it has been reset
+    // Test that callback handler isn't invoked after it has been reset
     coder.decode_symbol(&symbol_data[0], &symbol_coefficients[0]);
 
     EXPECT_EQ(coder.rank(), ++expected_rank);

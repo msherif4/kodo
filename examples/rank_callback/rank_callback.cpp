@@ -5,11 +5,13 @@
 
 /// @example rank_callback.cpp
 /// 
-/// It may be that we want some code to be executed on some event that happens
-/// within the decoder. This can be done using callback functions.
-/// This example shows how this can be done by adding the rank_callback layer
-/// to the decoder stack and how the rank changed event can be handled in three
-/// different ways.
+/// It may be that we want a function to be called on some event within the decoder.
+/// This can be done using callback functions.
+/// The following example illustrates how this can be done by adding the 
+/// rank_callback_decoder layer to the decoder stack and how the rank changed event
+/// can be handled in three different ways. Other callback layers could also be
+/// used instead of the rank callback layer provided that they are added at the
+/// correct position in the stack.
 
 #include <functional>
 
