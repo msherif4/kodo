@@ -14,19 +14,32 @@ namespace kodo
     // We just create a version of the full rlnc vector code
     // without the systematic layer
     template<class Field>
-    class full_rlnc_encoder_no_system
-        : public payload_encoder<
+    class test_nonsystematic_stack
+        : public // Payload Codec API
+                 payload_encoder<
+                 // Codec Header API
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 plain_symbol_id_writer<
+                 // Coefficient Generator API
+                 uniform_generator<
+                 // Codec API
                  zero_symbol_encoder<
-                 full_vector_encoder<
-                 linear_block_vector_generator<block_uniform_no_position,
                  linear_block_encoder<
-                 finite_field_math<fifi::default_field_impl,
-                 partial_shallow_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<full_rlnc_encoder_no_system<Field>, Field>
-                     > > > > > > > > >
-    {};
+                 // Coefficient Storage API
+                 coefficient_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 // Symbol Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 test_nonsystematic_stack<Field>, Field>
+                     > > > > > > > > > > >
+    { };
 
 }
 
@@ -36,9 +49,9 @@ TEST(TestSystematicOperations, is_systematic_encoder)
     uint32_t symbol_size = 16;
 
     {
-        typedef kodo::full_rlnc_encoder_no_system<fifi::binary>::factory
+        typedef kodo::test_nonsystematic_stack<fifi::binary>::factory
             encoder_factory;
-        typedef kodo::full_rlnc_encoder_no_system<fifi::binary>::pointer
+        typedef kodo::test_nonsystematic_stack<fifi::binary>::pointer
             encoder_pointer;
 
         encoder_factory factory(symbols, symbol_size);

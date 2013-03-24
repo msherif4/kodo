@@ -15,12 +15,20 @@
 #include <kodo/generators/random_uniform.hpp>
 #include <kodo/systematic_encoder.hpp>
 
+/// @param max_value The maximum value to return
+/// @return a random number between 1 and max_value
+inline uint32_t rand_nonzero(uint32_t max_value = 256)
+{
+    assert(max_value > 0);
+    return (rand() % max_value) + 1;
+}
+
 /// @param max_symbols The maximum symbols an encoder or decoder should
 ///        support.
 /// @return a random number up to max_symbols to use in the tests
 inline uint32_t rand_symbols(uint32_t max_symbols = 256)
 {
-    return (rand() % max_symbols) + 1;
+    return rand_nonzero(max_symbols);
 }
 
 /// Returns a random symbol size. The symbol size has to be chosen as a

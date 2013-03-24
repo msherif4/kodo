@@ -33,6 +33,7 @@
 #include "../recoding_symbol_id.hpp"
 #include "../proxy_layer.hpp"
 #include "../symbol_storage_tracker.hpp"
+#include "../encode_symbol_tracker.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -62,6 +63,7 @@ namespace kodo
                  // Coefficient Generator API
                  uniform_generator<
                  // Codec API
+                 encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
                  // Coefficient Storage API
@@ -76,7 +78,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  full_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > > > >
+                     > > > > > > > > > > > > >
     { };
 
     /// Intermediate stack implementing the recoding functionality of a
@@ -100,11 +102,12 @@ namespace kodo
                  // Coefficient Generator API
                  uniform_generator<
                  // Codec API
+                 encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
                  // Proxy
                  proxy_layer<
-                 recoding_stack<MainStack>, MainStack> > > > > > > >
+                 recoding_stack<MainStack>, MainStack> > > > > > > > >
     { };
 
     /// @todo With a shallow storage class this will fail, since the uniform

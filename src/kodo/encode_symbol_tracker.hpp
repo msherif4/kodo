@@ -39,6 +39,13 @@ namespace kodo
                 ++m_counter;
             }
 
+        /// @copydoc layer::encode_symbol(uint8_t*,uint32_t)
+        void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                SuperCoder::encode_symbol(symbol_data, symbol_index);
+                ++m_counter;
+            }
+
         /// @return the symbol encoded counter
         uint32_t encode_symbol_count() const
             {

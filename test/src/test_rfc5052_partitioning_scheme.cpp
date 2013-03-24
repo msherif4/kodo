@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <stdint.h>
+#include <cstdint>
 #include <ctime>
 #include <algorithm>
 

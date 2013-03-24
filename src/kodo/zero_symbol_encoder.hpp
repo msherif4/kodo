@@ -30,6 +30,18 @@ namespace kodo
                 std::fill_n(symbol_data, SuperCoder::symbol_size(), 0);
                 SuperCoder::encode_symbol(symbol_data, coefficients);
             }
+
+        /// Not implemented in this layer - the systematic encode will
+        /// typically copy directly into symbol_data buffer. Therefore
+        /// we don't have to worry about junk bytes existing in the buffer
+        /// they will be overwritten.
+        ///
+        /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
+        void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                SuperCoder::encode_symbol(symbol_data, symbol_index);
+            }
+
     };
 }
 
