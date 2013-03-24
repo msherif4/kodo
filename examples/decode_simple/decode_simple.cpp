@@ -112,18 +112,36 @@ int main()
     //        | 0 0 0 1 1 1 0 0 |   | 0 1 0 | | 0 0 0 0 1 1 0 1 |
     //        | 0 0 0 1 0 0 0 1 | = | 1 1 0 | | 0 0 0 1 1 1 0 0 |
     //        | 0 0 0 0 1 0 1 1 |   | 1 0 1 | | 0 0 0 0 0 1 1 0 |
+    //
+    // From the above matrix, the first encoded symbol is just the second
+    // original symbol:
+    //        | 0 0 0 1 1 1 0 0 |   | 0 1 0 | |                 |
+    //        |                 | = |       | | 0 0 0 1 1 1 0 0 |
+    //        |                 |   |       | |                 |
+    //
+    // The second encoded symbol is generated from the first original symbol
+    // bitwise xor the second original symbol: 
+    //        |                 |   |       | | 0 0 0 0 1 1 0 1 |
+    //        | 0 0 0 1 0 0 0 1 | = | 1 1 0 | | 0 0 0 1 1 1 0 0 |
+    //        |                 |   |       | |                 |
+    //
+    // The third encoded symbol is generated from the first original symbol
+    // bitwise xor the third original symbol:
+    //        |                 |   |       | | 0 0 0 0 1 1 0 1 |
+    //        |                 | = |       | |                 |
+    //        | 0 0 0 0 1 0 1 1 |   | 1 0 1 | | 0 0 0 0 0 1 1 0 |
 
-    uint8_t original_symbols[] = { BOOST_BINARY(00001101),
-                                   BOOST_BINARY(00011100),
-                                   BOOST_BINARY(00000110) };
+    uint8_t original_symbols[] = { 0x0D,   // 0 0 0 0 1 1 0 1
+                                   0x1C,   // 0 0 0 1 1 1 0 0
+                                   0x06 }; // 0 0 0 0 0 1 1 0
 
-    uint8_t encoded_symbols[] = { BOOST_BINARY(00011100),
-                                  BOOST_BINARY(00010001),
-                                  BOOST_BINARY(00001011) };
+    uint8_t encoded_symbols[] = {  0x1C,   // 0 0 0 1 1 1 0 0
+                                   0x11,   // 0 0 0 1 0 0 0 1
+                                   0x0B }; // 0 0 0 0 1 0 1 1
 
-    uint8_t symbol_coefficients[] = { BOOST_BINARY(010),
-                                      BOOST_BINARY(110),
-                                      BOOST_BINARY(101) };
+    uint8_t symbol_coefficients[] = { 0x02,          // 0 1 0
+                                      0x06,          // 1 1 0
+                                      0x05 };        // 1 0 1
 
     // Reverse the symbol elements (bits in the binary field) in each symbol.
     // This is because the computer store bits in the opposite
@@ -150,17 +168,21 @@ int main()
     decoder->copy_symbols(sak::storage(decoded_symbols));
 
 
-    // Print decoded data
     std::cout << "Decoded data:" << std::endl;
+
+    // Print decoded data - Loop over all bits
     for (uint32_t i = 0; i < symbols*(symbol_size*8); ++i)
     {
-        std::cout << (decoded_symbols[i/8] >> (i%8) & 0x1);
+        // Print a bit
+        std::cout << (unsigned)fifi::get_value<field_type>(
+                (value_type*)&decoded_symbols[0], i);
+
+        // Print new line after each symbol
         if ( i % (symbol_size*8) == symbol_size*8-1)
         {
             std::cout << std::endl;
         }
     }
-    std::cout << std::endl;
 
 
     // Check that the original data is the same as the decoded data
