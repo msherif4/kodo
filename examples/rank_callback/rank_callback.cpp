@@ -14,7 +14,7 @@
 #include <functional>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
-#include <kodo/rank_callback.hpp>
+#include <kodo/rank_callback_decoder.hpp>
 
 namespace kodo
 {
@@ -33,7 +33,7 @@ namespace kodo
                  // rank_callback layer is inserted in "Codec API" which it
                  // designed for. It has to be inserted into the stack above
                  // layers that can change the rank during decoding
-                 rank_callback<
+                 rank_callback_decoder<
           
                  align_coefficient_decoder<
                  linear_block_decoder<

@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_rank_callback Unit test for rank_callback layer
+/// @file test_rank_callback_decoder Unit test for rank_callback_decoder layer
 
 /// Tests:
 ///   - layer::initialize(uint32_t,uint32_t)
@@ -19,7 +19,7 @@
 
 #include <fifi/default_field.hpp>
 
-#include <kodo/rank_callback.hpp>
+#include <kodo/rank_callback_decoder.hpp>
 #include <kodo/linear_block_decoder.hpp>
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
@@ -36,9 +36,9 @@ namespace kodo
     // Test layer against real api to ensure that we get an error if the layer
     // doesn't complies with the api.
     template<class Field>
-    class rank_callback_stack
+    class rank_callback_decoder_stack
         : public // Codec API
-                 rank_callback<
+                 rank_callback_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
@@ -53,7 +53,7 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 rank_callback_stack<Field>, Field>
+                 rank_callback_decoder_stack<Field>, Field>
                      > > > > > > > > >
     {};
 
@@ -105,7 +105,7 @@ namespace kodo
     };
 
     // Test functionality of the individual layer 
-    typedef rank_callback<dummy_codec_api> rank_coder; 
+    typedef rank_callback_decoder<dummy_codec_api> rank_coder; 
 }
 
 // callback handler
@@ -187,7 +187,7 @@ void test_stack(uint32_t symbols, uint32_t symbol_size)
     std::vector<uint8_t> symbol_data(symbol_size, 0);
     uint32_t symbol_id = 0;
 
-    typedef kodo::rank_callback_stack<fifi::binary8> rank_coder_t;
+    typedef kodo::rank_callback_decoder_stack<fifi::binary8> rank_coder_t;
     
     rank_coder_t::factory coder_factory(symbols, symbol_size);
     rank_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
@@ -197,7 +197,7 @@ void test_stack(uint32_t symbols, uint32_t symbol_size)
 }
 
 /// Run the tests
-TEST(TestRankCallback, test_rank_callback_stack)
+TEST(TestRankCallbackDecoder, test_rank_callback_decoder_stack)
 {
     uint32_t symbols = 8;
     uint32_t symbol_size = 8;

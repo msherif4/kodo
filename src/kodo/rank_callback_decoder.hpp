@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RANK_CALLBACK_HPP
-#define KODO_RANK_CALLBACK_HPP
+#ifndef KODO_RANK_CALLBACK_DECODER_HPP
+#define KODO_RANK_CALLBACK_DECODER_HPP
 
 #include <cstddef>
 #include <cstdint>
@@ -14,13 +14,13 @@ namespace kodo
 {
     /// @ingroup codec_layers
     /// 
-    /// @brief Allows a callback function to be executed after rank changed
+    /// @brief Allows a callback function to be invoked after rank changed
     /// 
     /// This layer allows a callback function to be assigned to each decoder.
-    /// After the rank has changed in a decoder, it will automatically execute
+    /// After the rank has changed in a decoder, it will automatically invoke 
     /// the assigned callback function.
     template<class SuperCoder>
-    class rank_callback : public SuperCoder
+    class rank_callback_decoder : public SuperCoder
     {
     public:
 
@@ -31,7 +31,7 @@ namespace kodo
     public:
 
         /// Constructor
-        rank_callback()
+        rank_callback_decoder()
             : m_callback_func(nullptr)
             { }
 
@@ -78,11 +78,12 @@ namespace kodo
             }
 
         /// Set rank changed callback function
-        void set_rank_changed_callback (rank_changed_callback func)
+        /// @param callback rank changed callback function
+        void set_rank_changed_callback (const rank_changed_callback &callback)
             {
-                assert(func != nullptr);
+                assert(callback);
 
-                m_callback_func = func;
+                m_callback_func = callback;
             }
 
         /// Reset rank changed callback function
@@ -99,7 +100,7 @@ namespace kodo
                 // If rank changed during decoding
                 if (old_rank < SuperCoder::rank())
                 {
-                    // Execute callback function if set
+                    // Invoke callback function if set
                     if (m_callback_func)
                     {
                         m_callback_func(SuperCoder::rank());
