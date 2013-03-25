@@ -266,12 +266,10 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols,
-                                                              symbol_size);
+    auto encoder = encoder_factory.build(symbols,symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder = decoder_factory.build(symbols,
-                                                              symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
 
     for(uint32_t i = 0; i < 10; ++i)
@@ -304,6 +302,17 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
         std::vector<uint8_t> data_out(block_size, '\0');
         decoder->copy_symbols(sak::storage(data_out));
+
+        if(!std::equal(data_out.begin(),
+                          data_out.end(),
+                          data_in.begin()))
+        {
+            std::cout << "FALILED" << std::endl;
+        }
+        else
+        {
+            std::cout << "SUCCESS" << std::endl;
+        }
 
         EXPECT_TRUE(std::equal(data_out.begin(),
                                data_out.end(),

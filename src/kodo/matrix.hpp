@@ -11,7 +11,6 @@
 namespace kodo
 {
 
-    /// @todo document this / move to fifi?
     /// @brief Simple storage class with a matrix API for finite
     ///        field elements.
     template<class Field>
@@ -43,6 +42,11 @@ namespace kodo
                 m_data.resize(rows * m_row_size, '\0');
             }
 
+        /// Returns the element at the specific row and column in
+        /// the matrix.
+        /// @param row The row index
+        /// @param column The column index
+        /// @return The element stored.
         value_type element(uint32_t row, uint32_t column) const
             {
                 assert(row < m_rows);
@@ -52,6 +56,11 @@ namespace kodo
                 return fifi::get_value<field_type>(v, column);
             }
 
+        /// Sets the element at the specific row and column in
+        /// the matrix.
+        /// @param row The row index
+        /// @param column The column index
+        /// @param value The element to store at the specified position
         void set_element(uint32_t row, uint32_t column, value_type &value)
             {
                 assert(row < m_rows);
@@ -61,50 +70,64 @@ namespace kodo
                 fifi::set_value<field_type>(r, column, value);
             }
 
+        /// @return The size of a row in bytes
         uint32_t row_size() const
             {
                 return m_row_size;
             }
 
+        /// @return The length of a row in the field's value_type
         uint32_t row_length() const
             {
                 return m_row_length;
             }
 
+        /// Return the bytes of a row at a specific index
+        /// @param index The index of the row to return
+        /// @return The byte corresponding to the selected row.
         uint8_t* row(uint32_t index)
             {
                 assert(index < m_rows);
                 return &m_data[index * m_row_size];
             }
 
+        /// @copydoc row(uint32_t)
         const uint8_t* row(uint32_t index) const
             {
                 assert(index < m_rows);
                 return &m_data[index * m_row_size];
             }
 
+        /// Return a value_type pointer to a row at a specific index
+        /// @param index The index of the row to return
+        /// @return The value_type pointer corresponding to the selected row.
         value_type* row_value(uint32_t index)
             {
                 assert(index < m_rows);
                 return reinterpret_cast<value_type*>(row(index));
             }
 
+        /// @copydoc row_value(uint32_t)
         const value_type* row_value(uint32_t index) const
             {
                 assert(index < m_rows);
                 return reinterpret_cast<const value_type*>(row(index));
             }
 
+        /// @return The number of rows
         uint32_t rows() const
             {
                 return m_rows;
             }
 
+        /// @return The number of columns
         uint32_t columns() const
             {
                 return m_columns;
             }
 
+        /// @return A transposed version of the matrix i.e. rows and
+        ///         columns switched.
         matrix transpose() const
             {
                 matrix m(m_columns, m_rows);
@@ -123,11 +146,19 @@ namespace kodo
 
     private:
 
+        /// Tracks the number of rows
         uint32_t m_rows;
+
+        /// Tracks the number of columns
         uint32_t m_columns;
+
+        /// The size of a row in bytes
         uint32_t m_row_size;
+
+        /// The length of a row in value_type elements
         uint32_t m_row_length;
 
+        /// The buffer storing the data of the matrix
         std::vector<uint8_t> m_data;
 
     };
