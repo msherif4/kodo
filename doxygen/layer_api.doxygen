@@ -316,10 +316,10 @@ public:
     void set_coefficients(uint32_t index, const sak::const_storage &storage);
 
     //------------------------------------------------------------------
-    // MATH API
+    // FINITE FIELD API
     //------------------------------------------------------------------
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the symbol with the coefficient
     ///     symbol_dest = symbol_dest * coefficient
     ///
@@ -331,7 +331,7 @@ public:
                   value_type coefficient,
                   uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the source symbol with the coefficient and adds it to the
     /// destination symbol i.e.:
     ///     symbol_dest = symbol_dest + symbol_src * coefficient
@@ -345,7 +345,7 @@ public:
                       value_type coefficient,
                       uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Adds the source symbol adds to the destination symbol i.e.:
     ///     symbol_dest = symbol_dest + symbol_src
     ///
@@ -357,7 +357,7 @@ public:
              const value_type *symbol_src,
              uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the source symbol with the coefficient and subtracts
     /// it from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
@@ -371,7 +371,7 @@ public:
                            value_type coefficient,
                            uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Subtracts the source symbol from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - symbol_src
     ///
@@ -383,7 +383,7 @@ public:
                   const value_type *symbol_src,
                   uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Inverts the field element
     /// @param value the finite field value to be inverted.
     /// @return the inverse

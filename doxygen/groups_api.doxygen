@@ -44,21 +44,21 @@
 /// @brief Implementations of the factory API.
 
 //------------------------------------------------------------------
-// MATH
+// FINITE FIELD
 //------------------------------------------------------------------
 
-/// @defgroup math Finite Field Math
+/// @defgroup finite_field Finite Field
 /// @ingroup api_layer
-/// @brief The finite field math layers perform computations on symbols
+/// @brief The finite field layers perform computations on symbols
 ///        and symbol coefficients.
 
-/// @defgroup math_api API
-/// @ingroup math
-/// @brief The API used by math layers.
+/// @defgroup finite_field_api API
+/// @ingroup finite_field
+/// @brief The API used by finite field layers.
 
-/// @defgroup math_layers Layers
-/// @ingroup math
-/// @brief Implementations of the math API.
+/// @defgroup finite_field_layers Layers
+/// @ingroup finite_field
+/// @brief Implementations of the finite_filed API.
 
 //------------------------------------------------------------------
 // COEFFICIENT GENERATOR API

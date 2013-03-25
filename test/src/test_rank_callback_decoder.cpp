@@ -24,6 +24,7 @@
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/finite_field_math.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/storage_bytes_used.hpp>
@@ -43,22 +44,23 @@ namespace kodo
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
-                 // storage api
+                 // Storage api
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 rank_callback_decoder_stack<Field>, Field>
-                     > > > > > > > > >
+                 rank_callback_decoder_stack<Field>
+                     > > > > > > > > > > >
     {};
 
     // A dummi api to replace the real stack
-    class dummy_codec_api 
+    class dummy_codec_api
     {
     public:
 
@@ -104,8 +106,8 @@ namespace kodo
         uint32_t m_symbols;
     };
 
-    // Test functionality of the individual layer 
-    typedef rank_callback_decoder<dummy_codec_api> rank_coder; 
+    // Test functionality of the individual layer
+    typedef rank_callback_decoder<dummy_codec_api> rank_coder;
 }
 
 // callback handler
@@ -151,7 +153,7 @@ void test_rank_callback_decoder_layer(uint32_t symbols, uint32_t symbol_size)
 
     // Set callback handler
     coder.set_rank_changed_callback(
-        std::bind(&rank_changed_event, std::ref(coder), 
+        std::bind(&rank_changed_event, std::ref(coder),
             std::ref(callback_count), std::placeholders::_1)
     );
 
@@ -188,7 +190,7 @@ void test_rank_callback_decoder_stack(uint32_t symbols, uint32_t symbol_size)
     uint32_t symbol_id = 0;
 
     typedef kodo::rank_callback_decoder_stack<fifi::binary8> rank_coder_t;
-    
+
     rank_coder_t::factory coder_factory(symbols, symbol_size);
     rank_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
 

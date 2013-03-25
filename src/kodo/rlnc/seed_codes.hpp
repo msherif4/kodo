@@ -10,9 +10,11 @@
 
 #include <fifi/default_field.hpp>
 
+#include "../aligned_coefficients_decoder.hpp"
 #include "../final_coder_factory_pool.hpp"
 #include "../final_coder_factory.hpp"
 #include "../finite_field_math.hpp"
+#include "../finite_field_info.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
@@ -22,7 +24,6 @@
 #include "../payload_encoder.hpp"
 #include "../payload_recoder.hpp"
 #include "../payload_decoder.hpp"
-#include "../align_coefficient_decoder.hpp"
 #include "../symbol_id_encoder.hpp"
 #include "../symbol_id_decoder.hpp"
 #include "../coefficient_storage.hpp"
@@ -68,17 +69,18 @@ namespace kodo
                  linear_block_encoder<
                  // Coefficient Storage API
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 seed_rlnc_encoder<Field>, Field>
-                     > > > > > > > > > > > > >
+                 seed_rlnc_encoder<Field>
+                     > > > > > > > > > > > > > > >
     { };
 
     /// Implementation of a seed based RLNC decoder this configuration
@@ -97,23 +99,24 @@ namespace kodo
                  // Coefficient Generator API
                  uniform_generator<
                  // Codec API
-                 align_coefficient_decoder<
+                 aligned_coefficients_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 seed_rlnc_decoder<Field>, Field>
-                     > > > > > > > > > > > > > >
+                 seed_rlnc_decoder<Field>
+                     > > > > > > > > > > > > > > > >
     { };
 
 }

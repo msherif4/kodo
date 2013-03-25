@@ -47,7 +47,7 @@ namespace kodo
               m_maximum_pivot(0)
             { }
 
-        /// @copydoc layer::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -258,8 +258,6 @@ namespace kodo
 
                  value_type coefficient =
                      fifi::get_value<field_type>(symbol_id, pivot_index);
-                // value_type coefficient =
-                //     vector_type::coefficient( pivot_index, symbol_id );
 
                 assert(coefficient > 0);
 
@@ -290,12 +288,8 @@ namespace kodo
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
 
-                    // value_type current_coefficient
-                    //     = vector_type::coefficient( i, symbol_id );
-
                     value_type current_coefficient
                         = fifi::get_value<field_type>(symbol_id, i);
-
 
                     if( current_coefficient )
                     {
@@ -368,8 +362,6 @@ namespace kodo
                 for(uint32_t i = pivot_index + 1; i <= m_maximum_pivot; ++i)
                 {
                     // Do we have a non-zero value here?
-                    // value_type value =
-                    //     vector_type::coefficient(i, symbol_id);
 
                     value_type value =
                         fifi::get_value<field_type>(symbol_id, i);
@@ -555,6 +547,7 @@ namespace kodo
         /// Tracks whether a symbol is partially decoded
         std::vector<bool> m_coded;
     };
+
 }
 
 #endif

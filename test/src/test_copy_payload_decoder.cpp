@@ -25,6 +25,7 @@
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/finite_field_math.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/storage_bytes_used.hpp>
@@ -51,18 +52,19 @@ namespace kodo
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 copy_payload_decoder_stack<Field>, Field>
-                     > > > > > > > > > > > > >
+                 copy_payload_decoder_stack<Field>
+                     > > > > > > > > > > > > > > >
     {};
 
     // A dummi api to replace the real stack
@@ -98,8 +100,8 @@ namespace kodo
         uint32_t m_symbol_size;
     };
 
-    // Test functionality of the individual layer 
-    typedef copy_payload_decoder<dummy_api> copy_payload_coder; 
+    // Test functionality of the individual layer
+    typedef copy_payload_decoder<dummy_api> copy_payload_coder;
 }
 
 // Test the layer itself - confirms that it acts as expected
@@ -131,7 +133,7 @@ void test_stack(uint32_t symbols, uint32_t symbol_size)
 {
     typedef kodo::copy_payload_decoder_stack<fifi::binary8>
         copy_paylaod_coder_t;
-    
+
     copy_paylaod_coder_t::factory coder_factory(symbols, symbol_size);
     copy_paylaod_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
 

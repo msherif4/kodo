@@ -14,6 +14,7 @@
 
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/final_coder_factory_pool.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
 #include <kodo/symbol_storage_tracker.hpp>
@@ -39,9 +40,10 @@ namespace kodo
                  symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 uniform_generator_stack<Field>, Field>
-                     > > > > >
+                 uniform_generator_stack<Field>
+                     > > > > > > >
     {};
 
     template<class Field>
@@ -51,9 +53,10 @@ namespace kodo
                  symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 uniform_generator_stack_pool<Field>, Field>
-                     > > > > >
+                 uniform_generator_stack_pool<Field>
+                     > > > > > > >
     {};
 
 }

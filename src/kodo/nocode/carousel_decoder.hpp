@@ -14,9 +14,8 @@ namespace kodo
 {
 
     /// @ingroup codec_header_layers
-    /// Carousel decoder takes symbols produced by a carousel encoder
-    /// and decodes them.
-    /// @see carousel_encoder
+    /// @brief Carousel decoder takes symbols produced by a carousel encoder
+    ///        and decodes them.
     template<class SuperCoder>
     class carousel_decoder : public SuperCoder
     {
@@ -68,6 +67,7 @@ namespace kodo
             }
 
     };
+
 }
 
 #endif

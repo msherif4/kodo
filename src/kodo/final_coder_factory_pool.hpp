@@ -6,7 +6,7 @@
 #ifndef KODO_FINAL_CODER_FACTORY_POOL_HPP
 #define KODO_FINAL_CODER_FACTORY_POOL_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
@@ -23,16 +23,10 @@ namespace kodo
     /// Terminates the layered coder and contains the coder final
     /// factory. The pool factory uses a memory pool to recycle
     /// encoders/decoders, and thereby minimize memory consumption.
-    template<class FINAL, class Field>
+    template<class FINAL>
     class final_coder_factory_pool : boost::noncopyable
     {
     public:
-
-        /// @copydoc layer::field_type
-        typedef Field field_type;
-
-        /// @copydoc layer::value_type
-        typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder
         typedef boost::shared_ptr<FINAL> pointer;

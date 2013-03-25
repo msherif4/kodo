@@ -6,7 +6,7 @@
 #ifndef KODO_FINAL_CODER_FACTORY_HPP
 #define KODO_FINAL_CODER_FACTORY_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
@@ -17,21 +17,13 @@
 namespace kodo
 {
 
-    /// @todo remove the field from these classes - so we don't have to specify
-    ///       a field when it does not make sense
     /// @ingroup factory_layers
     /// Terminates the layered coder and contains the coder allocation
     /// policy
-    template<class FINAL, class Field>
+    template<class FINAL>
     class final_coder_factory : boost::noncopyable
     {
     public:
-
-        /// @copydoc layer::field_type
-        typedef Field field_type;
-
-        /// @copydoc layer::value_type
-        typedef typename field_type::value_type value_type;
 
         /// Pointer type to the constructed coder
         typedef boost::shared_ptr<FINAL> pointer;

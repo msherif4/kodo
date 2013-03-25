@@ -14,8 +14,8 @@ namespace kodo
 {
 
     /// @ingroup codec_header_layers
-    /// Simple un-coded scheme not meant for practical use but for simulation
-    /// purposes. As it simply produces un-coded symbols.
+    /// @brief Simple un-coded scheme not meant for practical use but
+    ///        for simulation purposes. As it simply produces un-coded symbols.
     ///
     /// Works like a systematic encoder only that it restarts the systematic
     /// transmission from the beginning after sending the last symbol.
@@ -92,6 +92,7 @@ namespace kodo
         uint32_t m_current_symbol;
 
     };
+
 }
 
 #endif

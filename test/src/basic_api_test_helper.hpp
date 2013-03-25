@@ -12,7 +12,6 @@
 #include <fifi/prime2325_binary_search.hpp>
 #include <fifi/prime2325_apply_prefix.hpp>
 
-#include <kodo/generators/random_uniform.hpp>
 #include <kodo/systematic_encoder.hpp>
 
 /// @param max_value The maximum value to return
@@ -133,10 +132,7 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     // Make sure we have one extreme value (testing optimal prime)
     // Without the prefix mapping decoding will fail (just try :))
@@ -209,10 +205,7 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size());
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 
@@ -293,10 +286,7 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         uint32_t reduce_block = rand() % (encoder->block_size() - 1);
         uint32_t block_size = encoder->block_size() - reduce_block;
 
-        std::vector<uint8_t> data_in(block_size, 'a');
-
-        kodo::random_uniform<uint8_t> fill_data;
-        fill_data.generate(&data_in[0], data_in.size());
+        std::vector<uint8_t> data_in = random_vector(block_size);
 
         encoder->set_symbols(sak::storage(data_in));
 
@@ -340,10 +330,7 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 

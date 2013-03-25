@@ -36,24 +36,25 @@ namespace kodo
                  // Symbol ID API
                  plain_symbol_id_reader<
                  // Codec API
-                 align_coefficient_decoder<
+                 aligned_coefficients_decoder<
                  linear_block_decoder_delayed<
                  linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 full_rlnc_decoder_delayed<Field>, Field>
-                     > > > > > > > > > > > > > > >
+                 full_rlnc_decoder_delayed<Field>
+                     > > > > > > > > > > > > > > > > >
     {};
 }
 
@@ -314,10 +315,7 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 

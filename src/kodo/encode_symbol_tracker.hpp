@@ -11,9 +11,8 @@
 namespace kodo
 {
 
-    /// @brief Counts the number of symbols which have been encoded
-    ///
     /// @ingroup codec_layers
+    /// @brief Counts the number of symbols which have been encoded.
     template<class SuperCoder>
     class encode_symbol_tracker : public SuperCoder
     {
@@ -57,6 +56,7 @@ namespace kodo
         uint32_t m_counter;
 
     };
+
 }
 
 #endif

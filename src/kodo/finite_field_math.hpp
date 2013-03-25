@@ -14,8 +14,9 @@
 
 namespace kodo
 {
-    /// @ingroup math_layers
-    /// Basic layer performing common finite field operation
+
+    /// @ingroup finite_field_layers
+    /// @brief Basic layer performing common finite field operation
     template<class FieldImpl, class SuperCoder>
     class finite_field_math : public SuperCoder
     {
@@ -25,7 +26,7 @@ namespace kodo
         typedef typename SuperCoder::field_type field_type;
 
         /// The value type
-        typedef typename field_type::value_type value_type;
+        typedef typename SuperCoder::value_type value_type;
 
         /// The finite field implementation
         typedef FieldImpl field_impl;
@@ -54,7 +55,7 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 {
@@ -62,7 +63,7 @@ namespace kodo
                 }
 
             /// Forwards the build function and sets the finite field
-            /// @copydoc layer::factory::build()
+            /// @copydoc layer::factory::build(uint32_t,uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
@@ -81,7 +82,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -99,7 +100,7 @@ namespace kodo
                 m_temp_symbol.resize(max_symbol_length, 0);
             }
 
-        /// @copydoc layer::multiply()
+        /// @copydoc layer::multiply(value_type*,value_type,uint32_t)
         void multiply(value_type *symbol_dest, value_type coefficient,
                       uint32_t symbol_length)
             {
@@ -111,7 +112,8 @@ namespace kodo
                                         symbol_dest, symbol_length);
             }
 
-        /// @copydoc layer::multipy_add()
+        /// @copydoc layer::multipy_add(value_type *, const value_type*,
+        ///                             value_type, uint32_t)
         void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length)
             {
@@ -125,7 +127,7 @@ namespace kodo
                                    symbol_length);
             }
 
-        /// @copydoc layer::add()
+        /// @copydoc layer::add(value_type*, const value_type *, uint32_t)
         void add(value_type *symbol_dest, const value_type *symbol_src,
                  uint32_t symbol_length)
             {
@@ -137,7 +139,8 @@ namespace kodo
                 fifi::add(*m_field, symbol_dest, symbol_src, symbol_length);
             }
 
-        /// @copydoc layer::multiply_subtract()
+        /// @copydoc layer::multiply_subtract(value_type*, const value_type*,
+        ///                                   value_type, uint32_t)
         void multiply_subtract(value_type *symbol_dest,
                                const value_type *symbol_src,
                                value_type coefficient,
@@ -155,7 +158,7 @@ namespace kodo
                     &m_temp_symbol[0], symbol_length);
             }
 
-        /// @copydoc layer::subtract()
+        /// @copydoc layer::subtract(value_type*,const value_type*, uint32_t)
         void subtract(value_type *symbol_dest, const value_type *symbol_src,
                       uint32_t symbol_length)
             {
@@ -167,7 +170,7 @@ namespace kodo
                 fifi::subtract(*m_field, symbol_dest, symbol_src, symbol_length);
             }
 
-        /// @copydoc layer::invert()
+        /// @copydoc layer::invert(value_type)
         value_type invert(value_type value)
             {
                 assert(m_field);
@@ -183,6 +186,7 @@ namespace kodo
         std::vector<value_type> m_temp_symbol;
 
     };
+
 }
 
 #endif

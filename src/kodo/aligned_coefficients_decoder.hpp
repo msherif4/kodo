@@ -1,28 +1,30 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf ApS 2011-2013.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ALIGN_COEFFICIENT_DECODER_HPP
-#define KODO_ALIGN_COEFFICIENT_DECODER_HPP
+#ifndef KODO_ALIGNED_COEFFICIENTS_DECODER_HPP
+#define KODO_ALIGNED_COEFFICIENTS_DECODER_HPP
 
 #include <cstdint>
 
- #include <sak/is_aligned.hpp>
+#include <sak/is_aligned.hpp>
+#include <sak/storage.hpp>
 
 #include "aligned_coefficients_buffer.hpp"
 
 namespace kodo
 {
+
     /// @ingroup codec_layers
     /// @brief Aligns the symbol coefficient buffer if necessary
     template<class SuperCoder>
-    class align_coefficient_decoder
+    class aligned_coefficients_decoder
         : public aligned_coefficients_buffer<SuperCoder>
     {
     public:
 
-        /// Type of SuperCoder with injected aligned_coefficients_buffer
+        /// The actual SuperCoder type
         typedef aligned_coefficients_buffer<SuperCoder> Super;
 
         /// Pull up the decode_symbol() functions
@@ -60,6 +62,7 @@ namespace kodo
         using Super::m_coefficients;
 
     };
+
 }
 
 #endif

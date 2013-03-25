@@ -4,10 +4,10 @@
 // http://www.steinwurf.com/licensing
 
 /// @example rank_callback.cpp
-/// 
+///
 /// It may be that we want a function to be called on some event within the decoder.
 /// This can be done using callback functions.
-/// The following example illustrates how this can be done by adding the 
+/// The following example illustrates how this can be done by adding the
 /// rank_callback_decoder layer to the decoder stack and how the rank changed event
 /// can be handled in three different ways. Other callback layers could also be
 /// used instead of the rank callback layer provided that they are added at the
@@ -36,24 +36,25 @@ namespace kodo
                  // designed for. It has to be inserted into the stack above
                  // layers that can change the rank during decoding
                  rank_callback_decoder<
-          
-                 align_coefficient_decoder<
+
+                 aligned_coefficients_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 full_rlnc_callback_decoder<Field>, Field>
-                     > > > > > > > > > > > > > >
+                 full_rlnc_callback_decoder<Field>
+                     > > > > > > > > > > > > > > > >
     {};
 }
 
@@ -74,7 +75,7 @@ void rank_changed_event2(boost::weak_ptr<rlnc_decoder> w_decoder, uint32_t rank)
     /// Lock decoder pointer so that it cannot be freed until we are done
     if ( boost::shared_ptr<rlnc_decoder> decoder = w_decoder.lock() )
     {
-        std::cout << "Rank changed to " << rank << "/" << 
+        std::cout << "Rank changed to " << rank << "/" <<
             decoder->symbols() << std::endl;
     }
 }
@@ -109,10 +110,10 @@ int main()
 
     // The following three code blocks illustrates three common ways that
     // a callback function may be set and used.
-    // You may comment in the code block that you want to test. 
+    // You may comment in the code block that you want to test.
 
 
-    //  // Callback option 1: 
+    //  // Callback option 1:
     //  // Set callback for decoder to be a global function
     //
     //  // Set callback handler
@@ -127,7 +128,7 @@ int main()
     // Gets a weak pointer to decoder to ensure that our callback
     // doesn't prevent kodo from freeing memory
     boost::weak_ptr<rlnc_decoder> w_ptr(decoder);
-    
+
     // Set callback handler
     decoder->set_rank_changed_callback (
         std::bind( &rank_changed_event2, w_ptr, std::placeholders::_1 )
@@ -135,7 +136,7 @@ int main()
 
 
 
-    //  // Callback option 3: 
+    //  // Callback option 3:
     //  // Set callback for decoder to be a member function of some class
     //  // This method is using lambda expressions which is not yet available in
     //  // all compilers.

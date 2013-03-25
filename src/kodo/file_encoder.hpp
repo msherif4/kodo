@@ -15,6 +15,9 @@ namespace kodo
 
     /// @brief A file encoder creates a number of encoders
     ///        over the data of a file.
+    ///
+    /// The file encoder uses the specified block partitioning scheme to
+    /// allocate a number of encoders of a file.
     template
     <
         class EncoderType,

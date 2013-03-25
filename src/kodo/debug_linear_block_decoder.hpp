@@ -12,6 +12,7 @@
 
 namespace kodo
 {
+
     // Debug layer which allows printing encoding vectors
     // of a RLNC decoder.
     template<class SuperCoder>
@@ -105,7 +106,7 @@ namespace kodo
                 SuperCoder::decode_symbol(symbol_data, symbol_coefficients);
             }
 
-        /// @copydoc layer::decode_symbol()
+        /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
         void decode_symbol(const uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
@@ -164,7 +165,6 @@ namespace kodo
 
         /// If coded stores the coefficients of the decoding symbol
         std::vector<uint8_t> m_coefficients;
-
 
     };
 

@@ -8,6 +8,7 @@
 
 namespace kodo
 {
+
     /// Carousel common info shared between encoder
     /// and decoder
     class carousel_common
@@ -16,7 +17,9 @@ namespace kodo
 
         /// The symbol id type
         typedef uint16_t id_type;
+
     };
+
 }
 
 #endif

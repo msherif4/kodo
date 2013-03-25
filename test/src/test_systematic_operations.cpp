@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <gtest/gtest.h>
 
@@ -28,17 +28,18 @@ namespace kodo
                  linear_block_encoder<
                  // Coefficient Storage API
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 test_nonsystematic_stack<Field>, Field>
-                     > > > > > > > > > > >
+                 test_nonsystematic_stack<Field>
+                     > > > > > > > > > > > > >
     { };
 
 }

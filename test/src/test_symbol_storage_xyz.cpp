@@ -13,6 +13,7 @@
 #include <kodo/storage_block_info.hpp>
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/final_coder_factory_pool.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/has_shallow_symbol_storage.hpp>
@@ -38,9 +39,10 @@ namespace kodo
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 deep_storage_stack<Field>, Field>
-                     > > > >
+                 deep_storage_stack<Field>
+                     > > > > > >
     {};
 
     template<class Field>
@@ -49,9 +51,10 @@ namespace kodo
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 deep_storage_stack_pool<Field>, Field>
-                     > > > >
+                 deep_storage_stack_pool<Field>
+                     > > > > > >
     {};
 
     // Mutable Shallow Symbol Storage
@@ -61,9 +64,10 @@ namespace kodo
                  mutable_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 mutable_shallow_stack<Field>, Field>
-                     > > > >
+                 mutable_shallow_stack<Field>
+                     > > > > > >
     {};
 
     template<class Field>
@@ -72,9 +76,10 @@ namespace kodo
                  mutable_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 mutable_shallow_stack_pool<Field>, Field>
-                     > > > >
+                 mutable_shallow_stack_pool<Field>
+                     > > > > > >
     {};
 
     // Const Shallow Symbol Storage
@@ -84,9 +89,10 @@ namespace kodo
                  const_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 const_shallow_stack<Field>, Field>
-                     > > > >
+                 const_shallow_stack<Field>
+                     > > > > > >
     {};
 
     template<class Field>
@@ -95,9 +101,10 @@ namespace kodo
                  const_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 const_shallow_stack_pool<Field>, Field>
-                     > > > >
+                 const_shallow_stack_pool<Field>
+                     > > > > > >
     {};
 
     // Partial Shallow Symbol Storage
@@ -107,9 +114,10 @@ namespace kodo
                  partial_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 partial_shallow_stack<Field>, Field>
-                     > > > >
+                 partial_shallow_stack<Field>
+                     > > > > > >
     {};
 
     template<class Field>
@@ -118,9 +126,10 @@ namespace kodo
                  partial_shallow_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 partial_shallow_stack_pool<Field>, Field>
-                     > > > >
+                 partial_shallow_stack_pool<Field>
+                     > > > > > >
     {};
 
     // Symbol Storage Tracker
@@ -129,9 +138,10 @@ namespace kodo
         : public symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 storage_tracker_stack<Field>, Field>
-                     > > >
+                 storage_tracker_stack<Field>
+                     > > > > >
     {};
 
     template<class Field>
@@ -139,9 +149,10 @@ namespace kodo
         : public symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory_pool<
-                 storage_tracker_stack_pool<Field>, Field>
-                     > > >
+                 storage_tracker_stack_pool<Field>
+                     > > > > >
     {};
 
 }
