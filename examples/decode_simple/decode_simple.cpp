@@ -96,7 +96,7 @@ int main()
     //   Network Coding: An Instant Primer.
     //   SIGCOMM Comput. Commun. Rev., 36(1):63-68, January 2006.
     //
-    // from which the notation in the following example is based on 
+    // from which the notation in the example is based on.
     //
     //
     //
@@ -112,11 +112,11 @@ int main()
     //
     //                          X = G M
     //
-    //                        X^j = \sum_{i=1}^{n} g_i^j M^i
+    //                        X^j = sum_{i=1}^{n} g_i^j M^i
     //
     //                |   X^1   |   | g^1_1 g^1_2 g^1_3 | |   M^1   |
     //                |   X^2   | = | g^2_1 g^2_2 g^2_3 | |   M^2   |
-    //                |   X^3   |   | g^3_1 g^3_2 g^3_3 | |   M^3   | 
+    //                |   X^3   |   | g^3_1 g^3_2 g^3_3 | |   M^3   |
     //
     //       | encoded symbol 1 |   | encoding vect 1 | | original symbol 1 |
     //       | encoded symbol 2 | = | encoding vect 2 | | original symbol 2 |
@@ -146,7 +146,7 @@ int main()
     // This is because the computer store bits in the opposite
     // direction of how it is written above.
     //
-    // Example: 
+    // Example:
     //  00001101 --> 10110000
     for (uint32_t i = 0; i < symbols; ++i)
     {
@@ -183,9 +183,7 @@ int main()
         }
     }
 
-
     // Check that the original data is the same as the decoded data
-    //if (memcmp(original_symbols, &decoded_symbols[0], symbols*symbol_size) == 0)
     if (std::equal(decoded_symbols.begin(), decoded_symbols.end(),
         original_symbols))
     {
@@ -196,4 +194,3 @@ int main()
         std::cout << "Error: Decoded data differs from original data" << std::endl;
     }
 }
-
