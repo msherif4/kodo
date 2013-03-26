@@ -51,18 +51,19 @@ namespace kodo
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 rlnc_decoder<Field>, Field>
-                     > > > > > > > >
+                 rlnc_decoder<Field>
+                     > > > > > > > > > >
     {};
 }
 
@@ -86,8 +87,18 @@ int main()
 
     // To illustrate decoding, random data has been filled into the
     // matrices below. It is crucial that the equation below is correct
-    // if to purpose is to test if the decoder decodes correctly as this
+    // if the purpose is to test if the decoder decodes correctly as this
     // example evaluates in the end of the example.
+    //
+    // For additional information, please see the article
+    //
+    //   Christina Fragouli, Jean-Yves Le Boudec, and Jörg Widmer.
+    //   Network Coding: An Instant Primer.
+    //   SIGCOMM Comput. Commun. Rev., 36(1):63-68, January 2006.
+    //
+    // from which the notation in the following example is based on 
+    //
+    //
     //
     // original_symbols (M):    Symbols we expect to obtain from decoding
     //                          encoded_symbols using the symbol_coefficients
@@ -95,41 +106,29 @@ int main()
     // encoded_symbols (X):     Symbols that has been encoded using
     //                          original_symbols using the symbol_coefficients
     //                          below.
-    // symbol_coefficients (C): Coefficients used to encode/decode between
+    // symbol_coefficients (G): Coefficients used to encode/decode between
     //                          original_symbols and encoded_symbols.
     //
     //
-    //                          X = C M
+    //                          X = G M
+    //
+    //                        X^j = \sum_{i=1}^{n} g_i^j M^i
+    //
+    //                |   X^1   |   | g^1_1 g^1_2 g^1_3 | |   M^1   |
+    //                |   X^2   | = | g^2_1 g^2_2 g^2_3 | |   M^2   |
+    //                |   X^3   |   | g^3_1 g^3_2 g^3_3 | |   M^3   | 
     //
     //       | encoded symbol 1 |   | encoding vect 1 | | original symbol 1 |
     //       | encoded symbol 2 | = | encoding vect 2 | | original symbol 2 |
     //       | encoded symbol 3 |   | encoding vect 3 | | original symbol 3 |
-    //
-    //                |   X_1   |   | C_1,1 C_1,2 C_1,3 | |   M_1   |
-    //                |   X_2   | = | C_2,1 C_2,2 C_2,3 | |   M_2   |
-    //                |   X_3   |   | C_3,1 C_3,2 C_3,3 | |   M_3   | 
     //
     //        | 0 0 0 1 1 1 0 0 |   | 0 1 0 | | 0 0 0 0 1 1 0 1 |
     //        | 0 0 0 1 0 0 0 1 | = | 1 1 0 | | 0 0 0 1 1 1 0 0 |
     //        | 0 0 0 0 1 0 1 1 |   | 1 0 1 | | 0 0 0 0 0 1 1 0 |
     //
     // From the above matrix, the first encoded symbol is just the second
-    // original symbol:
-    //        | 0 0 0 1 1 1 0 0 |   | 0 1 0 | |                 |
-    //        |                 | = |       | | 0 0 0 1 1 1 0 0 |
-    //        |                 |   |       | |                 |
-    //
-    // The second encoded symbol is generated from the first original symbol
-    // bitwise xor the second original symbol: 
-    //        |                 |   |       | | 0 0 0 0 1 1 0 1 |
-    //        | 0 0 0 1 0 0 0 1 | = | 1 1 0 | | 0 0 0 1 1 1 0 0 |
-    //        |                 |   |       | |                 |
-    //
-    // The third encoded symbol is generated from the first original symbol
-    // bitwise xor the third original symbol:
-    //        |                 |   |       | | 0 0 0 0 1 1 0 1 |
-    //        |                 | = |       | |                 |
-    //        | 0 0 0 0 1 0 1 1 |   | 1 0 1 | | 0 0 0 0 0 1 1 0 |
+    // original symbol M_2. The second encoded symbol is M_1 bitwise xor M_2,
+    // and the third encoded symbol is M_1 bitwise xor M_3.
 
     uint8_t original_symbols[] = { 0x0D,   // 0 0 0 0 1 1 0 1
                                    0x1C,   // 0 0 0 1 1 1 0 0
@@ -186,7 +185,9 @@ int main()
 
 
     // Check that the original data is the same as the decoded data
-    if (memcmp(original_symbols, &decoded_symbols[0], symbols*symbol_size) == 0)
+    //if (memcmp(original_symbols, &decoded_symbols[0], symbols*symbol_size) == 0)
+    if (std::equal(decoded_symbols.begin(), decoded_symbols.end(),
+        original_symbols))
     {
         std::cout << "Data decoded correctly" << std::endl;
     }
