@@ -8,6 +8,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+/// @todo clean up this file
 /// @file
 /// Sometimes it is useful to be able to write generic code
 /// which may work using both encoders which have systematic

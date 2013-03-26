@@ -6,10 +6,11 @@
 #ifndef KODO_RFC5052_PARTITIONING_SCHEME_HPP
 #define KODO_RFC5052_PARTITIONING_SCHEME_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
+
     /// RFC5052 partitioning scheme.
     /// Takes as input the number of symbols the symbol size
     /// and the total length of an object and returns the number
@@ -120,28 +121,35 @@ namespace kodo
         m_large_block_symbols = ((m_total_symbols - 1) / m_total_blocks) + 1;
         m_small_block_symbols = m_total_symbols / m_total_blocks;
 
-        m_large_blocks = m_total_symbols - (m_small_block_symbols * m_total_blocks);
+        m_large_blocks = m_total_symbols -
+            (m_small_block_symbols * m_total_blocks);
+
         m_small_blocks = m_total_blocks - m_large_blocks;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::symbols(uint32_t block_id) const
+    inline uint32_t
+    rfc5052_partitioning_scheme::symbols(uint32_t block_id) const
     {
         assert(block_id < m_total_blocks);
-        return block_id < m_large_blocks ? m_large_block_symbols : m_small_block_symbols;
+        return block_id < m_large_blocks ?
+            m_large_block_symbols : m_small_block_symbols;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::symbol_size(uint32_t /*block_id*/) const
+    inline uint32_t
+    rfc5052_partitioning_scheme::symbol_size(uint32_t /*block_id*/) const
     {
         return m_max_symbol_size;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::block_size(uint32_t block_id) const
+    inline uint32_t
+    rfc5052_partitioning_scheme::block_size(uint32_t block_id) const
     {
         assert(block_id < m_total_blocks);
         return symbols(block_id) * symbol_size(block_id);
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::byte_offset(uint32_t block_id) const
+    inline uint32_t
+    rfc5052_partitioning_scheme::byte_offset(uint32_t block_id) const
     {
         assert(block_id < m_total_blocks);
 
@@ -151,15 +159,18 @@ namespace kodo
         }
 
         // Calculating the largeblock offset
-        uint32_t offset = m_large_blocks*m_large_block_symbols*m_max_symbol_size;
+        uint32_t offset =
+            m_large_blocks * m_large_block_symbols * m_max_symbol_size;
 
         // Calculating the smallblock offset
-        offset += (block_id - m_large_blocks) * m_small_block_symbols * m_max_symbol_size;
+        offset += (block_id - m_large_blocks) *
+            m_small_block_symbols * m_max_symbol_size;
 
         return offset;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::bytes_used(uint32_t block_id) const
+    inline uint32_t
+    rfc5052_partitioning_scheme::bytes_used(uint32_t block_id) const
     {
         assert(block_id < m_total_blocks);
 
@@ -172,23 +183,27 @@ namespace kodo
         return std::min(remaining, the_block_size);
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::blocks() const
+    inline uint32_t
+    rfc5052_partitioning_scheme::blocks() const
     {
         assert(m_total_blocks > 0);
         return m_total_blocks;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::object_size() const
+    inline uint32_t
+    rfc5052_partitioning_scheme::object_size() const
     {
         assert(m_object_size > 0);
         return m_object_size;
     }
 
-    inline uint32_t rfc5052_partitioning_scheme::total_symbols() const
+    inline uint32_t
+    rfc5052_partitioning_scheme::total_symbols() const
     {
         assert(m_total_symbols > 0);
         return m_total_symbols;
     }
+
 }
 
 #endif

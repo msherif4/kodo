@@ -12,6 +12,7 @@ namespace kodo
 {
 
     /// @ingroup storage_info_layers
+    ///
     /// @brief Provides access to the number of useful bytes used out of the
     ///        total size of the encoders or decoders storage.
     template<class SuperCoder>
@@ -24,14 +25,14 @@ namespace kodo
             : m_bytes_used(0)
             {}
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
                 m_bytes_used = 0;
             }
 
-        /// @copydoc layer::set_bytes_used()
+        /// @copydoc layer::set_bytes_used(uint32_t)
         void set_bytes_used(uint32_t bytes_used)
             {
                 assert(bytes_used > 0);
@@ -40,7 +41,7 @@ namespace kodo
                 m_bytes_used = bytes_used;
             }
 
-        /// @copydoc layer::bytes_used()
+        /// @copydoc layer::bytes_used() const
         uint32_t bytes_used() const
             {
                 return m_bytes_used;
@@ -50,7 +51,9 @@ namespace kodo
 
         /// The number of bytes used
         uint32_t m_bytes_used;
+
     };
+
 }
 
 #endif

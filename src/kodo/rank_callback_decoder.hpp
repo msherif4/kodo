@@ -12,8 +12,8 @@
 
 namespace kodo
 {
+
     /// @ingroup codec_layers
-    ///
     /// @brief Allows a callback function to be invoked after rank changed
     ///
     /// This layer allows a callback function to be assigned to each decoder.
@@ -24,8 +24,9 @@ namespace kodo
     {
     public:
 
-        /// The rank changed callback function. The callback is invoked whenever
-        /// the rank changed and provides the current rank as a uint32_t
+        /// The rank changed callback function. The callback is invoked
+        /// whenever the rank changed and provides the current rank as a
+        /// uint32_t
         typedef std::function<void (uint32_t)> rank_changed_callback;
 
     public:
@@ -79,7 +80,7 @@ namespace kodo
 
         /// Set rank changed callback function
         /// @param callback rank changed callback function
-        void set_rank_changed_callback (const rank_changed_callback &callback)
+        void set_rank_changed_callback(const rank_changed_callback &callback)
             {
                 assert(callback);
 
@@ -115,6 +116,7 @@ namespace kodo
         rank_changed_callback m_callback_func;
 
     };
+
 }
 
 #endif

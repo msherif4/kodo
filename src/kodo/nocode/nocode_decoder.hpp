@@ -86,6 +86,7 @@ namespace kodo
         std::vector<bool> m_uncoded;
 
     };
+
 }
 
 #endif

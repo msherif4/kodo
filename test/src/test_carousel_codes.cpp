@@ -3,6 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
+/// @file test_carousel_codes.cpp Unit tests for the carousel nocode scheme
+
 #include <ctime>
 
 #include <gtest/gtest.h>

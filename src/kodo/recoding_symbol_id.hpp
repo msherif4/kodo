@@ -16,10 +16,9 @@
 namespace kodo
 {
 
+    /// @ingroup symbol_id_layers
     /// @brief Randomly recombines existing coding coefficients to
     ///        allow a decoder to produce recoded packets.
-    ///
-    /// @ingroup symbol_id_layers
     template<class SuperCoder>
     class recoding_symbol_id : public SuperCoder
     {
@@ -82,11 +81,11 @@ namespace kodo
         /// recoded encoding vector will be available in the
         /// symbol_coefficient buffer.
         ///
-        /// @copydoc layer::write_id(uint8_t*, uint8_t*)
-        uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+        /// @copydoc layer::write_id(uint8_t*, uint8_t**)
+        uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
             {
                 assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 // Zero the symbol id
                 std::fill_n(m_recode_id.begin(), m_id_size, 0);
@@ -102,7 +101,7 @@ namespace kodo
                 {
                     // Nothing we can do - we just return the zero'ed
                     // symbol coefficients and id
-                    *symbol_coefficients = symbol_id;
+                    *coefficients = symbol_id;
                     sak::copy_storage(id_storage, sak::storage(m_recode_id));
 
                     return m_id_size;
@@ -120,13 +119,13 @@ namespace kodo
                 value_type *recode_id
                     = reinterpret_cast<value_type*>(&m_recode_id[0]);
 
-                value_type *coefficients
+                value_type *recode_coefficients
                     = reinterpret_cast<value_type*>(&m_coefficients[0]);
 
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
                     value_type c =
-                        fifi::get_value<field_type>(coefficients, i);
+                        fifi::get_value<field_type>(recode_coefficients, i);
 
                     if(!c)
                     {
@@ -153,7 +152,7 @@ namespace kodo
                 }
 
 
-                *symbol_coefficients = &m_coefficients[0];
+                *coefficients = &m_coefficients[0];
                 sak::copy_storage(id_storage, sak::storage(m_recode_id));
 
                 return m_id_size;

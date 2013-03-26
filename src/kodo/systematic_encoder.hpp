@@ -6,7 +6,7 @@
 #ifndef KODO_SYSTEMATIC_ENCODER_HPP
 #define KODO_SYSTEMATIC_ENCODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <sak/convert_endian.hpp>
 #include <sak/storage.hpp>
@@ -22,10 +22,10 @@ namespace kodo
     /// @ingroup codec_header_layers
     /// @brief Systematic encoding layer.
     ///
-    /// Specifying the SystematicOn template argument true will initialize the
-    /// systematic encoder to produce systematic packets. If SystematicOn is
-    /// false a user must first call the set_systematic_on() function to
-    /// start producing systematic packets.
+    /// Specifying the SystematicOn template argument true will initialize
+    /// the systematic encoder to produce systematic packets. If
+    /// SystematicOn is false a user must first call the set_systematic_on()
+    /// function to start producing systematic packets.
     template<bool SystematicOn, class SuperCoder>
     class base_systematic_encoder : public SuperCoder
     {
@@ -55,12 +55,12 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @copydoc layer::max_header_size()
+            /// @copydoc layer::max_header_size() const
             uint32_t max_header_size() const
                 {
                     return SuperCoder::factory::max_header_size() +
@@ -75,7 +75,7 @@ namespace kodo
             : m_systematic(SystematicOn)
             { }
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -91,17 +91,22 @@ namespace kodo
                 assert(symbol_header != 0);
 
                 // The systematic phase takes places when we still haven't
-                // generated more symbols than what is contained in the block
+                // generated more symbols than what is contained in the
+                // block
+
                 bool in_systematic_phase =
-                    SuperCoder::encode_symbol_count() < SuperCoder::symbols();
+                    SuperCoder::encode_symbol_count() <
+                    SuperCoder::symbols();
 
                 if(m_systematic && in_systematic_phase)
                 {
-                    return encode_systematic(symbol_data, symbol_header);
+                    return encode_systematic(symbol_data,
+                                             symbol_header);
                 }
                 else
                 {
-                    return encode_non_systematic(symbol_data, symbol_header);
+                    return encode_non_systematic(symbol_data,
+                                                 symbol_header);
                 }
             }
 
@@ -123,7 +128,7 @@ namespace kodo
                 m_systematic = false;
             }
 
-        /// @copydoc layer::header_size()
+        /// @copydoc layer::header_size() const
         uint32_t header_size() const
             {
                 return SuperCoder::header_size() +
@@ -165,7 +170,8 @@ namespace kodo
 
                 /// Flag non_systematic packet
                 sak::big_endian::put<flag_type>(
-                    systematic_base_coder::non_systematic_flag, symbol_header);
+                    systematic_base_coder::non_systematic_flag,
+                    symbol_header);
 
                 uint32_t bytes_consumed = SuperCoder::encode(
                     symbol_data, symbol_header + sizeof(flag_type));
@@ -191,6 +197,7 @@ namespace kodo
     {};
 
 
+    /// @todo MOve this to some other place
     /// Overload for the generic is_systematic_encoder_dispatch(...) function
     ///
     /// \ingroup g_systematic_coding

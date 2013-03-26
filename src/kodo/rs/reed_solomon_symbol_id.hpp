@@ -12,11 +12,11 @@
 namespace kodo
 {
 
+    /// @ingroup symbol_id_layers
+    ///
     /// @brief Base class for the Reed-Solomon symbol id reader and
     ///        writer. Contains the functionality to cache the
     ///        generator matrices.
-    ///
-    /// @ingroup symbol_id_layers
     template<class SuperCoder>
     class reed_solomon_symbol_id : public SuperCoder
     {

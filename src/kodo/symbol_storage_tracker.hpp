@@ -15,9 +15,10 @@ namespace kodo
 {
 
     /// @ingroup symbol_storage_layers
-    /// The storage tracker layer intercepts the calls used to
-    /// initialize the symbol storage and allow us to track
-    /// which symbols have been specified.
+    ///
+    /// @brief The storage tracker layer intercepts the calls used to
+    ///        initialize the symbol storage and allow us to track
+    ///        which symbols have been specified.
     template<class SuperCoder>
     class symbol_storage_tracker : public SuperCoder
     {

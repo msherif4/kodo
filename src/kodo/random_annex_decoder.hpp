@@ -19,7 +19,8 @@
 
 namespace kodo
 {
-    /// Random annex decoder
+
+    /// @brief A random annex decoder
     template<class DecoderType, class BlockPartitioning>
     class random_annex_decoder : random_annex_base<BlockPartitioning>
     {
@@ -243,7 +244,8 @@ namespace kodo
                 uint32_t reverse_annex_size =
                     m_reverse_annex[from_decoder].size();
 
-                for(uint32_t to_decoder = 0; to_decoder < reverse_annex_size; ++to_decoder)
+                for(uint32_t to_decoder = 0;
+                    to_decoder < reverse_annex_size; ++to_decoder)
                 {
                     if(!m_reverse_annex[from_decoder][to_decoder])
                         continue;
@@ -256,12 +258,14 @@ namespace kodo
                     // which symbols it is. Fetch the annex for the decoder
                     std::set<annex_info> &annex = m_annex[to_decoder];
 
-                    for(annex_iterator it = annex.begin(); it != annex.end(); ++it)
+                    for(annex_iterator it = annex.begin();
+                        it != annex.end(); ++it)
                     {
                         if(it->m_coder_id != from_decoder)
                             continue;
 
-                        uint32_t to_symbol = m_decoders[to_decoder]->symbols() -
+                        uint32_t to_symbol =
+                            m_decoders[to_decoder]->symbols() -
                             m_annex_size + std::distance(annex.begin(), it);
 
                         uint32_t from_symbol = it->m_symbol_id;
@@ -298,9 +302,9 @@ namespace kodo
 
                     decoder->set_bytes_used(bytes_used);
 
-                    is_complete_handler handler
-                        = boost::bind(&random_annex_decoder::decoder_complete,
-                                      this, i);
+                    is_complete_handler handler =
+                        boost::bind(&random_annex_decoder::decoder_complete,
+                                    this, i);
 
                     wrap_coder wrap(decoder, handler);
 
@@ -329,6 +333,7 @@ namespace kodo
         /// Vector for all the decoders
         std::vector<wrap_coder> m_decoders;
     };
+
 }
 
 #endif

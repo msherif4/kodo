@@ -10,6 +10,7 @@ namespace kodo
 {
 
     /// @ingroup codec_header_layers
+    ///
     /// @brief Writes the symbol id into the symbol header. Generates the
     ///        the symbol coding coefficients. and calls the
     ///        layer::encode_symbol() function.
@@ -26,12 +27,12 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @copydoc layer::factory::max_header_size()
+            /// @copydoc layer::factory::max_header_size() const
             uint32_t max_header_size() const
                 {
                     return SuperCoder::factory::max_id_size();

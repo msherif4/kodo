@@ -12,6 +12,7 @@ namespace kodo
 {
 
     /// @ingroup symbol_storage_layers
+    ///
     /// @brief Defines several functions to retrieve info about the
     ///        symbol storage layers.
     template<class SuperCoder>
@@ -130,6 +131,7 @@ namespace kodo
         /// The length of a symbol in value_type elements
         uint32_t m_symbol_length;
     };
+
 }
 
 #endif

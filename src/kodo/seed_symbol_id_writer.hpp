@@ -34,11 +34,11 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::write_id()
-        uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+        /// @copydoc layer::write_id(uint8_t*, uint8_t**)
+        uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
             {
                 assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 seed_type seed =
                     (seed_type) Super::encode_symbol_count();
@@ -48,7 +48,7 @@ namespace kodo
 
                 /// Store the seed as the symbol id
                 sak::big_endian::put<seed_type>(seed, symbol_id);
-                *symbol_coefficients = &m_coefficients[0];
+                *coefficients = &m_coefficients[0];
 
                 return sizeof(seed_type);
             }

@@ -15,9 +15,11 @@ namespace kodo
 {
 
     /// @ingroup storage_layers
-    /// The shallow storage implementation. In this context shallow
+    /// @brief The shallow storage implementation. In this context shallow
     /// means that the symbol storage only contains pointers to some
-    /// external data structure. This is useful in cases where data to
+    /// external data structure.
+    ///
+    /// This is useful in cases where data to
     /// be encoded already has been read into memory or if a user requires
     /// incoming data to be directly decoded into a specific buffer.
     template<bool IsConst, class SuperCoder>
@@ -49,7 +51,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -57,7 +59,7 @@ namespace kodo
                 m_data.resize(max_symbols, 0);
             }
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -82,7 +84,7 @@ namespace kodo
                 return reinterpret_cast<const value_type*>(symbol(index));
             }
 
-        /// @copydoc layer::swap_symbols()
+        /// @copydoc layer::swap_symbols(std::vector<data_ptr>&)
         void swap_symbols(std::vector<data_ptr> &symbols)
             {
                 assert(m_data.size() == symbols.size());
@@ -115,14 +117,16 @@ namespace kodo
                 m_data[index] = symbol.m_data;
             }
 
-        /// @copydoc layer::copy_symbols()
-        void copy_symbols(sak::mutable_storage dest) const
+        /// @copydoc layer::copy_symbols(const sak::mutable_storage&)
+        void copy_symbols(const sak::mutable_storage &dest) const
             {
-                assert(dest.m_size > 0);
-                assert(dest.m_data != 0);
+                auto storage = dest;
+
+                assert(storage.m_size > 0);
+                assert(storage.m_data != 0);
 
                 uint32_t data_to_copy =
-                    std::min(dest.m_size, SuperCoder::block_size());
+                    std::min(storage.m_size, SuperCoder::block_size());
 
                 uint32_t symbol_index = 0;
 
@@ -136,10 +140,10 @@ namespace kodo
                     sak::const_storage src_storage =
                         sak::storage(symbol(symbol_index), copy_size);
 
-                    sak::copy_storage(dest, src_storage);
+                    sak::copy_storage(storage, src_storage);
 
-                    dest.m_size -= copy_size;
-                    dest.m_data += copy_size;
+                    storage.m_size -= copy_size;
+                    storage.m_data += copy_size;
 
                     ++symbol_index;
 
@@ -147,19 +151,23 @@ namespace kodo
 
             }
 
-        /// @copydoc layer::copy_symbol()
-        void copy_symbol(uint32_t index, sak::mutable_storage dest) const
+        /// @copydoc layer::copy_symbol(
+        ///              uint32_t, const sak::mutable_storage&) const
+        void copy_symbol(uint32_t index,
+                         const sak::mutable_storage &dest) const
             {
-                assert(dest.m_size > 0);
-                assert(dest.m_data != 0);
+                auto storage = dest;
+
+                assert(storage.m_size > 0);
+                assert(storage.m_data != 0);
 
                 uint32_t data_to_copy =
-                    std::min(dest.m_size, SuperCoder::symbol_size());
+                    std::min(storage.m_size, SuperCoder::symbol_size());
 
                 sak::const_storage src =
                     sak::storage(symbol(index), data_to_copy);
 
-                sak::copy_storage(dest, src);
+                sak::copy_storage(storage, src);
             }
 
     protected:
@@ -215,9 +223,6 @@ namespace kodo
             {
                 return reinterpret_cast<value_type*>(symbol(index));
             }
-
-
-
 
     };
 

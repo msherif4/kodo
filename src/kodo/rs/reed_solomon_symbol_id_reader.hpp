@@ -17,11 +17,12 @@
 namespace kodo
 {
 
+    /// @ingroup symbol_id_layers
+    ///
     /// @brief Reads the row index of the Reed-Solomon generator matrix from
     ///        the symbol id buffer. This is then use to fetch the
     ///        corresponding coding coefficients.
     ///
-    /// @ingroup symbol_id_layers
     template<class SuperCoder>
     class reed_solomon_symbol_id_reader_base : public SuperCoder
     {

@@ -15,7 +15,14 @@
 
 namespace kodo
 {
-    /// Object decoder
+
+    /// @brief The object decoder supports decoding objects split over
+    ///        multiple decoders.
+    ///
+    /// When an object is too large for a single encoder/decoder pair,
+    /// the object decoder uses the specified partitioning scheme to
+    /// determine how decoders should be constructed to cover the entire
+    /// object.
     template
     <
         class DecoderType,
@@ -37,29 +44,31 @@ namespace kodo
     public:
 
         /// Constructs a new object decoder
-        /// @param factory the decoder factory to use
-        /// @param object_size size in bytes of the object to be decoded
+        /// @param factory The decoder factory to use
+        /// @param object_size The size in bytes of the object to be decoded
         object_decoder(factory &decoder_factory, uint32_t object_size)
             : m_factory(decoder_factory),
               m_object_size(object_size)
             {
                 assert(m_object_size > 0);
 
-                m_partitioning = block_partitioning(m_factory.max_symbols(),
-                                                    m_factory.max_symbol_size(),
-                                                    m_object_size);
+                m_partitioning = block_partitioning(
+                    m_factory.max_symbols(),
+                    m_factory.max_symbol_size(),
+                    m_object_size);
 
             }
 
-        /// @return the number of decoders which may be created for this object
+        /// @return The number of decoders which may be created for
+        ///         this object
         uint32_t decoders() const
             {
                 return m_partitioning.blocks();
             }
 
         /// Builds a specific decoder
-        /// @param decoder_id specifies the decoder to build
-        /// @return the initialized decoder
+        /// @param decoder_id Specifies the decoder to build
+        /// @return The initialized decoder
         pointer build(uint32_t decoder_id)
             {
                 assert(decoder_id < m_partitioning.blocks());
@@ -81,7 +90,7 @@ namespace kodo
                 return decoder;
             }
 
-        /// @return the total size of the object to encode in bytes
+        /// @return The total size of the object to decode in bytes
         uint32_t object_size() const
             {
                 return m_object_size;
@@ -98,6 +107,7 @@ namespace kodo
         /// Store the total object size in bytes
         uint32_t m_object_size;
     };
+
 }
 
 #endif

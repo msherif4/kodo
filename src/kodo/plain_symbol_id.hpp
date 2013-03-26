@@ -13,9 +13,8 @@
 namespace kodo
 {
 
-    /// @brief Base class for the plain symbol id reader and writer
-    ///
     /// @ingroup symbol_id_layers
+    /// @brief Base class for the plain symbol id reader and writer
     template<class SuperCoder>
     class plain_symbol_id : public SuperCoder
     {
@@ -32,12 +31,12 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @copydoc layer::factory::max_id_size()
+            /// @copydoc layer::factory::max_id_size() const
             uint32_t max_id_size() const
                 {
                     return SuperCoder::factory::max_coefficients_size();

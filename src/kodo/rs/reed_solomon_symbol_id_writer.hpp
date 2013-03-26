@@ -7,21 +7,23 @@
 #define KODO_RS_REED_SOLOMON_SYMBOL_ID_WRITER_HPP
 
 #include <cstdint>
+#include <vector>
 
 #include <fifi/fifi_utils.hpp>
+
 #include <sak/convert_endian.hpp>
+#include <sak/aligned_allocator.hpp>
 
 #include "reed_solomon_symbol_id.hpp"
 
 namespace kodo
 {
 
-    /// @todo make the coefficient** to a const uint8_t ** for the write_id
+    /// @ingroup symbol_id_layers
+    ///
     /// @brief Uses the count of the currently encoded symbol to select the
     ///        proper row in the generator matrix. The row is selected using
     ///        the encoded symbol count.
-    ///
-    /// @ingroup symbol_id_layers
     template<class SuperCoder>
     class reed_solomon_symbol_id_writer
         : public reed_solomon_symbol_id<SuperCoder>
@@ -39,11 +41,20 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::write_id(uint8_t*,uint8_t**)
-        uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+
+                m_coefficients.resize(
+                    SuperCoder::coefficients_size(), 0);
+            }
+
+        /// @copydoc layer::write_id(uint8_t*, uint8_t**)
+        uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
             {
                 assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 uint32_t symbol_index = Super::encode_symbol_count();
 
@@ -53,7 +64,12 @@ namespace kodo
                 // Store the index as the symbol id
                 sak::big_endian::put<value_type>(symbol_index, symbol_id);
 
-                *symbol_coefficients = m_matrix->row(symbol_index);
+                sak::copy_storage(
+                    sak::storage(m_coefficients),
+                    sak::storage(m_matrix->row(symbol_index),
+                                 m_matrix->row_size()));
+
+                *coefficients = &m_coefficients[0];
 
                 return sizeof(value_type);
             }
@@ -62,6 +78,13 @@ namespace kodo
 
         /// Access Reed-Solomon generator class
         using Super::m_matrix;
+
+        /// The storage type
+        typedef std::vector<uint8_t, sak::aligned_allocator<uint8_t> >
+            aligned_vector;
+
+        /// Temp symbol id (with aligned memory)
+        aligned_vector m_coefficients;
 
     };
 

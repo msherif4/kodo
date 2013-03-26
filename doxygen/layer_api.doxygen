@@ -72,7 +72,7 @@ public:
         ///       to implement the layer::header_size() function.
         ///
         /// @return The size in bytes required for the symbol header buffer.
-        uint32_t max_header_size();
+        uint32_t max_header_size() const;
 
         /// @ingroup symbol_id_api
         /// @brief Can be reimplemented by a Factory Symbol ID layer
@@ -82,7 +82,7 @@ public:
         ///
         /// @return The maximum size in bytes required for a symbol id.
         /// @see factory_layer_api
-        uint32_t max_id_size();
+        uint32_t max_id_size() const;
 
         /// @ingroup payload_codec_api
         ///
@@ -157,27 +157,36 @@ public:
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
     /// @param symbol_id The buffer where the symbol id is written. This id
-    ///                  should uniquely describe the coding coefficients
-    ///                  used to generate an encoded symbol. It is therefore
-    ///                  sufficient to transmit only the symbol id and not
-    ///                  necessarily all coding coefficients to decoders.
-    /// @param symbol_coefficient Pointer to a pointer of symbol id
-    ///                  coefficients. After the call to write_id the
-    ///                  symbol_id_coefficient pointer will point to memory
-    ///                  storing all coding coefficients corresponding to
-    ///                  the symbol id written to the symbol_id buffer.
+    ///        should uniquely describe the coding coefficients
+    ///        used to generate an encoded symbol. It is therefore
+    ///        sufficient to transmit only the symbol id and not
+    ///        necessarily all coding coefficients to decoders.
+    /// @param coefficient Pointer to a pointer of coefficients.
+    ///        After the call to write_id the coefficients pointer
+    ///        will point to memory storing all coding coefficients
+    ///        corresponding to the symbol id written to the symbol_id
+    ///        buffer.
+    ///        Note, the buffer returned may be change by the calling
+    ///        code. The implementation should therefore ensure that this
+    ///        will not cause problems e.g. by returning a pointer to a
+    ///        internal buffered copy of the coefficients.
+    ///
     /// @return The number of bytes used from the symbol_id buffer.
-    uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients);
+    uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients);
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
     /// @param symbol_id Contains the symbol id for an encoded symbol.
-    /// @param symbol_coefficient Pointer to pointer of symbol id
+    /// @param coefficient Pointer to pointer of the symbol
     ///        coefficients. After the call to read_id the
-    ///        symbol_id_coefficient pointer will point to memory storing
+    ///        coefficients pointer will point to memory storing
     ///        all coding coefficients corresponding to the symbol id
     ///        read from the symbol_id buffer.
-    void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients);
+    ///        Note, the buffer returned may be change by the calling
+    ///        code. The implementation should therefore ensure that this
+    ///        will not cause problems e.g. by returning a pointer to a
+    ///        internal buffered copy of the coefficients.
+    void read_id(uint8_t *symbol_id, uint8_t **coefficients);
 
     /// @ingroup symbol_id_api
     /// @brief Can be reimplemented by a Symbol ID layer
@@ -232,7 +241,7 @@ public:
     /// @param symbol_data The destination buffer for the encoded symbol
     /// @param coefficients At this point the symbol id should be
     ///        initialized with the desired coding coefficients.
-    void encode_symbol(uint8_t *symbol_data, const uint8_t *coefficients);
+    void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients);
 
     /// @ingroup codec_api
     /// The encode function for systematic packets i.e. specific uncoded

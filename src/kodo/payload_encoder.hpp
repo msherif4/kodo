@@ -12,9 +12,8 @@ namespace kodo
 {
 
     /// @ingroup payload_codec_layers
-    /// @ingroup factory_layers
-    /// The payload encoder splits payload buffer into symbol_id and symbol
-    /// buffers.
+    /// @brief The payload encoder splits the payload buffer into
+    ///        symbol header and symbol.
     template<class SuperCoder>
     class payload_encoder : public SuperCoder
     {
@@ -27,12 +26,12 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
                 { }
 
-            /// @copydoc layer::factory::max_payload_size()
+            /// @copydoc layer::factory::max_payload_size() const
             uint32_t max_payload_size() const
                 {
                     return SuperCoder::factory::max_symbol_size() +
@@ -52,10 +51,12 @@ namespace kodo
         /// @endcode
         ///
         /// The reason the symbol data is placed first in the payload
-        /// buffer is to enable 16 byte-alignment of the symbol data.
+        /// buffer is to increase the chances of 16 byte-alignment of
+        /// the symbol data.
         /// If the variable length id would be place in front of the
         /// symbol it would easily become unaligned. Unaligned symbol
         /// data access will most likely result in very bad performance.
+        ///
         /// @copydoc layer::encode(uint8_t*)
         uint32_t encode(uint8_t *payload)
             {
@@ -70,7 +71,7 @@ namespace kodo
                     + SuperCoder::symbol_size();
             }
 
-        /// @copydoc layer::payload_size()
+        /// @copydoc layer::payload_size() const
         uint32_t payload_size() const
             {
                 return SuperCoder::symbol_size() +

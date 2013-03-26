@@ -150,7 +150,7 @@ namespace kodo
                  // Final type
                  full_rlnc_decoder<Field>
                      > > > > > > > > > > > > > > > >
-    {};
+    { };
 
 }
 

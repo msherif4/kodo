@@ -6,10 +6,11 @@
 #ifndef KODO_SYSTEMATIC_BASE_CODER_HPP
 #define KODO_SYSTEMATIC_BASE_CODER_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace kodo
 {
+
     /// Convenience for the systematic encoder and decoder
     class systematic_base_coder
     {
@@ -30,6 +31,7 @@ namespace kodo
         /// Non-systematic flag
         static const flag_type non_systematic_flag = 0x00U;
     };
+
 }
 
 #endif

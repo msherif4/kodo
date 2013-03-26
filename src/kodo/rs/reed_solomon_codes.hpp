@@ -27,7 +27,6 @@
 #include "../coefficient_info.hpp"
 #include "../symbol_storage_tracker.hpp"
 #include "../encode_symbol_tracker.hpp"
-
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
 
@@ -35,11 +34,11 @@
 #include "reed_solomon_symbol_id_reader.hpp"
 #include "systematic_vandermonde_matrix.hpp"
 
-
 namespace kodo
 {
-    /// Complete stack implementing a Reed-Solomon encoder. The key features of
-    /// this configuration is the following:
+
+    /// Complete stack implementing a Reed-Solomon encoder. The key
+    /// features of this configuration is the following:
     /// - Systematic encoding (uncoded symbols produced before switching
     ///   to coding)
     /// - Deep symbol storage which makes the encoder allocate its own
@@ -106,7 +105,7 @@ namespace kodo
                  // Final type
                  rs_decoder<Field>
                      > > > > > > > > > > > > > > >
-    {};
+    { };
 
 }
 

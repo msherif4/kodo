@@ -15,7 +15,8 @@
 namespace kodo
 {
 
-    /// @ingroup user_layers
+    /// @todo Add this class to a group
+    ///
     /// @brief Computes a Vandermonde matrix to generate the coding
     ///        coefficients. The matrix code is
     template<class SuperCoder>
@@ -74,7 +75,8 @@ namespace kodo
 
     template<class SuperCoder>
     inline auto
-    vandermonde_matrix_base<SuperCoder>::factory::construct_matrix(uint32_t symbols)
+    vandermonde_matrix_base<SuperCoder>::factory::construct_matrix(
+        uint32_t symbols)
         -> boost::shared_ptr<generator_matrix>
     {
         assert(symbols > 0);

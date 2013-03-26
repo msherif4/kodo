@@ -23,29 +23,29 @@ namespace kodo
     /// uses its dependencies to wrap an build encoders for arbitrary
     /// objects.
     ///
-    /// +---------------+       +---------------+
-    /// | partitioning  |       |encoder factory|
-    /// |---------------|       |---------------|
-    /// | chops the     |       |               |
-    /// | object into   |       | builds new    |
-    /// | blocks for    |       | encoders      |
-    /// | encoding      |       |               |
-    /// |               |       |               |
-    /// +---------------+       +---------------+
-    ///        ^                        ^
-    ///        |                        |
-    ///        |                        | builds
-    ///        |                        | encoder
-    ///        |                        +
-    ///        |                +---------------+
-    ///        |                | object encoder|
-    ///        |                |---------------|
-    ///        |                | uses the      |
-    ///        +--------------+ | factory and   |
-    ///                         | reader to init|
-    ///                         | encoders for  |
-    ///                         | an object     |
-    ///                         +---------------+
+    /// +---------------+     +---------------+     +---------------+
+    /// | partitioning  |     |encoder factory|     |  object data  |
+    /// |---------------|     |---------------|     |---------------|
+    /// | chops the     |     |               |     |               |
+    /// | object into   |     | builds new    |     | object data   |
+    /// | blocks for    |     | encoders      |     | can be a file |
+    /// | encoding      |     |               |     | memory buffer |
+    /// |               |     |               |     |               |
+    /// +---------------+     +---------------+     +---------------+
+    ///        ^                      ^                     ^
+    ///        |                      |                     |
+    ///        |                      | builds              |
+    ///        |                      | encoder             | reads
+    ///        |                      +                     |
+    ///        |              +---------------+             |
+    ///        |              | object encoder|             |
+    ///        |              |---------------|             |
+    ///        |              | uses the      |             |
+    ///        +------------+ | factory and   | +-----------+
+    ///                       | reader to init|
+    ///                       | encoders for  |
+    ///                       | an object     |
+    ///                       +---------------+
     template
     <
         class ObjectData,
@@ -80,13 +80,13 @@ namespace kodo
 
                 assert(m_data.size() > 0);
 
-                m_partitioning =
-                    block_partitioning(m_factory.max_symbols(),
-                                       m_factory.max_symbol_size(),
-                                       m_data.size());
+                m_partitioning = block_partitioning(
+                    m_factory.max_symbols(),
+                    m_factory.max_symbol_size(),
+                    m_data.size());
             }
 
-        /// @return the number of encoders which may be created for
+        /// @return The number of encoders which may be created for
         ///         this object
         uint32_t encoders() const
             {
@@ -94,8 +94,8 @@ namespace kodo
             }
 
         /// Builds a specific encoder
-        /// @param encoder_id specifies the encoder to build
-        /// @return the initialized encoder
+        /// @param encoder_id Specifies the encoder to build
+        /// @return The initialized encoder
         pointer_type build(uint32_t encoder_id)
             {
                 assert(encoder_id < m_partitioning.blocks());
@@ -122,7 +122,7 @@ namespace kodo
                 return encoder;
             }
 
-        /// @return the total size of the object to encode in bytes
+        /// @return The total size of the object to encode in bytes
         uint32_t object_size() const
             {
                 return m_data.size();
@@ -139,6 +139,7 @@ namespace kodo
         /// The block partitioning scheme used
         block_partitioning m_partitioning;
     };
+
 }
 
 #endif

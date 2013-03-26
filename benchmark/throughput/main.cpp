@@ -44,9 +44,6 @@ std::vector<std::string> setup_types()
     return types;
 }
 
-
-
-
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
 struct throughput_benchmark : public gauge::time_benchmark
@@ -186,9 +183,10 @@ struct throughput_benchmark : public gauge::time_benchmark
             // Prepare the data to be encoded
             m_encoded_data.resize(m_encoder->block_size());
 
-            // Just for fun - fill the data with random data
-            kodo::random_uniform<uint8_t> fill_data;
-            fill_data.generate(&m_encoded_data[0], m_encoded_data.size());
+            for(uint8_t &e : m_encoded_data)
+            {
+                e = rand() % 256;
+            }
 
             m_encoder->set_symbols(sak::storage(m_encoded_data));
 

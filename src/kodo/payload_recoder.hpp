@@ -31,8 +31,10 @@ namespace kodo
         /// stack typically via the proxy_layer class.
         typedef RecodingStack<SuperCoder> recode_stack;
 
+        /// Pointer to the coder constructed by the factory
         typedef typename SuperCoder::pointer pointer;
 
+        /// Pointer to the recoding stack
         typedef typename recode_stack::pointer recode_pointer;
 
     public:
@@ -129,12 +131,16 @@ namespace kodo
 
     private:
 
+        /// Sets the recoding stack on the coder
+        /// @param recoder The recoding stack.
         void set_recode_stack(const recode_pointer &recoder)
             {
                 assert(!m_recode_stack);
                 m_recode_stack = recoder;
             }
 
+        /// @return True if the coder already has already been initialized
+        ///         with an recoding stack
         bool has_recode_stack() const
             {
                 return m_recode_stack.get() != 0;
@@ -146,6 +152,7 @@ namespace kodo
         recode_pointer m_recode_stack;
 
     };
+
 }
 
 #endif

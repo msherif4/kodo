@@ -35,13 +35,14 @@ namespace kodo
 
         // The minimum number of total symbols we can have for the given
         // maximum_symbol_size and object_size ceil(x/y) = ((x - 1) / y) + 1
-        uint32_t min_total_symbols = ((object_size - 1) / max_symbol_size) + 1;
+        uint32_t min_total_symbols =
+            ((object_size - 1) / max_symbol_size) + 1;
 
-        // Out of that we have a our maximum block size and since we select the
-        // annex overlap randomly without replacement there is no way we can
-        // have an annex bigger than the number of available symbols in the
-        // surrounding blocks i.e. the total number of surrounding symbols minus
-        // the maximum block
+        // Out of that we have a our maximum block size and since we
+        // select the annex overlap randomly without replacement there
+        // is no way we can have an annex bigger than the number of
+        // available symbols in the surrounding blocks i.e. the total
+        // number of surrounding symbols minus the maximum block
         if(max_symbols > min_total_symbols)
         {
             // Everything fits into one block
@@ -50,21 +51,28 @@ namespace kodo
         else
         {
             // We know how many symbols are outside the maximum block.
-            // Additionally since the annex is contained within a single block
-            // it cannot be larger than the max_symbols - 1. If we allow the
-            // annex to be == max_symbols the blocks could end up begin pure
-            // annex in which case no blocks contain actual symbols.
-            return std::min(min_total_symbols - max_symbols, max_symbols - 1);
+            // Additionally since the annex is contained within a single
+            // block it cannot be larger than the max_symbols - 1. If
+            // we allow the annex to be == max_symbols the blocks could
+            // end up begin pure annex in which case no blocks contain
+            // actual symbols.
+            return std::min(min_total_symbols - max_symbols,
+                            max_symbols - 1);
         }
     }
 
+    /// @brief Annex info helper class
     struct annex_info
     {
+        /// Constructor
         annex_info()
             : m_coder_id(0),
               m_symbol_id(0)
             { }
 
+        /// Constructor
+        /// @param coder_id The id of the coder
+        /// @param symbol_id The id of the symbol
         annex_info(uint32_t coder_id, uint32_t symbol_id)
             : m_coder_id(coder_id),
               m_symbol_id(symbol_id)
@@ -82,10 +90,11 @@ namespace kodo
     inline bool operator<(const annex_info &a, const annex_info &b)
     {
         return a.m_coder_id < b.m_coder_id ||
-            (!(b.m_coder_id < a.m_coder_id) && a.m_symbol_id < b.m_symbol_id);
+            (!(b.m_coder_id < a.m_coder_id) &&
+             a.m_symbol_id < b.m_symbol_id);
     }
 
-    /// A random annex base
+    /// @brief Base class for the random annex encoder and decoder.
     template<class BlockPartitioning>
     class random_annex_base : boost::noncopyable
     {
@@ -122,9 +131,10 @@ namespace kodo
 
                 if(annex_size == 0 || blocks < 2)
                 {
-                    // No need to continue - we leave the resize since then the
-                    // algorithms operating on the data structures (m_annex or
-                    // m_reverse_annex) does not have to perform the check for
+                    // No need to continue - we leave the resize since
+                    // then the algorithms operating on the data
+                    // structures (m_annex or m_reverse_annex) does not
+                    // have to perform the check for
                     // annex_size == 0 or blocks < 2
                     return;
                 }
@@ -133,8 +143,9 @@ namespace kodo
                     m_reverse_annex[i].resize(blocks);
 
                 // For 5 blocks generate between [0,..,3] since 1 block is
-                // always excluded only 4 values are suitable. When block 1 is
-                // excluded we select between {0, 2, 3, 4} and so forth.
+                // always excluded only 4 values are suitable. When
+                // block 1 is excluded we select between {0, 2, 3, 4}
+                // and so forth.
                 m_block_distribution
                     = uniform_int(0, blocks - 2);
 
@@ -162,16 +173,13 @@ namespace kodo
                     {
                         uint32_t block_id = select_block(i);
 
-                        //std::cout << "Select Block " << block_id << std::endl;
-
-                        uint32_t symbol_id = select_symbol(partitioning.symbols(block_id));
-
-                        //std::cout << "Select Symbol " << symbol_id << std::endl;
+                        uint32_t symbol_id =
+                            select_symbol(partitioning.symbols(block_id));
 
                         annex_info annex(block_id, symbol_id);
 
-                        // Here we rely on the fact that the set will not insert
-                        // the element if it already exists
+                        // Here we rely on the fact that the set will
+                        // not insert the element if it already exists
                         annex_return ret = m_annex[i].insert(annex);
 
                         if(ret.second == true)
@@ -256,6 +264,7 @@ namespace kodo
         /// Stores the reverse annex
         std::vector< boost::dynamic_bitset<> > m_reverse_annex;
     };
+
 }
 
 #endif

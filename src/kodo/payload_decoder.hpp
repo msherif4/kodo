@@ -12,8 +12,8 @@ namespace kodo
 {
 
     /// @ingroup payload_codec_layers
-    /// @brief The payload decoder splits payload buffer into
-    ///        symbol_header and symbol.
+    /// @brief The payload decoder splits the payload buffer into
+    ///        symbol header and symbol.
     template<class SuperCoder>
     class payload_decoder : public SuperCoder
     {
@@ -61,6 +61,7 @@ namespace kodo
                     SuperCoder::header_size();
             }
     };
+
 }
 
 #endif

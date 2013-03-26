@@ -6,8 +6,6 @@
 #ifndef KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
 #define KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
 
-#include <fifi/arithmetics.hpp>
-
 #include "systematic_vandermonde_matrix_base.hpp"
 #include "vandermonde_matrix_base.hpp"
 #include "transpose_vandermonde_matrix.hpp"

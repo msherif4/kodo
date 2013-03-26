@@ -100,8 +100,8 @@ def build(bld):
         # bld.recurse('examples/set_seed_encoder')
         bld.recurse('examples/rank_callback')
 
-        # bld.recurse('benchmark/throughput')
-        # bld.recurse('benchmark/count_operations')
+        bld.recurse('benchmark/throughput')
+        bld.recurse('benchmark/count_operations')
 
     # Export own includes
     bld(includes = './src',

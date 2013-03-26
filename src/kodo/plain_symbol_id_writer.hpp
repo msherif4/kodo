@@ -13,37 +13,36 @@
 namespace kodo
 {
 
+    /// @ingroup symbol_id_layers
     /// @brief Writes the symbol id and initializes the coding
     ///        coefficients pointer. This implementation is the most
     ///        basic one where the symbol id simply is the coding
     ///        coefficients.
-    ///
-    /// @ingroup symbol_id_layers
     template<class SuperCoder>
-    class plain_symbol_id_writer_base : public SuperCoder
+    class base_plain_symbol_id_writer : public SuperCoder
     {
     public:
 
         /// @copydoc layer::write_id(uint8_t*, uint8_t**)
-        uint32_t write_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
+        uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
             {
                 assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+                assert(coefficients != 0);
 
                 SuperCoder::generate(symbol_id);
-                *symbol_coefficients = symbol_id;
+                *coefficients = symbol_id;
 
                 return SuperCoder::id_size();
             }
 
     };
 
-    /// @copydoc plain_symbol_id_writer_base
+    /// @copydoc base_plain_symbol_id_writer
     template<class SuperCoder>
     class plain_symbol_id_writer
-        : public plain_symbol_id_writer_base<
+        : public base_plain_symbol_id_writer<
                  plain_symbol_id<SuperCoder> >
-    {};
+    { };
 
 }
 

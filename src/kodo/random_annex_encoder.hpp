@@ -17,7 +17,11 @@
 
 namespace kodo
 {
-    /// A random annex encoder
+
+    /// @brief A random annex encoder.
+    ///
+    /// The Random Annex Code has been proposed in the paper "Collecting
+    /// Coded Coupons over Overlapping Generations" by Y.Li. et al.
     template
     <
         class EncoderType,
@@ -64,16 +68,18 @@ namespace kodo
                 assert(m_annex_size < m_factory.max_symbols());
                 m_base_size = m_factory.max_symbols() - m_annex_size;
 
-                m_partitioning = block_partitioning(m_base_size,
-                                                    m_factory.max_symbol_size(),
-                                                    m_object.m_size);
+                m_partitioning = block_partitioning(
+                    m_base_size,
+                    m_factory.max_symbol_size(),
+                    m_object.m_size);
 
                 // Build the annex
                 Base::build_annex(m_annex_size, m_partitioning);
 
                 //std::cout << "Build annex" << std::endl;
 
-                // First initialize all encoders with the data in the base blocks
+                // First initialize all encoders with the data in the
+                // base blocks
                 map_base();
 
                 // Now initialize the annex
@@ -105,7 +111,8 @@ namespace kodo
 
     protected:
 
-        void init_encoder(uint32_t offset, uint32_t size, pointer_type encoder) const
+        void init_encoder(uint32_t offset, uint32_t size,
+                          pointer_type encoder) const
             {
                 assert(offset < m_object.m_size);
                 assert(size > 0);
@@ -172,13 +179,15 @@ namespace kodo
 
                     typename std::set<annex_info>::iterator it;
 
-                    for(it = m_annex[i].begin(); it != m_annex[i].end(); ++it)
+                    for(it = m_annex[i].begin();
+                        it != m_annex[i].end(); ++it)
                     {
                         annex_info annex = *it;
 
                         assert(annex.m_coder_id < m_encoders.size());
 
-                        pointer_type from_encoder = m_encoders[annex.m_coder_id];
+                        pointer_type from_encoder =
+                            m_encoders[annex.m_coder_id];
 
                         assert(from_encoder);
 
@@ -188,9 +197,9 @@ namespace kodo
                         assert(annex.m_symbol_id <
                                from_encoder->symbols() - m_annex_size);
 
-                        sak::const_storage symbol =
-                            sak::storage(from_encoder->symbol(annex.m_symbol_id),
-                                          from_encoder->symbol_size());
+                        sak::const_storage symbol = sak::storage(
+                            from_encoder->symbol(annex.m_symbol_id),
+                            from_encoder->symbol_size());
 
                         assert(symbol.m_data != 0);
                         assert(symbol.m_size > 0);

@@ -13,6 +13,11 @@
 namespace kodo
 {
 
+    /// @brief A storage encoder creates a number of encoders over a
+    ///        sak::const_storage object.
+    ///
+    /// If the sak::const_storage object is too large for a single
+    /// encoder/decoder pair one may use the storage encoder.
     template
     <
         class EncoderType,
@@ -28,7 +33,7 @@ namespace kodo
     {
     public:
 
-        /// Constructs a new object encoder
+        /// Constructs a new storage encoder
         /// @param factory the encoder factory to use
         /// @param object the object to encode
         storage_encoder(typename EncoderType::factory &factory,
@@ -40,7 +45,7 @@ namespace kodo
                   BlockPartitioning
                   >
               (factory, storage_reader<EncoderType>(data))
-            {}
+            { }
     };
 }
 

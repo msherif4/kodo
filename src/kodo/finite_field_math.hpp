@@ -87,9 +87,11 @@ namespace kodo
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
 
-                // The maximum symbol length needed for the temp symbol. We
-                // expect this will be one value per symbol (for the encoding
-                // vector) or the number of symbols needed for the actual data.
+                // The maximum symbol length needed for the temp symbol.
+                // We expect this will be one value per symbol
+                // (for the encoding vector) or the number of symbols
+                // needed for the actual data.
+
                 uint32_t data_symbol_length =
                     fifi::elements_needed<field_type>(max_symbol_size);
 
@@ -114,7 +116,8 @@ namespace kodo
 
         /// @copydoc layer::multipy_add(value_type *, const value_type*,
         ///                             value_type, uint32_t)
-        void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
+        void multiply_add(value_type *symbol_dest,
+                          const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length)
             {
                 assert(m_field);

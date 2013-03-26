@@ -6,11 +6,14 @@
 #include <ctime>
 #include <stack>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #include <gauge/gauge.hpp>
 #include <gauge/console_printer.hpp>
 #include <gauge/python_printer.hpp>
 
-
+#include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 std::vector<uint32_t> setup_symbols()
@@ -93,11 +96,18 @@ namespace kodo
                                  const operations_counter &b)
     {
         operations_counter res;
+
         res.m_multiply = a.m_multiply - b.m_multiply;
+
         res.m_multiply_add = a.m_multiply_add - b.m_multiply_add;
+
         res.m_add = a.m_add - b.m_add;
-        res.m_multiply_subtract = a.m_multiply_subtract - b.m_multiply_subtract;
+
+        res.m_multiply_subtract =
+            a.m_multiply_subtract - b.m_multiply_subtract;
+
         res.m_subtract = a.m_subtract - b.m_subtract;
+
         res.m_invert = a.m_invert - b.m_invert;
         return res;
     }
@@ -166,11 +176,13 @@ namespace kodo
                 SuperCoder::multiply(symbol_dest, coefficient, symbol_length);
             }
 
-        void multiply_add(value_type *symbol_dest, const value_type *symbol_src,
+        void multiply_add(value_type *symbol_dest,
+                          const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length)
             {
                 ++m_counter.m_multiply_add;
-                SuperCoder::multiply_add(symbol_dest, symbol_src, coefficient,
+                SuperCoder::multiply_add(symbol_dest, symbol_src,
+                                        coefficient,
                                         symbol_length);
             }
 
@@ -181,8 +193,10 @@ namespace kodo
                 SuperCoder::add(symbol_dest, symbol_src, symbol_length);
             }
 
-        void multiply_subtract(value_type *symbol_dest, const value_type *symbol_src,
-                               value_type coefficient, uint32_t symbol_length)
+        void multiply_subtract(value_type *symbol_dest,
+                               const value_type *symbol_src,
+                               value_type coefficient,
+                               uint32_t symbol_length)
             {
                 ++m_counter.m_multiply_subtract;
                 SuperCoder::multiply_subtract(symbol_dest, symbol_src,
@@ -193,7 +207,8 @@ namespace kodo
                       uint32_t symbol_length)
             {
                 ++m_counter.m_subtract;
-                SuperCoder::subtract(symbol_dest, symbol_src, symbol_length);
+                SuperCoder::subtract(symbol_dest, symbol_src,
+                                     symbol_length);
             }
 
         value_type invert(value_type value)
@@ -214,42 +229,70 @@ namespace kodo
 
     };
 
-
     template<class Field>
     class full_rlnc_encoder_count
-        : public payload_encoder<
-                 systematic_encoder<
-                 zero_symbol_encoder<
-                 full_vector_encoder<
-                 linear_block_vector_generator<block_uniform_no_position,
-                 linear_block_encoder<
-                 finite_field_math_counter<
-                 finite_field_math<fifi::default_field_impl,
-                 partial_shallow_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<full_rlnc_encoder_count<Field>, Field>
-                     > > > > > > > > > > >
-    {};
+        : public
+          // Payload Codec API
+          payload_encoder<
+          // Codec Header API
+          systematic_encoder<
+          symbol_id_encoder<
+          // Symbol ID API
+          plain_symbol_id_writer<
+          // Coefficient Generator API
+          uniform_generator<
+          // Codec API
+          encode_symbol_tracker<
+          zero_symbol_encoder<
+          linear_block_encoder<
+          // Coefficient Storage API
+          coefficient_info<
+          // Symbol Storage API
+          partial_shallow_symbol_storage<
+          storage_bytes_used<
+          storage_block_info<
+          // Finite Field API
+          finite_field_math_counter<
+          finite_field_math<typename fifi::default_field<Field>::type,
+          finite_field_info<Field,
+          // Factory API
+          final_coder_factory_pool<
+          // Final type
+          full_rlnc_encoder_count<Field>
+              > > > > > > > > > > > > > > > >
+    { };
 
-    /// A RLNC decoder. The decoder decodes according to a
-    /// full encoding vector.
     template<class Field>
     class full_rlnc_decoder_count
-        : public payload_decoder<
-                 systematic_decoder<
-                 align_symbol_id_decoder<
-                 full_vector_decoder<
-                 linear_block_decoder<
-                 linear_block_vector_storage<
-                 finite_field_math_counter<
-                 finite_field_math<fifi::default_field_impl,
-                 deep_symbol_storage<
-                 has_bytes_used<
-                 has_block_info<
-                 final_coder_factory_pool<full_rlnc_decoder_count<Field>, Field>
-                     > > > > > > > > > > >
-    {};
+        : public
+          // Payload API
+          payload_decoder<
+          // Codec Header API
+          systematic_decoder<
+          symbol_id_decoder<
+          // Symbol ID API
+          plain_symbol_id_reader<
+          // Codec API
+          aligned_coefficients_decoder<
+          linear_block_decoder<
+          // Coefficient Storage API
+          coefficient_storage<
+          coefficient_info<
+          // Storage API
+          symbol_storage_tracker<
+          deep_symbol_storage<
+          storage_bytes_used<
+          storage_block_info<
+          // Finite Field API
+          finite_field_math_counter<
+          finite_field_math<typename fifi::default_field<Field>::type,
+          finite_field_info<Field,
+          // Factory API
+          final_coder_factory_pool<
+          // Final type
+          full_rlnc_decoder_count<Field>
+              > > > > > > > > > > > > > > > >
+    { };
 
 }
 

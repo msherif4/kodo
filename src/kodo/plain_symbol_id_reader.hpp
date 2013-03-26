@@ -13,15 +13,14 @@
 namespace kodo
 {
 
+    /// @ingroup symbol_id_layers
     /// @brief Reads the coding coefficients from the symbol id
     ///        buffer and initializes the symbol coefficients pointer.
     ///        This implementation is the most basic one
     ///        where the symbol id simply is the coding coefficients.
     ///
-    /// @ingroup symbol_id_layers
-    /// @ingroup factory_layers
     template<class SuperCoder>
-    class plain_symbol_id_reader_base : public SuperCoder
+    class base_plain_symbol_id_reader : public SuperCoder
     {
     public:
 
@@ -36,12 +35,12 @@ namespace kodo
 
     };
 
-    /// @copydoc plain_symbol_id_reader_base
+    /// @copydoc base_plain_symbol_id_reader
     template<class SuperCoder>
     class plain_symbol_id_reader
-        : public plain_symbol_id_reader_base<
+        : public base_plain_symbol_id_reader<
                  plain_symbol_id<SuperCoder> >
-    {};
+    { };
 
 }
 

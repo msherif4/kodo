@@ -13,7 +13,8 @@
 namespace kodo
 {
 
-    /// @ingroup user_layers
+    /// @todo Add this class to a group
+    ///
     /// @brief Computes a Vandermonde matrix to generate the coding
     ///        coefficients. The matrix code is
     template<class SuperCoder>
@@ -29,7 +30,6 @@ namespace kodo
 
         /// The generator matrix type
         typedef typename SuperCoder::generator_matrix generator_matrix;
-
 
     public:
 

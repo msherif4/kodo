@@ -15,7 +15,9 @@ namespace kodo
 {
 
     /// @ingroup storage_layers
-    /// The shallow storage _partial_ implementation.
+    /// @brief Same as a shallow storage but supports storage object
+    ///        with a total size less than the coding block size.
+    ///
     /// Essentially the same as the shallow storage however the
     /// shallow storage only allows buffers which are exactly the
     /// size of symbols * symbol_size. The partial buffer allows
@@ -29,7 +31,7 @@ namespace kodo
     {
     public:
 
-        /// Easy access to SuperCoder
+        /// The actual SuperCoder type
         typedef const_shallow_symbol_storage<SuperCoder> Super;
 
         /// Pointer produced by the factory
@@ -82,7 +84,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 Super::construct(max_symbols, max_symbol_size);
@@ -93,16 +95,18 @@ namespace kodo
                 m_partial_symbol->resize(max_symbol_size, 0);
             }
 
-        /// @copydoc layer::initialize()
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 Super::initialize(symbols, symbol_size);
-                std::fill(m_partial_symbol->begin(), m_partial_symbol->end(), 0);
+
+                std::fill(m_partial_symbol->begin(),
+                          m_partial_symbol->end(), 0);
             }
 
         /// Initializes the symbol storage layer so that the pointers to the
-        /// symbol data are valid. Calling this function will work even without
-        /// providing data enough to initialize all symbol pointers.
+        /// symbol data are valid. Calling this function will work even
+        /// without providing data enough to initialize all symbol pointers.
         /// @copydoc layer::set_symbols(const sak::const_storage &)
         void set_symbols(const sak::const_storage &symbol_storage)
             {
@@ -153,6 +157,7 @@ namespace kodo
         symbol_ptr m_partial_symbol;
 
     };
+
 }
 
 #endif
