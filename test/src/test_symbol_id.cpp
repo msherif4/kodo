@@ -21,6 +21,7 @@
 #include <kodo/storage_block_info.hpp>
 #include <kodo/encode_symbol_tracker.hpp>
 #include <kodo/finite_field_math.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/rs/reed_solomon_symbol_id_writer.hpp>
 #include <kodo/rs/reed_solomon_symbol_id_reader.hpp>
 #include <kodo/rs/vandermonde_matrix.hpp>
@@ -38,9 +39,10 @@ namespace kodo
                  uniform_generator<
                  coefficient_info<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 plain_uniform_stack<Field>, Field>
-                     > > > > >
+                 plain_uniform_stack<Field>
+                     > > > > > > >
     { };
 
     template<class Field>
@@ -52,9 +54,10 @@ namespace kodo
                  storage_block_info<
                  encode_symbol_tracker<
                  finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  final_coder_factory<
-                 rs_vandermond_nonsystematic_stack<Field>, Field>
-                     > > > > > > >
+                 rs_vandermond_nonsystematic_stack<Field>
+                     > > > > > > > > >
     { };
 
 

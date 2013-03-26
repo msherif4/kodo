@@ -11,7 +11,6 @@
 #include <kodo/random_annex_encoder.hpp>
 #include <kodo/random_annex_decoder.hpp>
 #include <kodo/rfc5052_partitioning_scheme.hpp>
-#include <kodo/generators/random_uniform.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 #include "basic_api_test_helper.hpp"
@@ -95,8 +94,8 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     uint32_t object_size = max_symbols * max_symbol_size * multiplier;
     object_size -= (rand() % object_size);
 
-    uint32_t annex_size = kodo::max_annex_size(max_symbols,
-                                               max_symbol_size, object_size);
+    uint32_t annex_size = kodo::max_annex_size(
+        max_symbols, max_symbol_size, object_size);
 
     if(annex_size > 0)
     {
@@ -110,11 +109,8 @@ void invoke_random_annex_partial(uint32_t max_symbols,
     typedef kodo::random_annex_decoder<Decoder, Partitioning>
         random_annex_decoder;
 
-    std::vector<char> data_in(object_size);
-    std::vector<char> data_out(object_size, '\0');
-
-    kodo::random_uniform<char> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(object_size);
+    std::vector<uint8_t> data_out(object_size, '\0');
 
     typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
     typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);

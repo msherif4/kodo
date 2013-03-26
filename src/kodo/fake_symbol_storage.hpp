@@ -15,8 +15,11 @@ namespace kodo
 {
 
     /// @ingroup storage_layers
-    /// Implements the Symbol Storage API but only with empty functions.
-    /// Useful in unit tests.
+    /// @brief Implements the Symbol Storage API but only with empty functions.
+    ///        Useful in unit tests.
+    ///
+    /// The fake class can be used to insert a dummy API to replace the
+    /// use of a real stack.
     template<class SuperCoder>
     class fake_symbol_storage : public SuperCoder
     {

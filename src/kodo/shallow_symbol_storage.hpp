@@ -82,34 +82,6 @@ namespace kodo
                 return reinterpret_cast<const value_type*>(symbol(index));
             }
 
-        /// To maximize code re-use the shallow_symbol_storage class
-        /// implements both the const and mutable APIs. To enable the
-        /// non-const layer::symbol() function we use a bit of SFINAE
-        /// magic to conditinally enable/disable this function depending
-        /// on whether we are instantiating the shallow_symbol_storage
-        /// as const or mutable.
-        ///
-        /// @copydoc layer::symbol(uint32_t)
-        template<bool Value = IsConst>
-        typename std::enable_if<!Value, uint8_t*>::type
-        symbol(uint32_t index)
-            {
-                assert(index < SuperCoder::symbols());
-
-                // Did you forget to set the symbol
-                assert(m_data[index]);
-
-                return m_data[index];
-            }
-
-        /// @copydoc layer::symbol_value(uint32_t)
-        template<bool Value = IsConst>
-        typename std::enable_if<!Value, value_type*>::type
-        symbol_value(uint32_t index)
-            {
-                return reinterpret_cast<value_type*>(symbol(index));
-            }
-
         /// @copydoc layer::swap_symbols()
         void swap_symbols(std::vector<data_ptr> &symbols)
             {
@@ -203,7 +175,7 @@ namespace kodo
     template<class SuperCoder>
     class const_shallow_symbol_storage : public
         shallow_symbol_storage<true, SuperCoder>
-    {};
+    { };
 
     /// Defines a coding layer for 'mutable' symbol storage. Allows the
     /// buffer data to be modified i.e. useful in decoders which need to
@@ -211,7 +183,43 @@ namespace kodo
     template<class SuperCoder>
     class mutable_shallow_symbol_storage : public
         shallow_symbol_storage<false, SuperCoder>
-    {};
+    {
+    public:
+
+        /// The actual SuperCoder type
+        typedef shallow_symbol_storage<false, SuperCoder> Super;
+
+        /// @copydoc layer::value_type
+        typedef typename Super::value_type value_type;
+
+    protected:
+
+        /// Access to the symbol pointers
+        using Super::m_data;
+
+    public:
+
+        /// @copydoc layer::symbol(uint32_t)
+        uint8_t* symbol(uint32_t index)
+            {
+                assert(index < Super::symbols());
+
+                // Did you forget to set the symbol
+                assert(m_data[index]);
+
+                return m_data[index];
+            }
+
+        /// @copydoc layer::symbol_value(uint32_t)
+        value_type* symbol_value(uint32_t index)
+            {
+                return reinterpret_cast<value_type*>(symbol(index));
+            }
+
+
+
+
+    };
 
 }
 

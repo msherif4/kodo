@@ -4,9 +4,6 @@
 // http://www.steinwurf.com/licensing
 
 /// @example encode_recode_decode_simple.cpp
-/// @copydoc encode_recode_decode_simple
-/// @page encode_recode_decode_simple encode_recode_decode_simple.cpp
-///       Example
 ///
 /// In Network Coding applications one of the key features is the ability
 /// of intermediate nodes in the network to recode packets as they traverse
@@ -80,7 +77,7 @@ int main()
         // Now produce a new recoded packet from the current
         // decoding buffer, and place it into the payload buffer
         decoder_1->recode( &payload[0] );
-        
+
         // Pass the recoded packet to decoder_2
         decoder_2->decode( &payload[0] );
     }

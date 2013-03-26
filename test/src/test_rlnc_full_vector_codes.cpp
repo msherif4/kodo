@@ -16,8 +16,47 @@
 #include <kodo/recoding_symbol_id.hpp>
 #include <kodo/proxy_layer.hpp>
 #include <kodo/payload_recoder.hpp>
+#include <kodo/linear_block_decoder_delayed.hpp>
 
 #include "basic_api_test_helper.hpp"
+
+namespace kodo
+{
+
+    /// Implementation of RLNC decode using the delayed
+    /// backwards substitution layer.
+    template<class Field>
+    class full_rlnc_decoder_delayed
+        : public // Payload API
+                 payload_recoder<recoding_stack,
+                 payload_decoder<
+                 // Codec Header API
+                 systematic_decoder<
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 plain_symbol_id_reader<
+                 // Codec API
+                 aligned_coefficients_decoder<
+                 linear_block_decoder_delayed<
+                 linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 symbol_storage_tracker<
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_decoder_delayed<Field>
+                     > > > > > > > > > > > > > > > > >
+    {};
+}
 
 template<template <class> class Encoder,
          template <class> class Decoder>
@@ -57,12 +96,11 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
-    /// @todo re-enable the delayed coders
     // The delayed decoders
-    // test_coders<
-    //     kodo::full_rlnc_encoder,
-    //     kodo::full_rlnc_decoder_delayed
-    //     >(symbols, symbol_size);
+    test_coders<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
 }
 
 /// Tests the basic API functionality this mean basic encoding
@@ -85,6 +123,7 @@ template
     >
 void test_initialize(uint32_t symbols, uint32_t symbol_size)
 {
+
     invoke_initialize
         <
             Encoder<fifi::binary>,
@@ -118,11 +157,10 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_encoder,
         kodo::full_rlnc_decoder>(symbols, symbol_size);
 
-    /// @todo re-enable the delayed coders
     // The delayed decoders
-    // test_initialize<
-    //     kodo::full_rlnc_encoder,
-    //     kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+    test_initialize<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
 
 }
 
@@ -131,8 +169,8 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
 /// can be safely reused.
 TEST(TestRlncFullVectorCodes, initialize_function)
 {
-    test_coders(32, 1600);
-    test_coders(1, 1600);
+    test_initialize(32, 1600);
+    test_initialize(1, 1600);
 
     srand(static_cast<uint32_t>(time(0)));
 
@@ -176,12 +214,12 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
-    /// @todo re-enable the delayed coders
+
     // The delayed decoders
-    // test_coders_systematic<
-    //     kodo::full_rlnc_encoder,
-    //     kodo::full_rlnc_decoder_delayed
-    //     >(symbols, symbol_size);
+    test_coders_systematic<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
 
 }
 
@@ -233,12 +271,11 @@ void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_decoder
         >(symbols, symbol_size);
 
-    /// @todo re-enable the delayed coders
     // The delayed decoders
-    // test_coders_raw<
-    //     kodo::full_rlnc_encoder,
-    //     kodo::full_rlnc_decoder_delayed
-    //     >(symbols, symbol_size);
+    test_coders_raw<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
 }
 
 /// Tests whether mixed un-coded and coded packets are correctly handled
@@ -279,10 +316,7 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 
@@ -373,13 +407,11 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
         kodo::full_rlnc_encoder,
         kodo::full_rlnc_decoder>(symbols, symbol_size);
 
-    /// @todo re-enable the delayed coders
-    // test_recoders<
-    //     kodo::full_rlnc_encoder,
-    //     kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+    test_recoders<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
 }
 
-/// @todo re-enable this test
 /// Tests that the recoding function works, this is done by using one
 /// encoder
 /// and two decoders:
@@ -404,31 +436,4 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
 }
 
 
-// class test
-//     : public // Payload API
-//              kodo::payload_recoder<recoding_proxy,
-//              kodo::payload_decoder<
-//              // Codec Header API
-//              kodo::systematic_decoder<
-//              kodo::symbol_id_decoder<
-//              // Symbol ID API
-//              kodo::plain_symbol_id_reader<
-//              // Codec API
-//              kodo::align_coefficient_decoder<
-//              kodo::linear_block_decoder<
-//              // Coefficient Storage API
-//              kodo::coefficient_storage<
-//              kodo::coefficient_info<
-//              // Finite Field Math API
-//              kodo::finite_field_math<fifi::default_field_impl,
-//              // Symbol Storage API
-//              kodo::symbol_storage_tracker<
-//              kodo::mutable_shallow_symbol_storage<
-//              kodo::storage_bytes_used<
-//              kodo::storage_block_info<
-//              // Factory API
-//              kodo::final_coder_factory<
-//              // Final type
-//              test<Field>, Field> > > > > > > > > > > > > > >
-// {};
 

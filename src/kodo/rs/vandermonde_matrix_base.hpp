@@ -68,8 +68,6 @@ namespace kodo
         // A Reed-Solomon code cannot support more symbols
         // than 2^m - 1 where m is the size of the finite
         // field
-
-        std::cout << "MAX " << max_symbols << std::endl;
         assert(max_symbols < field_type::order);
     }
 
@@ -86,11 +84,7 @@ namespace kodo
         uint32_t max_symbols = field_type::order - 1;
 
         // Create the Vandermonde matrix as suggested in
-        // RFC 5510. Excepts we transpose it, if used as
-        // suggested the k coefficients needed when producing
-        // a new encoded symbol would be located disjoint in
-        // memory. Memory access will be very inefficient if
-        // coefficients are not in major row order.
+        // RFC 5510.
         //
         // a is the primitive element (alpha)
         //

@@ -232,8 +232,7 @@ public:
     /// @param symbol_data The destination buffer for the encoded symbol
     /// @param coefficients At this point the symbol id should be
     ///        initialized with the desired coding coefficients.
-    void encode_symbol(uint8_t *symbol_data,
-                       const uint8_t *coefficients);
+    void encode_symbol(uint8_t *symbol_data, const uint8_t *coefficients);
 
     /// @ingroup codec_api
     /// The encode function for systematic packets i.e. specific uncoded
@@ -250,8 +249,7 @@ public:
     /// @param symbol_data The encoded symbol
     /// @param coefficients The coding coefficients used to
     ///        create the encoded symbol
-    void decode_symbol(uint8_t *symbol_data,
-                       uint8_t *coefficients);
+    void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients);
 
     /// @ingroup codec_api
     /// The decode function for systematic packets i.e. specific uncoded
@@ -259,7 +257,7 @@ public:
     /// @param symbol_data The uncoded source symbol.
     /// @param symbol_index The index of this uncoded symbol in the data
     ///                     block.
-    void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
+    void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index);
 
     /// @ingroup codec_api
     /// Check whether decoding is complete.
@@ -318,10 +316,10 @@ public:
     void set_coefficients(uint32_t index, const sak::const_storage &storage);
 
     //------------------------------------------------------------------
-    // MATH API
+    // FINITE FIELD API
     //------------------------------------------------------------------
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the symbol with the coefficient
     ///     symbol_dest = symbol_dest * coefficient
     ///
@@ -333,7 +331,7 @@ public:
                   value_type coefficient,
                   uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the source symbol with the coefficient and adds it to the
     /// destination symbol i.e.:
     ///     symbol_dest = symbol_dest + symbol_src * coefficient
@@ -347,7 +345,7 @@ public:
                       value_type coefficient,
                       uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Adds the source symbol adds to the destination symbol i.e.:
     ///     symbol_dest = symbol_dest + symbol_src
     ///
@@ -359,7 +357,7 @@ public:
              const value_type *symbol_src,
              uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Multiplies the source symbol with the coefficient and subtracts
     /// it from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - (symbol_src * coefficient)
@@ -373,7 +371,7 @@ public:
                            value_type coefficient,
                            uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Subtracts the source symbol from the destination symbol i.e.:
     ///     symbol_dest = symbol_dest - symbol_src
     ///
@@ -385,7 +383,7 @@ public:
                   const value_type *symbol_src,
                   uint32_t symbol_length);
 
-    /// @ingroup math_api
+    /// @ingroup finite_field_api
     /// Inverts the field element
     /// @param value the finite field value to be inverted.
     /// @return the inverse

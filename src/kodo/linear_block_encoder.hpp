@@ -11,8 +11,11 @@
 #include <fifi/is_binary.hpp>
 #include <fifi/fifi_utils.hpp>
 
+#include <sak/storage.hpp>
+
 namespace kodo
 {
+
     /// @ingroup codec_layers
     /// @brief A linear block encoder.
     ///
@@ -24,17 +27,29 @@ namespace kodo
     {
     public:
 
-        /// The field type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// The value type
-        typedef typename field_type::value_type value_type;
+        /// @copydoc layer::value_type
+        typedef typename SuperCoder::value_type value_type;
 
     public:
 
-        /// @copydoc layer::encode_symbol()
-        void encode_symbol(uint8_t *symbol_data,
-                           const uint8_t *coefficients)
+        /// @copydoc layer::encode_symbol(uint8_t*,uint32_t)
+        void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                // Copy the symbol
+                assert(symbol_index < SuperCoder::symbols());
+
+                sak::mutable_storage dest =
+                    sak::storage(symbol_data, SuperCoder::symbol_size());
+
+                SuperCoder::copy_symbol(symbol_index, dest);
+            }
+
+
+        /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
+        void encode_symbol(uint8_t *symbol_data, const uint8_t *coefficients)
             {
                 assert(symbol_data != 0);
                 assert(coefficients != 0);
@@ -54,7 +69,8 @@ namespace kodo
                         continue;
                     }
 
-                    const value_type *symbol_i = SuperCoder::symbol_value( i );
+                    const value_type *symbol_i =
+                        SuperCoder::symbol_value( i );
 
                     // Did you forget to set the data on the encoder?
                     assert(symbol_i != 0);
@@ -73,6 +89,7 @@ namespace kodo
                 }
             }
     };
+
 }
 
 #endif

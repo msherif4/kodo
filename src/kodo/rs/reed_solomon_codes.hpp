@@ -12,6 +12,7 @@
 
 #include "../final_coder_factory_pool.hpp"
 #include "../finite_field_math.hpp"
+#include "../finite_field_info.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../systematic_encoder.hpp"
 #include "../systematic_decoder.hpp"
@@ -20,7 +21,6 @@
 #include "../deep_symbol_storage.hpp"
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
-#include "../align_coefficient_decoder.hpp"
 #include "../symbol_id_encoder.hpp"
 #include "../symbol_id_decoder.hpp"
 #include "../coefficient_storage.hpp"
@@ -60,17 +60,18 @@ namespace kodo
                  linear_block_encoder<
                  // Coefficient Storage API
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Symbol Storage API
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 rs_encoder<Field>, Field>
-                     > > > > > > > > > > > > >
+                 rs_encoder<Field>
+                     > > > > > > > > > > > > > > >
     { };
 
     /// Implementation of a complete RS decoder this configuration
@@ -92,18 +93,19 @@ namespace kodo
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
-                 // Finite Field Math API
-                 finite_field_math<typename fifi::default_field<Field>::type,
                  // Storage API
                  symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 rs_decoder<Field>, Field>
-                     > > > > > > > > > > > > >
+                 rs_decoder<Field>
+                     > > > > > > > > > > > > > > >
     {};
 
 }

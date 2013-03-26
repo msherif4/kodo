@@ -19,7 +19,6 @@
 namespace kodo
 {
 
-    /// @todo use encode_symbol_tracker
     /// @ingroup codec_header_layers
     /// @brief Systematic encoding layer.
     ///
@@ -73,8 +72,7 @@ namespace kodo
 
         /// Constructor
         base_systematic_encoder()
-            : m_count(0),
-              m_systematic(SystematicOn)
+            : m_systematic(SystematicOn)
             { }
 
         /// @copydoc layer::initialize()
@@ -83,7 +81,6 @@ namespace kodo
                 SuperCoder::initialize(symbols, symbol_size);
 
                 /// Reset the state
-                m_count = 0;
                 m_systematic = SystematicOn;
             }
 
@@ -93,15 +90,18 @@ namespace kodo
                 assert(symbol_data != 0);
                 assert(symbol_header != 0);
 
-                if(m_systematic && ( m_count < SuperCoder::symbols() ))
+                // The systematic phase takes places when we still haven't
+                // generated more symbols than what is contained in the block
+                bool in_systematic_phase =
+                    SuperCoder::encode_symbol_count() < SuperCoder::symbols();
+
+                if(m_systematic && in_systematic_phase)
                 {
-                    return encode_systematic(symbol_data,
-                                             symbol_header);
+                    return encode_systematic(symbol_data, symbol_header);
                 }
                 else
                 {
-                    return encode_non_systematic(symbol_data,
-                                                 symbol_header);
+                    return encode_non_systematic(symbol_data, symbol_header);
                 }
             }
 
@@ -130,66 +130,52 @@ namespace kodo
                     sizeof(flag_type) + sizeof(counter_type);
             }
 
-        /// @return the number of systematic coded packets
-        uint32_t systematic_count() const
-            {
-                return m_count;
-            }
-
     protected:
 
         /// Encodes a systematic packet
-        /// @copydoc linear_block_encode::encode_with_vector()
+        /// @copydoc layer::encode(uint8_t*,uint8_t*)
         uint32_t encode_systematic(uint8_t *symbol_data,
-                                   uint8_t *symbol_id)
+                                   uint8_t *symbol_header)
             {
                 assert(symbol_data != 0);
-                assert(symbol_id != 0);
+                assert(symbol_header != 0);
+
+                uint32_t count = SuperCoder::encode_symbol_count();
 
                 /// Flag systematic packet
                 sak::big_endian::put<flag_type>(
-                    systematic_base_coder::systematic_flag, symbol_id);
+                    systematic_base_coder::systematic_flag, symbol_header);
 
                 /// Set the symbol id
                 sak::big_endian::put<counter_type>(
-                    m_count, symbol_id + sizeof(flag_type));
+                    count, symbol_header + sizeof(flag_type));
 
-                /// Copy the symbol
-                assert(m_count < SuperCoder::symbols());
-
-                sak::mutable_storage dest =
-                    sak::storage(symbol_data, SuperCoder::symbol_size());
-
-                SuperCoder::copy_symbol(m_count, dest);
-
-                ++m_count;
+                SuperCoder::encode_symbol(symbol_data, count);
 
                 return sizeof(flag_type) + sizeof(counter_type);
             }
 
         /// Encodes a non-systematic packets
-        /// @copydoc linear_block_encode::encode_with_vector()
+        /// @copydoc layer::encode(uint8_t*,uint8_t*)
         uint32_t encode_non_systematic(uint8_t *symbol_data,
-                                       uint8_t *symbol_id)
+                                       uint8_t *symbol_header)
             {
+                assert(symbol_data != 0);
+                assert(symbol_header != 0);
+
                 /// Flag non_systematic packet
                 sak::big_endian::put<flag_type>(
-                    systematic_base_coder::non_systematic_flag, symbol_id);
+                    systematic_base_coder::non_systematic_flag, symbol_header);
 
                 uint32_t bytes_consumed = SuperCoder::encode(
-                    symbol_data, symbol_id + sizeof(flag_type));
+                    symbol_data, symbol_header + sizeof(flag_type));
 
                 return bytes_consumed + sizeof(flag_type);
             }
 
     protected:
 
-        /// Keeps track of the number of symbol sent allows us to switch to
-        /// non-systematic encoding after sending all source symbols
-        /// systematically
-        counter_type m_count;
-
-        /// Allows the systematic mode to be disabled at runtime
+        /// Allows the systematic mode to be disabled at run-time
         bool m_systematic;
 
     };

@@ -47,7 +47,7 @@ namespace kodo
               m_maximum_pivot(0)
             { }
 
-        /// @copydoc layer::construct()
+        /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)
             {
                 SuperCoder::construct(max_symbols, max_symbol_size);
@@ -84,8 +84,8 @@ namespace kodo
                 decode_coefficients(symbol, coefficients);
             }
 
-        /// @copydoc layer::decode_symbol(const uint8_t*, uint32_t)
-        void decode_symbol(const uint8_t *symbol_data,
+        /// @copydoc layer::decode_symbol(uint8_t*, uint32_t)
+        void decode_symbol(uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
@@ -97,7 +97,7 @@ namespace kodo
                 }
 
                 const value_type *symbol
-                    = reinterpret_cast<const value_type*>( symbol_data );
+                    = reinterpret_cast<value_type*>( symbol_data );
 
                 if(m_coded[symbol_index])
                 {
@@ -141,18 +141,9 @@ namespace kodo
                 return m_rank;
             }
 
-        /// @param index the symbol index to check
-        /// @return true if the symbol with the specified id
-        ///         has already been received in the decoder
-        // bool symbol_exists(uint32_t index) const
-        //     {
-        //         assert(index < SuperCoder::symbols());
-        //         return m_coded[ index ] || m_uncoded[ index ];
-        //     }
-
     protected:
 
-        /// Decodes a symbol based on the vector
+        /// Decodes a symbol based on the coefficients
         /// @param symbol_data buffer containing the encoding symbol
         /// @param symbol_id buffer containing the encoding vector
         void decode_coefficients(value_type *symbol_data,
@@ -267,8 +258,6 @@ namespace kodo
 
                  value_type coefficient =
                      fifi::get_value<field_type>(symbol_id, pivot_index);
-                // value_type coefficient =
-                //     vector_type::coefficient( pivot_index, symbol_id );
 
                 assert(coefficient > 0);
 
@@ -299,12 +288,8 @@ namespace kodo
                 for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
 
-                    // value_type current_coefficient
-                    //     = vector_type::coefficient( i, symbol_id );
-
                     value_type current_coefficient
                         = fifi::get_value<field_type>(symbol_id, i);
-
 
                     if( current_coefficient )
                     {
@@ -377,8 +362,6 @@ namespace kodo
                 for(uint32_t i = pivot_index + 1; i <= m_maximum_pivot; ++i)
                 {
                     // Do we have a non-zero value here?
-                    // value_type value =
-                    //     vector_type::coefficient(i, symbol_id);
 
                     value_type value =
                         fifi::get_value<field_type>(symbol_id, i);
@@ -564,6 +547,7 @@ namespace kodo
         /// Tracks whether a symbol is partially decoded
         std::vector<bool> m_coded;
     };
+
 }
 
 #endif

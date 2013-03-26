@@ -8,6 +8,8 @@
 
 #include <cstdint>
 
+#include <boost/shared_ptr.hpp>
+
 #include <sak/aligned_allocator.hpp>
 #include <sak/is_aligned.hpp>
 

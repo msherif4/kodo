@@ -42,13 +42,13 @@ def options(opt):
         resolve.ResolveGitMajorVersion(
             name = 'sak',
             git_repository = 'git://github.com/steinwurf/sak.git',
-            major_version = 8))
+            major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
             git_repository = 'git://github.com/steinwurf/fifi.git',
-            major_version = 7))
+            major_version = 8))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
@@ -98,6 +98,7 @@ def build(bld):
         # bld.recurse('examples/encode_decode_file')
         # bld.recurse('examples/encode_recode_decode_simple')
         # bld.recurse('examples/set_seed_encoder')
+        bld.recurse('examples/rank_callback')
         bld.recurse('examples/decode_simple')
 
         # bld.recurse('benchmark/throughput')

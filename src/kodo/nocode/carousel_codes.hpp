@@ -13,8 +13,7 @@
 #include "../linear_block_decoder.hpp"
 #include "../deep_symbol_storage.hpp"
 #include "../final_coder_factory_pool.hpp"
-#include "../finite_field_math.hpp"
-#include "../align_coefficient_decoder.hpp"
+#include "../finite_field_info.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
 #include "../symbol_storage_tracker.hpp"
@@ -45,11 +44,14 @@ namespace kodo
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_info<fifi::binary,
                  // Factory API
                  final_coder_factory_pool<
-                 nocode_carousel_encoder, fifi::binary>
-                     > > > > > >
-    {};
+                 // Final type
+                 nocode_carousel_encoder
+                     > > > > > > > >
+    { };
 
     /// For testing purposes this decoder will takes symbols produced by the
     /// carousel encoder and put them in the right order until all symbols
@@ -65,11 +67,14 @@ namespace kodo
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
+                 // Finite Field API
+                 finite_field_info<fifi::binary,
                  // Factory API
                  final_coder_factory_pool<
-                 nocode_carousel_decoder, fifi::binary>
-                     > > > > > >
-    {};
+                 // Final type
+                 nocode_carousel_decoder
+                     > > > > > > > >
+    { };
 
 }
 

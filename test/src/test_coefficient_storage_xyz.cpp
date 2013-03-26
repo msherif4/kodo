@@ -13,6 +13,7 @@
 
 #include <kodo/final_coder_factory.hpp>
 #include <kodo/final_coder_factory_pool.hpp>
+#include <kodo/finite_field_info.hpp>
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
@@ -34,20 +35,23 @@ namespace kodo
         : public coefficient_storage<
                  coefficient_info<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 coefficient_storage_stack<Field>, Field>
-                     > > >
+                 coefficient_storage_stack<Field>
+                     > > > > >
     {};
 
     // Coefficient Storage
     template<class Field>
     class coefficient_storage_stack_pool
+
         : public coefficient_storage<
                  coefficient_info<
                  storage_block_info<
+                 finite_field_info<Field,
                  final_coder_factory<
-                 coefficient_storage_stack_pool<Field>, Field>
-                     > > >
+                 coefficient_storage_stack_pool<Field>
+                     > > > > >
     {};
 
 }

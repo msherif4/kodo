@@ -12,15 +12,22 @@
 #include <fifi/prime2325_binary_search.hpp>
 #include <fifi/prime2325_apply_prefix.hpp>
 
-#include <kodo/generators/random_uniform.hpp>
 #include <kodo/systematic_encoder.hpp>
+
+/// @param max_value The maximum value to return
+/// @return a random number between 1 and max_value
+inline uint32_t rand_nonzero(uint32_t max_value = 256)
+{
+    assert(max_value > 0);
+    return (rand() % max_value) + 1;
+}
 
 /// @param max_symbols The maximum symbols an encoder or decoder should
 ///        support.
 /// @return a random number up to max_symbols to use in the tests
 inline uint32_t rand_symbols(uint32_t max_symbols = 256)
 {
-    return (rand() % max_symbols) + 1;
+    return rand_nonzero(max_symbols);
 }
 
 /// Returns a random symbol size. The symbol size has to be chosen as a
@@ -125,22 +132,14 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
 
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
+    std::vector<uint8_t> data_in_copy(data_in);
 
-    // Make sure we have one extreme value (testing optimal prime)
-    // Without the prefix mapping decoding will fail (just try :))
-    if(data_in.size() > 4)
-    {
-        data_in[0] = 0xff;
-        data_in[1] = 0xff;
-        data_in[2] = 0xff;
-        data_in[3] = 0xff;
-    }
+    sak::mutable_storage storage_in = sak::storage(data_in);
+    sak::mutable_storage storage_in_copy = sak::storage(data_in_copy);
 
-    std::vector<uint8_t> encode_data(data_in);
+    EXPECT_TRUE(sak::equal(storage_in, storage_in_copy));
 
     // Only used for prime fields, lets reconsider how we implement
     // this less intrusive
@@ -154,12 +153,13 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
         uint32_t block_length = encoder->block_size() / 4;
 
         fifi::prime2325_binary_search search(block_length);
-        prefix = search.find_prefix(sak::storage(encode_data));
+        prefix = search.find_prefix(storage_in_copy);
 
-        fifi::apply_prefix(sak::storage(encode_data), prefix);
+        // Apply the negated prefix
+        fifi::apply_prefix(storage_in_copy, ~prefix);
     }
 
-    encoder->set_symbols(sak::storage(encode_data));
+    encoder->set_symbols(storage_in_copy);
 
     // Set the encoder non-systematic
     if(kodo::is_systematic_encoder(encoder))
@@ -178,8 +178,8 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 
     if(fifi::is_prime2325<typename Encoder::field_type>::value)
     {
-        // Now we have to apply the prefix to the decoded data
-        fifi::apply_prefix(sak::storage(data_out), prefix);
+        // Now we have to apply the negated prefix to the decoded data
+        fifi::apply_prefix(sak::storage(data_out), ~prefix);
     }
 
     EXPECT_TRUE(std::equal(data_out.begin(),
@@ -201,10 +201,7 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size());
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 
@@ -265,12 +262,10 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    typename Encoder::pointer encoder = encoder_factory.build(symbols,
-                                                              symbol_size);
+    auto encoder = encoder_factory.build(symbols,symbol_size);
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    typename Decoder::pointer decoder = decoder_factory.build(symbols,
-                                                              symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
 
     for(uint32_t i = 0; i < 10; ++i)
@@ -282,13 +277,9 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
         // Ensure that the we may re-use the encoder also with partial
         // data.
-        uint32_t reduce_block = rand() % (encoder->block_size() - 1);
-        uint32_t block_size = encoder->block_size() - reduce_block;
+        uint32_t block_size = rand_nonzero(encoder->block_size());
 
-        std::vector<uint8_t> data_in(block_size, 'a');
-
-        kodo::random_uniform<uint8_t> fill_data;
-        fill_data.generate(&data_in[0], data_in.size());
+        std::vector<uint8_t> data_in = random_vector(block_size);
 
         encoder->set_symbols(sak::storage(data_in));
 
@@ -307,9 +298,10 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         std::vector<uint8_t> data_out(block_size, '\0');
         decoder->copy_symbols(sak::storage(data_out));
 
-        EXPECT_TRUE(std::equal(data_out.begin(),
-                               data_out.end(),
-                               data_in.begin()));
+        bool data_equal = sak::equal(sak::storage(data_out),
+                                     sak::storage(data_in));
+
+        ASSERT_TRUE(data_equal);
 
     }
 
@@ -332,10 +324,7 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in(encoder->block_size(), 'a');
-
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
 
     encoder->set_symbols(sak::storage(data_in));
 

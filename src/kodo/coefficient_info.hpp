@@ -16,7 +16,6 @@ namespace kodo
     /// @brief Provides info about the coding coefficients
     ///        used during encoding and decoding.
     ///
-    /// Implementation of the Codec API (@ref codec_api)
     template<class SuperCoder>
     class coefficient_info : public SuperCoder
     {
@@ -57,7 +56,7 @@ namespace kodo
               m_coefficients_size(0)
             { }
 
-        /// @copydoc final_coder_factory::initialize()
+        /// @copydoc layer::initialize(uint32_t, uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
             {
                 SuperCoder::initialize(symbols, symbol_size);
@@ -128,6 +127,7 @@ namespace kodo
         /// The size of coefficients in bytes
         uint32_t m_coefficients_size;
     };
+
 }
 
 #endif

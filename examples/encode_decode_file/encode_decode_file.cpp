@@ -8,9 +8,6 @@
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 /// @example encode_decode_file.cpp
-/// @copydoc encode_decode_file
-/// @page encode_decode_file encode_decode_file.cpp
-///       Example
 ///
 /// Often we want to encode / decode data that exceed a single encoding/decoding
 /// block. In this case we need to "chop" up the data into manageable chunks
@@ -105,7 +102,7 @@ int main()
             // Pass that packet to the decoder
             decoder->decode( &payload[0] );
         }
-        
+
         std::vector<uint8_t> data_out(decoder->block_size());
         decoder->copy_symbols(sak::storage(data_out));
         data_out.resize(decoder->bytes_used());
