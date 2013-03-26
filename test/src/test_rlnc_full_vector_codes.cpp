@@ -124,18 +124,11 @@ template
 void test_initialize(uint32_t symbols, uint32_t symbol_size)
 {
 
-    std::cout << "Invoke binay symbols=" << symbols
-              << " symbol_size=" << symbol_size << std::endl;
-
     invoke_initialize
         <
             Encoder<fifi::binary>,
             Decoder<fifi::binary>
             >(symbols, symbol_size);
-
-        std::cout << "Invoke binay8 symbols=" << symbols
-              << " symbol_size=" << symbol_size << std::endl;
-
 
     invoke_initialize
         <
@@ -143,17 +136,11 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
             Decoder<fifi::binary8>
             >(symbols, symbol_size);
 
-        std::cout << "Invoke binay16 symbols=" << symbols
-              << " symbol_size=" << symbol_size << std::endl;
-
     invoke_initialize
         <
             Encoder<fifi::binary16>,
             Decoder<fifi::binary16>
             >(symbols, symbol_size);
-
-    std::cout << "Invoke prime symbols=" << symbols
-              << " symbol_size=" << symbol_size << std::endl;
 
     invoke_initialize
         <
@@ -182,8 +169,8 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
 /// can be safely reused.
 TEST(TestRlncFullVectorCodes, initialize_function)
 {
-    test_coders(32, 1600);
-    test_coders(1, 1600);
+    test_initialize(32, 1600);
+    test_initialize(1, 1600);
 
     srand(static_cast<uint32_t>(time(0)));
 

@@ -132,19 +132,14 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
     EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
 
     std::vector<uint8_t> payload(encoder->payload_size());
+
     std::vector<uint8_t> data_in = random_vector(encoder->block_size());
+    std::vector<uint8_t> data_in_copy(data_in);
 
-    // Make sure we have one extreme value (testing optimal prime)
-    // Without the prefix mapping decoding will fail (just try :))
-    if(data_in.size() > 4)
-    {
-        data_in[0] = 0xff;
-        data_in[1] = 0xff;
-        data_in[2] = 0xff;
-        data_in[3] = 0xff;
-    }
+    sak::mutable_storage storage_in = sak::storage(data_in);
+    sak::mutable_storage storage_in_copy = sak::storage(data_in_copy);
 
-    std::vector<uint8_t> encode_data(data_in);
+    EXPECT_TRUE(sak::equal(storage_in, storage_in_copy));
 
     // Only used for prime fields, lets reconsider how we implement
     // this less intrusive
@@ -158,12 +153,13 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
         uint32_t block_length = encoder->block_size() / 4;
 
         fifi::prime2325_binary_search search(block_length);
-        prefix = search.find_prefix(sak::storage(encode_data));
+        prefix = search.find_prefix(storage_in_copy);
 
-        fifi::apply_prefix(sak::storage(encode_data), prefix);
+        // Apply the negated prefix
+        fifi::apply_prefix(storage_in_copy, ~prefix);
     }
 
-    encoder->set_symbols(sak::storage(encode_data));
+    encoder->set_symbols(storage_in_copy);
 
     // Set the encoder non-systematic
     if(kodo::is_systematic_encoder(encoder))
@@ -182,8 +178,8 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 
     if(fifi::is_prime2325<typename Encoder::field_type>::value)
     {
-        // Now we have to apply the prefix to the decoded data
-        fifi::apply_prefix(sak::storage(data_out), prefix);
+        // Now we have to apply the negated prefix to the decoded data
+        fifi::apply_prefix(sak::storage(data_out), ~prefix);
     }
 
     EXPECT_TRUE(std::equal(data_out.begin(),
@@ -281,8 +277,7 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
         // Ensure that the we may re-use the encoder also with partial
         // data.
-        uint32_t reduce_block = rand() % (encoder->block_size() - 1);
-        uint32_t block_size = encoder->block_size() - reduce_block;
+        uint32_t block_size = rand_nonzero(encoder->block_size());
 
         std::vector<uint8_t> data_in = random_vector(block_size);
 
@@ -303,20 +298,10 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
         std::vector<uint8_t> data_out(block_size, '\0');
         decoder->copy_symbols(sak::storage(data_out));
 
-        if(!std::equal(data_out.begin(),
-                          data_out.end(),
-                          data_in.begin()))
-        {
-            std::cout << "FALILED" << std::endl;
-        }
-        else
-        {
-            std::cout << "SUCCESS" << std::endl;
-        }
+        bool data_equal = sak::equal(sak::storage(data_out),
+                                     sak::storage(data_in));
 
-        EXPECT_TRUE(std::equal(data_out.begin(),
-                               data_out.end(),
-                               data_in.begin()));
+        ASSERT_TRUE(data_equal);
 
     }
 
