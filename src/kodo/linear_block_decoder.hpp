@@ -84,8 +84,8 @@ namespace kodo
                 decode_coefficients(symbol, coefficients);
             }
 
-        /// @copydoc layer::decode_symbol(const uint8_t*, uint32_t)
-        void decode_symbol(const uint8_t *symbol_data,
+        /// @copydoc layer::decode_symbol(uint8_t*, uint32_t)
+        void decode_symbol(uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
                 assert(symbol_index < SuperCoder::symbols());
@@ -97,7 +97,7 @@ namespace kodo
                 }
 
                 const value_type *symbol
-                    = reinterpret_cast<const value_type*>( symbol_data );
+                    = reinterpret_cast<value_type*>( symbol_data );
 
                 if(m_coded[symbol_index])
                 {

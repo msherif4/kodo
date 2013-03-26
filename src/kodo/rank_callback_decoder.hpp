@@ -13,11 +13,11 @@
 namespace kodo
 {
     /// @ingroup codec_layers
-    /// 
+    ///
     /// @brief Allows a callback function to be invoked after rank changed
-    /// 
+    ///
     /// This layer allows a callback function to be assigned to each decoder.
-    /// After the rank has changed in a decoder, it will automatically invoke 
+    /// After the rank has changed in a decoder, it will automatically invoke
     /// the assigned callback function.
     template<class SuperCoder>
     class rank_callback_decoder : public SuperCoder
@@ -57,14 +57,14 @@ namespace kodo
 
                 // Decode symbol
                 SuperCoder::decode_symbol(symbol_data, coefficients);
-               
+
                 // Invoke callback function if rank changed
-                check_current_rank(rank); 
+                check_current_rank(rank);
             }
 
         /// Invoke rank changed callback
         /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
-        void decode_symbol(const uint8_t *symbol_data,
+        void decode_symbol(uint8_t *symbol_data,
                            uint32_t symbol_index)
             {
                 // Rank before decoding
@@ -72,7 +72,7 @@ namespace kodo
 
                 // Decode symbol
                 SuperCoder::decode_symbol(symbol_data, symbol_index);
-               
+
                 // Invoke callback function if rank changed
                 check_current_rank(rank);
             }
@@ -110,7 +110,7 @@ namespace kodo
             }
 
     private:
-            
+
         /// Rank changed callback function
         rank_changed_callback m_callback_func;
 

@@ -213,7 +213,7 @@ namespace kodo
                     return;
 
                 // Get the symbol data
-                const uint8_t *symbol_data =
+                uint8_t *symbol_data =
                     m_decoders[from_decoder]->symbol(from_symbol);
 
                 // Pass it to the other decoder

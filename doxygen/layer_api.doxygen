@@ -257,7 +257,7 @@ public:
     /// @param symbol_data The uncoded source symbol.
     /// @param symbol_index The index of this uncoded symbol in the data
     ///                     block.
-    void decode_symbol(const uint8_t *symbol_data, uint32_t symbol_index);
+    void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index);
 
     /// @ingroup codec_api
     /// Check whether decoding is complete.
