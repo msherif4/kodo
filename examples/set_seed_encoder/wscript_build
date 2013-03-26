@@ -1,9 +1,0 @@
-#! /usr/bin/env python
-# encoding: utf-8
-
-bld.program(features = 'cxx',
-            source   = 'set_seed_encoder.cpp',
-            target   = 'set_seed_encoder',
-            use      = ['kodo_includes', 'boost_includes',
-                        'fifi_includes', 'sak_includes'])
-

@@ -94,10 +94,9 @@ def build(bld):
         # in a recurse call
 
         bld.recurse('test')
-        # bld.recurse('examples/encode_decode_simple')
-        # bld.recurse('examples/encode_decode_file')
-        # bld.recurse('examples/encode_recode_decode_simple')
-        # bld.recurse('examples/set_seed_encoder')
+        bld.recurse('examples/encode_decode_simple')
+        bld.recurse('examples/encode_decode_file')
+        bld.recurse('examples/encode_recode_decode_simple')
         bld.recurse('examples/rank_callback')
 
         bld.recurse('benchmark/throughput')

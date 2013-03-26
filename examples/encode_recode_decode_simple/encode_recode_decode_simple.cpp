@@ -5,27 +5,28 @@
 
 /// @example encode_recode_decode_simple.cpp
 ///
-/// In Network Coding applications one of the key features is the ability
-/// of intermediate nodes in the network to recode packets as they traverse
-/// them. In Kodo it is possible to recode packets in decoders which provide the
-/// recode() function. One layer implementing this functionality is the
-/// full_vector_recoder.hpp.
+/// In Network Coding applications one of the key features is the
+/// ability of intermediate nodes in the network to recode packets
+/// as they traverse them. In Kodo it is possible to recode packets
+/// in decoders which provide the recode() function.
 ///
-/// This example shows how to use one encoder and two decoders to simulate a
-/// simple relay network as shown below (for simplicity we have error free
-/// links, i.e. no data packets are lost when being sent from encoder to
-/// decoder_1 and decoder_1 to decoder_2):
+/// This example shows how to use one encoder and two decoders to
+/// simulate a simple relay network as shown below (for simplicity
+/// we have error free links, i.e. no data packets are lost when being
+/// sent from encoder to decoder_1 and decoder_1 to decoder_2):
 ///
 ///         +-----------+      +-----------+      +------------+
 ///         |  encoder  |+---->| decoder_1 |+---->|  decoder_2 |
 ///         +-----------+      | (recoder) |      +------------+
 ///                            +-----------+
 ///
-/// In a practical application recoding can be using in several different ways
-/// and one must consider several different factors e.g. such as reducing linear
-/// dependency by coordinating several recoding nodes in the network.
-/// Suggestions for dealing with such issues can be found in current research
-/// litterature (e.g. MORE: A Network Coding Approach to Opportunistic Routing).
+/// In a practical application recoding can be using in several different
+/// ways and one must consider several different factors e.g. such as
+/// reducing linear dependency by coordinating several recoding nodes
+/// in the network.
+/// Suggestions for dealing with such issues can be found in current
+/// research litterature (e.g. MORE: A Network Coding Approach to
+/// Opportunistic Routing).
 
 #include <kodo/rlnc/full_vector_codes.hpp>
 
@@ -43,24 +44,24 @@ int main()
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
     rlnc_encoder::factory encoder_factory(symbols, symbol_size);
-    rlnc_encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
 
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
-    rlnc_decoder::pointer decoder_1 = decoder_factory.build(symbols, symbol_size);
-    rlnc_decoder::pointer decoder_2 = decoder_factory.build(symbols, symbol_size);
+    auto decoder_1 = decoder_factory.build(symbols, symbol_size);
+    auto decoder_2 = decoder_factory.build(symbols, symbol_size);
 
     // Allocate some storage for a "payload" the payload is what we would
     // eventually send over a network
     std::vector<uint8_t> payload(encoder->payload_size());
 
-    // Allocate some data to encode. In this case we make a buffer with the
-    // same size as the encoder's block size (the max. amount a single encoder
-    // can encode)
+    // Allocate some data to encode. In this case we make a buffer
+    // with the same size as the encoder's block size (the max.
+    // amount a single encoder can encode)
     std::vector<uint8_t> data_in(encoder->block_size());
 
     // Just for fun - fill the data with random data
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    for(auto &e: data_in)
+        e = rand() % 256;
 
     // Assign the data buffer to the encoder so that we may start
     // to produce encoded symbols from it

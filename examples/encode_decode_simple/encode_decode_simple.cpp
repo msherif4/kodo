@@ -5,6 +5,11 @@
 
 #include <kodo/rlnc/full_vector_codes.hpp>
 
+/// @example encode_decode_simple.cpp
+///
+/// Simple example showing how to encode and decode a block
+/// of memory.
+
 int main()
 {
     // Set the number of symbols (i.e. the generation size in RLNC
@@ -19,23 +24,23 @@ int main()
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
     rlnc_encoder::factory encoder_factory(symbols, symbol_size);
-    rlnc_encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
 
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
-    rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
 
     // Allocate some storage for a "payload" the payload is what we would
     // eventually send over a network
     std::vector<uint8_t> payload(encoder->payload_size());
 
-    // Allocate some data to encode. In this case we make a buffer with the
-    // same size as the encoder's block size (the max. amount a single encoder
-    // can encode)
+    // Allocate some data to encode. In this case we make a buffer
+    // with the same size as the encoder's block size (the max.
+    // amount a single encoder can encode)
     std::vector<uint8_t> data_in(encoder->block_size());
 
     // Just for fun - fill the data with random data
-    kodo::random_uniform<uint8_t> fill_data;
-    fill_data.generate(&data_in[0], data_in.size());
+    for(auto &e: data_in)
+        e = rand() % 256;
 
     // Assign the data buffer to the encoder so that we may start
     // to produce encoded symbols from it
