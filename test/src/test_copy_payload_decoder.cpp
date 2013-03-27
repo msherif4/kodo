@@ -26,7 +26,6 @@
 #include <kodo/coefficient_info.hpp>
 #include <kodo/finite_field_math.hpp>
 #include <kodo/finite_field_info.hpp>
-#include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/deep_symbol_storage.hpp>
 #include <kodo/storage_bytes_used.hpp>
 #include <kodo/storage_block_info.hpp>
@@ -53,7 +52,6 @@ namespace kodo
                  coefficient_storage<
                  coefficient_info<
                  // Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -64,7 +62,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  copy_payload_decoder_stack<Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > >
     {};
 
     // A dummi api to replace the real stack

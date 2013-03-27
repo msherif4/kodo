@@ -25,7 +25,7 @@
 #include "../symbol_id_decoder.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
-#include "../symbol_storage_tracker.hpp"
+#include "../storage_aware_encoder.hpp"
 #include "../encode_symbol_tracker.hpp"
 #include "../linear_block_encoder.hpp"
 #include "../linear_block_decoder.hpp"
@@ -54,6 +54,7 @@ namespace kodo
                  reed_solomon_symbol_id_writer<
                  systematic_vandermonde_matrix<
                  // Codec API
+                 storage_aware_encoder<
                  encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
@@ -70,7 +71,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  rs_encoder<Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > > >
     { };
 
     /// Implementation of a complete RS decoder this configuration
@@ -93,7 +94,6 @@ namespace kodo
                  coefficient_storage<
                  coefficient_info<
                  // Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -104,7 +104,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  rs_decoder<Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > >
     { };
 
 }

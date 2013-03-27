@@ -352,6 +352,58 @@ namespace kodo
                 return m_proxy->invert(value);
             }
 
+        //------------------------------------------------------------------
+        // CODEC API
+        //------------------------------------------------------------------
+
+        /// @copydoc layer::encode_symbol(uint8_t*, uint8_t*)
+        void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
+            {
+                assert(m_proxy);
+                m_proxy->encode_symbol(symbol_data, coefficients);
+            }
+
+        /// @copydoc layer::encode_symbol(uint8_t*,uint32_t)
+        void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                assert(m_proxy);
+                m_proxy->encode_symbol(symbol_data, symbol_index);
+            }
+
+        /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
+        void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
+            {
+                assert(m_proxy);
+                m_proxy->decode_symbol(symbol_data, coefficients);
+            }
+
+        /// @copydoc layer::decode_symbol(uint8_t*, uint32_t)
+        void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+            {
+                assert(m_proxy);
+                m_proxy->decode_symbol(symbol_data, symbol_index);
+            }
+
+        /// @copydoc layer::is_complete() const
+        bool is_complete() const
+            {
+                assert(m_proxy);
+                return m_proxy->is_complete();
+            }
+
+        /// @copydoc layer::rank() const
+        uint32_t rank() const
+            {
+                assert(m_proxy);
+                return m_proxy->rank();
+            }
+
+        /// @copydoc layer::symbol_pivot(uint32_t) const
+        bool symbol_pivot(uint32_t index) const
+            {
+                assert(m_proxy);
+                return m_proxy->symbol_pivot(index);
+            }
 
     protected:
 

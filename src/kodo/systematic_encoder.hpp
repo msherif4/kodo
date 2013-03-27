@@ -91,12 +91,12 @@ namespace kodo
                 assert(symbol_header != 0);
 
                 // The systematic phase takes places when we still haven't
-                // generated more symbols than what is contained in the
-                // block
+                // generated more symbols than what currently accessible
+                // to the encoder
 
                 bool in_systematic_phase =
                     SuperCoder::encode_symbol_count() <
-                    SuperCoder::symbols();
+                    SuperCoder::rank();
 
                 if(m_systematic && in_systematic_phase)
                 {
@@ -196,8 +196,6 @@ namespace kodo
         public base_systematic_encoder<false, SuperCoder>
     {};
 
-
-    /// @todo MOve this to some other place
     /// Overload for the generic is_systematic_encoder_dispatch(...) function
     ///
     /// \ingroup g_systematic_coding

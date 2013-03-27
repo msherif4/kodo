@@ -16,7 +16,6 @@
 #include "../finite_field_info.hpp"
 #include "../coefficient_storage.hpp"
 #include "../coefficient_info.hpp"
-#include "../symbol_storage_tracker.hpp"
 
 #include "../storage_bytes_used.hpp"
 #include "../storage_block_info.hpp"

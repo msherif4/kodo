@@ -15,8 +15,8 @@ namespace kodo
 {
 
     /// @ingroup storage_layers
-    /// @brief Implements the Symbol Storage API but only with empty functions.
-    ///        Useful in unit tests.
+    /// @brief Implements the Symbol Storage API but only with empty
+    ///        functions. Useful in unit tests.
     ///
     /// The fake class can be used to insert a dummy API to replace the
     /// use of a real stack.

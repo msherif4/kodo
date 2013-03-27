@@ -220,7 +220,7 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
         {
             uint32_t symbol_id = rand() % encoder->symbols();
 
-            if(decoder->symbol_exists(symbol_id))
+            if(decoder->symbol_pivot(symbol_id))
             {
                 continue;
             }

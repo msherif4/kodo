@@ -11,8 +11,6 @@
 namespace kodo
 {
 
-    /// @todo Add this class to a group
-    ///
     /// @brief Construct the transposes the Vandermonde matrix in order to
     ///        make memory access more efficient
     template<class SuperCoder>

@@ -141,6 +141,13 @@ namespace kodo
                 return m_rank;
             }
 
+        /// @copydoc layer::symbol_pivot(uint32_t) const
+        bool symbol_pivot(uint32_t index) const
+            {
+                assert(index < SuperCoder::symbols());
+                return m_coded[index] || m_uncoded[index];
+            }
+
     protected:
 
         /// Decodes a symbol based on the coefficients
@@ -256,7 +263,7 @@ namespace kodo
                 assert(m_uncoded[pivot_index] == false);
                 assert(m_coded[pivot_index] == false);
 
-                 value_type coefficient =
+                value_type coefficient =
                      fifi::get_value<field_type>(symbol_id, pivot_index);
 
                 assert(coefficient > 0);
@@ -294,7 +301,7 @@ namespace kodo
                     if( current_coefficient )
                     {
                         // If symbol exists
-                        if( SuperCoder::symbol_exists( i ) )
+                        if( symbol_pivot( i ) )
                         {
                             value_type *vector_i =
                                 SuperCoder::coefficients_value( i );
@@ -372,7 +379,7 @@ namespace kodo
                         continue;
                     }
 
-                    if( SuperCoder::symbol_exists(i) )
+                    if( symbol_pivot(i) )
                     {
                         value_type *vector_i =
                             SuperCoder::coefficients_value(i);
@@ -498,15 +505,19 @@ namespace kodo
                     sak::storage(symbol_coefficients,
                                  SuperCoder::coefficients_size());
 
-                auto symbol_storage =
-                    sak::storage(symbol_data, SuperCoder::symbol_size());
-
                 SuperCoder::set_coefficients(
                     pivot_index, coefficient_storage);
 
-                /// @todo: Wrong only works with deep_storage
-                SuperCoder::set_symbol(
-                    pivot_index, symbol_storage);
+
+                // Copy it into the symbol storage
+                sak::mutable_storage dest =
+                    sak::storage(SuperCoder::symbol(pivot_index),
+                                 SuperCoder::symbol_size());
+
+                sak::const_storage src =
+                    sak::storage(symbol_data, SuperCoder::symbol_size());
+
+                sak::copy_storage(dest, src);
             }
 
         /// Stores an uncoded or fully decoded symbol
@@ -526,11 +537,14 @@ namespace kodo
                 fifi::set_value<field_type>(vector_dest, pivot_index, 1U);
 
                 // Copy it into the symbol storage
-                auto symbol_storage =
+                sak::mutable_storage dest =
+                    sak::storage(SuperCoder::symbol(pivot_index),
+                                 SuperCoder::symbol_size());
+
+                sak::const_storage src =
                     sak::storage(symbol_data, SuperCoder::symbol_size());
 
-                /// @todo: Wrong only works with deep_storage
-                SuperCoder::set_symbol(pivot_index, symbol_storage);
+                sak::copy_storage(dest, src);
 
             }
 

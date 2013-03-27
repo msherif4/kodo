@@ -34,7 +34,7 @@
 #include "../uniform_generator.hpp"
 #include "../recoding_symbol_id.hpp"
 #include "../proxy_layer.hpp"
-#include "../symbol_storage_tracker.hpp"
+#include "../storage_aware_encoder.hpp"
 #include "../encode_symbol_tracker.hpp"
 
 #include "../linear_block_encoder.hpp"
@@ -64,6 +64,7 @@ namespace kodo
                  // Coefficient Generator API
                  uniform_generator<
                  // Codec API
+                 storage_aware_encoder<
                  encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
@@ -80,7 +81,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  seed_rlnc_encoder<Field>
-                     > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > > >
     { };
 
     /// Implementation of a seed based RLNC decoder this configuration
@@ -105,7 +106,6 @@ namespace kodo
                  coefficient_storage<
                  coefficient_info<
                  // Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -116,7 +116,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  seed_rlnc_decoder<Field>
-                     > > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > >
     { };
 
 }

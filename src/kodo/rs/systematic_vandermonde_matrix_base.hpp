@@ -13,8 +13,6 @@
 namespace kodo
 {
 
-    /// @todo Add this class to a group
-    ///
     /// @brief Computes a Vandermonde matrix to generate the coding
     ///        coefficients. The matrix code is
     template<class SuperCoder>

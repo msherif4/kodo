@@ -59,7 +59,9 @@ TEST(TestReedSolomonCodes, test_encode_decode)
         std::vector<uint8_t> data_out(decoder->block_size(), '\0');
         decoder->copy_symbols(sak::storage(data_out));
 
-        EXPECT_TRUE(std::equal(data_out.begin(), data_out.end(), data_in.begin()));
+        EXPECT_TRUE(std::equal(data_out.begin(),
+                               data_out.end(),
+                               data_in.begin()));
 
     }
 

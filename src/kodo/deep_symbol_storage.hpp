@@ -15,10 +15,10 @@
 namespace kodo
 {
 
-    /// @ingroup storage_layers
+    /// @ingroup symbol_storage_layers
     /// @brief The deep storage implementation. In this context deep
-    ///        means that the symbol storage contains the entire coding buffer
-    ///        internally.
+    ///        means that the symbol storage contains the entire coding
+    ///        buffer internally.
     ///
     /// This is useful in cases where incoming data is to be
     /// decoded and no existing decoding buffer exist.
@@ -46,6 +46,8 @@ namespace kodo
                 // m_data.size() should be zero
                 assert(m_data.size() == 0);
                 m_data.resize(max_data_needed, 0);
+
+                m_symbols.resize(max_symbols, false);
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
@@ -54,6 +56,9 @@ namespace kodo
                 SuperCoder::initialize(symbols, symbol_size);
 
                 std::fill(m_data.begin(), m_data.end(), 0);
+
+                std::fill(m_symbols.begin(), m_symbols.end(), false);
+                m_symbols_count = 0;
             }
 
         /// @copydoc layer::symbol(uint32_t)
@@ -100,6 +105,17 @@ namespace kodo
 
                 /// Use the copy function
                 copy_storage(sak::storage(m_data), symbol_storage);
+
+                // ceil(x/y) = ((x - 1) / y) + 1
+                m_symbols_count = ((symbol_storage.m_size - 1) /
+                                   SuperCoder::symbol_size()) + 1;
+
+                for(uint32_t i = 0; i < m_symbols.size(); ++i)
+                {
+                    // Set true if less than then symbol count
+                    m_symbols[i] = (i < m_symbols_count);
+                }
+
             }
 
         /// @copydoc layer::set_symbol(uint32_t, const sak::const_storage&)
@@ -116,8 +132,15 @@ namespace kodo
 
                 assert(dest_data.m_size >= SuperCoder::symbol_size());
 
-                /// Copy the data
+                // Copy the data
                 sak::copy_storage(dest_data, symbol);
+
+                if(m_symbols[index] == false)
+                {
+                    ++m_symbols_count;
+                    m_symbols[index] = true;
+                }
+
             }
 
         /// @copydoc layer::copy_symbols(const sak::mutable_storage&)
@@ -137,7 +160,8 @@ namespace kodo
                 sak::copy_storage(dest_storage, src_storage);
             }
 
-        /// @copydoc layer::copy_symbol(uint32_t, const sak::mutable_storage&)
+        /// @copydoc layer::copy_symbol(uint32_t,
+        ///                             const sak::mutable_storage&)
         void copy_symbol(uint32_t index,
                          const sak::mutable_storage &dest) const
             {
@@ -153,10 +177,35 @@ namespace kodo
                 sak::copy_storage(dest, src);
             }
 
+        /// @copydoc layer::symbol_exists(uint32_t) const
+        bool symbol_exists(uint32_t index) const
+            {
+                assert(index < SuperCoder::symbols());
+                return m_symbols[index];
+            }
+
+        /// @copydoc layer::symbol_count() const
+        uint32_t symbol_count() const
+            {
+                return m_symbols_count;
+            }
+
+        /// @copydoc layer::is_storage_full() const
+        bool is_storage_full() const
+            {
+                return m_symbols_count == SuperCoder::symbols();
+            }
+
     private:
 
         /// Storage for the symbol data
         std::vector<uint8_t> m_data;
+
+        /// Symbols count
+        uint32_t m_symbols_count;
+
+        /// Tracks which symbols have been set
+        std::vector<bool> m_symbols;
 
     };
 }

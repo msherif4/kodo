@@ -12,7 +12,6 @@
 #include <gtest/gtest.h>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
-#include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/recoding_symbol_id.hpp>
 #include <kodo/proxy_layer.hpp>
 #include <kodo/payload_recoder.hpp>
@@ -43,7 +42,6 @@ namespace kodo
                  coefficient_storage<
                  coefficient_info<
                  // Storage API
-                 symbol_storage_tracker<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -54,7 +52,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  full_rlnc_decoder_delayed<Field>
-                     > > > > > > > > > > > > > > > > >
+                     > > > > > > > > > > > > > > > >
     {};
 }
 

@@ -67,11 +67,11 @@ namespace kodo
 
                 value_type *c = reinterpret_cast<value_type*>(coefficients);
 
-                uint32_t symbols = SuperCoder::symbols();
+                uint32_t symbols = SuperCoder::rank();
 
                 for(uint32_t i = 0; i < symbols; ++i)
                 {
-                    if(!SuperCoder::symbol_exists(i))
+                    if(!SuperCoder::symbol_pivot(i))
                     {
                         continue;
                     }

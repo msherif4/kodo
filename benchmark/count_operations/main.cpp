@@ -242,6 +242,7 @@ namespace kodo
           // Coefficient Generator API
           uniform_generator<
           // Codec API
+          storage_aware_encoder<
           encode_symbol_tracker<
           zero_symbol_encoder<
           linear_block_encoder<
@@ -259,7 +260,7 @@ namespace kodo
           final_coder_factory_pool<
           // Final type
           full_rlnc_encoder_count<Field>
-              > > > > > > > > > > > > > > > >
+              > > > > > > > > > > > > > > > > >
     { };
 
     template<class Field>
@@ -279,7 +280,6 @@ namespace kodo
           coefficient_storage<
           coefficient_info<
           // Storage API
-          symbol_storage_tracker<
           deep_symbol_storage<
           storage_bytes_used<
           storage_block_info<
@@ -291,7 +291,7 @@ namespace kodo
           final_coder_factory_pool<
           // Final type
           full_rlnc_decoder_count<Field>
-              > > > > > > > > > > > > > > > >
+              > > > > > > > > > > > > > > >
     { };
 
 }

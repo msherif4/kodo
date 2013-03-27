@@ -17,7 +17,6 @@
 #include <kodo/finite_field_info.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
-#include <kodo/symbol_storage_tracker.hpp>
 #include <kodo/uniform_generator.hpp>
 #include <kodo/fake_symbol_storage.hpp>
 
@@ -32,32 +31,76 @@
 namespace kodo
 {
 
+    template<class SuperCoder>
+    class fake_codec_layer : public SuperCoder
+    {
+    public:
+
+        /// @copydoc layer::initialize(uint32_t,uint32_t)
+        void initialize(uint32_t symbols, uint32_t symbol_size)
+            {
+                SuperCoder::initialize(symbols, symbol_size);
+
+                m_pivots = 0;
+                m_pivot.resize(symbols);
+
+                for(uint32_t i = 0; i < m_pivot.size(); ++i)
+                {
+                    m_pivot[i] = rand() % 2;
+                    if(m_pivot[i])
+                        ++m_pivots;
+                }
+            }
+
+        /// @copydoc layer::rank() const
+        uint32_t rank() const
+            {
+                return m_pivots;
+            }
+
+        /// @copydoc layer::symbol_pivot(uint32_t) const
+        bool symbol_pivot(uint32_t index) const
+            {
+                assert(index < SuperCoder::symbols());
+                return m_pivot[index];
+            }
+
+    private:
+
+        /// Track dummy pivot
+        std::vector<bool> m_pivot;
+
+        /// The number of pivots
+        uint32_t m_pivots;
+
+    };
+
     // Uniform generator
     template<class Field>
     class uniform_generator_stack
         : public uniform_generator<
+                 fake_codec_layer<
                  coefficient_info<
-                 symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
                  finite_field_info<Field,
                  final_coder_factory<
                  uniform_generator_stack<Field>
                      > > > > > > >
-    {};
+    { };
 
     template<class Field>
     class uniform_generator_stack_pool
         : public uniform_generator<
+                 fake_codec_layer<
                  coefficient_info<
-                 symbol_storage_tracker<
                  fake_symbol_storage<
                  storage_block_info<
                  finite_field_info<Field,
                  final_coder_factory_pool<
                  uniform_generator_stack_pool<Field>
                      > > > > > > >
-    {};
+    { };
 
 }
 
@@ -167,24 +210,48 @@ struct api_generate
             coder->generate_partial(&vector_d[0]);
 
             auto storage_a = sak::storage(vector_a);
-            auto storage_b = sak::storage(vector_b);
             auto storage_c = sak::storage(vector_c);
-            auto storage_d = sak::storage(vector_d);
 
-            std::vector<uint8_t> zero_vector(coder->coefficients_size(), 0);
+            EXPECT_TRUE(sak::equal(storage_a,storage_c));
 
-            auto zero_storage = sak::storage(zero_vector);
+            uint32_t count_a = 0;
+            uint32_t count_b = 0;
+            uint32_t count_c = 0;
+            uint32_t count_d = 0;
 
-            EXPECT_TRUE(sak::equal(storage_a,zero_storage));
-            EXPECT_TRUE(sak::equal(storage_b,zero_storage));
-            EXPECT_TRUE(sak::equal(storage_c,zero_storage));
-            EXPECT_TRUE(sak::equal(storage_d,zero_storage));
+            for(uint32_t i = 0; i < symbols; ++i)
+            {
+                value_type v_a = fifi::get_value<field_type>(
+                    (value_type*)&vector_a[0], i);
 
-            // std::vector<uint8_t> symbol_a =
-            //     random_vector(coder->symbol_size());
+                value_type v_b = fifi::get_value<field_type>(
+                    (value_type*)&vector_b[0], i);
 
-            // coder->set_symbol(1, sak::storage(symbol_a));
+                value_type v_c = fifi::get_value<field_type>(
+                    (value_type*)&vector_c[0], i);
 
+                value_type v_d = fifi::get_value<field_type>(
+                    (value_type*)&vector_d[0], i);
+
+                if(!coder->symbol_pivot(i))
+                {
+                    ASSERT_EQ(v_a, 0U);
+                    ASSERT_EQ(v_b, 0U);
+                    ASSERT_EQ(v_c, 0U);
+                    ASSERT_EQ(v_d, 0U);
+                }
+
+                count_a += (v_a != 0);
+                count_b += (v_b != 0);
+                count_c += (v_c != 0);
+                count_d += (v_d != 0);
+
+            }
+
+            EXPECT_TRUE(count_a < coder->rank());
+            EXPECT_TRUE(count_b < coder->rank());
+            EXPECT_TRUE(count_c < coder->rank());
+            EXPECT_TRUE(count_d < coder->rank());
         }
 
 private:

@@ -95,7 +95,7 @@ namespace kodo
                     sak::storage(symbol_id, m_id_size);
 
                 // Check the number of symbols stored
-                uint32_t symbol_count = SuperCoder::symbol_count();
+                uint32_t symbol_count = SuperCoder::rank();
 
                 if(symbol_count == 0)
                 {
@@ -132,7 +132,7 @@ namespace kodo
                         continue;
                     }
 
-                    assert(SuperCoder::symbol_exists(i));
+                    assert(SuperCoder::symbol_pivot(i));
 
                     const value_type *source_id =
                         SuperCoder::coefficients_value( i );

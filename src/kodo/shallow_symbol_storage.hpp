@@ -14,7 +14,7 @@
 namespace kodo
 {
 
-    /// @ingroup storage_layers
+    /// @ingroup symbol_storage_layers
     /// @brief The shallow storage implementation. In this context shallow
     /// means that the symbol storage only contains pointers to some
     /// external data structure.
@@ -65,6 +65,7 @@ namespace kodo
                 SuperCoder::initialize(symbols, symbol_size);
 
                 std::fill(m_data.begin(), m_data.end(), (data_ptr) 0);
+                m_symbols_count = 0;
             }
 
         /// @copydoc layer::symbol(uint32_t) const
@@ -89,6 +90,14 @@ namespace kodo
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
+
+                m_symbols_count = 0;
+
+                for(auto& i: symbols)
+                {
+                    if(i != 0)
+                        ++m_symbols_count;
+                }
             }
 
         /// @copydoc layer::set_symbols()
@@ -112,6 +121,12 @@ namespace kodo
                 assert(symbol.m_data != 0);
                 assert(symbol.m_size == SuperCoder::symbol_size());
                 assert(index < SuperCoder::symbols());
+
+                if(m_data[index] == 0)
+                {
+                    ++m_symbols_count;
+                    assert(m_symbols_count <= SuperCoder::symbols());
+                }
 
 		// Assign the pointer
                 m_data[index] = symbol.m_data;
@@ -148,7 +163,6 @@ namespace kodo
                     ++symbol_index;
 
                 }
-
             }
 
         /// @copydoc layer::copy_symbol(
@@ -170,14 +184,37 @@ namespace kodo
                 sak::copy_storage(storage, src);
             }
 
+        /// @copydoc layer::symbol_exists(uint32_t) const
+        bool symbol_exists(uint32_t index) const
+            {
+                assert(index < SuperCoder::symbols());
+                return m_data[index] != 0;
+            }
+
+        /// @copydoc layer::symbol_count() const
+        uint32_t symbol_count() const
+            {
+                return m_symbols_count;
+            }
+
+        /// @copydoc layer::is_storage_full() const
+        bool is_storage_full() const
+            {
+                return m_symbols_count == SuperCoder::symbols();
+            }
+
     protected:
 
         /// Symbol mapping
         std::vector<data_ptr> m_data;
 
+        /// Symbols count
+        uint32_t m_symbols_count;
+
     };
 
-    /// Defines a coding layer for 'const' symbol storage. Only useful
+    /// @ingroup symbol_storage_layers
+    /// @brief Defines a coding layer for 'const' symbol storage. Only useful
     /// for encoders since these to modify the buffers / data they
     /// operate on.
     template<class SuperCoder>
@@ -185,8 +222,9 @@ namespace kodo
         shallow_symbol_storage<true, SuperCoder>
     { };
 
-    /// Defines a coding layer for 'mutable' symbol storage. Allows the
-    /// buffer data to be modified i.e. useful in decoders which need to
+    /// @ingroup symbol_storage_layers
+    /// @brief Defines a coding layer for 'mutable' symbol storage. Allows
+    /// the buffer data to be modified i.e. useful in decoders which need to
     /// access and modify the incoming symbols
     template<class SuperCoder>
     class mutable_shallow_symbol_storage : public

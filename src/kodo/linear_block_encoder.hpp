@@ -47,7 +47,6 @@ namespace kodo
                 SuperCoder::copy_symbol(symbol_index, dest);
             }
 
-
         /// @copydoc layer::encode_symbol(uint8_t*, uint8_t*)
         void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
             {
@@ -88,6 +87,7 @@ namespace kodo
                     }
                 }
             }
+
     };
 
 }
