@@ -140,7 +140,7 @@ int main()
     const uint32_t symbol_size = 1;  // 8 bits in each symbol
 
     typedef fifi::binary field_type;
-    typedef typename field_type::value_type value_type;
+    typedef field_type::value_type value_type;
 
     // Typdefs for the decoder type we wish to use
     typedef kodo::rlnc_decoder<field_type> rlnc_decoder;
