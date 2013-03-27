@@ -19,24 +19,89 @@
 /// the layers below the "Codec API" has been kept as they provide
 /// functionalities that we require.
 
+#include <vector>
+
 #include <boost/utility/binary.hpp>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 namespace fifi
 {
-    /// Usefull abstraction function for reversing elements in an array of fields
-    /// @param elements elements to reverse
-    /// @param length number of values in elements
-    template<class Field>
-    inline void reverse_values(typename Field::value_ptr elements, uint32_t length)
+    /// Set multiple elements in an array of fields
+    /// @param elements elements to alter
+    /// @param values vector of values to insert
+    template <typename Field>
+    inline void set_values(typename Field::value_ptr elements,
+        std::vector<typename Field::value_type> values)
     {
         uint32_t i = 0;
-        uint32_t j = length-1;
-
-        while ( i < j )
+        for (auto value : values)
         {
-            swap_values<Field>(elements, i++, j--);
+            set_value<Field>(elements, i++, value);
+        }
+    }
+
+    /// Set multiple elements in an array of fields
+    /// @param elements elements to alter
+    /// @param symbol_size size of a symbol
+    /// @param values vector of vector to insert
+    template<typename Field>
+    inline
+    void set_values(typename Field::value_ptr elements, uint32_t symbol_size,
+        std::vector<std::vector<typename Field::value_type>> values)
+    {
+        uint8_t* ptr = elements;
+        for (auto symbol : values)
+        {
+            set_values<Field>((typename Field::value_type*)ptr, symbol); 
+            ptr += symbol_size;
+        }
+    }
+
+    /// Print elements in an array of fields
+    /// @param elements elements to alter
+    /// @param symbols number of symbols to print
+    /// @param symbols_length length of a symbol (# elements in a symbol)
+    template <typename Field>
+    inline void print(typename Field::value_ptr elements,
+        uint32_t symbols, uint32_t symbol_length)
+    {
+        // Print elements
+        for (uint32_t i = 0; i < symbols*symbol_length; ++i)
+        {
+            // Print element
+            std::cout << (unsigned)fifi::get_value<Field>(elements, i);
+
+            // Print new line after each symbol
+            if ( i % symbol_length == symbol_length-1)
+            {
+                std::cout << std::endl;
+            }
+        }
+    }
+
+    /// Print elements in an array of fields
+    /// @param elements elements to alter
+    /// @param symbols number of symbols to print
+    /// @param symbol_size size of a symbol (memory size)
+    /// @param symbol_length length of a symbol (# elements in a symbol)
+    template <typename Field>
+    inline void print(typename Field::value_ptr elements,
+        uint32_t symbols, uint32_t symbol_size, uint32_t symbol_length)
+    {
+        uint8_t* ptr_end = ((uint8_t*)elements)+symbols*symbol_size;
+
+        for (uint8_t* ptr = elements; ptr < ptr_end; ptr += symbol_size)
+        {
+            for (uint32_t i = 0; i < symbol_length; ++i)
+            {
+                // Print element
+                std::cout << (unsigned)fifi::get_value<Field>(
+                         (typename Field::value_type*)ptr, i);
+            }
+
+            // Print new line after each symbol
+            std::cout << std::endl;
         }
     }
 }
@@ -85,6 +150,20 @@ int main()
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
 
+    
+    // Find symbol length (number of elements in a symbols)
+    uint32_t symbol_length;
+    if (fifi::is_binary<field_type>::value)
+    {
+        symbol_length = 8*symbol_size;
+    }
+    else
+    {
+        // Needs to assert that it evaluates to an integer
+        symbol_length = symbol_size/sizeof(value_type);
+    }
+
+
     // To illustrate decoding, random data has been filled into the
     // matrices below. It is crucial that the equation below is correct
     // if the purpose is to test if the decoder decodes correctly as this
@@ -130,30 +209,33 @@ int main()
     // original symbol M_2. The second encoded symbol is M_1 bitwise xor M_2,
     // and the third encoded symbol is M_1 bitwise xor M_3.
 
-    uint8_t original_symbols[] = { 0x0D,   // 0 0 0 0 1 1 0 1
-                                   0x1C,   // 0 0 0 1 1 1 0 0
-                                   0x06 }; // 0 0 0 0 0 1 1 0
+    uint8_t encoded_symbols[symbols*symbol_size];
+    uint8_t symbol_coefficients[symbols*symbol_size];
+    uint8_t original_symbols[symbols*symbol_size];
 
-    uint8_t encoded_symbols[] = {  0x1C,   // 0 0 0 1 1 1 0 0
-                                   0x11,   // 0 0 0 1 0 0 0 1
-                                   0x0B }; // 0 0 0 0 1 0 1 1
+    fifi::set_values<field_type>((value_type*)encoded_symbols, symbol_size,
+            { {0,0,0,1,1,1,0,0},
+              {0,0,0,1,0,0,0,1},
+              {0,0,0,0,1,0,1,1} } );
 
-    uint8_t symbol_coefficients[] = { 0x02,          // 0 1 0
-                                      0x06,          // 1 1 0
-                                      0x05 };        // 1 0 1
+    fifi::set_values<field_type>((value_type*)symbol_coefficients, symbol_size,
+            { {0,1,0},
+              {1,1,0},
+              {1,0,1} } );
 
-    // Reverse the symbol elements (bits in the binary field) in each symbol.
-    // This is because the computer store bits in the opposite
-    // direction of how it is written above.
-    //
-    // Example:
-    //  00001101 --> 10110000
-    for (uint32_t i = 0; i < symbols; ++i)
-    {
-        fifi::reverse_values<field_type>((value_type*)&original_symbols[i],8);
-        fifi::reverse_values<field_type>((value_type*)&encoded_symbols[i],8);
-        fifi::reverse_values<field_type>((value_type*)&symbol_coefficients[i],3);
-    }
+
+    //fifi::set_values<field_type>((value_type*)symbol_coefficients,
+    //        { 0,0,0,0,0,0,1,0,
+    //          0,0,0,0,0,1,1,0,
+    //          0,0,0,0,0,1,0,1 } );
+
+
+
+    fifi::set_values<field_type>((value_type*)original_symbols, symbol_size,
+            { {0,0,0,0,1,1,0,1},
+              {0,0,0,1,1,1,0,0},
+              {0,0,0,0,0,1,1,0} } );
+
 
     // Decode each symbol
     for (uint32_t i = 0; i < symbols; ++i)
@@ -167,30 +249,33 @@ int main()
     decoder->copy_symbols(sak::storage(decoded_symbols));
 
 
-    std::cout << "Decoded data:" << std::endl;
+    std::cout << std::endl << "Original symbols:" << std::endl;
+    fifi::print<field_type>((value_type*)original_symbols,
+            symbols, symbol_length);
 
-    // Print decoded data - Loop over all bits
-    for (uint32_t i = 0; i < symbols*(symbol_size*8); ++i)
-    {
-        // Print a bit
-        std::cout << (unsigned)fifi::get_value<field_type>(
-                (value_type*)&decoded_symbols[0], i);
+    std::cout << std::endl << "Symbol Coefficients:" << std::endl;
+    fifi::print<field_type>((value_type*)symbol_coefficients,
+            symbols, symbol_size, 3);
 
-        // Print new line after each symbol
-        if ( i % (symbol_size*8) == symbol_size*8-1)
-        {
-            std::cout << std::endl;
-        }
-    }
+    std::cout << std::endl << "Encoded symbols:" << std::endl;
+    fifi::print<field_type>((value_type*)encoded_symbols,
+            symbols, symbol_length);
+
+    std::cout << std::endl << "Decoded data:" << std::endl;
+    fifi::print<field_type>((value_type*)&decoded_symbols[0],
+            symbols, symbol_length);
+    std::cout << std::endl;
+
 
     // Check that the original data is the same as the decoded data
     if (std::equal(decoded_symbols.begin(), decoded_symbols.end(),
         original_symbols))
     {
-        std::cout << "Data decoded correctly" << std::endl;
+        std::cout << "Data decoded correctly";
     }
     else
     {
-        std::cout << "Error: Decoded data differs from original data" << std::endl;
+        std::cout << "Error: Decoded data differs from original data";
     }
+    std::cout << std::endl << std::endl;
 }
