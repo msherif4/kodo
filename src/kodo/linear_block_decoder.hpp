@@ -504,6 +504,7 @@ namespace kodo
                 SuperCoder::set_coefficients(
                     pivot_index, coefficient_storage);
 
+                /// @todo: Wrong only works with deep_storage
                 SuperCoder::set_symbol(
                     pivot_index, symbol_storage);
             }
@@ -528,6 +529,7 @@ namespace kodo
                 auto symbol_storage =
                     sak::storage(symbol_data, SuperCoder::symbol_size());
 
+                /// @todo: Wrong only works with deep_storage
                 SuperCoder::set_symbol(pivot_index, symbol_storage);
 
             }

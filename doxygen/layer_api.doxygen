@@ -279,6 +279,13 @@ public:
     /// @return the rank of the decoder
     uint32_t rank() const;
 
+    /// @ingroup codec_api
+    /// The symbol pivot indicates whether a symbol is available to either an
+    /// encoder or decoder. A coefficient generator may use this information
+    /// when generating coding coefficients.
+    /// @return True if the symbol is available.
+    bool symbol_pivot(uint32_t index) const;
+
     //------------------------------------------------------------------
     // COEFFICIENT STORAGE API
     //------------------------------------------------------------------
@@ -457,15 +464,13 @@ public:
     void set_symbols(const sak::mutable_storage &symbol_storage);
 
     /// @ingroup storage_api
-    /// Sets a symbol - by copying it into the right location in
-    /// the buffer.
+    /// Sets a data of a symbol.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::mutable_storage &symbol);
 
     /// @ingroup storage_api
-    /// Sets a symbol - by copying it into the right location in
-    /// the buffer.
+    /// Sets a symbol.
     /// @param index the index of the symbol into the coding block
     /// @param symbol the actual data of that symbol
     void set_symbol(uint32_t index, const sak::const_storage &symbol);

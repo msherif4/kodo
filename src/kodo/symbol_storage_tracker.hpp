@@ -18,7 +18,11 @@ namespace kodo
     ///
     /// @brief The storage tracker layer intercepts the calls used to
     ///        initialize the symbol storage and allow us to track
-    ///        which symbols have been specified.
+    ///        which symbols have been specified. This is useful e.g. for
+    ///        encoders which should be able to encode partial content.
+    ///        In this case the Coefficient Generator can utilize the
+    ///        information about which symbols have been specified to only
+    ///        generate coding coefficients for these symbols.
     template<class SuperCoder>
     class symbol_storage_tracker : public SuperCoder
     {
