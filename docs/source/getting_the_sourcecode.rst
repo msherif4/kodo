@@ -1,5 +1,5 @@
-Getting the sourcecode
-======================
+Kodo Dependencies
+=================
 
 .. _sourcecode:
 

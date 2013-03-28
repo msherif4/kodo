@@ -1,21 +1,15 @@
-.. _using_kodo:
+.. _using-kodo-in-your-application:
 
-Using Kodo in Your Application
+Using Kodo in your application
 ==============================
+In the following we will describe what you need to do to use Kodo in your
+application / project.
 
-The following describes how you may include Kodo in your own projects
-and applications. The following section
-
-Dependencies of Kodo
---------------------
-
-If you decide not to use the Kodo build-scripts to download the dependencies of
-Kodo. You may do so manually - this section will describe the steps you need to
-take.
-
-In Kodo we try to not reinvent the wheel we therefore rely on
-a number of external libraries. These must be available in order
-to successfully compile an application using Kodo.
+.. _kodo-dependencies:
+Kodo dependencies
+-----------------
+In Kodo we rely on a number of external libraries, these must be available
+in order to successfully compile an application using Kodo.
 
 The functionality used from these libraries are **header-only** which
 means that you only have to specify the correct includes paths to use
@@ -37,12 +31,30 @@ them. The libraries are:
 
    * http://boost.org
 
+If you have tried to use the Kodo build scripts you will notice that these
+download a number of additional libraries. These libraries are
+only needed when/if you want to compile the Kodo unit-tests, examples or
+benchmarks.
+
+Download Kodo Dependencies
+--------------------------
+
+All dependencies required by Kodo are hosted on github.com and may be found at
+github.com/steinwurf.
+
+There are several ways in which you may get the Kodo library and its
+dependencies. Which approach you prefer might depend on your intended
+use-case for Kodo.
+
+1. As shown in :ref:`quick-start` the Kodo build scripts supports downloading
+   the dependency repositories. The build script with do a git clone and
+   checkout the latest compatible tagged version of the dependency.
+
+2. You may wish to manually download Kodo's dependencies as separate git
+   repositories. In the following we describe this option.
 
 Clone the git repository (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-All dependencies needed are hosted on github.com and may be found at
-github.com/steinwurf.
 
 1. Create a suitable directory for the projects (optional)
 
@@ -74,7 +86,6 @@ github.com/steinwurf.
             via the package manager. Alternatively Boost also provides
             its own version control repositories, if you
             wish, you may also use download Boost using those repositories.
-
 
 Example using makefile / command-line
 -------------------------------------
@@ -115,6 +126,8 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
    If you wish to use a plain Waf version downloaded from
    http://code.google.com/p/waf/ the following example shows one
    possible way of using it to build an application with Kodo.
+
+
 
 
 

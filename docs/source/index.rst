@@ -27,9 +27,8 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   intro
-   getting_the_sourcecode
-   using_kodo
+   introduction
+   using_kodo_in_your_application
    howto
    nc_glossary
 

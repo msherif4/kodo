@@ -3,7 +3,7 @@ Introduction
 
 .. _introduction:
 
-In this document we will to introduce new users to the Kodo library.
+In this document we will try to introduce new users to the Kodo library.
 
 Features
 --------
@@ -11,7 +11,7 @@ Features
 Kodo provides several different codes, primarily the basic Random Linear Network
 Code and multiple variants.
 
-* Random Linear Network Code (RLNC)
+* Random Linear Network Codeing (RLNC)
 
   * Dense variant
   * Sparse variant with fixed density
@@ -37,7 +37,7 @@ status on the `Steinwurf Buildbot`_ page.
 .. _Steinwurf Buildbot: http://176.28.49.184:12344
 
 .. note:: The buildbot is used for several different projects you will find the
-  kodo project in the overview on the main page.
+  Kodo project in the overview on the main page.
 
 The buildbot pages will also provide you with up-to-date information on which
 platforms and compilers we are currently testing. If you have a specific
@@ -106,16 +106,50 @@ Download tools (Windows)
    https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
 
 
+Download the Kodo source code
+----------------------------
+
+We recommend downloading the library using git, this will allow you to
+easily get new updates whenever the library is updated. In addition to
+this it is also possible to download the library as either zip or tar.gz
+archive. We will describe both approaches in the following:
+
+Recommended: Clone the git repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Create a suitable directory for the projects (optional)
+
+   ::
+
+     mkdir dev
+     cd dev
+
+2. Clone and download the Kodo libraries by running:
+
+   ::
+
+     git clone git://github.com/steinwurf/kodo.git
+
+Alternative: Download the source code as archives
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Download the zip or tar.gz archive from the following location and
+extract it to a desired location.
+
+* https://github.com/steinwurf/kodo/tags
+
+
 Waf (build system)
 ------------------
-We use the Waf build-system to build all Kodo examples and
+
+We use the Waf build system to build all Kodo examples and
 unit-tests. Waf is a Python based build-system and supports
-a wide varity of use-case. You may read more about Waf at
+a wide variety of use-cases. You may read more about Waf at
 the project homepage: http://code.google.com/p/waf/
 
-A Waf project contains two types of files:
+A Waf project typically contains two types of files:
 
-1. The ``waf`` file this the actual build-system executable.
+1. The ``waf`` file this the actual build system executable.
    This file is not meant to be edited.
 
 2. A number of ``wscript`` files, these files contain the
@@ -131,18 +165,18 @@ and unit tests using the Waf build system.
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------
 
-.. _getting_started:
+.. _quick-start:
 
 If you are primarily interested in quickly trying some Kodo examples
-or building the unit-tests, we have tried to make that really easy.
+or building the unit-tests, we have tried to make that as easy as possible.
 Provided that you have the `Tools Needed`_ installed.
 
 .. note:: We recommend trying to build and run the unit-tests, before
           using Kodo in your own project. However, if you want to skip
-          this step you may jump directly to :ref:`include-kodo-in-project`
+          this step you may jump directly to :ref:`using-kodo-in-your-application`
 
 
-1. Navigate to the directory containing the Kodo sources:
+1. Navigate to the directory where you have downloaded the Kodo source code:
 
    ::
 
@@ -156,13 +190,16 @@ Provided that you have the `Tools Needed`_ installed.
 
    The ``waf configure`` ensures that all tools needed by Kodo are
    available and prepares to build Kodo.
-   Kodo relies on a number of auxiliary libraries (see :ref:kodo-dependencies)
+   Kodo relies on a number of auxiliary libraries (see :ref:`kodo-dependencies`)
    by specifying the ``--bundle=ALL`` command we instruct ``waf`` to
    automatically download these. The ``--bundle-path`` informs ``waf``
    about where the downloaded libraries should be placed. You may
    omit the ``--bundle-path`` option in that case ``waf`` will create a
    local directory in the Kodo folder called  ``bundle_dependencies`` and
    store the libraries there.
+
+   .. note:: The ``waf configure`` step might take a while, so now would be a
+             good time to grap a coffee or similar while it downloads.
 
 3. Invoke ``waf`` to build the unit-tests and examples.
 
@@ -172,10 +209,13 @@ Provided that you have the `Tools Needed`_ installed.
 
 4. Run the produced executables depending on the host platform.
 
-   a. **Linux & Mac**: Run unit-tests from the Kodo directory by running
+   a. **Linux**: Run unit-tests from the Kodo directory by running
       ``./build/linux/test/kodo_tests`` in your shell.
 
-   b. **Windows**: Run unit-tests from the Kodo directory by running
+   b. **Mac**: Run unit-tests from the Kodo directory by running
+      ``./build/darwin/test/kodo_tests`` in your shell.
+
+   c. **Windows**: Run unit-tests from the Kodo directory by running
       ``build/win32/test/kodo_tests.exe`` in your command prompt.
 
 Customize the build
@@ -183,8 +223,6 @@ Customize the build
 
 You may customize the build process. The list below describes the most
 common changes you may want for you build.
-
-.. note:: You may skip this section if you just want to quickly start with Kodo.
 
 * You may change the compiler.
 
