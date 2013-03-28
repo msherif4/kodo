@@ -139,7 +139,7 @@ Provided that you have the `Tools Needed`_ installed.
 
 .. note:: We recommend trying to build and run the unit-tests, before
           using Kodo in your own project. However, if you want to skip
-          this step you may jump directly to :ref:include-kodo-in-project
+          this step you may jump directly to :ref:`include-kodo-in-project`
 
 
 1. Navigate to the directory containing the Kodo sources:
