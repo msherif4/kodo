@@ -111,7 +111,7 @@ namespace fifi
             {
                 // Print element
                 std::cout << (unsigned)fifi::get_value<Field>(
-                         (typename Field::value_type*)ptr, i);
+                         (typename Field::value_type*)ptr, i) << " ";
             }
 
             // Print new line after each symbol
