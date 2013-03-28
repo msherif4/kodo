@@ -65,31 +65,18 @@ namespace fifi
         }
     }
 
-    /// Set multiple elements in an array of fields
-    /// @param elements elements to alter
-    /// @param symbol_size size of a symbol
-    /// @param values vector of vector to insert
-    template<typename Field>
-    inline
-    void set_values(typename Field::value_ptr elements, uint32_t symbol_size,
-        std::vector<std::vector<typename Field::value_type>> values)
-    {
-        uint8_t* ptr = elements;
-        for (auto symbol : values)
-        {
-            set_values<Field>((typename Field::value_type*)ptr, symbol);
-            ptr += symbol_size;
-        }
-    }
-
+    /// Initialize multiple elements in an array of fields
+    /// @param elements elements to initialize
+    /// @param values vector of vectors to insert
     template<typename Field>
     inline
     void initialize_values(typename Field::value_ptr elements,
         std::vector<std::vector<typename Field::value_type>> values)
     {
         assert(elements != 0);
-        // Assert that vector size's are > 0
+        assert(values.size() > 0);
         // Maybe assert that all vectors are same size
+        // (for now, we assume they are)
 
         uint32_t symbols = values.size();
         uint32_t symbol_size = bytes_needed<Field>(values[0].size());
@@ -105,58 +92,10 @@ namespace fifi
         }
     }
 
-
     /// Print elements in an array of fields
     /// @param elements elements to alter
     /// @param symbols number of symbols to print
     /// @param symbols_length length of a symbol (# elements in a symbol)
-    /*
-    template <typename Field>
-    inline void print(typename Field::value_ptr elements,
-        uint32_t symbols, uint32_t symbol_length)
-    {
-        // Print elements
-        for (uint32_t i = 0; i < symbols*symbol_length; ++i)
-        {
-            // Print element
-            std::cout << (unsigned)fifi::get_value<Field>(elements, i);
-
-            // Print new line after each symbol
-            if ( i % symbol_length == symbol_length-1)
-            {
-                std::cout << std::endl;
-            }
-        }
-    }
-    */
-
-    /// Print elements in an array of fields
-    /// @param elements elements to alter
-    /// @param symbols number of symbols to print
-    /// @param symbol_size size of a symbol (memory size)
-    /// @param symbol_length length of a symbol (# elements in a symbol)
-    /*
-    template <typename Field>
-    inline void print(typename Field::value_ptr elements,
-        uint32_t symbols, uint32_t symbol_size, uint32_t symbol_length)
-    {
-        uint8_t* ptr_end = ((uint8_t*)elements)+symbols*symbol_size;
-
-        for (uint8_t* ptr = elements; ptr < ptr_end; ptr += symbol_size)
-        {
-            for (uint32_t i = 0; i < symbol_length; ++i)
-            {
-                // Print element
-                std::cout << (unsigned)fifi::get_value<Field>(
-                         (typename Field::value_type*)ptr, i);
-            }
-
-            // Print new line after each symbol
-            std::cout << std::endl;
-        }
-    }
-    */
-
     template <typename Field>
     inline void print(typename Field::value_ptr elements,
         uint32_t symbols, uint32_t symbol_length)
@@ -179,8 +118,6 @@ namespace fifi
             std::cout << std::endl;
         }
     }
-
-
 }
 
 namespace kodo
@@ -208,8 +145,6 @@ namespace kodo
                      > > > > > > > > > >
     {};
 }
-
-
 
 
 int main()
