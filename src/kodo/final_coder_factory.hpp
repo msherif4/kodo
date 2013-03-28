@@ -56,8 +56,8 @@ namespace kodo
 
                     pointer coder = boost::make_shared<FinalType>();
 
-                    coder->test(*this_factory);
-                    coder->construct(m_max_symbols, m_max_symbol_size);
+                    //coder->test(*this_factory);
+                    coder->construct(*this_factory, m_max_symbols, m_max_symbol_size);
                     coder->initialize(symbols, symbol_size);
 
                     return coder;

@@ -89,7 +89,7 @@ namespace kodo
                         recoder->set_proxy(coder.get());
                         coder->set_recode_stack(recoder);
 
-                        recoder->construct(
+                        recoder->construct(m_stack_factory,
                             SuperCoder::factory::max_symbols(),
                             SuperCoder::factory::max_symbol_size());
 

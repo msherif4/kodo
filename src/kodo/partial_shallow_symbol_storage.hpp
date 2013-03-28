@@ -77,8 +77,8 @@ namespace kodo
 
                     /// @todo fix this
                     //partial_shallow_symbol_storage<SuperCoder> *d = coder.get();
-                    this_pointer this_coder(coder);
-                    this_coder->m_zero_symbol = m_zero_symbol;
+//                    this_pointer this_coder(coder);
+                    //                  this_coder->m_zero_symbol = m_zero_symbol;
 
                     return coder;
                 }

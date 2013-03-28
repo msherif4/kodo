@@ -79,9 +79,9 @@ namespace kodo
                         static_cast<factory_type*>(f_ptr);
 
                     pointer coder = boost::make_shared<FinalType>();
-                    coder->construct(max_symbols, max_symbol_size);
+                    coder->construct(*this_factory, max_symbols, max_symbol_size);
 
-                    coder->test(*this_factory);
+
 
                     return coder;
                 }
