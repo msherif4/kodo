@@ -3,10 +3,15 @@
 Using Kodo in Your Application
 ==============================
 
-The following describes how you may include Kodo in your own projects.
+The following describes how you may include Kodo in your own projects
+and applications. The following section
 
 Dependencies of Kodo
 --------------------
+
+If you decide not to use the Kodo build-scripts to download the dependencies of
+Kodo. You may do so manually - this section will describe the steps you need to
+take.
 
 In Kodo we try to not reinvent the wheel we therefore rely on
 a number of external libraries. These must be available in order
@@ -32,10 +37,6 @@ them. The libraries are:
 
    * http://boost.org
 
-
-Note, that in future version we plan to switch to C++11 which most likely will
-mean that the Boost dependency is no longer needed. You can help with this
-transition see @todo "how to contribute" for more information.
 
 Clone the git repository (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

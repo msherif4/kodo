@@ -30,74 +30,91 @@ Code and multiple variants.
 Platforms
 ---------
 Kodo is a plain C++ library so it is portable to a wide range of platforms.
-To ensure that we don't break a supported platform we have a buildbot instance
-building the Kodo libraries. You can check the status on the
-`Buildbot Waterfall`_ page.
+To ensure that we do not break compatibility with a supported platform we
+have a buildbot instance building the Kodo libraries. You can check the
+status on the `Steinwurf Buildbot`_ page.
 
-.. _Buildbot Waterfall: http://176.28.49.184:12344/waterfall
+.. _Steinwurf Buildbot: http://176.28.49.184:12344
 
-.. note:: The waterfall currently shows several different libraries
-  you should look for the ones called kodo-*
+.. note:: The buildbot is used for several different projects you will find the
+  kodo project in the overview on the main page.
 
-The buildbot currently builds for the following platforms:
+The buildbot pages will also provide you with up-to-date information on which
+platforms and compilers we are currently testing. If you have a specific
+platform or compiler which you would like to see Kodo support, `drop us a line`_.
 
-* Windows XP and Windows 7.
-* Various Linux distributions.
-* Mac OS Lion.
-
-See the details on the `build slaves`_ page.
-
-.. _build slaves: http://176.28.49.184:12344/buildslaves
+.. _drop us a line: http://steinwurf.com/contact-us/
 
 Tools Needed
 ------------
-In order to build and work with Kodo you need the following tools:
+In order to start developing using Kodo you need the following tools installed:
 
-1. **C++ compiler:** Kodo is a C++ library so to use it you will need a
-   working C++ compiler installed. We have tested the following
-   compilers with Kodo: g++ (v4.4.3 and up), clang++ (v3.0) and Visual
-   Studio Express 10.
+1. A **C++11 compliant compiler:** Kodo is a C++11 library so to use it
+   you will need a C++ compiler supporting the new C++11 standard. You
+   can see a list of compilers on our buildbot page (`Steinwurf Buildbot`_).
+
+2. **Git:** we use the git version control system for managing our libraries.
 
 If you wish to build the Kodo examples and unit-tests it is recommended
 that you also install the following:
 
-2. **Python:** any version later than 2.7 or 3.0 should be fine.
-3. **Git:** any version should be fine.
+3. **Python:** needed by our build scripts. We use the Python based `waf`_
+   build system.
 
-Download tools (Ubuntu or other Debian based distros)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _waf: https://code.google.com/p/waf/
+
+In the following we will provide the links for installing the tools on
+a number of different platforms.
+
+Download tools (Ubuntu or other Debian based distributions)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Get the dependencies using the following command:
 
 ::
-
   sudo apt-get install g++ python git-core
 
 Download tools (Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **C++ compiler:** You need a working C++ compiler we have tested using
-   `Visual Studio Express 10`_ compiler which is free of charge.
-   Newer versions should also be fine.
+1. **C++11 compliant compiler:** You need a working C++ compiler we have
+   tested using `Visual Studio Express 2012`_ compiler which is free of
+   charge. Newer versions should also be fine.
+
 2. **Python:** You need a working Python installation. Find the available
-   download on the `Python homepage`_.
-3. **Git:** There are several ways to get git on Windows. Currently our
-   build-system only supports the msysgit_ tool.
+   download on the `Python homepage`_. If you are in doubt which version
+   to install you may use the `Python 2.7.3 Windows Installer`_.
 
-.. _`Visual Studio Express 10`: http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
+3. **Git:** There are several ways to get git on Windows. If you plan to use
+   the waf build-scripts to build the Kodo examples and unit-tests, you should
+   install the msysgit_ tool. If you do not know which version to install you
+   may select the latest version from the `msysgit downloads`_ page.
+
+.. _`Visual Studio Express 2012`: http://www.microsoft.com/visualstudio/eng/downloads
 .. _`Python homepage`: http://www.python.org/download/
+.. _`Python 2.7.3 Windows Installer`: http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
 .. _msysgit: http://msysgit.github.com/
+.. _`msysgit downloads`: https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
 
-Alternatively you may be able to build and test Kodo in
-Cygwin but we have not tested this (let us know if you try :)).
-
-Download the sources
---------------------
+Download the Kodo sourcecode
+----------------------------
 There are several ways in which you may get the Kodo library and its
-dependencies. We recommend downloading the library using git, this
-will allow you to easily get new updates whenever the library is
-updated. In addition to this it is also possible to download the
-library as either zip or tar.gz archive. We will
-describe both approaches in the following:
+dependencies. Which approach you prefer might depend on you intended
+use-case for Kodo.
+
+1. If you wish to simply experiment with Kodo e.g. running some experiments
+   or similar. You may use the buildscripts provided in the Kodo project
+   to fetch the dependencies automatically.
+2. If you wish to use Kodo in a separate project, possibly your own build
+   tools. You may wish to download Kodo's dependencies as seperate git
+   repositories. For more information about this see the
+   section `Using Kodo in Your Application`_.
+
+In the following we will only describe option 1 (using the Kodo buildscripts).
+
+We recommend downloading the library using git, this will allow you to
+easily get new updates whenever the library is updated. In addition to
+this it is also possible to download the library as either zip or tar.gz
+archive. We will describe both approaches in the following:
 
 Recommended: Clone the git repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,10 +219,10 @@ common changes you may want for you build.
 .. note:: You may skip this section if you just want to quickly start with Kodo.
 
 * You may change the compiler.
- 
+
   To change compiler, set the ``CXX`` variable to you preferred compiler.
   In case you want to use clang++, add ``CXX=clang++`` in front of ``waf configure``.
-  
+
   ::
 
     CXX=clang++ python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
