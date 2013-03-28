@@ -96,19 +96,16 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+        void construct(factory &the_factory, uint32_t max_symbols,
+                       uint32_t max_symbol_size)
             {
-                Super::construct(max_symbols, max_symbol_size);
+                Super::construct(the_factory, max_symbols, max_symbol_size);
 
                 assert(max_symbol_size > 0);
 
+                m_zero_symbol = the_factory.m_zero_symbol;
                 m_partial_symbol = boost::make_shared<symbol_type>();
                 m_partial_symbol->resize(max_symbol_size, 0);
-            }
-
-        void test(factory &f)
-            {
-                m_zero_symbol = f.m_zero_symbol;
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

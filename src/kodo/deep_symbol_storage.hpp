@@ -30,12 +30,16 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
 
+        /// @copydoc layer::factory
+        typedef typename SuperCoder::factory factory;
+
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+        void construct(factory &the_factory, uint32_t max_symbols,
+                       uint32_t max_symbol_size)
             {
-                SuperCoder::construct(max_symbols, max_symbol_size);
+                SuperCoder::construct(the_factory, max_symbols, max_symbol_size);
 
                 uint32_t max_data_needed =
                     max_symbols * max_symbol_size;

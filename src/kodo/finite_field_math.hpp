@@ -83,9 +83,11 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(uint32_t max_symbols, uint32_t max_symbol_size)
+        void construct(factory &the_factory, uint32_t max_symbols,
+                       uint32_t max_symbol_size)
             {
-                SuperCoder::construct(max_symbols, max_symbol_size);
+                SuperCoder::construct(
+                    the_factory, max_symbols, max_symbol_size);
 
                 // The maximum symbol length needed for the temp symbol.
                 // We expect this will be one value per symbol
