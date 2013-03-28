@@ -90,56 +90,21 @@ Download tools (Windows)
    install the msysgit_ tool. If you do not know which version to install you
    may select the latest version from the `msysgit downloads`_ page.
 
-.. _`Visual Studio Express 2012`: http://www.microsoft.com/visualstudio/eng/downloads
-.. _`Python homepage`: http://www.python.org/download/
-.. _`Python 2.7.3 Windows Installer`: http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
-.. _msysgit: http://msysgit.github.com/
-.. _`msysgit downloads`: https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
+.. _`Visual Studio Express 2012`:
+   http://www.microsoft.com/visualstudio/eng/downloads
 
-Download the Kodo sourcecode
-----------------------------
-There are several ways in which you may get the Kodo library and its
-dependencies. Which approach you prefer might depend on you intended
-use-case for Kodo.
+.. _`Python homepage`:
+   http://www.python.org/download/
 
-1. If you wish to simply experiment with Kodo e.g. running some experiments
-   or similar. You may use the buildscripts provided in the Kodo project
-   to fetch the dependencies automatically.
-2. If you wish to use Kodo in a separate project, possibly your own build
-   tools. You may wish to download Kodo's dependencies as seperate git
-   repositories. For more information about this see the
-   section `Using Kodo in Your Application`_.
+.. _`Python 2.7.3 Windows Installer`:
+   http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
 
-In the following we will only describe option 1 (using the Kodo buildscripts).
+.. _msysgit:
+   http://msysgit.github.com/
 
-We recommend downloading the library using git, this will allow you to
-easily get new updates whenever the library is updated. In addition to
-this it is also possible to download the library as either zip or tar.gz
-archive. We will describe both approaches in the following:
+.. _`msysgit downloads`:
+   https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
 
-Recommended: Clone the git repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-1. Create a suitable directory for the projects (optional)
-
-   ::
-
-     mkdir dev
-     cd dev
-
-2. Clone and download the Kodo libraries by running:
-
-   ::
-
-     git clone git://github.com/steinwurf/kodo.git
-
-Alternative: Download the source code as archives
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Download the zip or tar.gz archive from the following location and
-extract it to a desired location.
-
-* https://github.com/steinwurf/kodo/downloads
 
 Waf (build system)
 ------------------
@@ -152,6 +117,7 @@ A Waf project contains two types of files:
 
 1. The ``waf`` file this the actual build-system executable.
    This file is not meant to be edited.
+
 2. A number of ``wscript`` files, these files contain the
    project build information. You can think of it as a type
    of ``makefile`` written in Python.
@@ -159,7 +125,8 @@ A Waf project contains two types of files:
 .. note:: See the ``waf`` build options by running ``python waf -h``
           in your favorite command-line shell.
 
-
+In the following we will look at how you can build Kodo's examples, benchmarks
+and unit tests using the Waf build system.
 
 Quick Start (building Kodo examples and unit tests)
 ---------------------------------------------------

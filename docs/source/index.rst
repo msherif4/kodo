@@ -28,9 +28,11 @@ Documentation
    :maxdepth: 2
 
    intro
+   getting_the_sourcecode
    using_kodo
    howto
    nc_glossary
+
 
    contribution/contribution
 
