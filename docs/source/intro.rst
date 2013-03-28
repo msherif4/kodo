@@ -71,6 +71,7 @@ Download tools (Ubuntu or other Debian based distributions)
 Get the dependencies using the following command:
 
 ::
+
   sudo apt-get install g++ python git-core
 
 Download tools (Windows)
