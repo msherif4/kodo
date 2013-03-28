@@ -29,6 +29,7 @@ namespace kodo
 
     public:
 
+        /// @ingroup factory_layers
         /// Forwarding factory for the parallel proxy stack
         class factory
         {
@@ -136,7 +137,7 @@ namespace kodo
                 m_proxy = proxy;
             }
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
+        /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
             {
                 (void) the_factory;

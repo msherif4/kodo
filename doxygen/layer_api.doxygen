@@ -110,9 +110,9 @@ public:
     /// @brief Constructs the coder with the maximum parameters it will ever
     ///        see. A coder may only be constructed ONCE, but initialized
     ///        many times.
-    /// @param max_symbols the maximum symbols this coder can expect
-    /// @param max_symbol_size the maximum size of a symbol in bytes
-    void construct(uint32_t max_symbols, uint32_t max_symbol_size);
+    /// @param the_factory The factory used to build the codec layer. Provides
+    ///        access to cached data and factory functions.
+    void construct(factory &the_factory);
 
     /// @ingroup factory_api
     /// @brief Initializes the coder

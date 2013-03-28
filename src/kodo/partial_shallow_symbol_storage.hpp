@@ -52,6 +52,7 @@ namespace kodo
 
     public:
 
+        /// @ingroup factory_layers
         /// The factory layer associated with this coder. We create
         /// a zero symbol which may be shared with all the
         /// symbol storage partial
@@ -90,7 +91,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
+        /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
             {
                 Super::construct(the_factory);

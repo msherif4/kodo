@@ -28,6 +28,7 @@ namespace kodo
         /// Pointer type to the constructed coder
         typedef boost::shared_ptr<FinalType> pointer;
 
+        /// @ingroup factory_layers
         /// The final factory
         class factory
         {
@@ -88,7 +89,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
+        /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
             {
                 /// This is the final factory layer so we do nothing

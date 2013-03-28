@@ -82,7 +82,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
+        /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
             {
                 SuperCoder::construct(the_factory);

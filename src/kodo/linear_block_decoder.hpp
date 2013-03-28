@@ -50,7 +50,7 @@ namespace kodo
               m_maximum_pivot(0)
             { }
 
-        /// @copydoc layer::construct(uint32_t,uint32_t)
+        /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
             {
                 SuperCoder::construct(the_factory);
