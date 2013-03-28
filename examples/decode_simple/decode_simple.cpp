@@ -27,6 +27,28 @@
 
 namespace fifi
 {
+    /// Gets the number of field elements that can be stored in a certain number
+    /// of bytes
+    /// @param bytes number of bytes
+    /// @return number of field elements that can be stored in bytes 
+    template<class Field>
+    inline uint32_t num_elements(uint32_t bytes)
+    {
+        return fifi::elements_needed<Field>(bytes);
+    }
+
+    /// Binary specialization to get the number of field elements that can be
+    /// stored in a certain number of bytes
+    /// @param bytes number of bytes
+    /// @return number of field elements that can be stored in bytes 
+    template<>
+    inline uint32_t num_elements<fifi::binary>(uint32_t bytes)
+    {
+        assert(bytes > 0);
+
+        return 8*bytes;
+    }
+
     /// Set multiple elements in an array of fields
     /// @param elements elements to alter
     /// @param values vector of values to insert
@@ -34,6 +56,8 @@ namespace fifi
     inline void set_values(typename Field::value_ptr elements,
         std::vector<typename Field::value_type> values)
     {
+        assert(elements != 0);
+
         uint32_t i = 0;
         for (auto value : values)
         {
@@ -53,15 +77,40 @@ namespace fifi
         uint8_t* ptr = elements;
         for (auto symbol : values)
         {
-            set_values<Field>((typename Field::value_type*)ptr, symbol); 
+            set_values<Field>((typename Field::value_type*)ptr, symbol);
             ptr += symbol_size;
         }
     }
+
+    template<typename Field>
+    inline
+    void initialize_values(typename Field::value_ptr elements,
+        std::vector<std::vector<typename Field::value_type>> values)
+    {
+        assert(elements != 0);
+        // Assert that vector size's are > 0
+        // Maybe assert that all vectors are same size
+
+        uint32_t symbols = values.size();
+        uint32_t symbol_size = bytes_needed<Field>(values[0].size());
+
+        // Initialize data to zero
+        std::fill_n(elements, symbols*symbol_size, 0);
+
+        uint8_t* ptr = elements;
+        for (auto symbol : values)
+        {
+            set_values<Field>((typename Field::value_type*)ptr, symbol);
+            ptr += symbol_size;
+        }
+    }
+
 
     /// Print elements in an array of fields
     /// @param elements elements to alter
     /// @param symbols number of symbols to print
     /// @param symbols_length length of a symbol (# elements in a symbol)
+    /*
     template <typename Field>
     inline void print(typename Field::value_ptr elements,
         uint32_t symbols, uint32_t symbol_length)
@@ -79,12 +128,14 @@ namespace fifi
             }
         }
     }
+    */
 
     /// Print elements in an array of fields
     /// @param elements elements to alter
     /// @param symbols number of symbols to print
     /// @param symbol_size size of a symbol (memory size)
     /// @param symbol_length length of a symbol (# elements in a symbol)
+    /*
     template <typename Field>
     inline void print(typename Field::value_ptr elements,
         uint32_t symbols, uint32_t symbol_size, uint32_t symbol_length)
@@ -104,6 +155,32 @@ namespace fifi
             std::cout << std::endl;
         }
     }
+    */
+
+    template <typename Field>
+    inline void print(typename Field::value_ptr elements,
+        uint32_t symbols, uint32_t symbol_length)
+    {
+        uint32_t symbol_size = bytes_needed<Field>(symbol_length);
+        uint8_t* ptr_end = ((uint8_t*)elements)+symbols*symbol_size;
+
+        // Loop through all symbols
+        for (uint8_t* ptr = elements; ptr < ptr_end; ptr += symbol_size)
+        {
+            // Loop through all elements in a symbol
+            for (uint32_t i = 0; i < symbol_length; ++i)
+            {
+                // Print element
+                std::cout << (unsigned)fifi::get_value<Field>(
+                         (typename Field::value_type*)ptr, i);
+            }
+
+            // Print new line after each symbol
+            std::cout << std::endl;
+        }
+    }
+
+
 }
 
 namespace kodo
@@ -132,15 +209,19 @@ namespace kodo
     {};
 }
 
+
+
+
 int main()
 {
+    typedef fifi::binary field_type;
+    typedef field_type::value_type value_type;
+
     // Set the number of symbols (i.e. the generation size in RLNC
     // terminology) and the size of a symbol in bytes
     const uint32_t symbols = 3;
     const uint32_t symbol_size = 1;  // 8 bits in each symbol
-
-    typedef fifi::binary field_type;
-    typedef field_type::value_type value_type;
+    const uint32_t symbol_length = 5;
 
     // Typdefs for the decoder type we wish to use
     typedef kodo::rlnc_decoder<field_type> rlnc_decoder;
@@ -149,20 +230,7 @@ int main()
     // The factory is used to build actual decoders
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
-
     
-    // Find symbol length (number of elements in a symbols)
-    uint32_t symbol_length;
-    if (fifi::is_binary<field_type>::value)
-    {
-        symbol_length = 8*symbol_size;
-    }
-    else
-    {
-        // Needs to assert that it evaluates to an integer
-        symbol_length = symbol_size/sizeof(value_type);
-    }
-
 
     // To illustrate decoding, random data has been filled into the
     // matrices below. It is crucial that the equation below is correct
@@ -213,28 +281,33 @@ int main()
     uint8_t symbol_coefficients[symbols*symbol_size];
     uint8_t original_symbols[symbols*symbol_size];
 
-    fifi::set_values<field_type>((value_type*)encoded_symbols, symbol_size,
-            { {0,0,0,1,1,1,0,0},
-              {0,0,0,1,0,0,0,1},
-              {0,0,0,0,1,0,1,1} } );
 
-    fifi::set_values<field_type>((value_type*)symbol_coefficients, symbol_size,
+    // Initialize data and add trailing zeros in each symbol automatically to
+    // fit symbol_size
+    fifi::initialize_values<field_type>((value_type*)encoded_symbols,
+            { {1,1,1,0,0},
+              {1,0,0,0,1},
+              {0,1,0,1,1} } );
+
+    fifi::initialize_values<field_type>((value_type*)symbol_coefficients,
             { {0,1,0},
               {1,1,0},
               {1,0,1} } );
 
-
-    //fifi::set_values<field_type>((value_type*)symbol_coefficients,
-    //        { 0,0,0,0,0,0,1,0,
-    //          0,0,0,0,0,1,1,0,
-    //          0,0,0,0,0,1,0,1 } );
-
+    fifi::initialize_values<field_type>((value_type*)original_symbols,
+            { {0,1,1,0,1},
+              {1,1,1,0,0},
+              {0,0,1,1,0} } );
 
 
-    fifi::set_values<field_type>((value_type*)original_symbols, symbol_size,
-            { {0,0,0,0,1,1,0,1},
-              {0,0,0,1,1,1,0,0},
-              {0,0,0,0,0,1,1,0} } );
+    std::cout << std::endl << "Original symbols:" << std::endl;
+    fifi::print<field_type>((value_type*)original_symbols,
+            symbols, symbol_length);
+
+    std::cout << std::endl << "Symbol Coefficients (before decoding):"
+        << std::endl;
+    fifi::print<field_type>((value_type*)symbol_coefficients,
+            symbols, symbols);
 
 
     // Decode each symbol
@@ -249,13 +322,10 @@ int main()
     decoder->copy_symbols(sak::storage(decoded_symbols));
 
 
-    std::cout << std::endl << "Original symbols:" << std::endl;
-    fifi::print<field_type>((value_type*)original_symbols,
-            symbols, symbol_length);
-
-    std::cout << std::endl << "Symbol Coefficients:" << std::endl;
+    std::cout << std::endl << "Symbol Coefficients (after decoding):"
+        << std::endl;
     fifi::print<field_type>((value_type*)symbol_coefficients,
-            symbols, symbol_size, 3);
+            symbols, symbols);
 
     std::cout << std::endl << "Encoded symbols:" << std::endl;
     fifi::print<field_type>((value_type*)encoded_symbols,
