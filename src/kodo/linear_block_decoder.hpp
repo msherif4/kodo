@@ -51,14 +51,12 @@ namespace kodo
             { }
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
-                SuperCoder::construct(
-                    the_factory, max_symbols, max_symbol_size);
+                SuperCoder::construct(the_factory);
 
-                m_uncoded.resize(max_symbols, false);
-                m_coded.resize(max_symbols, false);
+                m_uncoded.resize(the_factory.max_symbols(), false);
+                m_coded.resize(the_factory.max_symbols(), false);
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

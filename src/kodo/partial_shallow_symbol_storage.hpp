@@ -75,11 +75,6 @@ namespace kodo
                     pointer coder =
                         Super::factory::build(symbols, symbol_size);
 
-                    /// @todo fix this
-                    //partial_shallow_symbol_storage<SuperCoder> *d = coder.get();
-//                    this_pointer this_coder(coder);
-                    //                  this_coder->m_zero_symbol = m_zero_symbol;
-
                     return coder;
                 }
 
@@ -96,16 +91,15 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
-                Super::construct(the_factory, max_symbols, max_symbol_size);
+                Super::construct(the_factory);
 
-                assert(max_symbol_size > 0);
+                assert(the_factory.max_symbol_size() > 0);
 
                 m_zero_symbol = the_factory.m_zero_symbol;
                 m_partial_symbol = boost::make_shared<symbol_type>();
-                m_partial_symbol->resize(max_symbol_size, 0);
+                m_partial_symbol->resize(the_factory.max_symbol_size(), 0);
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

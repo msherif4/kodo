@@ -43,10 +43,12 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_pool(boost::bind(&factory::make_coder, max_symbols,
-                                     max_symbol_size, this))
+                                     max_symbol_size, this)),
+                  m_max_symbols(max_symbols),
+                  m_max_symbol_size(max_symbol_size)
                 {
-                    assert(max_symbols > 0);
-                    assert(max_symbol_size > 0);
+                    assert(m_max_symbols > 0);
+                    assert(m_max_symbol_size > 0);
                 }
 
             /// @copydoc layer::factory::build(uint32_t,uint32_t)
@@ -60,6 +62,19 @@ namespace kodo
 
                     return coder;
                 }
+
+            /// @copydoc layer::max_symbols() const;
+            uint32_t max_symbols() const
+                {
+                    return m_max_symbols;
+                }
+
+            /// @copydoc layer::max_symbol_size() const;
+            uint32_t max_symbol_size() const
+                {
+                    return m_max_symbol_size;
+                }
+
 
         private:
 
@@ -79,7 +94,7 @@ namespace kodo
                         static_cast<factory_type*>(f_ptr);
 
                     pointer coder = boost::make_shared<FinalType>();
-                    coder->construct(*this_factory, max_symbols, max_symbol_size);
+                    coder->construct(*this_factory);
 
 
 
@@ -91,19 +106,22 @@ namespace kodo
             /// Resource pool for the coders
             sak::resource_pool<FinalType> m_pool;
 
+            /// The maximum number of symbols
+            uint32_t m_max_symbols;
+
+            /// The maximum symbol size
+            uint32_t m_max_symbol_size;
+
         };
 
     public:
 
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
                 // This is the final factory layer so we do nothing
                 (void) the_factory;
-                (void) max_symbols;
-                (void) max_symbol_size;
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

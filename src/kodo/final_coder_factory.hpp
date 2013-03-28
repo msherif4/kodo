@@ -57,14 +57,28 @@ namespace kodo
                     pointer coder = boost::make_shared<FinalType>();
 
                     //coder->test(*this_factory);
-                    coder->construct(*this_factory, m_max_symbols, m_max_symbol_size);
+                    coder->construct(*this_factory);
                     coder->initialize(symbols, symbol_size);
 
                     return coder;
                 }
 
+            /// @copydoc layer::max_symbols() const;
+            uint32_t max_symbols() const
+                {
+                    return m_max_symbols;
+                }
+
+            /// @copydoc layer::max_symbol_size() const;
+            uint32_t max_symbol_size() const
+                {
+                    return m_max_symbol_size;
+                }
+
         private:
 
+            /// @todo remove these two functions from whereever they are
+            ///       defined now
             /// The maximum number of symbols
             uint32_t m_max_symbols;
 
@@ -75,13 +89,10 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
                 /// This is the final factory layer so we do nothing
                 (void) the_factory;
-                (void) max_symbols;
-                (void) max_symbol_size;
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

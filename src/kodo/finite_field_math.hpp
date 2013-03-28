@@ -83,11 +83,9 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
-                SuperCoder::construct(
-                    the_factory, max_symbols, max_symbol_size);
+                SuperCoder::construct(the_factory);
 
                 // The maximum symbol length needed for the temp symbol.
                 // We expect this will be one value per symbol
@@ -95,10 +93,11 @@ namespace kodo
                 // needed for the actual data.
 
                 uint32_t data_symbol_length =
-                    fifi::elements_needed<field_type>(max_symbol_size);
+                    fifi::elements_needed<field_type>(
+                        the_factory.max_symbol_size());
 
                 uint32_t max_symbol_length =
-                    std::max(max_symbols, data_symbol_length);
+                    std::max(the_factory.max_symbols(), data_symbol_length);
 
                 assert(max_symbol_length > 0);
                 m_temp_symbol.resize(max_symbol_length, 0);

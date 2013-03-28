@@ -36,14 +36,12 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
-                SuperCoder::construct(
-                    the_factory, max_symbols, max_symbol_size);
+                SuperCoder::construct(the_factory);
 
                 uint32_t max_data_needed =
-                    max_symbols * max_symbol_size;
+                    the_factory.max_symbols() * the_factory.max_symbol_size();
 
                 assert(max_data_needed > 0);
 
@@ -52,7 +50,7 @@ namespace kodo
                 assert(m_data.size() == 0);
                 m_data.resize(max_data_needed, 0);
 
-                m_symbols.resize(max_symbols, false);
+                m_symbols.resize(the_factory.max_symbols(), false);
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

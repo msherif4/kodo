@@ -137,12 +137,9 @@ namespace kodo
             }
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
-        void construct(factory &the_factory, uint32_t max_symbols,
-                       uint32_t max_symbol_size)
+        void construct(factory &the_factory)
             {
                 (void) the_factory;
-                (void) max_symbols;
-                (void) max_symbol_size;
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
