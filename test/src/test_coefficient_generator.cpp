@@ -248,10 +248,10 @@ struct api_generate
 
             }
 
-            EXPECT_TRUE(count_a < coder->rank());
-            EXPECT_TRUE(count_b < coder->rank());
-            EXPECT_TRUE(count_c < coder->rank());
-            EXPECT_TRUE(count_d < coder->rank());
+            EXPECT_TRUE(count_a <= coder->rank());
+            EXPECT_TRUE(count_b <= coder->rank());
+            EXPECT_TRUE(count_c <= coder->rank());
+            EXPECT_TRUE(count_d <= coder->rank());
         }
 
 private:

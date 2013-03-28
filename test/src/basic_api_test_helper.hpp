@@ -59,7 +59,15 @@ inline std::vector<uint8_t> random_vector(uint32_t size)
     std::vector<uint8_t> v(size);
     for(uint32_t i = 0; i < v.size(); ++i)
     {
-        v[i] = rand() % 255;
+        v[i] = rand() % 256;
+    }
+
+    if(size > 4)
+    {
+        // The 0xffffffff value is illegal in the prime2325 field
+        // so we want to make sure we handle it correctly
+        v[0] = 0xffU; v[1] = 0xffU;
+        v[2] = 0xffU; v[3] = 0xffU;
     }
 
     return v;
@@ -93,7 +101,8 @@ inline void run_test(uint32_t symbols, uint32_t symbol_size)
 
 
 template<class Encoder, class Decoder>
-inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
+inline void
+invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 {
 
     // Common setting
@@ -188,7 +197,8 @@ inline void invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 }
 
 template<class Encoder, class Decoder>
-inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
+inline void
+invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 {
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
@@ -257,7 +267,8 @@ inline void invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 /// Checks that the encoders and decoders are in a clean state after using
 /// the initialize function.
 template<class Encoder, class Decoder>
-inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
+inline void
+invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 {
 
     // Common setting
@@ -310,7 +321,8 @@ inline void invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
 
 template<class Encoder, class Decoder>
-inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
+inline void
+invoke_systematic(uint32_t symbols, uint32_t symbol_size)
 {
 
     // Common setting
@@ -352,6 +364,53 @@ inline void invoke_systematic(uint32_t symbols, uint32_t symbol_size)
                            data_in.begin()));
 
 }
+
+/// Tests that an encoder support progressively specifying the symbols
+template<class Encoder, class Decoder>
+inline void
+invoke_set_symbol(uint32_t symbols, uint32_t symbol_size)
+{
+
+    // Common setting
+    typename Encoder::factory encoder_factory(symbols, symbol_size);
+    auto encoder = encoder_factory.build(symbols, symbol_size);
+
+    typename Decoder::factory decoder_factory(symbols, symbol_size);
+    auto decoder = decoder_factory.build(symbols, symbol_size);
+
+    std::vector<uint8_t> payload(encoder->payload_size());
+    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
+
+    auto symbol_sequence = sak::split_storage(
+        sak::storage(data_in), symbol_size);
+
+    // Set the encoder non-systematic
+    if(kodo::is_systematic_encoder(encoder))
+        kodo::set_systematic_off(encoder);
+
+    EXPECT_EQ(encoder->rank(), 0U);
+    EXPECT_EQ(decoder->rank(), 0U);
+
+    while( !decoder->is_complete() )
+    {
+        encoder->encode( &payload[0] );
+        decoder->decode( &payload[0] );
+
+        if(encoder->rank() < symbols)
+        {
+            uint32_t i = rand() % symbols;
+            encoder->set_symbol(i, symbol_sequence[i]);
+        }
+    }
+
+    std::vector<uint8_t> data_out(decoder->block_size(), '\0');
+    decoder->copy_symbols(sak::storage(data_out));
+
+    EXPECT_TRUE(std::equal(data_out.begin(),
+                           data_out.end(),
+                           data_in.begin()));
+}
+
 
 #endif
 

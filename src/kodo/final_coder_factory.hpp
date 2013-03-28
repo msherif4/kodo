@@ -20,18 +20,22 @@ namespace kodo
     /// @ingroup factory_layers
     /// Terminates the layered coder and contains the coder allocation
     /// policy
-    template<class FINAL>
+    template<class FinalType>
     class final_coder_factory : boost::noncopyable
     {
     public:
 
         /// Pointer type to the constructed coder
-        typedef boost::shared_ptr<FINAL> pointer;
+        typedef boost::shared_ptr<FinalType> pointer;
 
         /// The final factory
         class factory
         {
         public:
+
+            /// The factory type
+            typedef typename FinalType::factory factory_type;
+
 
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
@@ -48,8 +52,11 @@ namespace kodo
                     assert(symbols > 0);
                     assert(symbol_size > 0);
 
-                    pointer coder = boost::make_shared<FINAL>();
+                    factory_type *this_factory = static_cast<factory_type*>(this);
 
+                    pointer coder = boost::make_shared<FinalType>();
+
+                    coder->test(*this_factory);
                     coder->construct(m_max_symbols, m_max_symbol_size);
                     coder->initialize(symbols, symbol_size);
 
@@ -66,6 +73,10 @@ namespace kodo
         };
 
     public:
+
+        void test(factory &/*ok*/)
+            {
+            }
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)

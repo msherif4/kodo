@@ -113,10 +113,6 @@ namespace kodo
                  recoding_stack<MainStack>, MainStack> > > > > > > > >
     { };
 
-    /// @todo With a shallow storage class this will fail, since the uniform
-    ///       generator will think that all symbols are available. Since they
-    ///       are specified with the set_symbols() perhaps we need a
-    ///       set_storage() or something similar.
     /// Implementation of a complete RLNC decoder this configuration
     /// adds the following features (including those described for
     /// the encoder):

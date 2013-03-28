@@ -93,6 +93,9 @@ namespace kodo
             {
                 assert(m_data.size() == symbols.size());
                 m_data.swap(symbols);
+
+                m_symbols_count = SuperCoder::symbols();
+                std::fill(m_symbols.begin(), m_symbols.end(), true);
             }
 
         /// @copydoc layer::set_symbols(const sak::const_storage&)

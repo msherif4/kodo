@@ -26,7 +26,7 @@ namespace kodo
         /// @copydoc layer::pointer
         typedef typename SuperCoder::pointer pointer;
 
-        /// Pointer the type of this layer
+        /// Pointer to the type of this layer
         typedef boost::shared_ptr<
             aligned_coefficients_buffer<SuperCoder> > this_pointer;
 

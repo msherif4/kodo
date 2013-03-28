@@ -23,23 +23,27 @@ namespace kodo
     /// Terminates the layered coder and contains the coder final
     /// factory. The pool factory uses a memory pool to recycle
     /// encoders/decoders, and thereby minimize memory consumption.
-    template<class FINAL>
+    template<class FinalType>
     class final_coder_factory_pool : boost::noncopyable
     {
     public:
 
         /// Pointer type to the constructed coder
-        typedef boost::shared_ptr<FINAL> pointer;
+        typedef boost::shared_ptr<FinalType> pointer;
 
         /// The final factory
         class factory
         {
         public:
 
+            /// The factory type
+            typedef typename FinalType::factory factory_type;
+
+
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_pool(boost::bind(&factory::make_coder, max_symbols,
-                                     max_symbol_size))
+                                     max_symbol_size, this))
                 {
                     assert(max_symbols > 0);
                     assert(max_symbol_size > 0);
@@ -65,13 +69,19 @@ namespace kodo
             /// @param max_symbol_size The maximum size of a symbol in
             ///        bytes
             static pointer make_coder(uint32_t max_symbols,
-                                      uint32_t max_symbol_size)
+                                      uint32_t max_symbol_size,
+                                      factory *f_ptr)
                 {
                     assert(max_symbols > 0);
                     assert(max_symbol_size > 0);
 
-                    pointer coder = boost::make_shared<FINAL>();
+                    factory_type *this_factory =
+                        static_cast<factory_type*>(f_ptr);
+
+                    pointer coder = boost::make_shared<FinalType>();
                     coder->construct(max_symbols, max_symbol_size);
+
+                    coder->test(*this_factory);
 
                     return coder;
                 }
@@ -79,11 +89,16 @@ namespace kodo
         private:
 
             /// Resource pool for the coders
-            sak::resource_pool<FINAL> m_pool;
+            sak::resource_pool<FinalType> m_pool;
 
         };
 
     public:
+
+        void test(factory &/*ok*/)
+            {
+            }
+
 
         /// @copydoc layer::construct(uint32_t,uint32_t)
         void construct(uint32_t max_symbols, uint32_t max_symbol_size)

@@ -37,6 +37,10 @@ namespace kodo
         /// Pointer produced by the factory
         typedef typename Super::pointer pointer;
 
+        /// Pointer to the type of this layer
+        typedef boost::shared_ptr<
+            partial_shallow_symbol_storage> this_pointer;
+
         /// Partial and zero symbol types
         typedef std::vector<uint8_t> symbol_type;
 
@@ -55,7 +59,7 @@ namespace kodo
         {
         public:
 
-            /// @copydoc layer::factory::factory()
+            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : Super::factory(max_symbols, max_symbol_size)
                 {
@@ -65,17 +69,24 @@ namespace kodo
                     m_zero_symbol->resize(max_symbol_size, 0);
                 }
 
-            /// @copydoc layer::factory::build()
+            /// @copydoc layer::factory::build(uint32_t,uint32_t)
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     pointer coder =
                         Super::factory::build(symbols, symbol_size);
 
-                    coder->m_zero_symbol = m_zero_symbol;
+                    /// @todo fix this
+                    //partial_shallow_symbol_storage<SuperCoder> *d = coder.get();
+                    this_pointer this_coder(coder);
+                    this_coder->m_zero_symbol = m_zero_symbol;
+
                     return coder;
                 }
 
         private:
+
+            /// Grant the layer access
+            friend class partial_shallow_symbol_storage;
 
             /// The zero symbol
             symbol_ptr m_zero_symbol;
@@ -93,6 +104,11 @@ namespace kodo
 
                 m_partial_symbol = boost::make_shared<symbol_type>();
                 m_partial_symbol->resize(max_symbol_size, 0);
+            }
+
+        void test(factory &f)
+            {
+                m_zero_symbol = f.m_zero_symbol;
             }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)

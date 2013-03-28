@@ -93,9 +93,9 @@ namespace kodo
 
                 m_symbols_count = 0;
 
-                for(auto& i: symbols)
+                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    if(i != 0)
+                    if(m_data[i] != 0)
                         ++m_symbols_count;
                 }
             }

@@ -1112,9 +1112,6 @@ struct api_storage_status
         {
             set_symbol();
             set_symbols();
-
-            /// @todo enable
-            //swap_symbols();
         }
 
     /// Using:
@@ -1202,54 +1199,6 @@ struct api_storage_status
             EXPECT_TRUE(coder->is_storage_full());
         }
 
-    /// @todo enable
-    /// Using:
-    ///   - layer::swap_symbols(std::vector<uint8_t>&)
-    ///   - layer::swap_symbols(std::vector<uint8_t*>&)
-    ///   - layer::swap_symbols(std::vector<const uint8_t*>&)
-    // void swap_symbols()
-    //     {
-    //         pointer_type coder =
-    //             m_factory.build(m_factory.max_symbols(),
-    //                             m_factory.max_symbol_size());
-
-    //         EXPECT_EQ(coder->symbol_count(), 0U);
-    //         EXPECT_FALSE(coder->is_storage_full());
-
-    //         std::vector<uint8_t> vector_data =
-    //             random_vector(coder->block_size());
-
-    //         coder->swap_symbols(vector_data);
-
-    //         EXPECT_EQ(coder->symbol_count(), coder->symbols());
-    //         EXPECT_TRUE(coder->is_storage_full());
-
-    //         coder = m_factory.build(m_factory.max_symbols(),
-    //                                 m_factory.max_symbol_size());
-
-    //         EXPECT_EQ(coder->symbol_count(), 0U);
-    //         EXPECT_FALSE(coder->is_storage_full());
-
-    //         std::vector<uint8_t*> vector_ptr(m_factory.max_symbols());
-    //         coder->swap_symbols(vector_ptr);
-
-    //         EXPECT_EQ(coder->symbol_count(), coder->symbols());
-    //         EXPECT_TRUE(coder->is_storage_full());
-
-    //         coder = m_factory.build(m_factory.max_symbols(),
-    //                                 m_factory.max_symbol_size());
-
-    //         EXPECT_EQ(coder->symbol_count(), 0U);
-    //         EXPECT_FALSE(coder->is_storage_full());
-
-    //         std::vector<const uint8_t*> vector_const_ptr(
-    //             m_factory.max_symbols());
-    //         coder->swap_symbols(vector_const_ptr);
-
-    //         EXPECT_EQ(coder->symbol_count(), coder->symbols());
-    //         EXPECT_TRUE(coder->is_storage_full());
-    //     }
-
 private:
 
     // The factory
@@ -1259,6 +1208,201 @@ private:
     factory_type m_factory_fixed;
 
 };
+
+/// Tests:
+///   - layer::symbol_exists(uint32_t) const
+///   - layer::symbol_count() const
+///   - layer::is_storage_full() const
+template<class Coder>
+struct api_deep_swap_storage_status
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    api_deep_swap_storage_status(uint32_t max_symbols, uint32_t max_symbol_size)
+        : m_factory(max_symbols, max_symbol_size)
+        { }
+
+    void run()
+        {
+            swap_symbols();
+        }
+
+    /// Using:
+    ///   - layer::swap_symbols(std::vector<uint8_t>&)
+    void swap_symbols()
+        {
+            pointer_type coder =
+                m_factory.build(m_factory.max_symbols(),
+                                m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            std::vector<uint8_t> vector_data =
+                random_vector(coder->block_size());
+
+            coder->swap_symbols(vector_data);
+
+            EXPECT_EQ(coder->symbol_count(), coder->symbols());
+            EXPECT_TRUE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_TRUE(coder->symbol_exists(i));
+            }
+
+            coder = m_factory.build(m_factory.max_symbols(),
+                                    m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_FALSE(coder->symbol_exists(i));
+            }
+
+
+        }
+
+private:
+
+    // The factory
+    factory_type m_factory;
+
+};
+
+
+/// Tests:
+///   - layer::symbol_exists(uint32_t) const
+///   - layer::symbol_count() const
+///   - layer::is_storage_full() const
+template<class Coder>
+struct api_const_shallow_swap_storage_status
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    api_const_shallow_swap_storage_status(uint32_t max_symbols,
+                                          uint32_t max_symbol_size)
+        : m_factory(max_symbols, max_symbol_size)
+        { }
+
+    void run()
+        {
+            swap_symbols();
+        }
+
+    /// Using:
+    ///   - layer::swap_symbols(std::vector<const uint8_t*>&)
+    void swap_symbols()
+        {
+            pointer_type coder =
+                m_factory.build(m_factory.max_symbols(),
+                                m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            // Make a temp. vector with some dummy pointers
+            std::vector<const uint8_t*> vector_const_ptr(
+                m_factory.max_symbols(), (const uint8_t*)1U);
+
+            coder->swap_symbols(vector_const_ptr);
+
+            EXPECT_EQ(coder->symbol_count(), coder->symbols());
+            EXPECT_TRUE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_TRUE(coder->symbol_exists(i));
+            }
+
+            coder = m_factory.build(m_factory.max_symbols(),
+                                    m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_FALSE(coder->symbol_exists(i));
+            }
+        }
+
+private:
+
+    // The factory
+    factory_type m_factory;
+
+};
+
+
+/// Tests:
+///   - layer::symbol_exists(uint32_t) const
+///   - layer::symbol_count() const
+///   - layer::is_storage_full() const
+template<class Coder>
+struct api_mutable_shallow_swap_storage_status
+{
+    typedef typename Coder::factory factory_type;
+    typedef typename Coder::pointer pointer_type;
+
+    api_mutable_shallow_swap_storage_status(uint32_t max_symbols,
+                                          uint32_t max_symbol_size)
+        : m_factory(max_symbols, max_symbol_size)
+        { }
+
+    void run()
+        {
+            swap_symbols();
+        }
+
+    /// Using:
+    ///   - layer::swap_symbols(std::vector<uint8_t*>&)
+    void swap_symbols()
+        {
+            pointer_type coder =
+                m_factory.build(m_factory.max_symbols(),
+                                m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            // Make a temp. vector with some dummy pointers
+            std::vector<uint8_t*> vector_ptr(
+                m_factory.max_symbols(), (uint8_t*)1U);
+
+            coder->swap_symbols(vector_ptr);
+
+            EXPECT_EQ(coder->symbol_count(), coder->symbols());
+            EXPECT_TRUE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_TRUE(coder->symbol_exists(i));
+            }
+
+            coder = m_factory.build(m_factory.max_symbols(),
+                                    m_factory.max_symbol_size());
+
+            EXPECT_EQ(coder->symbol_count(), 0U);
+            EXPECT_FALSE(coder->is_storage_full());
+
+            for(uint32_t i = 0; i < coder->symbols(); ++i)
+            {
+                EXPECT_FALSE(coder->symbol_exists(i));
+            }
+        }
+
+private:
+
+    // The factory
+    factory_type m_factory;
+
+};
+
 
 
 /// Helper function for running all the API and related tests
@@ -1309,6 +1453,10 @@ void run_deep_stack_tests()
         symbols, symbol_size);
     run_test<Stack, api_storage_status>(
         symbols, symbol_size);
+    run_test<Stack, api_deep_swap_storage_status>(
+        symbols, symbol_size);
+
+
 
     // Other tests
     run_test<Stack, set_partial_data>(
@@ -1366,6 +1514,8 @@ void run_const_shallow_stack_tests()
     run_test<Stack, api_bytes_used>(
         symbols, symbol_size);
     run_test<Stack, api_storage_status>(
+        symbols, symbol_size);
+    run_test<Stack, api_const_shallow_swap_storage_status>(
         symbols, symbol_size);
 
 }
@@ -1440,6 +1590,8 @@ void run_mutable_shallow_stack_tests()
         symbols, symbol_size);
     run_test<Stack, api_storage_status>(
         symbols, symbol_size);
+    run_test<Stack, api_mutable_shallow_swap_storage_status>(
+        symbols, symbol_size);
 
 
 }
@@ -1472,6 +1624,15 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
     EXPECT_TRUE(kodo::has_shallow_symbol_storage<
                     kodo::const_shallow_stack<fifi::binary16> >::value);
 
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary8> >::value);
+
+    EXPECT_TRUE(kodo::has_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary16> >::value);
+
     EXPECT_FALSE(kodo::has_shallow_symbol_storage<
                      kodo::deep_storage_stack<fifi::binary> >::value);
 
@@ -1484,6 +1645,47 @@ TEST(TestSymbolStorage, test_has_shallow_symbol_storage)
     EXPECT_FALSE(kodo::has_shallow_symbol_storage<int>::value);
 
     EXPECT_FALSE(kodo::has_shallow_symbol_storage<fifi::binary8>::value);
+
+    /// has_mutable_shallow_symbol_storage
+
+    EXPECT_FALSE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary> >::value);
+
+    EXPECT_FALSE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary8> >::value);
+
+    EXPECT_FALSE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary16> >::value);
+
+    EXPECT_TRUE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary> >::value);
+
+    EXPECT_TRUE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary8> >::value);
+
+    EXPECT_TRUE(kodo::has_mutable_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary16> >::value);
+
+    // has_const_shallow_symbol_storage
+
+    EXPECT_FALSE(kodo::has_const_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary> >::value);
+
+    EXPECT_FALSE(kodo::has_const_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary8> >::value);
+
+    EXPECT_FALSE(kodo::has_const_shallow_symbol_storage<
+                    kodo::mutable_shallow_stack<fifi::binary16> >::value);
+
+    EXPECT_TRUE(kodo::has_const_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary> >::value);
+
+    EXPECT_TRUE(kodo::has_const_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary8> >::value);
+
+    EXPECT_TRUE(kodo::has_const_shallow_symbol_storage<
+                    kodo::const_shallow_stack<fifi::binary16> >::value);
+
 }
 
 /// Tests the has_deep_symbol_storage template

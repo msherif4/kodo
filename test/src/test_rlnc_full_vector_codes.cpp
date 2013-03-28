@@ -15,7 +15,10 @@
 #include <kodo/recoding_symbol_id.hpp>
 #include <kodo/proxy_layer.hpp>
 #include <kodo/payload_recoder.hpp>
+#include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/linear_block_decoder_delayed.hpp>
+#include <kodo/storage_aware_generator.hpp>
+#include <kodo/shallow_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
 
@@ -54,6 +57,110 @@ namespace kodo
                  full_rlnc_decoder_delayed<Field>
                      > > > > > > > > > > > > > > > >
     {};
+
+    /// Implementation of RLNC decode using the delayed
+    /// backwards substitution layer.
+    template<class Field>
+    class full_rlnc_decoder_delayed_shallow
+        : public // Payload API
+                 payload_recoder<recoding_stack,
+                 payload_decoder<
+                 // Codec Header API
+                 systematic_decoder<
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 plain_symbol_id_reader<
+                 // Codec API
+                 aligned_coefficients_decoder<
+                 linear_block_decoder_delayed<
+                 linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 mutable_shallow_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field Math API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_decoder_delayed_shallow<Field>
+                     > > > > > > > > > > > > > > > >
+    {};
+
+
+    /// Implementation of RLNC encoder using a storage aware generator
+    template<class Field>
+    class full_rlnc_encoder_storage_aware
+        : public // Payload Codec API
+                 payload_encoder<
+                 // Codec Header API
+                 systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 plain_symbol_id_writer<
+                 // Coefficient Generator API
+                 storage_aware_generator<
+                 uniform_generator<
+                 // Codec API
+                 storage_aware_encoder<
+                 encode_symbol_tracker<
+                 zero_symbol_encoder<
+                 linear_block_encoder<
+                 // Coefficient Storage API
+                 coefficient_info<
+                 // Symbol Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_encoder_storage_aware<Field>
+                     > > > > > > > > > > > > > > > > >
+    { };
+
+    /// Implementation of RLNC encoder using a storage aware generator
+    template<class Field>
+    class full_rlnc_encoder_shallow
+        : public // Payload Codec API
+                 payload_encoder<
+                 // Codec Header API
+                 systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 plain_symbol_id_writer<
+                 // Coefficient Generator API
+                 storage_aware_generator<
+                 uniform_generator<
+                 // Codec API
+                 storage_aware_encoder<
+                 encode_symbol_tracker<
+                 zero_symbol_encoder<
+                 linear_block_encoder<
+                 // Coefficient Storage API
+                 coefficient_info<
+                 // Symbol Storage API
+                 partial_shallow_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 full_rlnc_encoder_storage_aware<Field>
+                     > > > > > > > > > > > > > > > > >
+    { };
+
+
 }
 
 template<template <class> class Encoder,
@@ -88,6 +195,11 @@ void test_coders(uint32_t symbols, uint32_t symbol_size)
 
 void test_coders(uint32_t symbols, uint32_t symbol_size)
 {
+
+    test_coders<
+        kodo::full_rlnc_encoder_shallow,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
 
     test_coders<
         kodo::full_rlnc_encoder,
@@ -140,11 +252,11 @@ void test_initialize(uint32_t symbols, uint32_t symbol_size)
             Decoder<fifi::binary16>
             >(symbols, symbol_size);
 
-    invoke_initialize
-        <
-            Encoder<fifi::prime2325>,
-            Decoder<fifi::prime2325>
-            >(symbols, symbol_size);
+    // invoke_initialize
+    //     <
+    //         Encoder<fifi::prime2325>,
+    //         Decoder<fifi::prime2325>
+    //         >(symbols, symbol_size);
 
 }
 
@@ -197,10 +309,10 @@ void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
         Decoder<fifi::binary16>
         >(symbols, symbol_size);
 
-    invoke_systematic<
-        Encoder<fifi::prime2325>,
-        Decoder<fifi::prime2325>
-        >(symbols, symbol_size);
+    // invoke_systematic<
+    //     Encoder<fifi::prime2325>,
+    //     Decoder<fifi::prime2325>
+    //     >(symbols, symbol_size);
 
 }
 
@@ -255,10 +367,10 @@ void test_coders_raw(uint32_t symbols, uint32_t symbol_size)
         Decoder<fifi::binary16>
         >(symbols, symbol_size);
 
-    invoke_out_of_order_raw<
-        Encoder<fifi::prime2325>,
-        Decoder<fifi::prime2325>
-        >(symbols, symbol_size);
+    // invoke_out_of_order_raw<
+    //     Encoder<fifi::prime2325>,
+    //     Decoder<fifi::prime2325>
+    //     >(symbols, symbol_size);
 
 }
 
@@ -309,6 +421,15 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
 
     typename Decoder::pointer decoder_two =
         decoder_factory.build(symbols, symbol_size);
+
+    // If tested with a shallow decoder we have to remember to set the
+    // buffers to use for the decoding (for simplicity we always do this
+    // whether or not it is actually needed)
+    std::vector<uint8_t> buffer_decoder_one(decoder_one->block_size(), '\0');
+    std::vector<uint8_t> buffer_decoder_two(decoder_two->block_size(), '\0');
+
+    decoder_one->set_symbols(sak::storage(buffer_decoder_one));
+    decoder_two->set_symbols(sak::storage(buffer_decoder_two));
 
     EXPECT_EQ(encoder->payload_size(), decoder_one->payload_size());
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
@@ -383,17 +504,25 @@ template
     >
 void test_recoders(uint32_t symbols, uint32_t symbol_size)
 {
-    invoke_recoding<Encoder<fifi::binary>, Decoder<fifi::binary> >(
+    invoke_recoding<
+        Encoder<fifi::binary>,
+        Decoder<fifi::binary> >(
         symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::binary8>, Decoder<fifi::binary8> >(
+    invoke_recoding<
+        Encoder<fifi::binary8>,
+        Decoder<fifi::binary8> >(
         symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::binary16>, Decoder<fifi::binary16> >(
+    invoke_recoding<
+        Encoder<fifi::binary16>,
+        Decoder<fifi::binary16> >(
         symbols, symbol_size);
 
-    invoke_recoding<Encoder<fifi::prime2325>, Decoder<fifi::prime2325> >(
-        symbols, symbol_size);
+    // invoke_recoding<
+    //     Encoder<fifi::prime2325>,
+    //     Decoder<fifi::prime2325> >(
+    //     symbols, symbol_size);
 
 }
 
@@ -408,6 +537,11 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
     test_recoders<
         kodo::full_rlnc_encoder,
         kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+
+    test_recoders<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed_shallow>(symbols, symbol_size);
+
 }
 
 /// Tests that the recoding function works, this is done by using one
@@ -432,6 +566,66 @@ TEST(TestRlncFullVectorCodes, recoding_simple)
 
    test_recoders(symbols, symbol_size);
 }
+
+
+template
+    <
+    template <class> class Encoder,
+    template <class> class Decoder
+    >
+void test_set_symbol(uint32_t symbols, uint32_t symbol_size)
+{
+    invoke_set_symbol<
+        Encoder<fifi::binary>,
+        Decoder<fifi::binary> >(
+        symbols, symbol_size);
+
+    invoke_set_symbol<
+        Encoder<fifi::binary8>,
+        Decoder<fifi::binary8> >(
+        symbols, symbol_size);
+
+    invoke_set_symbol<
+        Encoder<fifi::binary16>,
+        Decoder<fifi::binary16> >(
+        symbols, symbol_size);
+
+    // invoke_set_symbol<
+    //     Encoder<fifi::prime2325>,
+    //     Decoder<fifi::prime2325> >(
+    //     symbols, symbol_size);
+
+}
+
+void test_set_symbol(uint32_t symbols, uint32_t symbol_size)
+{
+
+    test_set_symbol
+        <
+        kodo::full_rlnc_encoder_storage_aware,
+        kodo::full_rlnc_decoder>(symbols, symbol_size);
+
+    test_set_symbol
+        <
+        kodo::full_rlnc_encoder_storage_aware,
+        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+}
+
+/// Tests that we can progressively set on symbol at-a-time on
+/// encoder
+TEST(TestRlncFullVectorCodes, set_symbol)
+{
+    test_set_symbol(32, 1600);
+    test_set_symbol(1, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_set_symbol(symbols, symbol_size);
+}
+
+
+
 
 
 
