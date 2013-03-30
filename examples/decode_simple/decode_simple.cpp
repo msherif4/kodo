@@ -156,7 +156,8 @@ int main()
     // terminology) and the size of a symbol in bytes
     const uint32_t symbols = 3;
     const uint32_t symbol_size = 1;  // 8 bits in each symbol
-    const uint32_t symbol_length = 5;
+    const uint32_t symbol_length = 8;
+    const uint32_t coefficients_size = 1;
 
     // Typdefs for the decoder type we wish to use
     typedef kodo::rlnc_decoder<field_type> rlnc_decoder;
@@ -213,16 +214,16 @@ int main()
     // and the third encoded symbol is M_1 bitwise xor M_3.
 
     uint8_t encoded_symbols[symbols*symbol_size];
-    uint8_t symbol_coefficients[symbols*symbol_size];
+    uint8_t symbol_coefficients[symbols*symbols];
     uint8_t original_symbols[symbols*symbol_size];
 
 
     // Initialize data and add trailing zeros in each symbol automatically to
     // fit symbol_size
     fifi::initialize_values<field_type>((value_type*)encoded_symbols,
-            { {1,1,1,0,0},
-              {1,0,0,0,1},
-              {0,1,0,1,1} } );
+            { {0,0,0,1,1,1,0,0},
+              {0,0,0,1,0,0,0,1},
+              {0,0,0,0,1,0,1,1} } );
 
     fifi::initialize_values<field_type>((value_type*)symbol_coefficients,
             { {0,1,0},
@@ -230,9 +231,10 @@ int main()
               {1,0,1} } );
 
     fifi::initialize_values<field_type>((value_type*)original_symbols,
-            { {0,1,1,0,1},
-              {1,1,1,0,0},
-              {0,0,1,1,0} } );
+            { {0,0,0,0,1,1,0,1},
+              {0,0,0,1,1,1,0,0},
+              {0,0,0,0,0,1,1,0} } );
+
 
 
     std::cout << std::endl << "Original symbols:" << std::endl;
@@ -244,11 +246,15 @@ int main()
     fifi::print<field_type>((value_type*)symbol_coefficients,
             symbols, symbols);
 
+    std::cout << std::endl << "Encoded symbols (before decoding):" << std::endl;
+    fifi::print<field_type>((value_type*)encoded_symbols,
+            symbols, symbol_length);
 
     // Decode each symbol
     for (uint32_t i = 0; i < symbols; ++i)
     {
-        decoder->decode_symbol(&encoded_symbols[i], &symbol_coefficients[i]);
+        decoder->decode_symbol(&encoded_symbols[i*symbol_size],
+                &symbol_coefficients[i*coefficients_size]);
     }
 
 
@@ -257,14 +263,14 @@ int main()
     decoder->copy_symbols(sak::storage(decoded_symbols));
 
 
+    std::cout << std::endl << "Encoded symbols (after decoding):" << std::endl;
+    fifi::print<field_type>((value_type*)encoded_symbols,
+            symbols, symbol_length);
+
     std::cout << std::endl << "Symbol Coefficients (after decoding):"
         << std::endl;
     fifi::print<field_type>((value_type*)symbol_coefficients,
             symbols, symbols);
-
-    std::cout << std::endl << "Encoded symbols:" << std::endl;
-    fifi::print<field_type>((value_type*)encoded_symbols,
-            symbols, symbol_length);
 
     std::cout << std::endl << "Decoded data:" << std::endl;
     fifi::print<field_type>((value_type*)&decoded_symbols[0],
