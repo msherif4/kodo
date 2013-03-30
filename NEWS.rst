@@ -6,6 +6,16 @@ of every change, see the Git log.
 
 Latest
 ------
+* Updated layers to follow new API specifications. This change will break
+  most existing layers. The API specification is available in the doxygen
+  folder.
+* New API for object/file encoders, makes it easier to support custom data
+  sources e.g. such as memory mapped files.
+* Added file encoder example.
+* Replaced the old generator API with new Coefficient Generator API.
+* Updated the factory APIs to pass the factory to each layer. This
+  simplifies construction in several layers, where previously it was not
+  possible to access the factory.
 * Updated waf to 1.7.9 and enabled use of the wurf_install_path tool.
 
 7.0.1
