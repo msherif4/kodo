@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+8.0.0
+-----
 * Updated layers to follow new API specifications. This change will break
   most existing layers. The API specification is available in the doxygen
   folder.
