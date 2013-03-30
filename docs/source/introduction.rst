@@ -26,7 +26,6 @@ Code and multiple variants.
   * Reed-Solomon code
   * Carousel code (round robin scheduling of symbols)
 
-
 Platforms
 ---------
 Kodo is a plain C++ library so it is portable to a wide range of platforms.

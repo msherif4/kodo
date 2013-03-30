@@ -13,6 +13,16 @@ Kodo is a C++ library for implementing Erasure Correcting Codes in particular
 Network Codes. The library is intended to be used for reliable communication
 protocols and systems and for research on implementation of Network Codes.
 
+**Additional Links**
+
+* `Kodo source code`_
+* `Build and test status`_
+* `API specification`_
+
+.. _Kodo source code: https://github.com/steinwurf/kodo
+.. _Build and test status: http://176.28.49.184:12344
+.. _API specification: http://176.28.49.184:12344/doxygen/kodo/
+
 .. The library enable researchers to implement, new codes and algorithms, perform simulations,
 .. and benchmark the coding operations on any platform where a C++ compiler is
 .. available. The library provide a multitude of build blocks and parameters that
@@ -29,6 +39,7 @@ Documentation
 
    introduction
    using_kodo_in_your_application
+   hacking_kodo
    howto
    nc_glossary
 
