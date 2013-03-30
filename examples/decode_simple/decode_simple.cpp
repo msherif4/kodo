@@ -156,7 +156,7 @@ int main()
     // terminology) and the size of a symbol in bytes
     const uint32_t symbols = 3;
     const uint32_t symbol_size = 1;  // 8 bits in each symbol
-    const uint32_t symbol_length = 8;
+    const uint32_t symbol_length = 5;
     const uint32_t coefficients_size = 1;
 
     // Typdefs for the decoder type we wish to use
@@ -205,9 +205,9 @@ int main()
     //       | encoded symbol 2 | = | encoding vect 2 | | original symbol 2 |
     //       | encoded symbol 3 |   | encoding vect 3 | | original symbol 3 |
     //
-    //        | 0 0 0 1 1 1 0 0 |   | 0 1 0 | | 0 0 0 0 1 1 0 1 |
-    //        | 0 0 0 1 0 0 0 1 | = | 1 1 0 | | 0 0 0 1 1 1 0 0 |
-    //        | 0 0 0 0 1 0 1 1 |   | 1 0 1 | | 0 0 0 0 0 1 1 0 |
+    //              | 1 1 1 0 0 |   | 0 1 0 | | 0 1 1 0 1 |
+    //              | 1 0 0 0 1 | = | 1 1 0 | | 1 1 1 0 0 |
+    //              | 0 1 0 1 1 |   | 1 0 1 | | 0 0 1 1 0 |
     //
     // From the above matrix, the first encoded symbol is just the second
     // original symbol M_2. The second encoded symbol is M_1 bitwise xor M_2,
@@ -221,9 +221,9 @@ int main()
     // Initialize data and add trailing zeros in each symbol automatically to
     // fit symbol_size
     fifi::initialize_values<field_type>((value_type*)encoded_symbols,
-            { {0,0,0,1,1,1,0,0},
-              {0,0,0,1,0,0,0,1},
-              {0,0,0,0,1,0,1,1} } );
+            { {1,1,1,0,0},
+              {1,0,0,0,1},
+              {0,1,0,1,1} } );
 
     fifi::initialize_values<field_type>((value_type*)symbol_coefficients,
             { {0,1,0},
@@ -231,9 +231,9 @@ int main()
               {1,0,1} } );
 
     fifi::initialize_values<field_type>((value_type*)original_symbols,
-            { {0,0,0,0,1,1,0,1},
-              {0,0,0,1,1,1,0,0},
-              {0,0,0,0,0,1,1,0} } );
+            { {0,1,1,0,1},
+              {1,1,1,0,0},
+              {0,0,1,1,0} } );
 
 
 
