@@ -3,6 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
+/// @file test_symbol_id.cpp Unit tests for object encoder and decoders
+
 #include <ctime>
 
 #include <gtest/gtest.h>
@@ -11,10 +13,13 @@
 #include <kodo/object_encoder.hpp>
 #include <kodo/rfc5052_partitioning_scheme.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
-#include <kodo/has_shallow_symbol_storage.hpp>
-#include <kodo/has_deep_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
+
+class dummy_object_data
+{
+public:
+};
 
 template<
     class Encoder,
@@ -154,29 +159,29 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 // }
 
 
+///
+void test_object_coders(uint32_t symbols, uint32_t symbol_size, uint32_t multiplier)
+{
+    invoke_object<
+        kodo::full_rlnc_encoder<fifi::binary>,
+        kodo::full_rlnc_decoder<fifi::binary>,
+        kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
 
-// void test_object_coders(uint32_t symbols, uint32_t symbol_size, uint32_t multiplier)
-// {
-//     invoke_object<
+    // invoke_object<
+    //     kodo::full_rlnc8_encoder,
+    //     kodo::full_rlnc8_decoder,
+    //     kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
+
+    // invoke_object<
+    //     kodo::full_rlnc16_encoder,
+    //     kodo::full_rlnc16_decoder,
+    //     kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
+
+//     invoke_object_partial<
 //         kodo::full_rlnc2_encoder,
 //         kodo::full_rlnc2_decoder,
 //             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
 
-//     invoke_object<
-//         kodo::full_rlnc8_encoder,
-//         kodo::full_rlnc8_decoder,
-//             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
-
-//     invoke_object<
-//         kodo::full_rlnc16_encoder,
-//         kodo::full_rlnc16_decoder,
-//             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
-
-//     invoke_object_partial<
-//         kodo::full_rlnc2_encoder,
-//         kodo::full_rlnc2_decoder,
-//             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
-
 //     invoke_object_partial<
 //         kodo::full_rlnc8_encoder,
 //         kodo::full_rlnc8_decoder,
@@ -187,12 +192,12 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 //         kodo::full_rlnc16_decoder,
 //             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
 
-// }
+}
 
 
-// TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
-// {
-//     test_object_coders(32, 1600, 2);
+TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
+{
+    test_object_coders(32, 1600, 2);
 //     test_object_coders(1, 1600, 2);
 
 //     srand(static_cast<uint32_t>(time(0)));
@@ -205,7 +210,7 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 //     uint32_t multiplier = (rand() % 10) + 1;
 
 //     test_object_coders(symbols, symbol_size, multiplier);
-// }
+}
 
 
 

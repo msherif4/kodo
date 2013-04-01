@@ -1,0 +1,28 @@
+
+/// @brief Doxygen dummy class specifying the API used for ObjectData
+///        compatible types
+class object_data
+{
+public:
+
+    /// Pointer to the encoder used
+    typedef typename EncoderType::pointer pointer;
+
+    /// @ingroup object_data_api
+    ///
+    /// @return The size of the object in bytes
+    uint32_t size() const;
+
+    /// @ingroup object_data_api
+    /// Initializes the encoder with data from the storage object.
+    /// @param encoder A pointer to the encoder to be initialized
+    /// @param offset The offset in bytes into the storage object
+    /// @param size The number of bytes to read from the object
+    void read(pointer &encoder, uint32_t offset, uint32_t size);
+
+};
+
+
+
+
+

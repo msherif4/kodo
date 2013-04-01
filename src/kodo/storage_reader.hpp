@@ -12,9 +12,9 @@ namespace kodo
 {
 
     /// @brief The storage reader class reads data from a memory buffer
-    /// and initializes the an encoder with data from a specific
-    /// offset within the memory buffer. This class can be used in
-    /// conjunction with object encoders.
+    ///        and initializes the an encoder with data from a specific
+    ///        offset within the memory buffer. This class can be used in
+    ///        conjunction with object encoders.
     ///
     /// Note that when used together with shallow_symbol_storage
     /// encoders the caller must ensure that the memory buffer remains
