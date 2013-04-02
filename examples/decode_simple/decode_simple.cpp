@@ -8,7 +8,7 @@
 /// It may be that we want to implement a new decoding algorithm in Kodo or
 /// simply just test an existing decoding implementation. In that case, it may
 /// be preferred to reuse functionalities in already existing layers while
-/// stripping unrequired functionalities for simplicity.
+/// stripping functionalities that are not required to keep it simple.
 ///
 /// This example illustrates how the operations of a RLNC decoder can be
 /// tested in a binary field without introducing unnecessary complexity.
@@ -147,7 +147,7 @@ int main()
 
 
     // The computer reads the bits in the opposite direction of how the
-    // elements are written matematrically in the matrices above.
+    // elements are written matematically in the matrices above.
     // Therefore, it may be easier to find the hex values, which we input into
     // the variables below, if the matrices above are rewritten with the bits
     // in the direction which they are stored in memory. This is shown below:
