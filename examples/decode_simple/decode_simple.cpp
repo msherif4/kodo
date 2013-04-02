@@ -155,9 +155,14 @@ int main()
     // Set the number of symbols (i.e. the generation size in RLNC
     // terminology) and the size of a symbol in bytes
     const uint32_t symbols = 3;
-    const uint32_t symbol_size = 1;  // 8 bits in each symbol
+    //const uint32_t symbol_size = 1;  // 8 bits in each symbol
     const uint32_t symbol_length = 5;
-    const uint32_t coefficients_size = 1;
+    //const uint32_t coefficients_size = 1;
+
+    const uint32_t coefficients_size = 
+        fifi::bytes_needed<field_type>(symbols);
+    const uint32_t symbol_size =
+        fifi::bytes_needed<field_type>(symbol_length);
 
     // Typdefs for the decoder type we wish to use
     typedef kodo::rlnc_decoder<field_type> rlnc_decoder;
@@ -184,13 +189,11 @@ int main()
     //
     //
     // original_symbols (M):    Symbols we expect to obtain from decoding
-    //                          encoded_symbols using the symbol_coefficients
-    //                          below.
-    // encoded_symbols (X):     Symbols that has been encoded using
-    //                          original_symbols using the symbol_coefficients
-    //                          below.
+    //                          encoded_symbols using the symbol_coefficients.
     // symbol_coefficients (G): Coefficients used to encode/decode between
     //                          original_symbols and encoded_symbols.
+    // encoded_symbols (X):     Symbols that has been encoded from
+    //                          original_symbols using the symbol_coefficients.
     //
     //
     //                          X = G M
@@ -213,42 +216,59 @@ int main()
     // original symbol M_2. The second encoded symbol is M_1 bitwise xor M_2,
     // and the third encoded symbol is M_1 bitwise xor M_3.
 
-    uint8_t encoded_symbols[symbols*symbol_size];
-    uint8_t symbol_coefficients[symbols*symbols];
-    uint8_t original_symbols[symbols*symbol_size];
-
+    std::vector<uint8_t> original_symbols(symbols*symbol_size);
+    std::vector<uint8_t> symbol_coefficients(symbols*coefficients_size);
+    std::vector<uint8_t> encoded_symbols(symbols*symbol_size);
 
     // Initialize data and add trailing zeros in each symbol automatically to
     // fit symbol_size
-    fifi::initialize_values<field_type>((value_type*)encoded_symbols,
-            { {1,1,1,0,0},
-              {1,0,0,0,1},
-              {0,1,0,1,1} } );
-
-    fifi::initialize_values<field_type>((value_type*)symbol_coefficients,
-            { {0,1,0},
-              {1,1,0},
-              {1,0,1} } );
-
-    fifi::initialize_values<field_type>((value_type*)original_symbols,
+    fifi::initialize_values<field_type>((value_type*)&original_symbols[0],
             { {0,1,1,0,1},
               {1,1,1,0,0},
               {0,0,1,1,0} } );
 
+    fifi::initialize_values<field_type>((value_type*)&symbol_coefficients[0],
+            { {0,1,0},
+              {1,1,0},
+              {1,0,1} } );
+
+    fifi::initialize_values<field_type>((value_type*)&encoded_symbols[0],
+            { {1,1,1,0,0},
+              {1,0,0,0,1},
+              {0,1,0,1,1} } );
+
+    // The computer reads the bits in the oppesite direction of how the
+    // elements are written matematrically in the matrices above.
+    // Therefore, it may be easier to find the hex values if the matrices
+    // above are rewritten with the bits in the direction which they are
+    // stored in memory. This is shown below: 
+    //
+    //              | 0 0 1 1 1 |   | 0 1 0 | | 1 0 1 1 0 |
+    //              | 1 0 0 0 1 | = | 0 1 1 | | 0 0 1 1 1 |
+    //              | 1 1 0 1 0 |   | 1 0 1 | | 0 1 1 0 0 |
+    //
+    //              |   0x07    | = |  0x02 | |   0x16    |
+    //              |   0x11    | = |  0x03 | |   0x07    |
+    //              |   0x1a    | = |  0x05 | |   0x0c    |
+    //
+    //uint8_t original_symbols[/*symbols*symbol_size*/] = { 0x16, 0x07, 0x0c };
+    //uint8_t symbol_coefficients[/*symbols*coefficients_size*/] = { 0x02, 0x03, 0x05 };
+    //uint8_t encoded_symbols[/*symbols*symbol_size*/] = { 0x07, 0x11, 0x1a };
 
 
     std::cout << std::endl << "Original symbols:" << std::endl;
-    fifi::print<field_type>((value_type*)original_symbols,
+    fifi::print<field_type>((value_type*)&original_symbols[0],
             symbols, symbol_length);
 
-    std::cout << std::endl << "Symbol Coefficients (before decoding):"
+    std::cout << std::endl << "Symbol coefficients (before decoding):"
         << std::endl;
-    fifi::print<field_type>((value_type*)symbol_coefficients,
+    fifi::print<field_type>((value_type*)&symbol_coefficients[0],
             symbols, symbols);
 
     std::cout << std::endl << "Encoded symbols (before decoding):" << std::endl;
-    fifi::print<field_type>((value_type*)encoded_symbols,
+    fifi::print<field_type>((value_type*)&encoded_symbols[0],
             symbols, symbol_length);
+
 
     // Decode each symbol
     for (uint32_t i = 0; i < symbols; ++i)
@@ -264,12 +284,12 @@ int main()
 
 
     std::cout << std::endl << "Encoded symbols (after decoding):" << std::endl;
-    fifi::print<field_type>((value_type*)encoded_symbols,
+    fifi::print<field_type>((value_type*)&encoded_symbols[0],
             symbols, symbol_length);
 
-    std::cout << std::endl << "Symbol Coefficients (after decoding):"
+    std::cout << std::endl << "Symbol coefficients (after decoding):"
         << std::endl;
-    fifi::print<field_type>((value_type*)symbol_coefficients,
+    fifi::print<field_type>((value_type*)&symbol_coefficients[0],
             symbols, symbols);
 
     std::cout << std::endl << "Decoded data:" << std::endl;
@@ -280,7 +300,7 @@ int main()
 
     // Check that the original data is the same as the decoded data
     if (std::equal(decoded_symbols.begin(), decoded_symbols.end(),
-        original_symbols))
+        &original_symbols[0]))
     {
         std::cout << "Data decoded correctly";
     }
