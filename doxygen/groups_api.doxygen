@@ -226,3 +226,31 @@
 /// @defgroup payload_codec_layers Layers
 /// @ingroup payload_codec
 /// @brief Implementations of the codec API.
+
+
+//------------------------------------------------------------------
+// TYPE REQUIREMENTS
+//------------------------------------------------------------------
+
+/// @defgroup type_requirements Type requirements
+/// @brief The type requirements for different template arguments
+
+//------------------------------------------------------------------
+// OBJECT_DATA
+//------------------------------------------------------------------
+
+/// @defgroup object_data ObjectData
+/// @ingroup type_requirements
+/// @brief The type requirements for the object data type
+
+/// @defgroup object_data_type Type Requirement
+/// @ingroup object_data
+/// @brief The type requirements for an ObjectData type.
+///
+/// Besides the functions mentioned here the ObjectData type
+/// must be CopyConstructable
+
+/// @defgroup object_data_implementation Implementations
+/// @ingroup object_data
+/// @brief Implementations of the ObjectData type.
+
