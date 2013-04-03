@@ -16,10 +16,31 @@
 
 #include "basic_api_test_helper.hpp"
 
-class dummy_object_data
+
+class dummy_encoder
 {
 public:
-};
+
+    typedef boost::shared_ptr<dummy_encoder> pointer;
+
+    class factory
+    {
+    public:
+
+        pointer build(uint32_t symbols, uint32_t symbol_size)
+            {
+
+            }
+
+    };
+
+    dummy_encoder(uint32
+}
+
+
+
+
+
 
 template<
     class Encoder,
@@ -27,11 +48,16 @@ template<
     class Partitioning,
     class ObjectData
     >
-void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t multiplier)
+void invoke_object(uint32_t max_symbols,
+                   uint32_t max_symbol_size,
+                   uint32_t multiplier)
 {
 
-    typedef kodo::object_encoder<ObjectData, Encoder, Partitioning> object_encoder;
-    typedef kodo::object_decoder<Decoder, Partitioning> object_decoder;
+    typedef kodo::object_encoder<ObjectData, Encoder, Partitioning>
+        object_encoder;
+
+    typedef kodo::object_decoder<Decoder, Partitioning>
+        object_decoder;
 
     uint32_t object_size = max_symbols * max_symbol_size * multiplier;
 
@@ -75,13 +101,16 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
         }
 
         auto storage = sak::storage(
-            &data_out[0] + (i * encoder->block_size()), encoder->block_size());
+            &data_out[0] + (i * encoder->block_size()),
+            encoder->block_size());
 
         decoder->copy_symbols(storage);
 
     }
 
-    EXPECT_TRUE(std::equal(data_in.begin(), data_in.end(), data_out.begin()));
+    EXPECT_TRUE(std::equal(data_in.begin(),
+                           data_in.end(),
+                           data_out.begin()));
 
 }
 
@@ -160,7 +189,9 @@ void invoke_object(uint32_t max_symbols, uint32_t max_symbol_size, uint32_t mult
 
 
 ///
-void test_object_coders(uint32_t symbols, uint32_t symbol_size, uint32_t multiplier)
+void test_object_coders(uint32_t symbols,
+                        uint32_t symbol_size,
+                        uint32_t multiplier)
 {
     invoke_object<
         kodo::full_rlnc_encoder<fifi::binary>,

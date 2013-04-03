@@ -16,13 +16,14 @@
 namespace kodo
 {
 
-    /// Object encoder, allows easy encoding of objects too
-    /// large for a single block encoder.
+    /// @brief The object encoder, allows encoding of objects too
+    ///        large for a single block encoder.
     ///
     /// The following diagram tries to explain how the object encoder
     /// uses its dependencies to wrap an build encoders for arbitrary
     /// objects.
     ///
+    /// <pre>
     /// +---------------+     +---------------+     +---------------+
     /// | partitioning  |     |encoder factory|     |  object data  |
     /// |---------------|     |---------------|     |---------------|
@@ -46,6 +47,11 @@ namespace kodo
     ///                       | encoders for  |
     ///                       | an object     |
     ///                       +---------------+
+    /// </pre>
+    ///
+    /// @tparam ObjectData object_data
+    /// @tparam EncoderType An encoder stack which should be used
+    /// @tparam BlockParitioning block_partitioning
     template
     <
         class ObjectData,

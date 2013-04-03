@@ -1,6 +1,5 @@
 
-/// @brief Doxygen dummy class specifying the API used for ObjectData
-///        compatible types.
+/// @brief Type requirements for ObjectData compatible types.
 class object_data
 {
 public:

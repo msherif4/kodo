@@ -11,7 +11,9 @@
 namespace kodo
 {
 
-    /// RFC5052 partitioning scheme.
+    /// @ingroup block_partitioning_implementation
+    /// @brief RFC5052 block partitioning scheme.
+    ///
     /// Takes as input the number of symbols the symbol size
     /// and the total length of an object and returns the number
     /// the number blocks to use and the symbols and symbol size
@@ -31,33 +33,28 @@ namespace kodo
                                     uint32_t max_symbol_size,
                                     uint32_t object_size);
 
-        /// @param block_id the block index
-        /// @return the number of symbols in a specific block
+        /// @copydoc block_partitioning::symbols(uint32_t) const
         uint32_t symbols(uint32_t block_id) const;
 
-        /// @param block_id the block index
-        /// @return the size of a symbol in a specific block
+        /// @copydoc block_partitioning::symbol_size(uint32_t) const
         uint32_t symbol_size(uint32_t block_id) const;
 
-        /// @param block_id the block index
-        /// @return the size of a specific block in bytes
+        /// @copydoc block_partitioning::block_size(uint32_t) const
         uint32_t block_size(uint32_t block_id) const;
 
-        /// @param block_id the block index
-        /// @return the offset in bytes to the start of a specific block
+        /// @copydoc block_partitioning::bytes_offset(uint32_t) const
         uint32_t byte_offset(uint32_t block_id) const;
 
-        /// @param block_id the block index
-        /// @return the number of bytes used in a specific block
+        /// @copydoc block_partitioning::bytes_used(uint32_t) const
         uint32_t bytes_used(uint32_t block_id) const;
 
-        /// @return the total number of blocks in the object
+        /// @copydoc block_partitioning::blocks() const
         uint32_t blocks() const;
 
-        /// @return the size of the object being partitioned
+        /// @copydoc block_partitioning::object_size() const
         uint32_t object_size() const;
 
-        /// @return the total number of symbols in the entire object
+        /// @copydoc block_partitioning::total_symbols() const
         uint32_t total_symbols() const;
 
     private:

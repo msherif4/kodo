@@ -254,3 +254,22 @@
 /// @ingroup object_data
 /// @brief Implementations of the ObjectData type.
 
+//------------------------------------------------------------------
+// BLOCK_PARTITIONING
+//------------------------------------------------------------------
+
+/// @defgroup block_partitioning BlockPartitioning
+/// @ingroup type_requirements
+/// @brief The type requirements for the block partitioning type
+
+/// @defgroup block_partitioning_type Type Requirement
+/// @ingroup block_partitioning
+/// @brief The type requirements for a BlockPartitioning type.
+///
+/// Besides the functions mentioned here the BlockPartitioning type
+/// must be CopyConstructable
+
+/// @defgroup block_partitioning_implementation Implementations
+/// @ingroup block_partitioning
+/// @brief Implementations of the BlockPartitioning type.
+

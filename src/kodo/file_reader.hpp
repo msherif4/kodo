@@ -14,10 +14,12 @@
 namespace kodo
 {
 
-    /// The file reader class reads data from a local file
-    /// and initializes the an encoder with data from a specific
-    /// offset within the file. This class can be used in
-    /// conjunction with object encoders.
+    /// @ingroup object_data_implementation
+    ///
+    /// @brief The file reader class reads data from a local file
+    ///        and initializes the an encoder with data from a specific
+    ///        offset within the file. This class can be used in
+    ///        conjunction with object encoders.
     ///
     /// Note that this type of data reader can only be used together
     /// with deep_symbol_storage encoders.
