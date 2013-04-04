@@ -96,7 +96,7 @@ namespace kodo
                 return m_object_size;
             }
 
-    private:
+    protected:
 
         /// The decoder factory
         factory &m_factory;

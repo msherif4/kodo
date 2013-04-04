@@ -33,6 +33,11 @@ namespace kodo
     {
     public:
 
+        /// The factory type
+        typedef typename EncoderType::factory factory;
+
+    public:
+
         /// Constructs a new storage encoder
         /// @param factory the encoder factory to use
         /// @param object the object to encode

@@ -9,75 +9,120 @@
 
 #include <gtest/gtest.h>
 
-#include <kodo/object_decoder.hpp>
-#include <kodo/object_encoder.hpp>
+#include <kodo/storage_decoder.hpp>
+#include <kodo/storage_encoder.hpp>
 #include <kodo/rfc5052_partitioning_scheme.hpp>
+#include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/partial_shallow_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
+
+namespace kodo
+{
+
+    /// Decoder stack with shallow storage as required by the
+    /// storage decoder.
+    template<class Field>
+    class shallow_rlnc_decoder
+        : public // Payload API
+                 payload_recoder<recoding_stack,
+                 payload_decoder<
+                 // Codec Header API
+                 systematic_decoder<
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 plain_symbol_id_reader<
+                 // Codec API
+                 aligned_coefficients_decoder<
+                 linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 mutable_shallow_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 shallow_rlnc_decoder<Field>
+                     > > > > > > > > > > > > > > >
+    { };
+}
+
 
 template<
     class Encoder,
     class Decoder,
     class Partitioning
     >
-void invoke_object(uint32_t max_symbols,
-                   uint32_t max_symbol_size,
-                   uint32_t object_size)
+void invoke_storage(uint32_t max_symbols,
+                    uint32_t max_symbol_size,
+                    uint32_t object_size)
 {
 
     typedef kodo::storage_encoder<Encoder, Partitioning> storage_encoder;
     typedef kodo::storage_decoder<Decoder, Partitioning> storage_decoder;
 
     std::vector<uint8_t> data_in = random_vector(object_size);
+
+    // The decoding buffer must be a multiple of the symbol_size
+    //
     std::vector<uint8_t> data_out(object_size, '\0');
 
-    typename Encoder::factory encoder_factory(max_symbols, max_symbol_size);
-    typename Decoder::factory decoder_factory(max_symbols, max_symbol_size);
+    typename storage_encoder::factory encoder_factory(
+        max_symbols, max_symbol_size);
 
-    storage_encoder storage_encoder(encoder_factory, sak::storage(data_in));
-    storage_decoder storage_decoder(decoder_factory, sak::storage(data_out));
+    typename storage_decoder::factory decoder_factory(
+        max_symbols, max_symbol_size);
 
-    EXPECT_TRUE(obj_encoder.encoders() == obj_decoder.decoders());
+    storage_encoder encoder(encoder_factory, sak::storage(data_in));
+    storage_decoder decoder(decoder_factory, sak::storage(data_out));
 
-    for(uint32_t i = 0; i < obj_encoder.encoders(); ++i)
+    EXPECT_TRUE(encoder.encoders() == decoder.decoders());
+
+    for(uint32_t i = 0; i < encoder.encoders(); ++i)
     {
-        auto e = obj_encoder.build(i);
-        auto d = obj_decoder.build(i);
+        auto e = encoder.build(i);
+        auto d = decoder.build(i);
 
-        if(kodo::is_systematic_encoder(encoder))
-            kodo::set_systematic_off(encoder);
+        if(kodo::is_systematic_encoder(e))
+            kodo::set_systematic_off(e);
 
-        // Since the storage we encode is a multiple of the
-        // block size we always expect that the encoder is
-        // fully "filled" with data
-        EXPECT_EQ(encoder->block_size(), encoder->bytes_used());
-        EXPECT_EQ(decoder->block_size(), decoder->bytes_used());
+        EXPECT_EQ(e->block_size(), d->block_size());
+        EXPECT_EQ(e->bytes_used(), d->bytes_used());
 
-        EXPECT_EQ(encoder->payload_size(), decoder->payload_size());
+        EXPECT_EQ(e->payload_size(), d->payload_size());
 
-        std::vector<uint8_t> payload(encoder->payload_size());
+        std::vector<uint8_t> payload(e->payload_size());
 
-        while(!decoder->is_complete())
+        while(!d->is_complete())
         {
-            encoder->encode( &payload[0] );
-            decoder->decode( &payload[0] );
+            e->encode( &payload[0] );
+            d->decode( &payload[0] );
 
         }
-
     }
 
-    EXPECT_TRUE(std::equal(data_in.begin(), data_in.end(), data_out.begin()));
-
+    EXPECT_TRUE(std::equal(data_in.begin(),
+                           data_in.end(),
+                           data_out.begin()));
 }
 
 
-// void test_object_coders(uint32_t symbols, uint32_t symbol_size, uint32_t multiplier)
-// {
-//     invoke_object<
-//         kodo::full_rlnc2_encoder,
-//         kodo::full_rlnc2_decoder,
-//             kodo::rfc5052_partitioning_scheme>(symbols, symbol_size, multiplier);
-
+void test_storage_coders(uint32_t symbols,
+                        uint32_t symbol_size,
+                        uint32_t object_size)
+{
+    invoke_storage<
+        kodo::full_rlnc_encoder<fifi::binary>,
+        kodo::shallow_rlnc_decoder<fifi::binary>,
+        kodo::rfc5052_partitioning_scheme>(
+            symbols, symbol_size, object_size);
+}
 //     invoke_object<
 //         kodo::full_rlnc8_encoder,
 //         kodo::full_rlnc8_decoder,
@@ -106,22 +151,22 @@ void invoke_object(uint32_t max_symbols,
 // }
 
 
-// TEST(TestObjectCoder, construct_and_invoke_the_basic_api)
-// {
-//     test_object_coders(32, 1600, 2);
-//     test_object_coders(1, 1600, 2);
+TEST(TestStorageCoder, construct_and_invoke_the_basic_api)
+{
+    test_storage_coders(32, 1600, 2);
+    // test_object_coders(1, 1600, 2);
 
-//     srand(static_cast<uint32_t>(time(0)));
+    // srand(static_cast<uint32_t>(time(0)));
 
-//     uint32_t symbols = (rand() % 256) + 1;
-//     uint32_t symbol_size = ((rand() % 100) + 1) * 16;
+    // uint32_t symbols = (rand() % 256) + 1;
+    // uint32_t symbol_size = ((rand() % 100) + 1) * 16;
 
-//     // Multiplies the data to be encoded so that the object encoder
-//     // is expected to contain multiplier encoders.
-//     uint32_t multiplier = (rand() % 10) + 1;
+    // // Multiplies the data to be encoded so that the object encoder
+    // // is expected to contain multiplier encoders.
+    // uint32_t multiplier = (rand() % 10) + 1;
 
-//     test_object_coders(symbols, symbol_size, multiplier);
-// }
+    // test_object_coders(symbols, symbol_size, multiplier);
+}
 
 
 
