@@ -57,6 +57,9 @@ namespace kodo
         /// @copydoc block_partitioning::total_symbols() const
         uint32_t total_symbols() const;
 
+        /// @copydoc block_partitioning::total_block_size() const
+        uint32_t total_block_size() const;
+
     private:
 
         /// The maximum number of symbols per block
@@ -199,6 +202,12 @@ namespace kodo
     {
         assert(m_total_symbols > 0);
         return m_total_symbols;
+    }
+
+    inline uint32_t
+    rfc5052_partitioning_scheme::total_block_size() const
+    {
+        return m_total_symbols * m_max_symbol_size;
     }
 
 }

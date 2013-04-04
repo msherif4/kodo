@@ -67,17 +67,19 @@ void invoke_storage(uint32_t max_symbols,
     typedef kodo::storage_encoder<Encoder, Partitioning> storage_encoder;
     typedef kodo::storage_decoder<Decoder, Partitioning> storage_decoder;
 
-    std::vector<uint8_t> data_in = random_vector(object_size);
-
-    // The decoding buffer must be a multiple of the symbol_size
-    //
-    std::vector<uint8_t> data_out(object_size, '\0');
-
     typename storage_encoder::factory encoder_factory(
         max_symbols, max_symbol_size);
 
     typename storage_decoder::factory decoder_factory(
         max_symbols, max_symbol_size);
+
+    // The storage needed for all decoders
+    uint32_t total_block_size = decoder_factory.total_block_size(object_size);
+
+    std::vector<uint8_t> data_out(total_block_size, '\0');
+    std::vector<uint8_t> data_in = random_vector(object_size);
+
+    EXPECT_TRUE(object_size <= total_block_size);
 
     storage_encoder encoder(encoder_factory, sak::storage(data_in));
     storage_decoder decoder(decoder_factory, sak::storage(data_out));
@@ -94,7 +96,6 @@ void invoke_storage(uint32_t max_symbols,
 
         EXPECT_EQ(e->block_size(), d->block_size());
         EXPECT_EQ(e->bytes_used(), d->bytes_used());
-
         EXPECT_EQ(e->payload_size(), d->payload_size());
 
         std::vector<uint8_t> payload(e->payload_size());
@@ -106,6 +107,9 @@ void invoke_storage(uint32_t max_symbols,
 
         }
     }
+
+    // Resize the output buffer to contain only the object data
+    data_out.resize(object_size);
 
     EXPECT_TRUE(std::equal(data_in.begin(),
                            data_in.end(),

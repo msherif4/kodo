@@ -41,6 +41,10 @@ public:
     /// @return the total number of symbols in the entire object
     uint32_t total_symbols() const;
 
+    /// @ingroup block_partitioning_type
+    /// @return The total number of bytes needed to cover all blocks
+    uint32_t total_block_size() const;
+
 };
 
 

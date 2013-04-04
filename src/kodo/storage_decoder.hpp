@@ -32,6 +32,9 @@ namespace kodo
     {
     public:
 
+        /// The block partitioning type
+        typedef BlockPartitioning partitioning;
+
         /// We need the code to use a shallow storage class - since
         /// we want the decoder to decode directly into the storage
         /// buffer.
@@ -41,7 +44,7 @@ namespace kodo
             "shallow storage");
 
         /// The base class
-        typedef object_decoder<DecoderType, BlockPartitioning> base_decoder;
+        typedef object_decoder<DecoderType, partitioning> base_decoder;
 
         /// The pointer to the decoder
         typedef typename base_decoder::pointer pointer;
@@ -49,20 +52,33 @@ namespace kodo
         /// Access the partitioning scheme
         using base_decoder::m_partitioning;
 
+    public:
+
+        /// The factory used by the storage_decoder
         class factory : public DecoderType::factory
         {
         public:
+
+            /// @copydoc layer::factory::factory(uint32_t,utin32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : DecoderType::factory(max_symbols, max_symbol_size)
                 { }
 
-            uint32_t max_storage_size(uint32_t object_size) const
+            /// @param object_size The total size of the object to be decoded.
+            /// @return The number of storage bytes needed to decode a object of
+            ///         object_size bytes. A decoder requires
+            ///         symbols*symbols_size bytes, however if a object does not
+            ///         fully cover all decoders we may require additional
+            ///         memory to be able to provide all decoders with the
+            ///         memory needed.
+            uint32_t total_block_size(uint32_t object_size) const
                 {
-                    BlockPartitioning p(DecoderType::factory::max_symbols(),
-                                       DecoderType::factory::max_symbol_size(),object_size);
+                    partitioning p(DecoderType::factory::max_symbols(),
+                                   DecoderType::factory::max_symbol_size(),
+                                   object_size);
 
-                    return p.total_symbols()*p.symbol_size();
-
+                    return p.total_block_size();
+                }
         };
 
     public:
@@ -76,6 +92,7 @@ namespace kodo
               m_data(data)
             { }
 
+        /// @copydoc object_decoder::build(uint32_t)
         pointer build(uint32_t decoder_id)
             {
                 auto decoder = base_decoder::build(decoder_id);
@@ -87,7 +104,6 @@ namespace kodo
 
                 return decoder;
             }
-
 
     private:
 
