@@ -85,9 +85,6 @@ namespace kodo
                 uint32_t bytes_used =
                     m_partitioning.bytes_used(decoder_id);
 
-                std::cout << "Bytes used " << bytes_used << std::endl;
-                std::cout << "object_size " << m_partitioning.object_size() << std::endl;
-
                 decoder->set_bytes_used(bytes_used);
 
                 return decoder;
