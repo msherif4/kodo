@@ -1,4 +1,4 @@
-// Copyright Steinwurf ApS 2011-2012.
+// Copyright Steinwurf ApS 2011-2013.
 // Distributed under the "STEINWURF RESEARCH LICENSE 1.0".
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
@@ -88,11 +88,11 @@ namespace kodo
         /// @param factory The decoder factory to use
         /// @param object_size The size of the object to be decoded in bytes
         /// @param decoding_buffer The storage where the object will be
-        ///        decoded
+        ///        decoded. The memory used must be zero initialized.
         shallow_storage_decoder(factory &factory, uint32_t object_size,
-                                const sak::mutable_storage &decoding_storage)
-            : base_decoder(factory, object_size),
-              m_decoding_storage(decoding_storage)
+                                const sak::mutable_storage &decoding_storage) :
+            base_decoder(factory, object_size),
+            m_decoding_storage(decoding_storage)
         {
             // We have to make sure the decoding buffer is large enough
             assert(factory.total_block_size(object_size) ==

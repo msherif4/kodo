@@ -40,7 +40,6 @@ namespace kodo
             /// The factory type
             typedef typename FinalType::factory factory_type;
 
-
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_pool(boost::bind(&factory::make_coder, max_symbols,
