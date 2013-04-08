@@ -8,6 +8,8 @@ Latest (minor)
 --------------
 * Adding the shallow storage decoder which allows decoding objects larger
   than a single block or generation.
+* Adding a deep storage decoder which provides the memory needed to decode
+  a large object spanning several blocks.
 
 8.0.0
 -----
