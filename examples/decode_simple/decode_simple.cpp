@@ -277,6 +277,18 @@ int main()
                 &symbol_coefficients[i*coefficients_size]);
     }
 
+    // Ensure that decoding was completed successfully.
+    if (decoder->is_complete())
+    {
+        std::cout << std::endl << "Decoding completed." << std::endl;
+    }
+    else
+    {
+        std::cout << std::endl <<
+            "Decoding incomplete - not all encoding vectors are independent." <<
+            std::endl;
+    }
+
 
     // Copy decoded data into a vector
     std::vector<uint8_t> decoded_symbols(decoder->block_size());
