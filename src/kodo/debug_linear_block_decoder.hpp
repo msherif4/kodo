@@ -82,6 +82,59 @@ namespace kodo
                 out << std::endl;
             }
 
+
+        /// Prints the symbol matrix to the output stream
+        /// @param out The output stream to print to
+        void print_symbol_matrix(std::ostream &out)
+            {
+                uint32_t symbol_length = SuperCoder::symbol_length();
+
+                if (fifi::is_binary<field_type>::value)
+                {
+                    symbol_length *= 8;
+                }
+
+                print_symbol_matrix(out, symbol_length);
+            }
+
+        /// Prints the symbol matrix to the output stream
+        /// @param out The output stream to print to
+        /// @param symbol_length number of elements in each symbol
+        void print_symbol_matrix(std::ostream &out, uint32_t symbol_length)
+            {
+                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+                {
+                    if( m_uncoded[i] )
+                    {
+                        out << i << " U:\t";
+                    }
+                    else if( m_coded[i] )
+                    {
+                        out << i << " C:\t";
+                    }
+                    else
+                    {
+                        out << i << " ?:\t";
+                    }
+
+                    value_type *symbol_i =
+                        SuperCoder::symbol_value(i);
+
+                    for(uint32_t j = 0; j < symbol_length; ++j)
+                    {
+
+                        value_type value =
+                            fifi::get_value<field_type>(symbol_i, j );
+
+                        out << (uint32_t)value << " ";
+                    }
+
+                    out << std::endl;
+                }
+
+                out << std::endl;
+            }
+
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data,
                            uint8_t *symbol_coefficients)
