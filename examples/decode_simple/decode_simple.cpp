@@ -22,6 +22,7 @@
 #include <vector>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/debug_linear_block_decoder.hpp>
 
 namespace fifi
 {
@@ -59,6 +60,7 @@ namespace kodo
     template<class Field>
     class rlnc_decoder
         : public // Codec API
+                 debug_linear_block_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
@@ -74,7 +76,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  rlnc_decoder<Field>
-                     > > > > > > > > >
+                     > > > > > > > > > >
     {};
 }
 
@@ -155,15 +157,10 @@ int main()
     //              | 0 0 1 1 1 |   | 0 1 0 | | 1 0 1 1 0 |
     //              | 1 0 0 0 1 | = | 0 1 1 | | 0 0 1 1 1 |
     //              | 1 1 0 1 0 |   | 1 0 1 | | 0 1 1 0 0 |
-    //
-    //              |   0x07    | = |  0x02 | |   0x16    |
-    //              |   0x11    | = |  0x03 | |   0x07    |
-    //              |   0x1a    | = |  0x05 | |   0x0c    |
-    //
-    uint8_t original_symbols[/*symbols*symbol_size*/] = { 0x16, 0x07, 0x0c };
-    uint8_t symbol_coefficients[/*symbols*coefficients_size*/]
-        = { 0x02, 0x03, 0x05 };
-    uint8_t encoded_symbols[/*symbols*symbol_size*/] = { 0x07, 0x11, 0x1a };
+
+    uint8_t original_symbols[] = { 0x16, 0x07, 0x0c };
+    uint8_t symbol_coefficients[] = { 0x02, 0x03, 0x05 };
+    uint8_t encoded_symbols[] = { 0x07, 0x11, 0x1a };
 
 
     std::cout << std::endl << "Original symbols:" << std::endl;
@@ -178,6 +175,7 @@ int main()
     std::cout << std::endl << "Encoded symbols (before decoding):" << std::endl;
     fifi::print<field_type>((value_type*)encoded_symbols,
             symbols, symbol_length);
+    std::cout << std::endl << std::endl;
 
 
     // Decode each symbol
@@ -185,8 +183,27 @@ int main()
     {
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
+
+        std::cout << "Decoding matrix:" << std::endl;
+        decoder->print_decoding_matrix(std::cout);
+
+        std::cout << "Symbol matrix:" << std::endl;
+        decoder->print_symbol_matrix(std::cout, 5);
+
+        std::cout << std::endl;
     }
 
+    // Ensure that decoding was completed successfully.
+    if (decoder->is_complete())
+    {
+        std::cout << "Decoding completed." << std::endl;
+    }
+    else
+    {
+        std::cout << 
+            "Decoding incomplete - not all encoding vectors are independent." <<
+            std::endl;
+    }
 
     // Copy decoded data into a vector
     std::vector<uint8_t> decoded_symbols(decoder->block_size());
