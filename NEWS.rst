@@ -13,6 +13,9 @@ Latest (minor)
   This can be very useful in cases where data is produced on-the-fly, e.g.
   some form of streaming. The example can be found in the "encode_on_the_fly"
   folder.
+* Adding a deep storage decoder which provides the memory needed to decode
+  a large object spanning several blocks.
+
 
 8.0.0
 -----

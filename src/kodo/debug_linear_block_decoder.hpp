@@ -13,8 +13,9 @@
 namespace kodo
 {
 
-    // Debug layer which allows printing encoding vectors
-    // of a RLNC decoder.
+    /// @ingroup debug
+    /// @brief Debug layer which allows inspecting the state of a
+    ///        linear block decoder.
     template<class SuperCoder>
     class debug_linear_block_decoder : public SuperCoder
     {

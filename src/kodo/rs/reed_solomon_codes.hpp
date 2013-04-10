@@ -37,8 +37,10 @@
 namespace kodo
 {
 
-    /// Complete stack implementing a Reed-Solomon encoder. The key
-    /// features of this configuration is the following:
+    /// @ingroup fec_stacks
+    /// @brief Complete stack implementing a Reed-Solomon encoder.
+    ///
+    /// The key features of this configuration is the following:
     /// - Systematic encoding (uncoded symbols produced before switching
     ///   to coding)
     /// - Deep symbol storage which makes the encoder allocate its own
@@ -74,9 +76,11 @@ namespace kodo
                      > > > > > > > > > > > > > > > >
     { };
 
-    /// Implementation of a complete RS decoder this configuration
-    /// adds the following features (including those described for
-    /// the encoder):
+    /// @ingroup fec_stacks
+    /// @brief Implementation of a complete RS decoder
+    ///
+    /// This configuration adds the following features (including those
+    /// described for the encoder):
     /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>
     class rs_decoder
