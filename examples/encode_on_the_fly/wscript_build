@@ -1,0 +1,9 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+bld.program(features = 'cxx',
+            source   = 'encode_on_the_fly.cpp',
+            target   = 'encode_on_the_fly',
+            use      = ['kodo_includes', 'boost_includes',
+                        'fifi_includes', 'sak_includes'])
+
