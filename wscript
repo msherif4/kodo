@@ -4,7 +4,7 @@
 import os
 
 APPNAME = 'kodo'
-VERSION = '9.0.0'
+VERSION = '8.0.0'
 
 def recurse_helper(ctx, name):
     if not ctx.has_dependency_path(name):
@@ -48,7 +48,7 @@ def options(opt):
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
             git_repository = 'git://github.com/steinwurf/fifi.git',
-            major_version = 8))
+            major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
