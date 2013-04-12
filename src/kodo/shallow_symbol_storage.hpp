@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SHALLOW_SYMBOL_STORAGE_HPP
-#define KODO_SHALLOW_SYMBOL_STORAGE_HPP
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -56,155 +55,155 @@ namespace kodo
 
         /// @copydoc layer::construct(factory&)
         void construct(factory &the_factory)
-            {
-                SuperCoder::construct(the_factory);
+        {
+            SuperCoder::construct(the_factory);
 
-                m_data.resize(the_factory.max_symbols(), 0);
-            }
+            m_data.resize(the_factory.max_symbols(), 0);
+        }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        void initialize(factory &the_factory)
+        {
+            SuperCoder::initialize(the_factory);
 
-                std::fill(m_data.begin(), m_data.end(), (data_ptr) 0);
-                m_symbols_count = 0;
-            }
+            std::fill(m_data.begin(), m_data.end(), (data_ptr) 0);
+            m_symbols_count = 0;
+        }
 
         /// @copydoc layer::symbol(uint32_t) const
         const uint8_t* symbol(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
+        {
+            assert(index < SuperCoder::symbols());
 
-                // Did you forget to set the symbol
-                assert(m_data[index]);
+            // Did you forget to set the symbol
+            assert(m_data[index]);
 
-                return m_data[index];
-            }
+            return m_data[index];
+        }
 
         /// @copydoc layer::symbol_value(uint32_t) const
         const value_type* symbol_value(uint32_t index) const
-            {
-                return reinterpret_cast<const value_type*>(symbol(index));
-            }
+        {
+            return reinterpret_cast<const value_type*>(symbol(index));
+        }
 
         /// @copydoc layer::swap_symbols(std::vector<data_ptr>&)
         void swap_symbols(std::vector<data_ptr> &symbols)
+        {
+            assert(m_data.size() == symbols.size());
+            m_data.swap(symbols);
+
+            m_symbols_count = 0;
+
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
-                assert(m_data.size() == symbols.size());
-                m_data.swap(symbols);
-
-                m_symbols_count = 0;
-
-                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
-                {
-                    if(m_data[i] != 0)
-                        ++m_symbols_count;
-                }
+                if(m_data[i] != 0)
+                    ++m_symbols_count;
             }
+        }
 
         /// @copydoc layer::set_symbols()
         void set_symbols(const storage_type &symbol_storage)
+        {
+            auto symbol_sequence = sak::split_storage(
+                symbol_storage, SuperCoder::symbol_size());
+
+            uint32_t sequence_size = symbol_sequence.size();
+            assert(sequence_size == SuperCoder::symbols());
+
+            for(uint32_t i = 0; i < sequence_size; ++i)
             {
-                auto symbol_sequence = sak::split_storage(
-                    symbol_storage, SuperCoder::symbol_size());
-
-                uint32_t sequence_size = symbol_sequence.size();
-                assert(sequence_size == SuperCoder::symbols());
-
-                for(uint32_t i = 0; i < sequence_size; ++i)
-                {
-                    set_symbol(i, symbol_sequence[i]);
-                }
+                set_symbol(i, symbol_sequence[i]);
             }
+        }
 
         /// @copydoc layer::set_symbol()
         void set_symbol(uint32_t index, const storage_type &symbol)
+        {
+            assert(symbol.m_data != 0);
+            assert(symbol.m_size == SuperCoder::symbol_size());
+            assert(index < SuperCoder::symbols());
+
+            if(m_data[index] == 0)
             {
-                assert(symbol.m_data != 0);
-                assert(symbol.m_size == SuperCoder::symbol_size());
-                assert(index < SuperCoder::symbols());
-
-                if(m_data[index] == 0)
-                {
-                    ++m_symbols_count;
-                    assert(m_symbols_count <= SuperCoder::symbols());
-                }
-
-		// Assign the pointer
-                m_data[index] = symbol.m_data;
+                ++m_symbols_count;
+                assert(m_symbols_count <= SuperCoder::symbols());
             }
+
+            // Assign the pointer
+            m_data[index] = symbol.m_data;
+        }
 
         /// @copydoc layer::copy_symbols(const sak::mutable_storage&)
         void copy_symbols(const sak::mutable_storage &dest) const
+        {
+            auto storage = dest;
+
+            assert(storage.m_size > 0);
+            assert(storage.m_data != 0);
+
+            uint32_t data_to_copy =
+                std::min(storage.m_size, SuperCoder::block_size());
+
+            uint32_t symbol_index = 0;
+
+            while(data_to_copy > 0)
             {
-                auto storage = dest;
+                uint32_t copy_size =
+                    std::min(data_to_copy, SuperCoder::symbol_size());
 
-                assert(storage.m_size > 0);
-                assert(storage.m_data != 0);
+                data_to_copy -= copy_size;
 
-                uint32_t data_to_copy =
-                    std::min(storage.m_size, SuperCoder::block_size());
+                sak::const_storage src_storage =
+                    sak::storage(symbol(symbol_index), copy_size);
 
-                uint32_t symbol_index = 0;
+                sak::copy_storage(storage, src_storage);
 
-                while(data_to_copy > 0)
-                {
-                    uint32_t copy_size =
-                        std::min(data_to_copy, SuperCoder::symbol_size());
+                storage.m_size -= copy_size;
+                storage.m_data += copy_size;
 
-                    data_to_copy -= copy_size;
+                ++symbol_index;
 
-                    sak::const_storage src_storage =
-                        sak::storage(symbol(symbol_index), copy_size);
-
-                    sak::copy_storage(storage, src_storage);
-
-                    storage.m_size -= copy_size;
-                    storage.m_data += copy_size;
-
-                    ++symbol_index;
-
-                }
             }
+        }
 
         /// @copydoc layer::copy_symbol(
         ///              uint32_t, const sak::mutable_storage&) const
         void copy_symbol(uint32_t index,
                          const sak::mutable_storage &dest) const
-            {
-                auto storage = dest;
+        {
+            auto storage = dest;
 
-                assert(storage.m_size > 0);
-                assert(storage.m_data != 0);
+            assert(storage.m_size > 0);
+            assert(storage.m_data != 0);
 
-                uint32_t data_to_copy =
-                    std::min(storage.m_size, SuperCoder::symbol_size());
+            uint32_t data_to_copy =
+                std::min(storage.m_size, SuperCoder::symbol_size());
 
-                sak::const_storage src =
-                    sak::storage(symbol(index), data_to_copy);
+            sak::const_storage src =
+                sak::storage(symbol(index), data_to_copy);
 
-                sak::copy_storage(storage, src);
-            }
+            sak::copy_storage(storage, src);
+        }
 
         /// @copydoc layer::symbol_exists(uint32_t) const
         bool symbol_exists(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return m_data[index] != 0;
-            }
+        {
+            assert(index < SuperCoder::symbols());
+            return m_data[index] != 0;
+        }
 
         /// @copydoc layer::symbol_count() const
         uint32_t symbol_count() const
-            {
-                return m_symbols_count;
-            }
+        {
+            return m_symbols_count;
+        }
 
         /// @copydoc layer::is_storage_full() const
         bool is_storage_full() const
-            {
-                return m_symbols_count == SuperCoder::symbols();
-            }
+        {
+            return m_symbols_count == SuperCoder::symbols();
+        }
 
     protected:
 
@@ -250,20 +249,20 @@ namespace kodo
 
         /// @copydoc layer::symbol(uint32_t)
         uint8_t* symbol(uint32_t index)
-            {
-                assert(index < Super::symbols());
+        {
+            assert(index < Super::symbols());
 
-                // Did you forget to set the symbol
-                assert(m_data[index]);
+            // Did you forget to set the symbol
+            assert(m_data[index]);
 
-                return m_data[index];
-            }
+            return m_data[index];
+        }
 
         /// @copydoc layer::symbol_value(uint32_t)
         value_type* symbol_value(uint32_t index)
-            {
-                return reinterpret_cast<value_type*>(symbol(index));
-            }
+        {
+            return reinterpret_cast<value_type*>(symbol(index));
+        }
 
     };
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PLAIN_SYMBOL_ID_HPP
-#define KODO_PLAIN_SYMBOL_ID_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -34,31 +33,31 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::factory::max_id_size() const
             uint32_t max_id_size() const
-                {
-                    return SuperCoder::factory::max_coefficients_size();
-                }
+            {
+                return SuperCoder::factory::max_coefficients_size();
+            }
         };
 
     public:
 
-        /// @copydoc layer::initialize()
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
 
-                m_id_size = SuperCoder::coefficients_size();
-                assert(m_id_size > 0);
-            }
+            m_id_size = SuperCoder::coefficients_size();
+            assert(m_id_size > 0);
+        }
 
         /// @copydoc layer::id_size()
         uint32_t id_size() const
-            {
-                return m_id_size;
-            }
+        {
+            return m_id_size;
+        }
 
     protected:
 

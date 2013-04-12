@@ -50,7 +50,7 @@ namespace kodo
                 : SuperCoder::factory(max_symbols, max_symbol_size),
                   m_stack_factory(max_symbols, max_symbol_size)
                 {
-                    m_stack_factory.set_proxy(this);
+                    m_stack_factory.set_factory_proxy(this);
                 }
 
             /// @copydoc layer::factory::build()
@@ -62,50 +62,25 @@ namespace kodo
                     auto coder =
                         SuperCoder::factory::build();
 
-                    // This is a bit more complicated than I would
-                    // like it to be. Anyway here is a brief description
-                    // of what is going on. The recoding stack is
-                    // implemented as a parallel stack i.e. it does
-                    // not affect the public API of the decoding stack
-                    // (the main stack).
-                    // To do this we use the proxy_layer to avoid
-                    // having to re-implement functions from the
-                    // main stack. What complicates this is that,
-                    // the recoding stack also needs to be constructed
-                    // and initialized. We cannot do it from the
-                    // build() function in the proxy factory since
-                    // we at that time have not specified any proxy
-                    // this means build() in the proxy layer cannot call
-                    // construct() and initialize() so we have to do it
-                    // here (after setting the proxy so calls can be
-                    // forwarded). Adding some of complexity in layers
-                    // using a proxy.
-
-                    uint32_t symbols =
-                        SuperCoder::factory::symbols();
-
-                    uint32_t symbol_size =
-                        SuperCoder::factory::symbol_size();
-
-                    m_stack_factory.set_symbols(symbols);
-                    m_stack_factory.set_symbol_size(symbol_size);
-
-                    auto recoder =
-                        m_stack_factory.build();
-
-                    if(!coder->has_recode_stack())
-                    {
-                        recoder->set_proxy(coder.get());
-                        coder->set_recode_stack(recoder);
-
-                        recoder->construct(m_stack_factory);
-
-                        recoder->initialize(symbols, symbol_size);
-
-                    }
-
                     return coder;
                 }
+
+        private:
+
+            /// Give the layer access
+            friend class payload_recoder;
+
+            /// @return A recoding stack
+            recode_pointer build_recoder()
+            {
+                return m_stack_factory.build();
+            }
+
+            /// @return A reference to recoding stack factory
+            typename recode_stack::factory& recode_factory()
+            {
+                return m_stack_factory;
+            }
 
         private:
 
@@ -115,19 +90,24 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::construct(factory&)
+        void construct(factory& the_factory)
+        {
+            SuperCoder::construct(the_factory);
+
+            the_factory.recode_factory().set_stack_proxy(this);
+
+            m_recode_stack = the_factory.build_recoder();
+        }
+
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
+                SuperCoder::initialize(the_factory);
+                m_recode_stack->initialize(the_factory.recode_factory());
 
-                if(has_recode_stack())
-                {
-                    m_recode_stack->initialize(symbols, symbol_size);
-
-                    assert(SuperCoder::payload_size() ==
-                           m_recode_stack->payload_size());
-                }
-
-                SuperCoder::initialize(symbols, symbol_size);
+                assert(SuperCoder::payload_size() ==
+                       m_recode_stack->payload_size());
             }
 
         /// @copydoc layer::recode(uint8_t*)

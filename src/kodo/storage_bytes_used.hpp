@@ -20,15 +20,20 @@ namespace kodo
     {
     public:
 
+        /// The factory type
+        typedef typename SuperCoder::factory factory;
+
+    public:
+
         /// Constructor
         storage_bytes_used()
             : m_bytes_used(0)
             {}
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
                 m_bytes_used = 0;
             }
 

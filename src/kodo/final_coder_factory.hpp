@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_FINAL_CODER_FACTORY_HPP
-#define KODO_FINAL_CODER_FACTORY_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -37,13 +36,14 @@ namespace kodo
             /// The factory type
             typedef typename FinalType::factory factory_type;
 
+        public:
 
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size),
-                  m_symbols(max_symbols),
-                  m_symbol_size(max_symbol_size)
+            factory(uint32_t max_symbols, uint32_t max_symbol_size) :
+                m_max_symbols(max_symbols),
+                m_max_symbol_size(max_symbol_size),
+                m_symbols(max_symbols),
+                m_symbol_size(max_symbol_size)
             {
                 assert(m_max_symbols > 0);
                 assert(m_max_symbol_size > 0);
@@ -53,61 +53,59 @@ namespace kodo
 
             /// @copydoc layer::factory::build()
             pointer build()
-                {
+            {
+                factory_type *this_factory =
+                    static_cast<factory_type*>(this);
 
-                    factory_type *this_factory =
-                        static_cast<factory_type*>(this);
+                pointer coder = boost::make_shared<FinalType>();
 
-                    pointer coder = boost::make_shared<FinalType>();
+                coder->construct(*this_factory);
+                coder->initialize(*this_factory);
 
-                    //coder->test(*this_factory);
-                    coder->construct(*this_factory);
-                    coder->initialize(m_symbols, m_symbol_size);
-
-                    return coder;
-                }
+                return coder;
+            }
 
             /// @copydoc layer::factory::max_symbols() const;
             uint32_t max_symbols() const
-                {
-                    return m_max_symbols;
-                }
+            {
+                return m_max_symbols;
+            }
 
             /// @copydoc layer::factory::max_symbol_size() const;
             uint32_t max_symbol_size() const
-                {
-                    return m_max_symbol_size;
-                }
+            {
+                return m_max_symbol_size;
+            }
 
             /// @copydoc layer::factory::symbols() const;
             uint32_t symbols() const
-                {
-                    return m_symbols;
-                }
+            {
+                return m_symbols;
+            }
 
             /// @copydoc layer::factory::symbol_size() const;
             uint32_t symbol_size() const
-                {
-                    return m_symbol_size;
-                }
+            {
+                return m_symbol_size;
+            }
 
             /// @copydoc layer::factory::set_symbols(uint32_t)
             void set_symbols(uint32_t symbols)
-                {
-                    assert(symbols > 0);
-                    assert(symbols <= m_max_symbols);
+            {
+                assert(symbols > 0);
+                assert(symbols <= m_max_symbols);
 
-                    m_symbols = symbols;
-                }
+                m_symbols = symbols;
+            }
 
             /// @copydoc layer::factory::set_symbol_size(uint32_t)
             void set_symbol_size(uint32_t symbol_size)
-                {
-                    assert(symbol_size > 0);
-                    assert(symbol_size <= m_max_symbol_size);
+            {
+                assert(symbol_size > 0);
+                assert(symbol_size <= m_max_symbol_size);
 
-                    m_symbol_size = symbol_size;
-                }
+                m_symbol_size = symbol_size;
+            }
 
         private:
 
@@ -127,20 +125,19 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory &)
+        /// @copydoc layer::construct(factory&)
         void construct(factory &the_factory)
-            {
-                /// This is the final factory layer so we do nothing
-                (void) the_factory;
-            }
+        {
+            /// This is the final factory layer so we do nothing
+            (void) the_factory;
+        }
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                /// This is the final factory layer so we do nothing
-                (void) symbols;
-                (void) symbol_size;
-            }
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory &the_factory)
+        {
+            /// This is the final factory layer so we do nothing
+            (void) the_factory;
+        }
     };
 }
 

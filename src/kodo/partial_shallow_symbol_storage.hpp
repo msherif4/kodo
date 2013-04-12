@@ -94,10 +94,10 @@ namespace kodo
                 m_partial_symbol->resize(the_factory.max_symbol_size(), 0);
             }
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory &the_factory)
             {
-                Super::initialize(symbols, symbol_size);
+                Super::initialize(the_factory);
 
                 std::fill(m_partial_symbol->begin(),
                           m_partial_symbol->end(), 0);
