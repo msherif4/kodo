@@ -56,23 +56,22 @@ namespace kodo
         public:
 
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                {
-                    m_field = boost::make_shared<field_impl>();
-                }
+            factory(uint32_t max_symbols, uint32_t max_symbol_size) :
+                SuperCoder::factory(max_symbols, max_symbol_size)
+            {
+                m_field = boost::make_shared<field_impl>();
+            }
 
-            /// Forwards the build function and sets the finite field
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
-                {
-                    pointer coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
+        private:
 
-                    coder->m_field = m_field;
+            /// Give the layer access
+            friend class finite_field_math;
 
-                    return coder;
-                }
+            /// @return The field implementation used.
+            field_pointer field()
+            {
+                return m_field;
+            }
 
         protected:
 
@@ -101,6 +100,8 @@ namespace kodo
 
                 assert(max_symbol_length > 0);
                 m_temp_symbol.resize(max_symbol_length, 0);
+
+                m_field = the_factory.field();
             }
 
         /// @copydoc layer::multiply(value_type*,value_type,uint32_t)

@@ -113,8 +113,10 @@ namespace kodo
                 uint32_t symbol_size =
                     m_partitioning.symbol_size(encoder_id);
 
-                pointer_type encoder =
-                    m_factory.build(symbols, symbol_size);
+                m_factory.set_symbols(symbols);
+                m_factory.set_symbol_size(symbol_size);
+
+                pointer_type encoder = m_factory.build();
 
                 // Initialize encoder with data
                 uint32_t offset =

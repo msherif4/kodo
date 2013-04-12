@@ -70,15 +70,6 @@ namespace kodo
                     m_zero_symbol->resize(max_symbol_size, 0);
                 }
 
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
-                {
-                    pointer coder =
-                        Super::factory::build(symbols, symbol_size);
-
-                    return coder;
-                }
-
         private:
 
             /// Grant the layer access

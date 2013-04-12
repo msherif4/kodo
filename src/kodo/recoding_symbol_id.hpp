@@ -30,9 +30,6 @@ namespace kodo
         /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// Pointer to coder produced by the factories
-        typedef typename SuperCoder::pointer pointer;
-
     public:
 
         /// @ingroup factory_layers
@@ -52,20 +49,18 @@ namespace kodo
                     return SuperCoder::factory::max_coefficients_size();
                 }
 
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
-                {
-                    pointer coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
-
-                    coder->Initialize_storage(
-                        SuperCoder::factory::max_coefficients_size());
-
-                    return coder;
-                }
         };
 
     public:
+
+        /// @copydoc layer::construct(factory &)
+        void construct(factory &the_factory)
+        {
+            SuperCoder::construct(the_factory);
+
+            m_coefficients.resize(the_factory.max_coefficients_size());
+            m_recode_id.resize(the_factory.max_coefficients_size());
+        }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
         void initialize(uint32_t symbols, uint32_t symbol_size)
@@ -163,21 +158,6 @@ namespace kodo
         uint32_t id_size() const
             {
                 return m_id_size;
-            }
-
-    private:
-
-        /// Initialize the coefficient storage
-        void Initialize_storage(uint32_t max_coefficients_size)
-            {
-                assert(max_coefficients_size > 0);
-
-                // Note, that resize will not re-allocate anything
-                // as long as the sizes are not larger than
-                // previously. So this call should only have an
-                // effect the first time this function is called.
-                m_coefficients.resize(max_coefficients_size);
-                m_recode_id.resize(max_coefficients_size);
             }
 
     protected:

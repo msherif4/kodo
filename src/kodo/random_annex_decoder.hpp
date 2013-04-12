@@ -293,8 +293,10 @@ namespace kodo
                     uint32_t symbol_size =
                         m_partitioning.symbol_size(i);
 
-                    internal_pointer_type decoder =
-                        m_factory.build(symbols, symbol_size);
+                    m_factory.set_symbols(symbols);
+                    m_factory.set_symbol_size(symbol_size);
+
+                    internal_pointer_type decoder = m_factory.build();
 
                     // Set bytes used
                     uint32_t bytes_used =

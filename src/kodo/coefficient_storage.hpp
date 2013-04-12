@@ -30,34 +30,24 @@ namespace kodo
         /// Pointer to coder produced by the factories
         typedef typename SuperCoder::pointer pointer;
 
+        /// The factory type
+        typedef typename SuperCoder::factory factory;
+
     public:
 
-        /// @ingroup factory_layers
-        /// The factory layer associated with this coder.
-        class factory : public SuperCoder::factory
+        /// @copydoc layer::construct(factory &)
+        void construct(factory &the_factory)
         {
-        public:
+            SuperCoder::construct(the_factory);
 
-            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            m_coefficients_storage.resize(the_factory.max_symbols());
+            for(uint32_t i = 0; i < max_symbols; ++i)
+            {
+                m_coefficients_storage[i].resize(
+                    the_factory.max_coefficients_size());
+            }
 
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
-                {
-                    pointer coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
-
-                    coder->Initialize_storage(
-                        SuperCoder::factory::max_symbols(),
-                        SuperCoder::factory::max_coefficients_size());
-
-                    return coder;
-                }
-        };
-
-    public:
+        }
 
         /// @copydoc layer::coefficients(uint32_t)
         uint8_t* coefficients(uint32_t index)
@@ -87,7 +77,8 @@ namespace kodo
                     coefficients(index));
             }
 
-        /// @copydoc layer::set_coefficients(uint32_t,const sak::const_storage&)
+        /// @copydoc layer::set_coefficients(
+        ///              uint32_t,const sak::const_storage&)
         void set_coefficients(uint32_t index,
                               const sak::const_storage &storage)
             {
@@ -98,34 +89,6 @@ namespace kodo
                     coefficients(index), SuperCoder::coefficients_size());
 
                 sak::copy_storage(dest, storage);
-            }
-
-
-    private:
-
-        /// Initialize the coefficient storage
-        /// @param max_symbols The maximum symbols we support
-        /// @param max_coefficients_size The maximum number of bytes needed
-        ///        to store the coding coefficients.
-        void Initialize_storage(uint32_t max_symbols,
-                                uint32_t max_coefficients_size)
-            {
-                assert(max_symbols > 0);
-                assert(max_coefficients_size > 0);
-
-                // Note, that resize will not re-allocate anything
-                // as long as the sizes are not larger than
-                // previously. So this call should only have an
-                // effect the first time this function is called.
-
-                // Note, we have as many vectors as we have symbols
-                // therefore the maximum number of vectors also
-                // equal the maximum number of symbols
-                m_coefficients_storage.resize(max_symbols);
-                for(uint32_t i = 0; i < max_symbols; ++i)
-                {
-                    m_coefficients_storage[i].resize(max_coefficients_size);
-                }
             }
 
     private:

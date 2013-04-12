@@ -41,19 +41,24 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size)
-                {
-                    assert(m_max_symbols > 0);
-                    assert(m_max_symbol_size > 0);
-                }
+                  m_max_symbol_size(max_symbol_size),
+                  m_symbols(max_symbols),
+                  m_symbol_size(max_symbol_size)
+            {
+                assert(m_max_symbols > 0);
+                assert(m_max_symbol_size > 0);
+                assert(m_symbols > 0);
+                assert(m_symbol_size > 0);
+            }
 
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
+            /// @copydoc layer::factory::build()
             pointer build(uint32_t symbols, uint32_t symbol_size)
                 {
                     assert(symbols > 0);
                     assert(symbol_size > 0);
 
-                    factory_type *this_factory = static_cast<factory_type*>(this);
+                    factory_type *this_factory =
+                        static_cast<factory_type*>(this);
 
                     pointer coder = boost::make_shared<FinalType>();
 
@@ -64,27 +69,62 @@ namespace kodo
                     return coder;
                 }
 
-            /// @copydoc layer::max_symbols() const;
+            /// @copydoc layer::factory::max_symbols() const;
             uint32_t max_symbols() const
                 {
                     return m_max_symbols;
                 }
 
-            /// @copydoc layer::max_symbol_size() const;
+            /// @copydoc layer::factory::max_symbol_size() const;
             uint32_t max_symbol_size() const
                 {
                     return m_max_symbol_size;
                 }
 
+            /// @copydoc layer::factory::symbols() const;
+            uint32_t symbols() const
+                {
+                    return m_symbols;
+                }
+
+            /// @copydoc layer::factory::symbol_size() const;
+            uint32_t symbol_size() const
+                {
+                    return m_symbol_size;
+                }
+
+            /// @copydoc layer::factory::set_symbols(uint32_t)
+            void set_symbols(uint32_t symbols)
+                {
+                    assert(symbols > 0);
+                    assert(symbols < m_max_symbols);
+
+                    m_symbols = symbols;
+                }
+
+            /// @copydoc layer::factory::set_symbol_size(uint32_t)
+            void set_symbol_size(uint32_t symbol_size)
+                {
+                    assert(symbol_size > 0);
+                    assert(symbol_size < m_max_symbol_size);
+
+                    m_symbol_size = symbol_size;
+                }
+
         private:
 
-            /// @todo remove these two functions from whereever they are
-            ///       defined now
             /// The maximum number of symbols
             uint32_t m_max_symbols;
 
             /// The maximum symbol size
             uint32_t m_max_symbol_size;
+
+            /// The number of symbols used
+            uint32_t m_symbols;
+
+            /// The symbol size used
+            uint32_t m_symbol_size;
+
         };
 
     public:

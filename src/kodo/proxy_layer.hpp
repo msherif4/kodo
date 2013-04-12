@@ -39,7 +39,9 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_proxy_factory(0),
                   m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size)
+                  m_max_symbol_size(max_symbol_size),
+                  m_symbols(max_symbols),
+                  m_symbol_size(max_symbol_size)
                 { }
 
             /// Sets the pointer to the proxy stack
@@ -51,11 +53,9 @@ namespace kodo
                     m_proxy_factory = proxy;
                 }
 
-            /// @copydoc layer::factory::build(uint32_t, uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
+            /// @copydoc layer::factory::build()
+            pointer build()
                 {
-                    (void) symbols;
-                    (void) symbol_size;
                     pointer coder = boost::make_shared<FinalType>();
                     return coder;
                 }
@@ -109,6 +109,35 @@ namespace kodo
                     return m_proxy_factory->max_coefficients_size();
                 }
 
+            /// @copydoc layer::factory::symbols() const;
+            uint32_t symbols() const
+                {
+                    return m_symbols;
+                }
+
+            /// @copydoc layer::factory::symbol_size() const;
+            uint32_t symbol_size() const
+                {
+                    return m_symbol_size;
+                }
+
+            /// @copydoc layer::factory::set_symbols(uint32_t)
+            void set_symbols(uint32_t symbols)
+                {
+                    assert(symbols > 0);
+                    assert(symbols < m_max_symbols);
+
+                    m_symbols = symbols;
+                }
+
+            /// @copydoc layer::factory::set_symbol_size(uint32_t)
+            void set_symbol_size(uint32_t symbol_size)
+                {
+                    assert(symbol_size > 0);
+                    assert(symbol_size < m_max_symbol_size);
+
+                    m_symbol_size = symbol_size;
+                }
         private:
 
             typename MainStack::factory *m_proxy_factory;
@@ -118,6 +147,12 @@ namespace kodo
 
             /// The maximum symbol size
             uint32_t m_max_symbol_size;
+
+            /// The number of symbols used
+            uint32_t m_symbols;
+
+            /// The symbol size used
+            uint32_t m_symbol_size;
 
         };
 

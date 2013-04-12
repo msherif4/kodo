@@ -29,29 +29,63 @@ public:
         /// @copydoc layer::factory::factory(uint32_t,uint32_t)
         factory(uint32_t max_symbols, uint32_t max_symbol_size)
             : m_max_symbols(max_symbols),
-              m_max_symbol_size(max_symbol_size)
-            {}
+              m_max_symbol_size(max_symbol_size),
+              m_symbols(max_symbols),
+              m_symbol_size(max_symbol_size)
+        {}
 
-        /// @copydoc layer::factory::build(uint32_t,uint32_t)
-        pointer build(uint32_t symbols, uint32_t symbol_size)
-            {
-                return boost::make_shared<dummy_coder>(symbols, symbol_size);
-            }
+        /// @copydoc layer::factory::build()
+        pointer build()
+        {
+            return boost::make_shared<dummy_coder>(m_symbols, m_symbol_size);
+        }
 
         /// @copydoc layer::factory::max_symbols() const
         uint32_t max_symbols() const
-            {
-                return m_max_symbols;
-            }
+        {
+            return m_max_symbols;
+        }
 
         /// @copydoc layer::factory::max_symbol_size() const
         uint32_t max_symbol_size() const
-            {
-                return m_max_symbol_size;
-            }
+        {
+            return m_max_symbol_size;
+        }
+
+        /// @copydoc layer::factory::symbols() const;
+        uint32_t symbols() const
+        {
+            return m_symbols;
+        }
+
+        /// @copydoc layer::factory::symbol_size() const;
+        uint32_t symbol_size() const
+        {
+            return m_symbol_size;
+        }
+
+        /// @copydoc layer::factory::set_symbols(uint32_t)
+        void set_symbols(uint32_t symbols)
+        {
+            assert(symbols > 0);
+            assert(symbols < m_max_symbols);
+
+            m_symbols = symbols;
+        }
+
+        /// @copydoc layer::factory::set_symbol_size(uint32_t)
+        void set_symbol_size(uint32_t symbol_size)
+        {
+            assert(symbol_size > 0);
+            assert(symbol_size < m_max_symbol_size);
+
+            m_symbol_size = symbol_size;
+        }
 
         uint32_t m_max_symbols;
         uint32_t m_max_symbol_size;
+        uint32_t m_symbols;
+        uint32_t m_symbol_size;
 
     };
 

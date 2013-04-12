@@ -53,14 +53,14 @@ namespace kodo
                     m_stack_factory.set_proxy(this);
                 }
 
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
+            /// @copydoc layer::factory::build()
+            pointer build()
                 {
                     assert(SuperCoder::factory::max_payload_size() ==
                            m_stack_factory.max_payload_size());
 
                     auto coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
+                        SuperCoder::factory::build();
 
                     // This is a bit more complicated than I would
                     // like it to be. Anyway here is a brief description
@@ -80,6 +80,15 @@ namespace kodo
                     // here (after setting the proxy so calls can be
                     // forwarded). Adding some of complexity in layers
                     // using a proxy.
+
+                    uint32_t symbols =
+                        SuperCoder::factory::symbols();
+
+                    uint32_t symbol_size =
+                        SuperCoder::factory::symbol_size();
+
+                    m_stack_factory.set_symbols(symbols);
+                    m_stack_factory.set_symbol_size(symbol_size);
 
                     auto recoder =
                         m_stack_factory.build(symbols, symbol_size);

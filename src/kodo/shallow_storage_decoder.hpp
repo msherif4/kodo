@@ -89,8 +89,9 @@ namespace kodo
         /// @param object_size The size of the object to be decoded in bytes
         /// @param decoding_buffer The storage where the object will be
         ///        decoded. The memory used must be zero initialized.
-        shallow_storage_decoder(factory &factory, uint32_t object_size,
-                                const sak::mutable_storage &decoding_storage) :
+        shallow_storage_decoder(
+            factory &factory, uint32_t object_size,
+            const sak::mutable_storage &decoding_storage) :
             base_decoder(factory, object_size),
             m_decoding_storage(decoding_storage)
         {
