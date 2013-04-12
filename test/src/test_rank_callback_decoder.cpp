@@ -190,7 +190,11 @@ void test_rank_callback_decoder_stack(uint32_t symbols, uint32_t symbol_size)
     typedef kodo::rank_callback_decoder_stack<fifi::binary8> rank_coder_t;
 
     rank_coder_t::factory coder_factory(symbols, symbol_size);
-    rank_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
+
+    coder_factory.set_symbols(symbols);
+    coder_factory.set_symbol_size(symbol_size);
+
+    auto coder = coder_factory.build();
 
     coder->decode_symbol(&symbol_data[0], &symbol_coefficients[0]);
     coder->decode_symbol(&symbol_data[0], symbol_id);

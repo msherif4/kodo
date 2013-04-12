@@ -15,10 +15,16 @@ TEST(TestReedSolomonCodes, test_construct)
 
     {
         kodo::rs_encoder<fifi::binary8>::factory encoder_factory(255, 1600);
-        auto encoder = encoder_factory.build(128, 1600);
+        encoder_factory.set_symbols(128);
+        encoder_factory.set_symbol_size(1600);
+
+        auto encoder = encoder_factory.build();
 
         kodo::rs_decoder<fifi::binary8>::factory decoder_factory(255, 1600);
-        auto decoder = decoder_factory.build(128, 1600);
+        decoder_factory.set_symbols(128);
+        decoder_factory.set_symbol_size(1600);
+
+        auto decoder = decoder_factory.build();
     }
 
 }
@@ -33,8 +39,14 @@ TEST(TestReedSolomonCodes, test_encode_decode)
         uint32_t symbols = rand_symbols(255);
         uint32_t symbol_size = rand_symbol_size();
 
-        auto encoder = encoder_factory.build(symbols, symbol_size);
-        auto decoder = decoder_factory.build(symbols, symbol_size);
+        encoder_factory.set_symbols(symbols);
+        encoder_factory.set_symbol_size(symbol_size);
+
+        decoder_factory.set_symbols(symbols);
+        decoder_factory.set_symbol_size(symbol_size);
+
+        auto encoder = encoder_factory.build();
+        auto decoder = decoder_factory.build();
 
         // Encode/decode operations
         EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());

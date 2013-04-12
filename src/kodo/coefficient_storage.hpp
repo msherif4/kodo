@@ -41,7 +41,7 @@ namespace kodo
             SuperCoder::construct(the_factory);
 
             m_coefficients_storage.resize(the_factory.max_symbols());
-            for(uint32_t i = 0; i < max_symbols; ++i)
+            for(uint32_t i = 0; i < the_factory.max_symbols(); ++i)
             {
                 m_coefficients_storage[i].resize(
                     the_factory.max_coefficients_size());

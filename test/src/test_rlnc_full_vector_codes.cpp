@@ -411,16 +411,12 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
 
-    typename Encoder::pointer encoder =
-        encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
 
-    typename Decoder::pointer decoder_one =
-        decoder_factory.build(symbols, symbol_size);
-
-    typename Decoder::pointer decoder_two =
-        decoder_factory.build(symbols, symbol_size);
+    auto decoder_one = decoder_factory.build();
+    auto decoder_two = decoder_factory.build();
 
     // If tested with a shallow decoder we have to remember to set the
     // buffers to use for the decoding (for simplicity we always do this

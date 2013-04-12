@@ -101,10 +101,10 @@ int main()
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
     rlnc_encoder::factory encoder_factory(symbols, symbol_size);
-    rlnc_encoder::pointer encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
-    rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
 
     // The following three code blocks illustrates three common ways that

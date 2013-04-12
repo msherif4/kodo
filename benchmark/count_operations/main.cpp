@@ -470,8 +470,14 @@ public:
             uint32_t symbols = cs.get_value<uint32_t>("symbols");
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
-            m_encoder = m_encoder_factory->build(symbols, symbol_size);
-            m_decoder = m_decoder_factory->build(symbols, symbol_size);
+            m_decoder_factory->set_symbols(symbols);
+            m_decoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder_factory->set_symbols(symbols);
+            m_encoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder = m_encoder_factory->build();
+            m_decoder = m_decoder_factory->build();
 
             m_payload_buffer.resize(m_encoder->payload_size(), 0);
             m_encoded_data.resize(m_encoder->block_size(), 'x');

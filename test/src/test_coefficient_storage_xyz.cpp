@@ -98,7 +98,10 @@ struct api_coefficients_storage
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             // Make sure we call the const version of the function
             const pointer_type &const_coder = coder;

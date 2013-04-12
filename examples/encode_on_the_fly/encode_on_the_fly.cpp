@@ -69,10 +69,10 @@ int main()
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
     rlnc_encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
     // Allocate some storage for a "payload" the payload is what we would
     // eventually send over a network

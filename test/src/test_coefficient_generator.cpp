@@ -145,7 +145,10 @@ struct api_generate
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             std::vector<uint8_t> vector_a =
                 random_vector(coder->coefficients_size());
@@ -185,7 +188,10 @@ struct api_generate
 
     void run_partial(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             std::vector<uint8_t> vector_a =
                 random_vector(coder->coefficients_size());

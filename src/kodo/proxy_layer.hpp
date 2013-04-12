@@ -125,7 +125,7 @@ namespace kodo
             void set_symbols(uint32_t symbols)
                 {
                     assert(symbols > 0);
-                    assert(symbols < m_max_symbols);
+                    assert(symbols <= m_max_symbols);
 
                     m_symbols = symbols;
                 }
@@ -134,7 +134,7 @@ namespace kodo
             void set_symbol_size(uint32_t symbol_size)
                 {
                     assert(symbol_size > 0);
-                    assert(symbol_size < m_max_symbol_size);
+                    assert(symbol_size <= m_max_symbol_size);
 
                     m_symbol_size = symbol_size;
                 }

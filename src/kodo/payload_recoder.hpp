@@ -91,7 +91,7 @@ namespace kodo
                     m_stack_factory.set_symbol_size(symbol_size);
 
                     auto recoder =
-                        m_stack_factory.build(symbols, symbol_size);
+                        m_stack_factory.build();
 
                     if(!coder->has_recode_stack())
                     {

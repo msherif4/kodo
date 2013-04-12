@@ -102,7 +102,10 @@ struct api_symbol_id
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             EXPECT_TRUE(m_factory.max_id_size() > 0);
             EXPECT_TRUE(coder->id_size() > 0);
@@ -163,7 +166,11 @@ TEST(TestSymbolId, test_rs_stack)
     uint32_t symbol_size = rand_symbol_size();
 
     // API tests:
-    api_symbol_id<kodo::rs_vandermond_nonsystematic_stack<fifi::binary8> > test(symbols, symbol_size);
+    api_symbol_id
+    <
+        kodo::rs_vandermond_nonsystematic_stack<fifi::binary8>
+    > test(symbols, symbol_size);
+
     test.run();
 
 }

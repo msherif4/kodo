@@ -177,8 +177,14 @@ struct throughput_benchmark : public gauge::time_benchmark
             m_encoder_factory = std::make_shared<encoder_factory>(
                 symbols, symbol_size);
 
-            m_encoder = m_encoder_factory->build(symbols, symbol_size);
-            m_decoder = m_decoder_factory->build(symbols, symbol_size);
+            m_decoder_factory->set_symbols(symbols);
+            m_decoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder_factory->set_symbols(symbols);
+            m_encoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder = m_encoder_factory->build();
+            m_decoder = m_decoder_factory->build();
 
             // Prepare the data to be encoded
             m_encoded_data.resize(m_encoder->block_size());
