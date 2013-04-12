@@ -52,10 +52,8 @@ namespace kodo
             }
 
             /// @copydoc layer::factory::build()
-            pointer build(uint32_t symbols, uint32_t symbol_size)
+            pointer build()
                 {
-                    assert(symbols > 0);
-                    assert(symbol_size > 0);
 
                     factory_type *this_factory =
                         static_cast<factory_type*>(this);
@@ -64,7 +62,7 @@ namespace kodo
 
                     //coder->test(*this_factory);
                     coder->construct(*this_factory);
-                    coder->initialize(symbols, symbol_size);
+                    coder->initialize(m_symbols, m_symbol_size);
 
                     return coder;
                 }
