@@ -1014,7 +1014,7 @@ struct api_symbol_length
                                 m_factory.max_symbol_size());
 
             uint32_t length =
-                fifi::elements_needed<field_type>(coder->symbol_size());
+                fifi::size_to_length<field_type>(coder->symbol_size());
 
             EXPECT_EQ(coder->symbol_length(), length);
         }

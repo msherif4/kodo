@@ -104,17 +104,17 @@ struct api_coefficients_storage
             const pointer_type &const_coder = coder;
 
             uint32_t max_coefficients_size =
-                fifi::bytes_needed<field_type>(m_factory.max_symbols());
+                fifi::length_to_size<field_type>(m_factory.max_symbols());
 
             EXPECT_EQ(max_coefficients_size, m_factory.max_coefficients_size());
 
             uint32_t size =
-                fifi::bytes_needed<field_type>(symbols);
+                fifi::length_to_size<field_type>(symbols);
 
             EXPECT_EQ(size, coder->coefficients_size());
 
             uint32_t length =
-                fifi::elements_needed<field_type>(size);
+                fifi::size_to_length<field_type>(size);
 
             EXPECT_EQ(length, coder->coefficients_length());
 

@@ -36,8 +36,8 @@ namespace kodo
                 assert(m_rows > 0);
                 assert(m_columns > 0);
 
-                m_row_size = fifi::bytes_needed<field_type>(m_columns);
-                m_row_length = fifi::elements_needed<field_type>(m_row_size);
+                m_row_size = fifi::length_to_size<field_type>(m_columns);
+                m_row_length = fifi::size_to_length<field_type>(m_row_size);
 
                 m_data.resize(rows * m_row_size, '\0');
             }

@@ -93,7 +93,7 @@ namespace kodo
                 // needed for the actual data.
 
                 uint32_t data_symbol_length =
-                    fifi::elements_needed<field_type>(
+                    fifi::size_to_length<field_type>(
                         the_factory.max_symbol_size());
 
                 uint32_t max_symbol_length =
