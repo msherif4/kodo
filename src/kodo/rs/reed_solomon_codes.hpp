@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_REED_SOLOMON_CODES_HPP
-#define KODO_RS_REED_SOLOMON_CODES_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -113,5 +112,5 @@ namespace kodo
 
 }
 
-#endif
+
 

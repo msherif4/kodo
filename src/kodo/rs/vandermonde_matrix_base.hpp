@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_VANDERMONDE_MATRIX_BASE_HPP
-#define KODO_RS_VANDERMONDE_MATRIX_BASE_HPP
+#pragma once
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
@@ -122,5 +121,4 @@ namespace kodo
 
 }
 
-#endif
 

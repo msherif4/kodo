@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CAROUSEL_COMMON_HPP
-#define KODO_CAROUSEL_COMMON_HPP
+#pragma once
 
 namespace kodo
 {
@@ -21,7 +20,5 @@ namespace kodo
     };
 
 }
-
-#endif
 
 

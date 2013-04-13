@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_NOCODE_CAROUSEL_ENCODER_HPP
-#define KODO_NOCODE_CAROUSEL_ENCODER_HPP
+#pragma once
 
 #include <sak/convert_endian.hpp>
 
@@ -42,49 +41,49 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::factory::max_header_size() const
             uint32_t max_header_size() const
-                {
-                    return sizeof(id_type);
-                }
+            {
+                return sizeof(id_type);
+            }
         };
 
     public:
 
         /// @copydoc layer::initialize(factory&)
         void initialize(factory& the_factory)
-            {
-                SuperCoder::initialize(the_factory);
-                m_current_symbol = 0;
-            }
+        {
+            SuperCoder::initialize(the_factory);
+            m_current_symbol = 0;
+        }
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
 
-                // Write the symbol id in the header
-                sak::big_endian::put<id_type>(
-                    m_current_symbol, symbol_header);
+            // Write the symbol id in the header
+            sak::big_endian::put<id_type>(
+                m_current_symbol, symbol_header);
 
-                assert(m_current_symbol < SuperCoder::symbols());
+            assert(m_current_symbol < SuperCoder::symbols());
 
-                SuperCoder::encode_symbol(symbol_data, m_current_symbol);
+            SuperCoder::encode_symbol(symbol_data, m_current_symbol);
 
-                m_current_symbol =
-                    (m_current_symbol + 1) % SuperCoder::symbols();
+            m_current_symbol =
+                (m_current_symbol + 1) % SuperCoder::symbols();
 
-                return sizeof(id_type);
-            }
+            return sizeof(id_type);
+        }
 
         /// @copydoc layer::header_size() const
         uint32_t header_size() const
-            {
-                return sizeof(id_type);
-            }
+        {
+            return sizeof(id_type);
+        }
 
     private:
 
@@ -95,5 +94,4 @@ namespace kodo
 
 }
 
-#endif
 

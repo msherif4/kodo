@@ -32,53 +32,53 @@ namespace kodo
 
         /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
-            {
-                SuperCoder::construct(the_factory);
-                m_uncoded.resize(the_factory.max_symbols(), false);
-            }
+        {
+            SuperCoder::construct(the_factory);
+            m_uncoded.resize(the_factory.max_symbols(), false);
+        }
 
         /// @copydoc layer::initialize(factory&)
         void initialize(factory &the_factory)
-            {
-                SuperCoder::initialize(the_factory);
+        {
+            SuperCoder::initialize(the_factory);
 
-                std::fill_n(m_uncoded.begin(), the_factory.symbols(), false);
-                m_rank = 0;
-            }
+            std::fill_n(m_uncoded.begin(), the_factory.symbols(), false);
+            m_rank = 0;
+        }
 
         /// @copydoc layer::decode_symbol(uint8_t*, uint32_t)
         void decode_symbol(uint8_t *symbol_data,
                            uint32_t symbol_index)
+        {
+            assert(symbol_index < SuperCoder::symbols());
+            assert(symbol_data != 0);
+
+            if(m_uncoded[symbol_index])
             {
-                assert(symbol_index < SuperCoder::symbols());
-                assert(symbol_data != 0);
-
-                if(m_uncoded[symbol_index])
-                {
-                    return;
-                }
-
-                ++m_rank;
-                m_uncoded[ symbol_index ] = true;
-
-                sak::const_storage symbol_storage =
-                    sak::storage(symbol_data, SuperCoder::symbol_size());
-
-                SuperCoder::set_symbol(symbol_index, symbol_storage);
-
+                return;
             }
+
+            ++m_rank;
+            m_uncoded[ symbol_index ] = true;
+
+            sak::const_storage symbol_storage =
+                sak::storage(symbol_data, SuperCoder::symbol_size());
+
+            SuperCoder::set_symbol(symbol_index, symbol_storage);
+
+        }
 
         /// @copydoc layer::is_complete() const
         bool is_complete() const
-            {
-                return m_rank == SuperCoder::symbols();
-            }
+        {
+            return m_rank == SuperCoder::symbols();
+        }
 
         /// @copydoc layer::rank() const
         uint32_t rank() const
-            {
-                return m_rank;
-            }
+        {
+            return m_rank;
+        }
 
     protected:
 
