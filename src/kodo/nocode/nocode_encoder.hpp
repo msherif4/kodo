@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#pragm once
+#pragma once
 
 #include <sak/storage.hpp>
 
