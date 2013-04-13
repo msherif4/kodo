@@ -98,7 +98,7 @@ namespace kodo
                 // to store one field element per symbol
 
                 uint32_t max_coefficients_size =
-                    fifi::length_to_size<field_type>(symbols);
+                    fifi::elements_to_size<field_type>(symbols);
 
                 assert(max_coefficients_size > 0);
 
@@ -115,8 +115,7 @@ namespace kodo
             {
                 assert(symbols > 0);
 
-                uint32_t size = coefficients_size(symbols);
-                return fifi::size_to_length<field_type>(size);
+                return fifi::elements_to_length<field_type>(symbols);
             }
 
     private:

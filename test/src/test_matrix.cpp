@@ -28,7 +28,7 @@ TEST(TestMatrix, invoke_api)
     ASSERT_EQ(rows, m.rows());
     ASSERT_EQ(columns, m.columns());
 
-    uint32_t row_size = fifi::length_to_size<field_type>(columns);
+    uint32_t row_size = fifi::elements_to_size<field_type>(columns);
     uint32_t row_length = fifi::size_to_length<field_type>(row_size);
 
     ASSERT_EQ(row_size, m.row_size());
