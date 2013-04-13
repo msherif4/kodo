@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYSTEMATIC_OPERATIONS_HPP
-#define KODO_SYSTEMATIC_OPERATIONS_HPP
+#pragma once
 
 #include <boost/shared_ptr.hpp>
 
@@ -179,5 +178,5 @@ namespace kodo
     }
 }
 
-#endif
+
 

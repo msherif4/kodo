@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ALIGNED_COEFFICIENTS_BUFFER_HPP
-#define KODO_ALIGNED_COEFFICIENTS_BUFFER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -54,5 +53,4 @@ namespace kodo
     };
 }
 
-#endif
 

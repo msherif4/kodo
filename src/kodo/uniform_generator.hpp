@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_UNIFORM_GENERATOR_HPP
-#define KODO_UNIFORM_GENERATOR_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -41,66 +40,66 @@ namespace kodo
             : m_distribution(),
               m_value_distribution(field_type::min_value,
                                    field_type::max_value)
-            { }
+        { }
 
         /// @copydoc layer::generate(uint8_t*)
         void generate(uint8_t *coefficients)
-            {
-                assert(coefficients != 0);
+        {
+            assert(coefficients != 0);
 
-                uint32_t size = SuperCoder::coefficients_size();
-                for(uint32_t i = 0; i < size; ++i)
-                {
-                    coefficients[i] = m_distribution(m_random_generator);
-                }
+            uint32_t size = SuperCoder::coefficients_size();
+            for(uint32_t i = 0; i < size; ++i)
+            {
+                coefficients[i] = m_distribution(m_random_generator);
             }
+        }
 
         /// @copydoc layer::generate(uint8_t*)
         void generate_partial(uint8_t *coefficients)
+        {
+            assert(coefficients != 0);
+
+            // Since we will not set all coefficients we should ensure
+            // that the non specified ones are zero
+            std::fill_n(
+                coefficients, SuperCoder::coefficients_size(), 0);
+
+            value_type *c = reinterpret_cast<value_type*>(coefficients);
+
+            uint32_t symbols = SuperCoder::rank();
+
+            for(uint32_t i = 0; i < symbols; ++i)
             {
-                assert(coefficients != 0);
-
-                // Since we will not set all coefficients we should ensure
-                // that the non specified ones are zero
-                std::fill_n(
-                    coefficients, SuperCoder::coefficients_size(), 0);
-
-                value_type *c = reinterpret_cast<value_type*>(coefficients);
-
-                uint32_t symbols = SuperCoder::rank();
-
-                for(uint32_t i = 0; i < symbols; ++i)
+                if(!SuperCoder::symbol_pivot(i))
                 {
-                    if(!SuperCoder::symbol_pivot(i))
-                    {
-                        continue;
-                    }
-
-                    value_type coefficient =
-                        m_value_distribution(m_random_generator);
-
-                    fifi::set_value<field_type>(c, i, coefficient);
+                    continue;
                 }
+
+                value_type coefficient =
+                    m_value_distribution(m_random_generator);
+
+                fifi::set_value<field_type>(c, i, coefficient);
             }
+        }
 
         /// @copydoc layer::seed(seed_type)
         void seed(seed_type seed_value)
-            {
-                m_random_generator.seed(seed_value);
-            }
+        {
+            m_random_generator.seed(seed_value);
+        }
 
     private:
 
         /// The type of the uint8_t distribution
         typedef boost::random::uniform_int_distribution<uint8_t>
-            uint8_t_distribution;
+        uint8_t_distribution;
 
         /// Distribution that generates random bytes
         uint8_t_distribution m_distribution;
 
         /// The type of the value_type distribution
         typedef boost::random::uniform_int_distribution<value_type>
-            value_type_distribution;
+        value_type_distribution;
 
         /// Distribution that generates random values from a finite field
         value_type_distribution m_value_distribution;
@@ -111,5 +110,4 @@ namespace kodo
     };
 }
 
-#endif
 

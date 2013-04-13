@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_STORAGE_AWARE_ENCODER_HPP
-#define KODO_STORAGE_AWARE_ENCODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -26,20 +25,19 @@ namespace kodo
 
         /// @copydoc layer::rank() const
         uint32_t rank() const
-            {
-                return SuperCoder::symbol_count();
-            }
+        {
+            return SuperCoder::symbol_count();
+        }
 
         /// @copydoc layer::symbol_pivot(uint32_t) const
         bool symbol_pivot(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return SuperCoder::symbol_exists(index);
-            }
+        {
+            assert(index < SuperCoder::symbols());
+            return SuperCoder::symbol_exists(index);
+        }
 
     };
 
 }
 
-#endif
 

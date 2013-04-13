@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_LINEAR_BLOCK_DECODER_DELAYED_HPP
-#define KODO_LINEAR_BLOCK_DECODER_DELAYED_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -38,59 +37,59 @@ namespace kodo
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
-            {
-                assert(symbol_data != 0);
-                assert(coefficients != 0);
+        {
+            assert(symbol_data != 0);
+            assert(coefficients != 0);
 
-                value_type *s =
-                    reinterpret_cast<value_type*>(symbol_data);
+            value_type *s =
+                reinterpret_cast<value_type*>(symbol_data);
 
-                value_type *c =
-                    reinterpret_cast<value_type*>(coefficients);
+            value_type *c =
+                reinterpret_cast<value_type*>(coefficients);
 
-                decode_coefficients(s, c);
-            }
+            decode_coefficients(s, c);
+        }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
         void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
+        {
+            assert(symbol_index < SuperCoder::symbols());
+            assert(symbol_data != 0);
+
+            if(m_uncoded[symbol_index])
+                return;
+
+            const value_type *symbol
+                = reinterpret_cast<const value_type*>( symbol_data );
+
+            if(m_coded[symbol_index])
             {
-                assert(symbol_index < SuperCoder::symbols());
-                assert(symbol_data != 0);
+                SuperCoder::swap_decode(symbol, symbol_index);
+            }
+            else
+            {
+                // Stores the symbol and updates the corresponding
+                // encoding vector
+                SuperCoder::store_uncoded_symbol(symbol, symbol_index);
 
-                if(m_uncoded[symbol_index])
-                    return;
+                // We have increased the rank
+                ++m_rank;
 
-                const value_type *symbol
-                    = reinterpret_cast<const value_type*>( symbol_data );
+                m_uncoded[ symbol_index ] = true;
 
-                if(m_coded[symbol_index])
+                if(symbol_index > m_maximum_pivot)
                 {
-                    SuperCoder::swap_decode(symbol, symbol_index);
-                }
-                else
-                {
-                    // Stores the symbol and updates the corresponding
-                    // encoding vector
-                    SuperCoder::store_uncoded_symbol(symbol, symbol_index);
-
-                    // We have increased the rank
-                    ++m_rank;
-
-                    m_uncoded[ symbol_index ] = true;
-
-                    if(symbol_index > m_maximum_pivot)
-                    {
-                        m_maximum_pivot = symbol_index;
-                    }
-
-                }
-
-                if(SuperCoder::is_complete())
-                {
-                    final_backward_substitute();
+                    m_maximum_pivot = symbol_index;
                 }
 
             }
+
+            if(SuperCoder::is_complete())
+            {
+                final_backward_substitute();
+            }
+
+        }
 
     protected:
 
@@ -109,44 +108,44 @@ namespace kodo
         ///        symbol
         void decode_coefficients(value_type *symbol_data,
                                  value_type *coefficients)
+        {
+            assert(symbol_data != 0);
+            assert(coefficients != 0);
+
+            // See if we can find a pivot
+            boost::optional<uint32_t> pivot_index
+                = SuperCoder::forward_substitute_to_pivot(
+                    symbol_data, coefficients);
+
+            if(!pivot_index)
+                return;
+
+            if(!fifi::is_binary<field_type>::value)
             {
-                assert(symbol_data != 0);
-                assert(coefficients != 0);
-
-                // See if we can find a pivot
-                boost::optional<uint32_t> pivot_index
-                    = SuperCoder::forward_substitute_to_pivot(
-                        symbol_data, coefficients);
-
-                if(!pivot_index)
-                    return;
-
-                if(!fifi::is_binary<field_type>::value)
-                {
-                    // Normalize symbol and vector
-                    SuperCoder::normalize(
-                        symbol_data, coefficients, *pivot_index);
-                }
-
-                // Now save the received symbol
-                SuperCoder::store_coded_symbol(
-                    symbol_data, coefficients,*pivot_index);
-
-                // We have increased the rank
-                ++m_rank;
-
-                m_coded[ *pivot_index ] = true;
-
-                if(*pivot_index > m_maximum_pivot)
-                {
-                    m_maximum_pivot = *pivot_index;
-                }
-
-                if(SuperCoder::is_complete())
-                {
-                    final_backward_substitute();
-                }
+                // Normalize symbol and vector
+                SuperCoder::normalize(
+                    symbol_data, coefficients, *pivot_index);
             }
+
+            // Now save the received symbol
+            SuperCoder::store_coded_symbol(
+                symbol_data, coefficients,*pivot_index);
+
+            // We have increased the rank
+            ++m_rank;
+
+            m_coded[ *pivot_index ] = true;
+
+            if(*pivot_index > m_maximum_pivot)
+            {
+                m_maximum_pivot = *pivot_index;
+            }
+
+            if(SuperCoder::is_complete())
+            {
+                final_backward_substitute();
+            }
+        }
 
     protected:
 
@@ -154,25 +153,24 @@ namespace kodo
         /// coding matrix from echelon form to reduce echelon form and
         /// hence fully decode the generation
         void final_backward_substitute()
+        {
+            assert(SuperCoder::is_complete());
+
+            uint32_t symbols = SuperCoder::symbols();
+
+            for(uint32_t i = symbols; i --> 0;)
             {
-                assert(SuperCoder::is_complete());
+                value_type *symbol_i =
+                    SuperCoder::symbol_value(i);
 
-                uint32_t symbols = SuperCoder::symbols();
+                value_type *vector_i =
+                    SuperCoder::coefficients_value(i);
 
-                for(uint32_t i = symbols; i --> 0;)
-                {
-                    value_type *symbol_i =
-                        SuperCoder::symbol_value(i);
-
-                    value_type *vector_i =
-                        SuperCoder::coefficients_value(i);
-
-                    SuperCoder::backward_substitute(
-                        symbol_i, vector_i, i);
-                }
+                SuperCoder::backward_substitute(
+                    symbol_i, vector_i, i);
             }
+        }
     };
 }
 
-#endif
 

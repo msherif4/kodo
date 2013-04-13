@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_FINITE_FIELD_MATH_HPP
-#define KODO_FINITE_FIELD_MATH_HPP
+#pragma once
 
 #include <cstdint>
 #include <type_traits>
@@ -83,66 +82,66 @@ namespace kodo
 
         /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
-            {
-                SuperCoder::construct(the_factory);
+        {
+            SuperCoder::construct(the_factory);
 
-                // The maximum symbol length needed for the temp symbol.
-                // We expect this will be one value per symbol
-                // (for the encoding vector) or the number of symbols
-                // needed for the actual data.
+            // The maximum symbol length needed for the temp symbol.
+            // We expect this will be one value per symbol
+            // (for the encoding vector) or the number of symbols
+            // needed for the actual data.
 
-                uint32_t data_symbol_length =
-                    fifi::elements_needed<field_type>(
-                        the_factory.max_symbol_size());
+            uint32_t data_symbol_length =
+                fifi::size_to_length<field_type>(
+                    the_factory.max_symbol_size());
 
-                uint32_t max_symbol_length =
-                    std::max(the_factory.max_symbols(), data_symbol_length);
+            uint32_t max_symbol_length =
+                std::max(the_factory.max_symbols(), data_symbol_length);
 
-                assert(max_symbol_length > 0);
-                m_temp_symbol.resize(max_symbol_length, 0);
+            assert(max_symbol_length > 0);
+            m_temp_symbol.resize(max_symbol_length, 0);
 
-                m_field = the_factory.field();
-            }
+            m_field = the_factory.field();
+        }
 
         /// @copydoc layer::multiply(value_type*,value_type,uint32_t)
         void multiply(value_type *symbol_dest, value_type coefficient,
                       uint32_t symbol_length)
-            {
-                assert(m_field);
-                assert(symbol_dest != 0);
-                assert(symbol_length > 0);
+        {
+            assert(m_field);
+            assert(symbol_dest != 0);
+            assert(symbol_length > 0);
 
-                fifi::multiply_constant(*m_field, coefficient,
-                                        symbol_dest, symbol_length);
-            }
+            fifi::multiply_constant(*m_field, coefficient,
+                                    symbol_dest, symbol_length);
+        }
 
         /// @copydoc layer::multipy_add(value_type *, const value_type*,
         ///                             value_type, uint32_t)
         void multiply_add(value_type *symbol_dest,
                           const value_type *symbol_src,
                           value_type coefficient, uint32_t symbol_length)
-            {
-                assert(m_field);
-                assert(symbol_dest != 0);
-                assert(symbol_src != 0);
-                assert(symbol_length > 0);
+        {
+            assert(m_field);
+            assert(symbol_dest != 0);
+            assert(symbol_src != 0);
+            assert(symbol_length > 0);
 
-                fifi::multiply_add(*m_field, coefficient, symbol_dest,
-                                   symbol_src, &m_temp_symbol[0],
-                                   symbol_length);
-            }
+            fifi::multiply_add(*m_field, coefficient, symbol_dest,
+                               symbol_src, &m_temp_symbol[0],
+                               symbol_length);
+        }
 
         /// @copydoc layer::add(value_type*, const value_type *, uint32_t)
         void add(value_type *symbol_dest, const value_type *symbol_src,
                  uint32_t symbol_length)
-            {
-                assert(m_field);
-                assert(symbol_dest != 0);
-                assert(symbol_src  != 0);
-                assert(symbol_length > 0);
+        {
+            assert(m_field);
+            assert(symbol_dest != 0);
+            assert(symbol_src  != 0);
+            assert(symbol_length > 0);
 
-                fifi::add(*m_field, symbol_dest, symbol_src, symbol_length);
-            }
+            fifi::add(*m_field, symbol_dest, symbol_src, symbol_length);
+        }
 
         /// @copydoc layer::multiply_subtract(value_type*, const value_type*,
         ///                                   value_type, uint32_t)
@@ -150,37 +149,37 @@ namespace kodo
                                const value_type *symbol_src,
                                value_type coefficient,
                                uint32_t symbol_length)
-            {
-                assert(m_field);
-                assert(symbol_dest != 0);
-                assert(symbol_src  != 0);
-                assert(symbol_length > 0);
-                assert(symbol_length <= m_temp_symbol.size());
-                assert(symbol_dest != symbol_src);
+        {
+            assert(m_field);
+            assert(symbol_dest != 0);
+            assert(symbol_src  != 0);
+            assert(symbol_length > 0);
+            assert(symbol_length <= m_temp_symbol.size());
+            assert(symbol_dest != symbol_src);
 
-                fifi::multiply_subtract(
-                    *m_field, coefficient, symbol_dest, symbol_src,
-                    &m_temp_symbol[0], symbol_length);
-            }
+            fifi::multiply_subtract(
+                *m_field, coefficient, symbol_dest, symbol_src,
+                &m_temp_symbol[0], symbol_length);
+        }
 
         /// @copydoc layer::subtract(value_type*,const value_type*, uint32_t)
         void subtract(value_type *symbol_dest, const value_type *symbol_src,
                       uint32_t symbol_length)
-            {
-                assert(m_field);
-                assert(symbol_dest != 0);
-                assert(symbol_src  != 0);
-                assert(symbol_length > 0);
+        {
+            assert(m_field);
+            assert(symbol_dest != 0);
+            assert(symbol_src  != 0);
+            assert(symbol_length > 0);
 
-                fifi::subtract(*m_field, symbol_dest, symbol_src, symbol_length);
-            }
+            fifi::subtract(*m_field, symbol_dest, symbol_src, symbol_length);
+        }
 
         /// @copydoc layer::invert(value_type)
         value_type invert(value_type value)
-            {
-                assert(m_field);
-                return m_field->invert( value );
-            }
+        {
+            assert(m_field);
+            return m_field->invert( value );
+        }
 
     private:
 
@@ -194,5 +193,4 @@ namespace kodo
 
 }
 
-#endif
 

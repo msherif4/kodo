@@ -92,7 +92,7 @@ namespace kodo
             assert(m_symbol_size > 0);
 
             m_symbol_length =
-                fifi::elements_needed<field_type>(m_symbol_size);
+                fifi::size_to_length<field_type>(m_symbol_size);
         }
 
         /// @copydoc layer::symbols() const

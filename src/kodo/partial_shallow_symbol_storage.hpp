@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
-#define KODO_PARTIAL_SHALLOW_SYMBOL_STORAGE_HPP
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -63,12 +62,12 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : Super::factory(max_symbols, max_symbol_size)
-                {
-                    assert(max_symbol_size > 0);
+            {
+                assert(max_symbol_size > 0);
 
-                    m_zero_symbol = boost::make_shared<symbol_type>();
-                    m_zero_symbol->resize(max_symbol_size, 0);
-                }
+                m_zero_symbol = boost::make_shared<symbol_type>();
+                m_zero_symbol->resize(max_symbol_size, 0);
+            }
 
         private:
 
@@ -84,68 +83,68 @@ namespace kodo
 
         /// @copydoc layer::construct(factory &)
         void construct(factory &the_factory)
-            {
-                Super::construct(the_factory);
+        {
+            Super::construct(the_factory);
 
-                assert(the_factory.max_symbol_size() > 0);
+            assert(the_factory.max_symbol_size() > 0);
 
-                m_zero_symbol = the_factory.m_zero_symbol;
-                m_partial_symbol = boost::make_shared<symbol_type>();
-                m_partial_symbol->resize(the_factory.max_symbol_size(), 0);
-            }
+            m_zero_symbol = the_factory.m_zero_symbol;
+            m_partial_symbol = boost::make_shared<symbol_type>();
+            m_partial_symbol->resize(the_factory.max_symbol_size(), 0);
+        }
 
         /// @copydoc layer::initialize(factory&)
         void initialize(factory &the_factory)
-            {
-                Super::initialize(the_factory);
+        {
+            Super::initialize(the_factory);
 
-                std::fill(m_partial_symbol->begin(),
-                          m_partial_symbol->end(), 0);
-            }
+            std::fill(m_partial_symbol->begin(),
+                      m_partial_symbol->end(), 0);
+        }
 
         /// Initializes the symbol storage layer so that the pointers to the
         /// symbol data are valid. Calling this function will work even
         /// without providing data enough to initialize all symbol pointers.
         /// @copydoc layer::set_symbols(const sak::const_storage &)
         void set_symbols(const sak::const_storage &symbol_storage)
+        {
+            auto symbol_sequence =
+                sak::split_storage(symbol_storage, Super::symbol_size());
+
+            uint32_t sequence_size = symbol_sequence.size();
+            uint32_t last_index = sequence_size - 1;
+
+            for(uint32_t i = 0; i < last_index; ++i)
             {
-                auto symbol_sequence =
-                    sak::split_storage(symbol_storage, Super::symbol_size());
-
-                uint32_t sequence_size = symbol_sequence.size();
-                uint32_t last_index = sequence_size - 1;
-
-                for(uint32_t i = 0; i < last_index; ++i)
-                {
-                    Super::set_symbol(i, symbol_sequence[i]);
-                }
-
-                auto last_symbol =
-                    symbol_sequence[last_index];
-
-                uint32_t symbol_size = Super::symbol_size();
-
-                auto partial_symbol =
-                        sak::storage(&m_partial_symbol->at(0), symbol_size);
-
-                auto zero_symbol =
-                    sak::storage(&m_zero_symbol->at(0), symbol_size);
-
-                if(last_symbol.m_size < Super::symbol_size())
-                {
-                    sak::copy_storage(partial_symbol, last_symbol);
-                    Super::set_symbol(last_index, partial_symbol);
-                }
-                else
-                {
-                    Super::set_symbol(last_index, last_symbol);
-                }
-
-                for(uint32_t i = last_index + 1; i < Super::symbols(); ++i)
-                {
-                    Super::set_symbol(i, zero_symbol);
-                }
+                Super::set_symbol(i, symbol_sequence[i]);
             }
+
+            auto last_symbol =
+                symbol_sequence[last_index];
+
+            uint32_t symbol_size = Super::symbol_size();
+
+            auto partial_symbol =
+                sak::storage(&m_partial_symbol->at(0), symbol_size);
+
+            auto zero_symbol =
+                sak::storage(&m_zero_symbol->at(0), symbol_size);
+
+            if(last_symbol.m_size < Super::symbol_size())
+            {
+                sak::copy_storage(partial_symbol, last_symbol);
+                Super::set_symbol(last_index, partial_symbol);
+            }
+            else
+            {
+                Super::set_symbol(last_index, last_symbol);
+            }
+
+            for(uint32_t i = last_index + 1; i < Super::symbols(); ++i)
+            {
+                Super::set_symbol(i, zero_symbol);
+            }
+        }
 
     protected:
 
@@ -159,5 +158,4 @@ namespace kodo
 
 }
 
-#endif
 

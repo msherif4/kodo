@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_COEFFICIENT_STORAGE_H
-#define KODO_COEFFICIENT_STORAGE_H
+#pragma once
 
 #include <cstdint>
 #include <fifi/fifi_utils.hpp>
@@ -51,45 +50,45 @@ namespace kodo
 
         /// @copydoc layer::coefficients(uint32_t)
         uint8_t* coefficients(uint32_t index)
-            {
-                assert(index < SuperCoder::symbols());
-                return &(m_coefficients_storage[index])[0];
-            }
+        {
+            assert(index < SuperCoder::symbols());
+            return &(m_coefficients_storage[index])[0];
+        }
 
         /// @copydoc layer::coefficients(uint32_t) const
         const uint8_t* coefficients(uint32_t index) const
-            {
-                assert(index < SuperCoder::symbols());
-                return &(m_coefficients_storage[index])[0];
-            }
+        {
+            assert(index < SuperCoder::symbols());
+            return &(m_coefficients_storage[index])[0];
+        }
 
         /// @copydoc layer::coefficients_value(uint32_t)
         value_type* coefficients_value(uint32_t index)
-            {
-                return reinterpret_cast<value_type*>(
-                    coefficients(index));
-            }
+        {
+            return reinterpret_cast<value_type*>(
+                coefficients(index));
+        }
 
         /// @copydoc layer::coefficients_value(uint32_t) const
         const value_type* coefficients_value(uint32_t index) const
-            {
-                return reinterpret_cast<const value_type*>(
-                    coefficients(index));
-            }
+        {
+            return reinterpret_cast<const value_type*>(
+                coefficients(index));
+        }
 
         /// @copydoc layer::set_coefficients(
         ///              uint32_t,const sak::const_storage&)
         void set_coefficients(uint32_t index,
                               const sak::const_storage &storage)
-            {
-                assert(storage.m_size == SuperCoder::coefficients_size());
-                assert(storage.m_data != 0);
+        {
+            assert(storage.m_size == SuperCoder::coefficients_size());
+            assert(storage.m_data != 0);
 
-                auto dest = sak::storage(
-                    coefficients(index), SuperCoder::coefficients_size());
+            auto dest = sak::storage(
+                coefficients(index), SuperCoder::coefficients_size());
 
-                sak::copy_storage(dest, storage);
-            }
+            sak::copy_storage(dest, storage);
+        }
 
     private:
 
@@ -102,5 +101,4 @@ namespace kodo
     };
 }
 
-#endif
 

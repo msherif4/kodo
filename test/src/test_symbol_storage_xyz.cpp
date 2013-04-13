@@ -985,7 +985,7 @@ struct api_symbol_length
             pointer_type coder = m_factory.build();
 
             uint32_t length =
-                fifi::elements_needed<field_type>(coder->symbol_size());
+                fifi::size_to_length<field_type>(coder->symbol_size());
 
             EXPECT_EQ(coder->symbol_length(), length);
         }

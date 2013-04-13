@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_HAS_DEEP_SYMBOL_STORAGE_HPP
-#define KODO_HAS_DEEP_SYMBOL_STORAGE_HPP
+#pragma once
 
 #include "deep_symbol_storage.hpp"
 
@@ -36,5 +35,4 @@ namespace kodo
 
 }
 
-#endif
 

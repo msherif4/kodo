@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_FAKE_SYMBOL_STORAGE_HPP
-#define KODO_FAKE_SYMBOL_STORAGE_HPP
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -27,51 +26,50 @@ namespace kodo
 
         /// @copydoc layer::set_symbols(const sak::const_storage&)
         void set_symbols(const sak::const_storage &symbol_storage)
-            {
-                (void) symbol_storage;
-            }
+        {
+            (void) symbol_storage;
+        }
 
         /// @copydoc layer::set_symbols(const sak::mutable_storage&)
         void set_symbols(const sak::mutable_storage &symbol_storage)
-            {
-                (void) symbol_storage;
-            }
+        {
+            (void) symbol_storage;
+        }
 
         /// @copydoc layer::set_symbol(uint32_t,const sak::mutable_storage&)
         void set_symbol(uint32_t index, const sak::mutable_storage &symbol)
-            {
-                (void) index;
-                (void) symbol;
-            }
+        {
+            (void) index;
+            (void) symbol;
+        }
 
         /// @copydoc layer::set_symbol(uint32_t, const sak::const_storage&)
         void set_symbol(uint32_t index, const sak::const_storage &symbol)
-            {
-                (void) index;
-                (void) symbol;
-            }
+        {
+            (void) index;
+            (void) symbol;
+        }
 
         /// @copydoc layer::swap_symbols(std::vector<const uint8_t*>&)
         void swap_symbols(std::vector<const uint8_t *> &symbols)
-            {
-                (void) symbols;
-            }
+        {
+            (void) symbols;
+        }
 
         /// @copydoc layer::swap_symbols(std::vector<uint8_t*>&)
         void swap_symbols(std::vector<uint8_t *> &symbols)
-            {
-                (void) symbols;
-            }
+        {
+            (void) symbols;
+        }
 
         /// @copydoc layer::swap_symbols(std::vector<uint8_t>&)
         void swap_symbols(std::vector<uint8_t> &symbols)
-            {
-                (void) symbols;
-            }
+        {
+            (void) symbols;
+        }
 
     };
 
 }
 
-#endif
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SHALLOW_STORAGE_DECODER_HPP
-#define KODO_SHALLOW_STORAGE_DECODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -128,6 +127,4 @@ namespace kodo
     };
 
 }
-
-#endif
 
