@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_REED_SOLOMON_SYMBOL_ID_READER_HPP
-#define KODO_RS_REED_SOLOMON_SYMBOL_ID_READER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -35,24 +34,24 @@ namespace kodo
 
         /// @copydoc layer::read_id(uint8_t*, uint8_t**)
         void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+        {
+            assert(symbol_id != 0);
+            assert(symbol_coefficients != 0);
 
-                value_type row_index =
-                    sak::big_endian::get<value_type>(symbol_id);
+            value_type row_index =
+                sak::big_endian::get<value_type>(symbol_id);
 
-                sak::const_storage src =
-                    sak::storage(m_matrix->row(row_index),
-                                 m_matrix->row_size());
+            sak::const_storage src =
+                sak::storage(m_matrix->row(row_index),
+                             m_matrix->row_size());
 
-                sak::mutable_storage dest =
-                    sak::storage(m_coefficients);
+            sak::mutable_storage dest =
+                sak::storage(m_coefficients);
 
-                sak::copy_storage(dest, src);
+            sak::copy_storage(dest, src);
 
-                *symbol_coefficients = &m_coefficients[0];
-            }
+            *symbol_coefficients = &m_coefficients[0];
+        }
 
     private:
 
@@ -69,12 +68,11 @@ namespace kodo
     template<class SuperCoder>
     class reed_solomon_symbol_id_reader
         : public reed_solomon_symbol_id_reader_base<
-                 aligned_coefficients_buffer<
-                 reed_solomon_symbol_id<SuperCoder> > >
+        aligned_coefficients_buffer<
+            reed_solomon_symbol_id<SuperCoder> > >
     { };
 
 
 }
 
-#endif
 

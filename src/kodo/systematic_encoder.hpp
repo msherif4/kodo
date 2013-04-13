@@ -253,5 +253,4 @@ namespace kodo
     }
 }
 
-#endif
 

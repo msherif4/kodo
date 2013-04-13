@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PLAIN_SYMBOL_ID_WRITER_HPP
-#define KODO_PLAIN_SYMBOL_ID_WRITER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -25,15 +24,15 @@ namespace kodo
 
         /// @copydoc layer::write_id(uint8_t*, uint8_t**)
         uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(coefficients != 0);
+        {
+            assert(symbol_id != 0);
+            assert(coefficients != 0);
 
-                SuperCoder::generate(symbol_id);
-                *coefficients = symbol_id;
+            SuperCoder::generate(symbol_id);
+            *coefficients = symbol_id;
 
-                return SuperCoder::id_size();
-            }
+            return SuperCoder::id_size();
+        }
 
     };
 
@@ -46,5 +45,4 @@ namespace kodo
 
 }
 
-#endif
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_FINAL_CODER_FACTORY_POOL_HPP
-#define KODO_FINAL_CODER_FACTORY_POOL_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -171,5 +170,4 @@ namespace kodo
     };
 }
 
-#endif
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PLAIN_SYMBOL_ID_READER_HPP
-#define KODO_PLAIN_SYMBOL_ID_READER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -26,12 +25,12 @@ namespace kodo
 
         /// @copydoc layer::read_id(uint8_t*,uint8_t**)
         void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+        {
+            assert(symbol_id != 0);
+            assert(symbol_coefficients != 0);
 
-                *symbol_coefficients = symbol_id;
-            }
+            *symbol_coefficients = symbol_id;
+        }
 
     };
 
@@ -44,5 +43,4 @@ namespace kodo
 
 }
 
-#endif
 

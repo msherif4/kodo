@@ -92,7 +92,6 @@ namespace kodo
         /// @copydoc layer::initialize(factory&)
         void initialize(factory& the_factory)
             {
-                (void)symbols;
                 m_symbol_size = the_factory.symbol_size();
             }
 
@@ -122,12 +121,12 @@ namespace kodo
 }
 
 // Test the layer itself - confirms that it acts as expected
-void test_layer(uint32_t symbols, uint32_t symbol_size)
+void test_layer(uint32_t /*symbols*/, uint32_t symbol_size)
 {
     // Create and initialize coder
     kodo::copy_payload_coder coder;
     kodo::copy_payload_coder::factory the_factory;
-    f.set_symbol_size(symbol_size);
+    the_factory.set_symbol_size(symbol_size);
     coder.initialize(the_factory);
 
     std::vector<uint8_t> payload(coder.payload_size(), 'a');

@@ -53,10 +53,10 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::initialize(uint32_t, uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
                 m_current_symbol = 0;
             }
 

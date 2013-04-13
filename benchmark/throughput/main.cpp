@@ -258,10 +258,13 @@ struct throughput_benchmark : public gauge::time_benchmark
             uint32_t symbols = cs.get_value<uint32_t>("symbols");
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
+            m_encoder_factory->set_symbols(symbols);
+            m_encoder_factory->set_symbol_size(symbol_size);
+
             // The clock is running
             RUN{
                 // We have to make sure the encoder is in a "clean" state
-                m_encoder->initialize(symbols, symbol_size);
+                m_encoder->initialize(*m_encoder_factory);
 
                 encode_payloads();
             }
@@ -278,11 +281,14 @@ struct throughput_benchmark : public gauge::time_benchmark
             uint32_t symbols = cs.get_value<uint32_t>("symbols");
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
+            m_decoder_factory->set_symbols(symbols);
+            m_decoder_factory->set_symbol_size(symbol_size);
+
             // The clock is running
             RUN{
                 // We have to make sure the decoder is in a "clean" state
                 // i.e. no symbols already decoded.
-                m_decoder->initialize(symbols, symbol_size);
+                m_decoder->initialize(*m_decoder_factory);
 
                 // Decode the payloads
                 decode_payloads();

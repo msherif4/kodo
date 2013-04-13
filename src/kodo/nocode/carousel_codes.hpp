@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CAROUSEL_CODES_HPP
-#define KODO_CAROUSEL_CODES_HPP
+#pragma once
 
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
@@ -79,5 +78,5 @@ namespace kodo
 
 }
 
-#endif
+
 

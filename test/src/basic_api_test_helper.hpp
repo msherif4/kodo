@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER_HPP
-#define KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER_HPP
+#pragma once
 
 #include <gtest/gtest.h>
 
@@ -281,8 +280,8 @@ invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
     for(uint32_t i = 0; i < 10; ++i)
     {
-        encoder->initialize(symbols, symbol_size);
-        decoder->initialize(symbols, symbol_size);
+        encoder->initialize(encoder_factory);
+        decoder->initialize(decoder_factory);
 
         std::vector<uint8_t> payload(encoder->payload_size());
 
@@ -412,5 +411,4 @@ invoke_set_symbol(uint32_t symbols, uint32_t symbol_size)
 }
 
 
-#endif
 

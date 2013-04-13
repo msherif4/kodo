@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_NOCODE_NOCODE_DECODER_HPP
-#define KODO_NOCODE_NOCODE_DECODER_HPP
+#pragma once
 
 #include <vector>
 
@@ -38,12 +37,12 @@ namespace kodo
                 m_uncoded.resize(the_factory.max_symbols(), false);
             }
 
-        /// @copydoc layer::initialize(uint32_t, uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory &the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
 
-                std::fill_n(m_uncoded.begin(), symbols, false);
+                std::fill_n(m_uncoded.begin(), the_factory.symbols(), false);
                 m_rank = 0;
             }
 
@@ -94,5 +93,4 @@ namespace kodo
 
 }
 
-#endif
 

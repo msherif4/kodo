@@ -149,24 +149,26 @@ namespace kodo
     class finite_field_math_counter : public SuperCoder
     {
     public:
-        /// The field type used
+
+        /// @copydoc layer:.field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// The value type
-        typedef typename field_type::value_type value_type;
+        /// @copydoc layer::value_type
+        typedef typename SuperCoder::value_type value_type;
 
+        /// @copydoc layer::factory
+        typedef typename SuperCoder::factory factory;
 
     public:
 
-        /// @see final_coder::initialize(...)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
 
                 // Reset the counter
                 m_counter = operations_counter();
             }
-
 
         /// @see finite_field_math::multiply(...)
         void multiply(value_type *symbol_dest, value_type coefficient,

@@ -42,12 +42,11 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : m_factory_proxy(0),
-                  m_stack_proxy(0),
-                  m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size),
-                  m_symbols(max_symbols),
-                  m_symbol_size(max_symbol_size)
-            { }
+                  m_stack_proxy(0)
+            {
+                (void) max_symbols;
+                (void) max_symbol_size;
+            }
 
             /// Sets the pointer to the proxy stack
             /// @param factory_proxy The stack where calls should be forwarded.
@@ -61,7 +60,6 @@ namespace kodo
             void set_stack_proxy(MainStack* stack_proxy)
             {
                 assert(stack_proxy != 0);
-                assert(m_stack_proxy == 0);
                 m_stack_proxy = stack_proxy;
             }
 
@@ -72,6 +70,8 @@ namespace kodo
                 assert(m_stack_proxy != 0);
 
                 pointer coder = boost::make_shared<FinalType>();
+
+                coder->set_proxy(m_stack_proxy);
 
                 factory_type *this_factory =
                     static_cast<factory_type*>(this);
@@ -85,77 +85,73 @@ namespace kodo
             /// @copydoc layer::factory::max_symbols() const
             uint32_t max_symbols() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_symbols();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_symbols();
             }
 
             /// @copydoc layer::factory::max_symbol_size() const
             uint32_t max_symbol_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_symbol_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_symbol_size();
             }
 
             /// @copydoc layer::factory::max_block_size() const
             uint32_t max_block_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_block_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_block_size();
             }
 
             /// @copydoc layer::factory::max_header_size() const
             uint32_t max_header_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_header_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_header_size();
             }
 
             /// @copydoc layer::factory::max_id_size() const
             uint32_t max_id_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_id_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_id_size();
             }
 
             /// @copydoc layer::factory::max_payload_size() const
             uint32_t max_payload_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_payload_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_payload_size();
             }
 
             /// @copydoc layer::factory::max_coefficients_size() const
             uint32_t max_coefficients_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->max_coefficients_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->max_coefficients_size();
             }
 
             /// @copydoc layer::factory::symbols() const;
             uint32_t symbols() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->symbols();
+                assert(m_factory_proxy);
+                return m_factory_proxy->symbols();
             }
 
             /// @copydoc layer::factory::symbol_size() const;
             uint32_t symbol_size() const
             {
-                assert(m_proxy_factory);
-                return m_proxy_factory->symbol_size();
+                assert(m_factory_proxy);
+                return m_factory_proxy->symbol_size();
             }
 
         private:
 
-            typename MainStack::factory* m_proxy_factory;
+            /// Pointer to the main stack's factory
+            typename MainStack::factory* m_factory_proxy;
 
-            MainStack* m_proxy;
-
-            /// The maximum number of symbols
-            uint32_t m_max_symbols;
-
-            /// The maximum symbol size
-            uint32_t m_max_symbol_size;
+            /// Pointer to the main stack used during building a stack
+            MainStack* m_stack_proxy;
 
         };
 
@@ -451,5 +447,4 @@ namespace kodo
 
 }
 
-#endif
 

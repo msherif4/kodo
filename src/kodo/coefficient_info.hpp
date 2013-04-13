@@ -56,16 +56,16 @@ namespace kodo
               m_coefficients_size(0)
             { }
 
-        /// @copydoc layer::initialize(uint32_t, uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
 
                 m_coefficients_length =
-                    coefficients_length(symbols);
+                    coefficients_length(the_factory.symbols());
 
                 m_coefficients_size =
-                    coefficients_size(symbols);
+                    coefficients_size(the_factory.symbols());
 
                 assert(m_coefficients_length > 0);
                 assert(m_coefficients_size > 0);
@@ -74,17 +74,20 @@ namespace kodo
         /// @copydoc layer::coefficients_length() const
         uint32_t coefficients_length() const
             {
+                assert(m_coefficients_length > 0);
                 return m_coefficients_length;
             }
 
         /// @copydoc layer::coefficients_size() const
         uint32_t coefficients_size() const
             {
+                assert(m_coefficients_size > 0);
                 return m_coefficients_size;
             }
 
     private:
 
+        /// @todo Remove after new fifi additions
         /// Helper function which provides the coefficients
         /// size calculation.
         /// @param symbols The number of symbols that need a

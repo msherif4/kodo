@@ -53,28 +53,10 @@ namespace kodo
                     m_stack_factory.set_factory_proxy(this);
                 }
 
-            /// @copydoc layer::factory::build()
-            pointer build()
-                {
-                    assert(SuperCoder::factory::max_payload_size() ==
-                           m_stack_factory.max_payload_size());
-
-                    auto coder =
-                        SuperCoder::factory::build();
-
-                    return coder;
-                }
-
         private:
 
             /// Give the layer access
             friend class payload_recoder;
-
-            /// @return A recoding stack
-            recode_pointer build_recoder()
-            {
-                return m_stack_factory.build();
-            }
 
             /// @return A reference to recoding stack factory
             typename recode_stack::factory& recode_factory()
@@ -90,21 +72,30 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory&)
-        void construct(factory& the_factory)
-        {
-            SuperCoder::construct(the_factory);
-
-            the_factory.recode_factory().set_stack_proxy(this);
-
-            m_recode_stack = the_factory.build_recoder();
-        }
-
         /// @copydoc layer::initialize(factory&)
         void initialize(factory& the_factory)
             {
                 SuperCoder::initialize(the_factory);
-                m_recode_stack->initialize(the_factory.recode_factory());
+
+                // We have to postpone building the recoding stack to the
+                // initialize function, since we have to ensure that the
+                // main stack has been constructed and initialized.
+
+                auto& stack_factory = the_factory.recode_factory();
+
+                if(!m_recode_stack)
+                {
+                    assert(the_factory.max_payload_size() ==
+                           stack_factory.max_payload_size());
+
+                    stack_factory.set_stack_proxy(this);
+                    m_recode_stack = stack_factory.build();
+                }
+                else
+                {
+
+                    m_recode_stack->initialize(the_factory.recode_factory());
+                }
 
                 assert(SuperCoder::payload_size() ==
                        m_recode_stack->payload_size());
