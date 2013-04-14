@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 
 #include <fifi/fifi_utils.hpp>
 
@@ -66,10 +67,10 @@ namespace kodo
             value_type* coefficients_i =
                 SuperCoder::coefficients_value(coefficients_index);
 
-            for(uint32_t j = SuperCoder::symbols(); j > 0; --j)
+            for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
             {
                 value_type value =
-                    fifi::get_value<field_type>(coefficients_i, j-1 );
+                    fifi::get_value<field_type>(coefficients_i, j);
 
                 out << (uint32_t)value << " ";
             }

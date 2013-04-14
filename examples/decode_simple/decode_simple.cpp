@@ -19,6 +19,9 @@
 /// the "Codec API" has been kept as they provide functionalities that are
 /// required.
 
+#include <cstdint>
+#include <cassert>
+#include <iostream>
 #include <vector>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
@@ -30,14 +33,16 @@
 
 namespace fifi
 {
-    /// Print elements in an array of fields
+    /// Print field elements as a matrix
     /// @param elements elements to print
     /// @param symbols number of symbols to print
-    /// @param symbols_length length of a symbol (# elements in a symbol)
+    /// @param symbol_elements number of field elements in a symbol
     template <typename Field>
-    inline void print(typename Field::value_ptr elements,
+    inline void print_matrix(typename Field::value_ptr elements,
         uint32_t symbols, uint32_t symbol_elements)
     {
+        assert(elements != 0);
+
         uint32_t symbol_size =
             fifi::elements_to_size<Field>(symbol_elements);
 
@@ -45,17 +50,83 @@ namespace fifi
         for (uint32_t i = 0; i < symbols; ++i)
         {
             // Loop through all elements in a symbol
-            for (uint32_t j = symbol_elements; j > 0; --j)
+            for (uint32_t j = 0; j < symbol_elements; ++j)
             {
                 // Print element
                 std::cout << (uint32_t)fifi::get_value<Field>(
-                        &elements[i*symbol_size], j-1) << " ";
+                        &elements[i*symbol_size], j) << " ";
             }
 
             // Print new line after each symbol
             std::cout << std::endl;
         }
     }
+
+    /// Print field elements in a symbol or coefficients vector
+    /// @param elements elements to print
+    /// @param symbols number of symbols to print
+    /// @param symbol_elements number of field elements in a symbol
+    template <typename Field>
+    inline void print_symbol(typename Field::value_type* elements,
+        uint32_t symbol_elements)
+    {
+        assert(elements != 0);
+
+        std::cout << "| ";
+        for (uint32_t j = 0; j < symbol_elements; ++j)
+        {
+            // Print element
+            std::cout << (uint32_t)fifi::get_value<Field>(
+                    &elements[0], j) << " ";
+        }
+        std::cout << "|";
+    }
+
+    /// Print matrix with encoded symbols, coefficients matrix, and matrix
+    /// with original symbols as an equation
+    /// @param original_data original data field elements to print
+    /// @param coefficients_data coefficients field elements to print
+    /// @param encoded_data encoded data field elements to print
+    /// @param symbols number of symbols to print
+    /// @param symbol_elements number of field elements in a symbol
+    template <typename Field>
+    inline void print_equation(typename Field::value_type* original_data,
+        typename Field::value_type* coefficients_data,
+        typename Field::value_type* encoded_data,
+        uint32_t symbols, uint32_t symbol_elements)
+    {
+        assert(original_data != 0);
+        assert(coefficients_data != 0);
+        assert(encoded_data != 0);
+
+        uint32_t symbol_size =
+            fifi::elements_to_size<Field>(symbol_elements);
+
+        uint32_t coef_size =
+            fifi::elements_to_size<Field>(symbols);
+
+        uint32_t middle_symbol = symbols/2;
+
+        // Loop through all symbols
+        for (uint32_t i = 0; i < symbols; ++i)
+        {
+            print_symbol<Field>(&original_data[i*symbol_size], symbol_elements);
+
+            (i == middle_symbol) ? std::cout << " = " : std::cout << "   ";
+
+            print_symbol<Field>(&coefficients_data[i*coef_size], symbols);
+
+            std::cout << " ";
+
+            print_symbol<Field>(&encoded_data[i*symbol_size], symbol_elements);
+
+            // Print new line after each symbol
+            std::cout << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
+
 }
 
 namespace kodo
@@ -169,19 +240,22 @@ int main()
     uint8_t encoded_symbols[] = { 0x07, 0x11, 0x1a };
 
     std::cout << std::endl << "Original symbols:" << std::endl;
-    fifi::print<field_type>((value_type*)original_symbols,
+    fifi::print_matrix<field_type>((value_type*)original_symbols,
             symbols, symbol_elements);
 
-    std::cout << std::endl << "Symbol coefficients (before decoding):"
+    std::cout << std::endl << "Symbol coefficients:"
         << std::endl;
-    fifi::print<field_type>((value_type*)symbol_coefficients,
+    fifi::print_matrix<field_type>((value_type*)symbol_coefficients,
             symbols, symbols);
 
-    std::cout << std::endl << "Encoded symbols (before decoding):" << std::endl;
-    fifi::print<field_type>((value_type*)encoded_symbols,
+    std::cout << std::endl << "Encoded symbols:" << std::endl;
+    fifi::print_matrix<field_type>((value_type*)encoded_symbols,
             symbols, symbol_elements);
-    std::cout << std::endl << std::endl;
 
+    std::cout << std::endl << "Equation:" << std::endl;
+    fifi::print_equation<field_type>((value_type*)original_symbols,
+        (value_type*)symbol_coefficients, (value_type*)encoded_symbols,
+        symbols, symbol_elements);
 
     std::cout << "Start decoding..." << std::endl << std::endl;
 
@@ -213,7 +287,6 @@ int main()
             "Decoding incomplete - not all encoding vectors are independent" <<
             std::endl;
     }
-
 
     // Copy decoded data into a vector
     std::vector<uint8_t> decoded_symbols(decoder->block_size());

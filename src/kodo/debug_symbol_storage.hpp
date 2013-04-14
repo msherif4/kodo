@@ -6,6 +6,8 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
+#include <iostream>
 
 #include <fifi/fifi_utils.hpp>
 
@@ -51,15 +53,15 @@ namespace kodo
                 fifi::length_to_elements<field_type>(
                     SuperCoder::symbol_length()));
 
-            for(uint32_t i = SuperCoder::symbols(); i > 0; --i)
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
-                print_symbol(out, symbol_elements, i-1);
+                print_symbol(out, symbol_elements, i);
             }
 
             out << std::endl;
         }
 
-        /// Print the i'th symbol
+        /// Print symbol on certain index
         /// @param out The output stream to print to
         /// @param symbol_index index of symbol to print
         void print_symbol(std::ostream& out, uint32_t symbol_index)
@@ -71,7 +73,7 @@ namespace kodo
             print_symbol(out, symbol_elements, symbol_index);
         }
 
-        /// Print the i'th symbol
+        /// Print symbol on certain index
         /// @param out The output stream to print to
         /// @param symbol_elements number of elements in a symbol
         /// @param symbol_index index of symbol to print
@@ -87,10 +89,10 @@ namespace kodo
             value_type* symbol =
                 SuperCoder::symbol_value(symbol_index);
 
-            for(uint32_t j = symbol_elements; j > 0; --j)
+            for(uint32_t j = 0; j < symbol_elements; ++j)
             {
                 value_type value =
-                    fifi::get_value<field_type>(symbol, j-1);
+                    fifi::get_value<field_type>(symbol, j);
 
                 out << (uint32_t)value << " ";
             }

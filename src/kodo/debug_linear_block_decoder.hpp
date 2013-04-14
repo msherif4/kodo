@@ -6,6 +6,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 #include <fifi/fifi_utils.hpp>
 
@@ -99,9 +102,9 @@ namespace kodo
             value_type *c =
                 reinterpret_cast<value_type*>(&m_coefficients[0]);
 
-            for(uint32_t j = SuperCoder::symbols(); j > 0; --j)
+            for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
             {
-                value_type value = fifi::get_value<field_type>(c, j-1);
+                value_type value = fifi::get_value<field_type>(c, j);
                 out << (uint32_t)value << " ";
             }
 
@@ -131,9 +134,9 @@ namespace kodo
             value_type *s =
                 reinterpret_cast<value_type*>(&m_data[0]);
 
-            for(uint32_t j = symbol_elements; j > 0; --j)
+            for(uint32_t j = 0; j < symbol_elements; ++j)
             {
-                value_type value = fifi::get_value<field_type>(s, j-1);
+                value_type value = fifi::get_value<field_type>(s, j);
                 out << (uint32_t)value << " ";
             }
 
