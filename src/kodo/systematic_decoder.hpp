@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYSTEMATIC_DECODER_HPP
-#define KODO_SYSTEMATIC_DECODER_HPP
+#pragma once
 
 #include <cstdint>
 #include <sak/convert_endian.hpp>
@@ -47,14 +46,14 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::max_header_size() const
             uint32_t max_header_size() const
-                {
-                    return SuperCoder::factory::max_header_size() +
-                        sizeof(flag_type) + sizeof(counter_type);
-                }
+            {
+                return SuperCoder::factory::max_header_size() +
+                    sizeof(flag_type) + sizeof(counter_type);
+            }
         };
 
     public:
@@ -65,38 +64,37 @@ namespace kodo
         ///
         /// @copydoc layer::decode(uint8_t*, uint8_t*)
         void decode(uint8_t *symbol_data, uint8_t *symbol_header)
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
+
+            flag_type flag =
+                sak::big_endian::get<flag_type>(symbol_header);
+
+            symbol_header += sizeof(flag_type);
+
+            if(flag == systematic_base_coder::systematic_flag)
             {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+                /// Get symbol index and copy the symbol
+                counter_type symbol_index =
+                    sak::big_endian::get<counter_type>(symbol_header);
 
-                flag_type flag =
-                    sak::big_endian::get<flag_type>(symbol_header);
-
-                symbol_header += sizeof(flag_type);
-
-                if(flag == systematic_base_coder::systematic_flag)
-                {
-                    /// Get symbol index and copy the symbol
-                    counter_type symbol_index =
-                        sak::big_endian::get<counter_type>(symbol_header);
-
-                    SuperCoder::decode_symbol(symbol_data, symbol_index);
-                }
-                else
-                {
-                    SuperCoder::decode(symbol_data, symbol_header);
-                }
+                SuperCoder::decode_symbol(symbol_data, symbol_index);
             }
+            else
+            {
+                SuperCoder::decode(symbol_data, symbol_header);
+            }
+        }
 
         /// @copydoc layer::header_size() const
         uint32_t header_size() const
-            {
-                return SuperCoder::header_size() +
-                    sizeof(flag_type) + sizeof(counter_type);
-            }
+        {
+            return SuperCoder::header_size() +
+                sizeof(flag_type) + sizeof(counter_type);
+        }
     };
 
 }
 
-#endif
 

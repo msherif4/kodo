@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYMBOL_ID_ENCODER_HPP
-#define KODO_SYMBOL_ID_ENCODER_HPP
+#pragma once
 
 namespace kodo
 {
@@ -30,13 +29,13 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::factory::max_header_size() const
             uint32_t max_header_size() const
-                {
-                    return SuperCoder::factory::max_id_size();
-                }
+            {
+                return SuperCoder::factory::max_id_size();
+            }
 
         };
 
@@ -44,31 +43,30 @@ namespace kodo
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
 
-                uint8_t *coefficients = 0;
+            uint8_t *coefficients = 0;
 
-                uint32_t bytes_used =
-                    SuperCoder::write_id(symbol_header, &coefficients);
+            uint32_t bytes_used =
+                SuperCoder::write_id(symbol_header, &coefficients);
 
-                assert(coefficients != 0);
+            assert(coefficients != 0);
 
-                SuperCoder::encode_symbol(symbol_data, coefficients);
+            SuperCoder::encode_symbol(symbol_data, coefficients);
 
-                return bytes_used;
-            }
+            return bytes_used;
+        }
 
         /// @copydoc layer::header_size() const
         uint32_t header_size() const
-            {
-                return SuperCoder::id_size();
-            }
+        {
+            return SuperCoder::id_size();
+        }
 
     };
 
 }
 
-#endif
 

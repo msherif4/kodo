@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER_HPP
-#define KODO_TEST_AUTO_SRC_BASIC_API_TEST_HELPER_HPP
+#pragma once
 
 #include <gtest/gtest.h>
 
@@ -107,10 +106,10 @@ invoke_basic_api(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
     EXPECT_TRUE(symbols == encoder_factory.max_symbols());
     EXPECT_TRUE(symbol_size == encoder_factory.max_symbol_size());
@@ -202,10 +201,10 @@ invoke_out_of_order_raw(uint32_t symbols, uint32_t symbol_size)
 {
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
     // Encode/decode operations
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
@@ -273,16 +272,16 @@ invoke_initialize(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols,symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
 
     for(uint32_t i = 0; i < 10; ++i)
     {
-        encoder->initialize(symbols, symbol_size);
-        decoder->initialize(symbols, symbol_size);
+        encoder->initialize(encoder_factory);
+        decoder->initialize(decoder_factory);
 
         std::vector<uint8_t> payload(encoder->payload_size());
 
@@ -327,10 +326,10 @@ invoke_systematic(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
     // Encode/decode operations
     EXPECT_TRUE(encoder->payload_size() == decoder->payload_size());
@@ -373,10 +372,10 @@ invoke_set_symbol(uint32_t symbols, uint32_t symbol_size)
 
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build(symbols, symbol_size);
+    auto encoder = encoder_factory.build();
 
     typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build(symbols, symbol_size);
+    auto decoder = decoder_factory.build();
 
     std::vector<uint8_t> payload(encoder->payload_size());
     std::vector<uint8_t> data_in = random_vector(encoder->block_size());
@@ -412,5 +411,4 @@ invoke_set_symbol(uint32_t symbols, uint32_t symbol_size)
 }
 
 
-#endif
 

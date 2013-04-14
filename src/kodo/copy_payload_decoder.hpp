@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_COPY_PAYLOAD_DECODER_HPP
-#define KODO_COPY_PAYLOAD_DECODER_HPP
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -26,27 +25,30 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        /// @copydoc layer::factory
+        typedef typename SuperCoder::factory factory;
 
-                m_payload_copy.resize(SuperCoder::payload_size(), 0);
-            }
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
+
+            m_payload_copy.resize(SuperCoder::payload_size(), 0);
+        }
 
         /// Copy the payload data to ensure that the payload isn't
         /// overwritten during decoding
         /// @copydoc layer::decode(uint8_t*)
         void decode(const uint8_t *payload)
-            {
-                assert(payload != 0);
+        {
+            assert(payload != 0);
 
-                /// Copy payload to m_payload_copy
-                std::copy_n(payload, SuperCoder::payload_size(),
-                            &m_payload_copy[0]);
+            /// Copy payload to m_payload_copy
+            std::copy_n(payload, SuperCoder::payload_size(),
+                        &m_payload_copy[0]);
 
-                SuperCoder::decode(&m_payload_copy[0]);
-            }
+            SuperCoder::decode(&m_payload_copy[0]);
+        }
 
     private:
 
@@ -56,5 +58,4 @@ namespace kodo
     };
 }
 
-#endif
 

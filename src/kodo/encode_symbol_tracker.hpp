@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ENCODE_SYMBOL_TRACKER_HPP
-#define KODO_ENCODE_SYMBOL_TRACKER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -18,37 +17,42 @@ namespace kodo
     {
     public:
 
-        /// Constructor
-        encode_symbol_tracker()
-            : m_counter(0)
-            { }
+        /// @copydoc layer::factory
+        typedef typename SuperCoder::factory factory;
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
-                m_counter = 0;
-            }
+    public:
+
+        /// Constructor
+        encode_symbol_tracker() :
+            m_counter(0)
+        { }
+
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
+            m_counter = 0;
+        }
 
         /// @copydoc layer::encode_symbol(uint8_t*, uint8_t*)
         void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
-            {
-                SuperCoder::encode_symbol(symbol_data, coefficients);
-                ++m_counter;
-            }
+        {
+            SuperCoder::encode_symbol(symbol_data, coefficients);
+            ++m_counter;
+        }
 
         /// @copydoc layer::encode_symbol(uint8_t*,uint32_t)
         void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
-            {
-                SuperCoder::encode_symbol(symbol_data, symbol_index);
-                ++m_counter;
-            }
+        {
+            SuperCoder::encode_symbol(symbol_data, symbol_index);
+            ++m_counter;
+        }
 
         /// @return the symbol encoded counter
         uint32_t encode_symbol_count() const
-            {
-                return m_counter;
-            }
+        {
+            return m_counter;
+        }
 
     private:
 
@@ -59,5 +63,4 @@ namespace kodo
 
 }
 
-#endif
 

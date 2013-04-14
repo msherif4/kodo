@@ -149,24 +149,26 @@ namespace kodo
     class finite_field_math_counter : public SuperCoder
     {
     public:
-        /// The field type used
+
+        /// @copydoc layer:.field_type
         typedef typename SuperCoder::field_type field_type;
 
-        /// The value type
-        typedef typename field_type::value_type value_type;
+        /// @copydoc layer::value_type
+        typedef typename SuperCoder::value_type value_type;
 
+        /// @copydoc layer::factory
+        typedef typename SuperCoder::factory factory;
 
     public:
 
-        /// @see final_coder::initialize(...)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
             {
-                SuperCoder::initialize(symbols, symbol_size);
+                SuperCoder::initialize(the_factory);
 
                 // Reset the counter
                 m_counter = operations_counter();
             }
-
 
         /// @see finite_field_math::multiply(...)
         void multiply(value_type *symbol_dest, value_type coefficient,
@@ -470,8 +472,14 @@ public:
             uint32_t symbols = cs.get_value<uint32_t>("symbols");
             uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
 
-            m_encoder = m_encoder_factory->build(symbols, symbol_size);
-            m_decoder = m_decoder_factory->build(symbols, symbol_size);
+            m_decoder_factory->set_symbols(symbols);
+            m_decoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder_factory->set_symbols(symbols);
+            m_encoder_factory->set_symbol_size(symbol_size);
+
+            m_encoder = m_encoder_factory->build();
+            m_decoder = m_decoder_factory->build();
 
             m_payload_buffer.resize(m_encoder->payload_size(), 0);
             m_encoded_data.resize(m_encoder->block_size(), 'x');

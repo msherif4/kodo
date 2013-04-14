@@ -38,10 +38,8 @@ public:
 
         /// @ingroup factory_api
         /// @brief Builds the actual coder
-        /// @param symbols the symbols this coder will use
-        /// @param symbol_size the size of a symbol in bytes
         /// @return pointer to an instantiation of an encoder or decoder
-        pointer build(uint32_t symbols, uint32_t symbol_size);
+        pointer build()
 
         /// @ingroup factory_api
         /// @return the maximum number of symbols in a block
@@ -116,9 +114,9 @@ public:
 
     /// @ingroup factory_api
     /// @brief Initializes the coder
-    /// @param symbols the number of symbols the coder should store
-    /// @param symbol_size the size of each symbol in bytes
-    void initialize(uint32_t symbols, uint32_t symbol_size);
+    /// @param the_factory The factory used to build the codec layer. Provides
+    ///        access to cached data and factory functions.
+    void initialize(factory &the_factory);
 
     //------------------------------------------------------------------
     // CODEC HEADER API

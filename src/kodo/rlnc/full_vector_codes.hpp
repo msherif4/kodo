@@ -43,8 +43,10 @@
 namespace kodo
 {
 
-    /// Complete stack implementing a RLNC encoder. The key features of
-    /// this configuration is the following:
+    /// @ingroup fec_stacks
+    /// @brief Complete stack implementing a RLNC encoder.
+    ///
+    /// The key features of this configuration is the following:
     /// - Systematic encoding (uncoded symbols produced before switching
     ///   to coding)
     /// - Full encoding vectors, this stack uses the plain_symbol_id_writer
@@ -53,35 +55,35 @@ namespace kodo
     /// - Deep symbol storage which makes the encoder allocate its own
     ///   internal memory.
     template<class Field>
-    class full_rlnc_encoder
-        : public // Payload Codec API
-                 payload_encoder<
-                 // Codec Header API
-                 systematic_encoder<
-                 symbol_id_encoder<
-                 // Symbol ID API
-                 plain_symbol_id_writer<
-                 // Coefficient Generator API
-                 uniform_generator<
-                 // Codec API
-                 storage_aware_encoder<
-                 encode_symbol_tracker<
-                 zero_symbol_encoder<
-                 linear_block_encoder<
-                 // Coefficient Storage API
-                 coefficient_info<
-                 // Symbol Storage API
-                 deep_symbol_storage<
-                 storage_bytes_used<
-                 storage_block_info<
-                 // Finite Field API
-                 finite_field_math<typename fifi::default_field<Field>::type,
-                 finite_field_info<Field,
-                 // Factory API
-                 final_coder_factory_pool<
-                 // Final type
-                 full_rlnc_encoder<Field>
-                     > > > > > > > > > > > > > > > >
+    class full_rlnc_encoder :
+        public // Payload Codec API
+               payload_encoder<
+               // Codec Header API
+               systematic_encoder<
+               symbol_id_encoder<
+               // Symbol ID API
+               plain_symbol_id_writer<
+               // Coefficient Generator API
+               uniform_generator<
+               // Codec API
+               storage_aware_encoder<
+               encode_symbol_tracker<
+               zero_symbol_encoder<
+               linear_block_encoder<
+               // Coefficient Storage API
+               coefficient_info<
+               // Symbol Storage API
+               deep_symbol_storage<
+               storage_bytes_used<
+               storage_block_info<
+               // Finite Field API
+               finite_field_math<typename fifi::default_field<Field>::type,
+               finite_field_info<Field,
+               // Factory API
+               final_coder_factory_pool<
+               // Final type
+               full_rlnc_encoder<Field
+                   > > > > > > > > > > > > > > > > >
     { };
 
     /// Intermediate stack implementing the recoding functionality of a
@@ -113,9 +115,11 @@ namespace kodo
                  recoding_stack<MainStack>, MainStack> > > > > > > > >
     { };
 
-    /// Implementation of a complete RLNC decoder this configuration
-    /// adds the following features (including those described for
-    /// the encoder):
+    /// @ingroup fec_stacks
+    /// @brief Implementation of a complete RLNC decoder
+    ///
+    /// This configuration adds the following features (including those
+    /// described for the encoder):
     /// - Recoding using the recoding_stack
     /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>

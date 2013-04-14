@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_OBJECT_ENCODER_HPP
-#define KODO_OBJECT_ENCODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -16,13 +15,14 @@
 namespace kodo
 {
 
-    /// Object encoder, allows easy encoding of objects too
-    /// large for a single block encoder.
+    /// @brief The object encoder, allows encoding of objects too
+    ///        large for a single block encoder.
     ///
     /// The following diagram tries to explain how the object encoder
     /// uses its dependencies to wrap an build encoders for arbitrary
     /// objects.
     ///
+    /// <pre>
     /// +---------------+     +---------------+     +---------------+
     /// | partitioning  |     |encoder factory|     |  object data  |
     /// |---------------|     |---------------|     |---------------|
@@ -46,6 +46,11 @@ namespace kodo
     ///                       | encoders for  |
     ///                       | an object     |
     ///                       +---------------+
+    /// </pre>
+    ///
+    /// @tparam ObjectData object_data
+    /// @tparam EncoderType An encoder stack which should be used
+    /// @tparam BlockParitioning block_partitioning
     template
     <
         class ObjectData,
@@ -73,60 +78,62 @@ namespace kodo
         /// Constructs a new object encoder
         /// @param factory the encoder factory to use
         /// @param object the object to encode
-        object_encoder(factory_type &factory, const object_data &data)
-            : m_factory(factory),
-              m_data(data)
-            {
+        object_encoder(factory_type &factory, const object_data &data) :
+            m_factory(factory),
+            m_data(data)
+        {
 
-                assert(m_data.size() > 0);
+            assert(m_data.size() > 0);
 
-                m_partitioning = block_partitioning(
-                    m_factory.max_symbols(),
-                    m_factory.max_symbol_size(),
-                    m_data.size());
-            }
+            m_partitioning = block_partitioning(
+                m_factory.max_symbols(),
+                m_factory.max_symbol_size(),
+                m_data.size());
+        }
 
         /// @return The number of encoders which may be created for
         ///         this object
         uint32_t encoders() const
-            {
-                return m_partitioning.blocks();
-            }
+        {
+            return m_partitioning.blocks();
+        }
 
         /// Builds a specific encoder
         /// @param encoder_id Specifies the encoder to build
         /// @return The initialized encoder
         pointer_type build(uint32_t encoder_id)
-            {
-                assert(encoder_id < m_partitioning.blocks());
+        {
+            assert(encoder_id < m_partitioning.blocks());
 
-                // Build the encoder
-                uint32_t symbols =
-                    m_partitioning.symbols(encoder_id);
+            // Build the encoder
+            uint32_t symbols =
+                m_partitioning.symbols(encoder_id);
 
-                uint32_t symbol_size =
-                    m_partitioning.symbol_size(encoder_id);
+            uint32_t symbol_size =
+                m_partitioning.symbol_size(encoder_id);
 
-                pointer_type encoder =
-                    m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
 
-                // Initialize encoder with data
-                uint32_t offset =
-                    m_partitioning.byte_offset(encoder_id);
+            pointer_type encoder = m_factory.build();
 
-                uint32_t bytes_used =
-                    m_partitioning.bytes_used(encoder_id);
+            // Initialize encoder with data
+            uint32_t offset =
+                m_partitioning.byte_offset(encoder_id);
 
-                m_data.read(encoder, offset, bytes_used);
+            uint32_t bytes_used =
+                m_partitioning.bytes_used(encoder_id);
 
-                return encoder;
-            }
+            m_data.read(encoder, offset, bytes_used);
+
+            return encoder;
+        }
 
         /// @return The total size of the object to encode in bytes
         uint32_t object_size() const
-            {
-                return m_data.size();
-            }
+        {
+            return m_data.size();
+        }
 
     private:
 
@@ -142,5 +149,5 @@ namespace kodo
 
 }
 
-#endif
+
 

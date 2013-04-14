@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_CAROUSEL_CODES_HPP
-#define KODO_CAROUSEL_CODES_HPP
+#pragma once
 
 #include "../payload_encoder.hpp"
 #include "../payload_decoder.hpp"
@@ -29,9 +28,10 @@
 namespace kodo
 {
 
-    /// For testing purposes this encoder implements a simple repetition code
-    /// i.e. the symbols are the original source symbols produced by the
-    /// encoder in a round-robin fashion.
+    /// @ingroup fec_stacks
+    /// @brief For testing purposes this encoder implements a simple repetition
+    ///        code i.e. the symbols are the original source symbols produced
+    ///        by the encoder in a round-robin fashion.
     class nocode_carousel_encoder
         : public // Payload Codec API
                  payload_encoder<
@@ -52,9 +52,10 @@ namespace kodo
                      > > > > > > > >
     { };
 
-    /// For testing purposes this decoder will takes symbols produced by the
-    /// carousel encoder and put them in the right order until all symbols
-    /// have been received.
+    /// @ingroup fec_stacks
+    /// @brief For testing purposes this decoder will takes symbols produced by
+    ///        the carousel encoder and put them in the right order until all
+    ///        symbols have been received.
     class nocode_carousel_decoder
         : public // Payload Codec API
                  payload_decoder<
@@ -77,5 +78,5 @@ namespace kodo
 
 }
 
-#endif
+
 

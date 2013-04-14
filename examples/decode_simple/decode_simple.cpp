@@ -23,6 +23,10 @@
 
 #include <kodo/rlnc/full_vector_codes.hpp>
 #include <kodo/debug_linear_block_decoder.hpp>
+#include <kodo/debug_coefficient_storage.hpp>
+#include <kodo/debug_symbol_storage.hpp>
+
+#include <fifi/fifi_utils.hpp>
 
 namespace fifi
 {
@@ -32,20 +36,20 @@ namespace fifi
     /// @param symbols_length length of a symbol (# elements in a symbol)
     template <typename Field>
     inline void print(typename Field::value_ptr elements,
-        uint32_t symbols, uint32_t symbol_length)
+        uint32_t symbols, uint32_t symbol_elements)
     {
-        uint32_t symbol_size = bytes_needed<Field>(symbol_length);
-        uint8_t* ptr_end = ((uint8_t*)elements)+symbols*symbol_size;
+        uint32_t symbol_size =
+            fifi::elements_to_size<Field>(symbol_elements);
 
         // Loop through all symbols
-        for (uint8_t* ptr = elements; ptr < ptr_end; ptr += symbol_size)
+        for (uint32_t i = 0; i < symbols; ++i)
         {
             // Loop through all elements in a symbol
-            for (uint32_t i = 0; i < symbol_length; ++i)
+            for (uint32_t j = symbol_elements; j > 0; --j)
             {
                 // Print element
-                std::cout << (unsigned)fifi::get_value<Field>(
-                         (typename Field::value_type*)ptr, i) << " ";
+                std::cout << (uint32_t)fifi::get_value<Field>(
+                        &elements[i*symbol_size], j-1) << " ";
             }
 
             // Print new line after each symbol
@@ -63,9 +67,11 @@ namespace kodo
                  debug_linear_block_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
+                 debug_coefficient_storage<
                  coefficient_storage<
                  coefficient_info<
                  // Storage API
+                 debug_symbol_storage<
                  deep_symbol_storage<
                  storage_bytes_used<
                  storage_block_info<
@@ -76,7 +82,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  rlnc_decoder<Field>
-                     > > > > > > > > > >
+                     > > > > > > > > > > > >
     {};
 }
 
@@ -89,11 +95,11 @@ int main()
     // Set the number of symbols (i.e. the generation size in RLNC
     // terminology) and the number of elements in a symbol
     const uint32_t symbols = 3;
-    const uint32_t symbol_length = 5;
+    const uint32_t symbol_elements = 5;
 
     // Get the size, in bytes, of a coefficient vector and a symbol
-    const uint32_t coefficients_size = fifi::bytes_needed<field_type>(symbols);
-    const uint32_t symbol_size = fifi::bytes_needed<field_type>(symbol_length);
+    const uint32_t coefficients_size = fifi::elements_to_size<field_type>(symbols);
+    const uint32_t symbol_size = fifi::elements_to_size<field_type>(symbol_elements);
 
     // Typdefs for the decoder type we wish to use
     typedef kodo::rlnc_decoder<field_type> rlnc_decoder;
@@ -101,7 +107,7 @@ int main()
     // In the following we will make an decoder factory.
     // The factory is used to build actual decoders
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
-    rlnc_decoder::pointer decoder = decoder_factory.build(symbols, symbol_size);
+    rlnc_decoder::pointer decoder = decoder_factory.build();
     
 
     // To illustrate decoding, random data has been filled into the
@@ -162,10 +168,9 @@ int main()
     uint8_t symbol_coefficients[] = { 0x02, 0x03, 0x05 };
     uint8_t encoded_symbols[] = { 0x07, 0x11, 0x1a };
 
-
     std::cout << std::endl << "Original symbols:" << std::endl;
     fifi::print<field_type>((value_type*)original_symbols,
-            symbols, symbol_length);
+            symbols, symbol_elements);
 
     std::cout << std::endl << "Symbol coefficients (before decoding):"
         << std::endl;
@@ -174,56 +179,45 @@ int main()
 
     std::cout << std::endl << "Encoded symbols (before decoding):" << std::endl;
     fifi::print<field_type>((value_type*)encoded_symbols,
-            symbols, symbol_length);
+            symbols, symbol_elements);
     std::cout << std::endl << std::endl;
 
 
-    // Decode each symbol
+    std::cout << "Start decoding..." << std::endl << std::endl;
+
+    // Decode each symbol and print the decoding progress
     for (uint32_t i = 0; i < symbols; ++i)
     {
+        // Pass the i'th symbol and coefficients to decoder
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
 
-        std::cout << "Decoding matrix:" << std::endl;
+        decoder->print_latest_symbol_and_coefficients(std::cout, symbol_elements);
+
+        std::cout << std::endl << "Decoding matrix:" << std::endl;
         decoder->print_decoding_matrix(std::cout);
 
         std::cout << "Symbol matrix:" << std::endl;
-        decoder->print_symbol_matrix(std::cout, 5);
-
+        decoder->print_symbol_matrix(std::cout, symbol_elements);
         std::cout << std::endl;
     }
 
     // Ensure that decoding was completed successfully.
     if (decoder->is_complete())
     {
-        std::cout << "Decoding completed." << std::endl;
+        std::cout << "Decoding completed" << std::endl;
     }
     else
     {
         std::cout << 
-            "Decoding incomplete - not all encoding vectors are independent." <<
+            "Decoding incomplete - not all encoding vectors are independent" <<
             std::endl;
     }
+
 
     // Copy decoded data into a vector
     std::vector<uint8_t> decoded_symbols(decoder->block_size());
     decoder->copy_symbols(sak::storage(decoded_symbols));
-
-
-    std::cout << std::endl << "Encoded symbols (after decoding):" << std::endl;
-    fifi::print<field_type>((value_type*)encoded_symbols,
-            symbols, symbol_length);
-
-    std::cout << std::endl << "Symbol coefficients (after decoding):"
-        << std::endl;
-    fifi::print<field_type>((value_type*)symbol_coefficients,
-            symbols, symbols);
-
-    std::cout << std::endl << "Decoded data:" << std::endl;
-    fifi::print<field_type>((value_type*)&decoded_symbols[0],
-            symbols, symbol_length);
-    std::cout << std::endl;
-
 
     // Check that the original data is the same as the decoded data
     if (std::equal(decoded_symbols.begin(), decoded_symbols.end(),
@@ -236,4 +230,5 @@ int main()
         std::cout << "Error: Decoded data differs from original data";
     }
     std::cout << std::endl << std::endl;
+
 }

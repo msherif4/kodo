@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_FILE_ENCODER_HPP
-#define KODO_FILE_ENCODER_HPP
+#pragma once
 
 #include "object_encoder.hpp"
 #include "file_reader.hpp"
@@ -56,5 +55,5 @@ namespace kodo
     };
 }
 
-#endif
+
 

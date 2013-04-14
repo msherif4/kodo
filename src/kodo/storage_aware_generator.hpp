@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_STORAGE_AWARE_GENERATOR_HPP
-#define KODO_STORAGE_AWARE_GENERATOR_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -23,20 +22,19 @@ namespace kodo
 
         /// @copydoc layer::generate(uint8_t*)
         void generate(uint8_t *coefficients)
-            {
-                assert(coefficients != 0);
+        {
+            assert(coefficients != 0);
 
-                if(SuperCoder::rank() < SuperCoder::symbols())
-                {
-                    SuperCoder::generate_partial(coefficients);
-                }
-                else
-                {
-                    SuperCoder::generate(coefficients);
-                }
+            if(SuperCoder::rank() < SuperCoder::symbols())
+            {
+                SuperCoder::generate_partial(coefficients);
             }
+            else
+            {
+                SuperCoder::generate(coefficients);
+            }
+        }
     };
 }
 
-#endif
 

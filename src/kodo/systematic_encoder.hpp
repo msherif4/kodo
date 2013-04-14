@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYSTEMATIC_ENCODER_HPP
-#define KODO_SYSTEMATIC_ENCODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -39,11 +38,11 @@ namespace kodo
 
         /// The symbol count type
         typedef typename systematic_base_coder::counter_type
-            counter_type;
+        counter_type;
 
         /// The flag type
         typedef typename systematic_base_coder::flag_type
-            flag_type;
+        flag_type;
 
     public:
 
@@ -58,14 +57,14 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::max_header_size() const
             uint32_t max_header_size() const
-                {
-                    return SuperCoder::factory::max_header_size() +
-                        sizeof(flag_type) + sizeof(counter_type);
-                }
+            {
+                return SuperCoder::factory::max_header_size() +
+                    sizeof(flag_type) + sizeof(counter_type);
+            }
         };
 
     public:
@@ -73,67 +72,67 @@ namespace kodo
         /// Constructor
         base_systematic_encoder()
             : m_systematic(SystematicOn)
-            { }
+        { }
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
 
-                /// Reset the state
-                m_systematic = SystematicOn;
-            }
+            /// Reset the state
+            m_systematic = SystematicOn;
+        }
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
         uint32_t encode(uint8_t *symbol_data, uint8_t *symbol_header)
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
+
+            // The systematic phase takes places when we still haven't
+            // generated more symbols than what currently accessible
+            // to the encoder
+
+            bool in_systematic_phase =
+                SuperCoder::encode_symbol_count() <
+                SuperCoder::rank();
+
+            if(m_systematic && in_systematic_phase)
             {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
-
-                // The systematic phase takes places when we still haven't
-                // generated more symbols than what currently accessible
-                // to the encoder
-
-                bool in_systematic_phase =
-                    SuperCoder::encode_symbol_count() <
-                    SuperCoder::rank();
-
-                if(m_systematic && in_systematic_phase)
-                {
-                    return encode_systematic(symbol_data,
-                                             symbol_header);
-                }
-                else
-                {
-                    return encode_non_systematic(symbol_data,
-                                                 symbol_header);
-                }
+                return encode_systematic(symbol_data,
+                                         symbol_header);
             }
+            else
+            {
+                return encode_non_systematic(symbol_data,
+                                             symbol_header);
+            }
+        }
 
         /// @return, true if the encoder is in systematic mode
         bool is_systematic_on() const
-            {
-                return m_systematic;
-            }
+        {
+            return m_systematic;
+        }
 
         /// Set the encoder in systematic mode
         void set_systematic_on()
-            {
-                m_systematic = true;
-            }
+        {
+            m_systematic = true;
+        }
 
         /// Turns off systematic mode
         void set_systematic_off()
-            {
-                m_systematic = false;
-            }
+        {
+            m_systematic = false;
+        }
 
         /// @copydoc layer::header_size() const
         uint32_t header_size() const
-            {
-                return SuperCoder::header_size() +
-                    sizeof(flag_type) + sizeof(counter_type);
-            }
+        {
+            return SuperCoder::header_size() +
+                sizeof(flag_type) + sizeof(counter_type);
+        }
 
     protected:
 
@@ -141,43 +140,43 @@ namespace kodo
         /// @copydoc layer::encode(uint8_t*,uint8_t*)
         uint32_t encode_systematic(uint8_t *symbol_data,
                                    uint8_t *symbol_header)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
 
-                uint32_t count = SuperCoder::encode_symbol_count();
+            uint32_t count = SuperCoder::encode_symbol_count();
 
-                /// Flag systematic packet
-                sak::big_endian::put<flag_type>(
-                    systematic_base_coder::systematic_flag, symbol_header);
+            /// Flag systematic packet
+            sak::big_endian::put<flag_type>(
+                systematic_base_coder::systematic_flag, symbol_header);
 
-                /// Set the symbol id
-                sak::big_endian::put<counter_type>(
-                    count, symbol_header + sizeof(flag_type));
+            /// Set the symbol id
+            sak::big_endian::put<counter_type>(
+                count, symbol_header + sizeof(flag_type));
 
-                SuperCoder::encode_symbol(symbol_data, count);
+            SuperCoder::encode_symbol(symbol_data, count);
 
-                return sizeof(flag_type) + sizeof(counter_type);
-            }
+            return sizeof(flag_type) + sizeof(counter_type);
+        }
 
         /// Encodes a non-systematic packets
         /// @copydoc layer::encode(uint8_t*,uint8_t*)
         uint32_t encode_non_systematic(uint8_t *symbol_data,
                                        uint8_t *symbol_header)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
 
-                /// Flag non_systematic packet
-                sak::big_endian::put<flag_type>(
-                    systematic_base_coder::non_systematic_flag,
-                    symbol_header);
+            /// Flag non_systematic packet
+            sak::big_endian::put<flag_type>(
+                systematic_base_coder::non_systematic_flag,
+                symbol_header);
 
-                uint32_t bytes_consumed = SuperCoder::encode(
-                    symbol_data, symbol_header + sizeof(flag_type));
+            uint32_t bytes_consumed = SuperCoder::encode(
+                symbol_data, symbol_header + sizeof(flag_type));
 
-                return bytes_consumed + sizeof(flag_type);
-            }
+            return bytes_consumed + sizeof(flag_type);
+        }
 
     protected:
 
@@ -254,5 +253,4 @@ namespace kodo
     }
 }
 
-#endif
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_REED_SOLOMON_SYMBOL_ID_HPP
-#define KODO_RS_REED_SOLOMON_SYMBOL_ID_HPP
+#pragma once
 
 #include <cstdint>
 #include <map>
@@ -49,37 +48,38 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
 
-            /// @copydoc layer::factory::build(uint32_t, uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
+            /// @copydoc layer::factory::build()
+            pointer build()
+            {
+                pointer coder = SuperCoder::factory::build();
+
+                uint32_t symbols = SuperCoder::factory::symbols();
+
+                if(m_cache.find(symbols) == m_cache.end())
                 {
-                    pointer coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
-
-                    if(m_cache.find(symbols) == m_cache.end())
-                    {
-                        m_cache[symbols] =
-                            SuperCoder::factory::construct_matrix(symbols);
-                    }
-
-                    this_pointer this_coder = coder;
-                    this_coder->m_matrix = m_cache[symbols];
-
-                    // The row size of the generator matrix should fit
-                    // the expected coefficient buffer size
-                    assert(coder->coefficients_size() ==
-                           this_coder->m_matrix->row_size());
-
-                    return coder;
+                    m_cache[symbols] =
+                        SuperCoder::factory::construct_matrix(symbols);
                 }
+
+                this_pointer this_coder = coder;
+                this_coder->m_matrix = m_cache[symbols];
+
+                // The row size of the generator matrix should fit
+                // the expected coefficient buffer size
+                assert(coder->coefficients_size() ==
+                       this_coder->m_matrix->row_size());
+
+                return coder;
+            }
 
             /// @copydoc layer::max_id_size() const
             uint32_t max_id_size() const
-                {
-                    return sizeof(value_type);
-                }
+            {
+                return sizeof(value_type);
+            }
 
         private:
 
@@ -93,9 +93,9 @@ namespace kodo
 
         /// @copydoc layer::id_size() const
         uint32_t id_size() const
-            {
-                return sizeof(value_type);
-            }
+        {
+            return sizeof(value_type);
+        }
 
     protected:
 
@@ -106,5 +106,4 @@ namespace kodo
 
 }
 
-#endif
 

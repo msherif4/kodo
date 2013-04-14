@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SEED_SYMBOL_ID_READER_HPP
-#define KODO_SEED_SYMBOL_ID_READER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -35,17 +34,17 @@ namespace kodo
 
         /// @copydoc layer::read_id(uint8_t*, uint8_t**)
         void read_id(uint8_t *symbol_id, uint8_t **symbol_coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(symbol_coefficients != 0);
+        {
+            assert(symbol_id != 0);
+            assert(symbol_coefficients != 0);
 
-                seed_type seed = sak::big_endian::get<seed_type>(symbol_id);
+            seed_type seed = sak::big_endian::get<seed_type>(symbol_id);
 
-                Super::seed(seed);
-                Super::generate(&m_coefficients[0]);
+            Super::seed(seed);
+            Super::generate(&m_coefficients[0]);
 
-                *symbol_coefficients = &m_coefficients[0];
-            }
+            *symbol_coefficients = &m_coefficients[0];
+        }
 
     private:
 
@@ -57,5 +56,4 @@ namespace kodo
 
 }
 
-#endif
 

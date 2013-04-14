@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_NOCODE_NOCODE_ENCODER_HPP
-#define KODO_NOCODE_NOCODE_ENCODER_HPP
+#pragma once
 
 #include <sak/storage.hpp>
 
@@ -22,20 +21,19 @@ namespace kodo
 
         /// @copydoc layer::encode_symbol(uint8_t*, uint32_t)
         void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_index < SuperCoder::symbols());
+        {
+            assert(symbol_data != 0);
+            assert(symbol_index < SuperCoder::symbols());
 
-                // Copy the symbol
-                sak::mutable_storage dest =
-                    sak::storage(symbol_data, SuperCoder::symbol_size());
+            // Copy the symbol
+            sak::mutable_storage dest =
+                sak::storage(symbol_data, SuperCoder::symbol_size());
 
-                SuperCoder::copy_symbol(symbol_index, dest);
-            }
+            SuperCoder::copy_symbol(symbol_index, dest);
+        }
 
     };
 
 }
 
-#endif
 

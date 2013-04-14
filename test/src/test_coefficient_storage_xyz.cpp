@@ -98,23 +98,26 @@ struct api_coefficients_storage
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             // Make sure we call the const version of the function
             const pointer_type &const_coder = coder;
 
             uint32_t max_coefficients_size =
-                fifi::bytes_needed<field_type>(m_factory.max_symbols());
+                fifi::elements_to_size<field_type>(m_factory.max_symbols());
 
             EXPECT_EQ(max_coefficients_size, m_factory.max_coefficients_size());
 
             uint32_t size =
-                fifi::bytes_needed<field_type>(symbols);
+                fifi::elements_to_size<field_type>(symbols);
 
             EXPECT_EQ(size, coder->coefficients_size());
 
             uint32_t length =
-                fifi::elements_needed<field_type>(size);
+                fifi::size_to_length<field_type>(size);
 
             EXPECT_EQ(length, coder->coefficients_length());
 

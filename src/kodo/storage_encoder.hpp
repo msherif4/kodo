@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_STORAGE_ENCODER_HPP
-#define KODO_STORAGE_ENCODER_HPP
+#pragma once
 
 #include "object_encoder.hpp"
 #include "storage_reader.hpp"
@@ -33,6 +32,11 @@ namespace kodo
     {
     public:
 
+        /// The factory type
+        typedef typename EncoderType::factory factory;
+
+    public:
+
         /// Constructs a new storage encoder
         /// @param factory the encoder factory to use
         /// @param object the object to encode
@@ -49,5 +53,4 @@ namespace kodo
     };
 }
 
-#endif
 

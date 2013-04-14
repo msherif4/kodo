@@ -1,4 +1,5 @@
 /// @mainpage
+/// @section Welcome
 /// Welcome to the Kodo API documentation. On these pages you will find the
 /// automatically generated Doxygen documentation for the Kodo project. We
 /// are using Doxygen mainly to create an overview of the functionality and

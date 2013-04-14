@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_COEFFICIENT_INFO_H
-#define KODO_COEFFICIENT_INFO_H
+#pragma once
 
 #include <cstdint>
 #include <fifi/fifi_utils.hpp>
@@ -38,14 +37,14 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t, uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::factory::max_coefficients_size() const
             uint32_t max_coefficients_size() const
-                {
-                    return coefficients_size(
-                        SuperCoder::factory::max_symbols());
-                }
+            {
+                return coefficients_size(
+                    SuperCoder::factory::max_symbols());
+            }
         };
 
     public:
@@ -54,56 +53,59 @@ namespace kodo
         coefficient_info()
             : m_coefficients_length(0),
               m_coefficients_size(0)
-            { }
+        { }
 
-        /// @copydoc layer::initialize(uint32_t, uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
 
-                m_coefficients_length =
-                    coefficients_length(symbols);
+            m_coefficients_length =
+                coefficients_length(the_factory.symbols());
 
-                m_coefficients_size =
-                    coefficients_size(symbols);
+            m_coefficients_size =
+                coefficients_size(the_factory.symbols());
 
-                assert(m_coefficients_length > 0);
-                assert(m_coefficients_size > 0);
-            }
+            assert(m_coefficients_length > 0);
+            assert(m_coefficients_size > 0);
+        }
 
         /// @copydoc layer::coefficients_length() const
         uint32_t coefficients_length() const
-            {
-                return m_coefficients_length;
-            }
+        {
+            assert(m_coefficients_length > 0);
+            return m_coefficients_length;
+        }
 
         /// @copydoc layer::coefficients_size() const
         uint32_t coefficients_size() const
-            {
-                return m_coefficients_size;
-            }
+        {
+            assert(m_coefficients_size > 0);
+            return m_coefficients_size;
+        }
 
     private:
 
+        /// @todo Remove after new fifi additions
         /// Helper function which provides the coefficients
         /// size calculation.
         /// @param symbols The number of symbols that need a
         ///        coefficient
         /// @return The maximum required coefficients buffer size in bytes
         static uint32_t coefficients_size(uint32_t symbols)
-            {
-                assert(symbols > 0);
+        {
+            assert(symbols > 0);
 
-                // Use fifi to calculate how many bytes we need
-                // to store one field element per symbol
+            // Use fifi to calculate how many bytes we need
+            // to store one field element per symbol
 
-                uint32_t max_coefficients_size =
-                    fifi::bytes_needed<field_type>(symbols);
+            uint32_t max_coefficients_size =
+                fifi::elements_to_size<field_type>(symbols);
 
-                assert(max_coefficients_size > 0);
+            assert(max_coefficients_size > 0);
 
-                return max_coefficients_size;
-            }
+            return max_coefficients_size;
+        }
 
         /// Helper function which provides the coefficients
         /// length calculation.
@@ -112,12 +114,11 @@ namespace kodo
         /// @return The maximum required coefficients buffer size in
         ///         value_type elements.
         static uint32_t coefficients_length(uint32_t symbols)
-            {
-                assert(symbols > 0);
+        {
+            assert(symbols > 0);
 
-                uint32_t size = coefficients_size(symbols);
-                return fifi::elements_needed<field_type>(size);
-            }
+            return fifi::elements_to_length<field_type>(symbols);
+        }
 
     private:
 
@@ -130,5 +131,4 @@ namespace kodo
 
 }
 
-#endif
 

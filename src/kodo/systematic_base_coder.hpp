@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_SYSTEMATIC_BASE_CODER_HPP
-#define KODO_SYSTEMATIC_BASE_CODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -34,5 +33,4 @@ namespace kodo
 
 }
 
-#endif
 

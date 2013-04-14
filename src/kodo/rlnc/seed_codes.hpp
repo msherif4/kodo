@@ -43,8 +43,10 @@
 namespace kodo
 {
 
-    /// Complete stack implementing a seed based RLNC encoder. The key
-    /// features of this configuration is the following:
+    /// @ingroup fec_stacks
+    /// @brief Complete stack implementing a seed based RLNC encoder.
+    ///
+    /// The key features of this configuration is the following:
     /// - Systematic encoding (uncoded symbols produced before switching
     ///   to coding)
     /// - A seed is sent instead of a full encoding vectors, this reduces
@@ -84,8 +86,10 @@ namespace kodo
                      > > > > > > > > > > > > > > > >
     { };
 
-    /// Implementation of a seed based RLNC decoder this configuration
-    /// adds the following features (including those described for
+    /// @ingroup fec_stacks
+    /// @brief Implementation of a seed based RLNC decoder this configuration.
+    ///
+    /// Adds the following features (including those described for
     /// the encoder):
     /// - Linear block decoder using Gauss-Jordan elimination.
     template<class Field>

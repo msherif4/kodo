@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ALIGNED_COEFFICIENTS_DECODER_HPP
-#define KODO_ALIGNED_COEFFICIENTS_DECODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -34,26 +33,26 @@ namespace kodo
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
         void decode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
+        {
+            assert(symbol_data != 0);
+            assert(coefficients != 0);
+
+            if(sak::is_aligned(coefficients) == false)
             {
-                assert(symbol_data != 0);
-                assert(coefficients != 0);
+                uint32_t coefficients_size = Super::coefficients_size();
 
-                if(sak::is_aligned(coefficients) == false)
-                {
-                    uint32_t coefficients_size = Super::coefficients_size();
+                auto src = sak::storage(coefficients, coefficients_size);
+                auto dest = sak::storage(m_coefficients);
 
-                    auto src = sak::storage(coefficients, coefficients_size);
-                    auto dest = sak::storage(m_coefficients);
+                sak::copy_storage(dest, src);
 
-                    sak::copy_storage(dest, src);
-
-                    Super::decode_symbol(symbol_data, &m_coefficients[0]);
-                }
-                else
-                {
-                    Super::decode_symbol(symbol_data, coefficients);
-                }
+                Super::decode_symbol(symbol_data, &m_coefficients[0]);
             }
+            else
+            {
+                Super::decode_symbol(symbol_data, coefficients);
+            }
+        }
 
     private:
 
@@ -65,5 +64,4 @@ namespace kodo
 
 }
 
-#endif
 

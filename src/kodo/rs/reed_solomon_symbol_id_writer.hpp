@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_REED_SOLOMON_SYMBOL_ID_WRITER_HPP
-#define KODO_RS_REED_SOLOMON_SYMBOL_ID_WRITER_HPP
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -25,8 +24,8 @@ namespace kodo
     ///        proper row in the generator matrix. The row is selected using
     ///        the encoded symbol count.
     template<class SuperCoder>
-    class reed_solomon_symbol_id_writer
-        : public reed_solomon_symbol_id<SuperCoder>
+    class reed_solomon_symbol_id_writer :
+        public reed_solomon_symbol_id<SuperCoder>
     {
     public:
 
@@ -39,40 +38,43 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename Super::value_type value_type;
 
+        /// @copydoc layer::factory
+        typedef typename Super::factory factory;
+
     public:
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
-            {
-                SuperCoder::initialize(symbols, symbol_size);
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
 
-                m_coefficients.resize(
-                    SuperCoder::coefficients_size(), 0);
-            }
+            m_coefficients.resize(
+                Super::coefficients_size(), 0);
+        }
 
         /// @copydoc layer::write_id(uint8_t*, uint8_t**)
         uint32_t write_id(uint8_t *symbol_id, uint8_t **coefficients)
-            {
-                assert(symbol_id != 0);
-                assert(coefficients != 0);
+        {
+            assert(symbol_id != 0);
+            assert(coefficients != 0);
 
-                uint32_t symbol_index = Super::encode_symbol_count();
+            uint32_t symbol_index = Super::encode_symbol_count();
 
-                // An Reed-Solomon code is not rate-less
-                assert(symbol_index < field_type::order - 1);
+            // An Reed-Solomon code is not rate-less
+            assert(symbol_index < field_type::order - 1);
 
-                // Store the index as the symbol id
-                sak::big_endian::put<value_type>(symbol_index, symbol_id);
+            // Store the index as the symbol id
+            sak::big_endian::put<value_type>(symbol_index, symbol_id);
 
-                sak::copy_storage(
-                    sak::storage(m_coefficients),
-                    sak::storage(m_matrix->row(symbol_index),
-                                 m_matrix->row_size()));
+            sak::copy_storage(
+                sak::storage(m_coefficients),
+                sak::storage(m_matrix->row(symbol_index),
+                             m_matrix->row_size()));
 
-                *coefficients = &m_coefficients[0];
+            *coefficients = &m_coefficients[0];
 
-                return sizeof(value_type);
-            }
+            return sizeof(value_type);
+        }
 
     protected:
 
@@ -90,5 +92,4 @@ namespace kodo
 
 }
 
-#endif
 

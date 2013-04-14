@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_BASE_HPP
-#define KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_BASE_HPP
+#pragma once
 
 #include <fifi/arithmetics.hpp>
 
@@ -107,5 +106,4 @@ namespace kodo
 
 }
 
-#endif
 

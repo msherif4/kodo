@@ -52,21 +52,18 @@ TEST(TestSystematicOperations, is_systematic_encoder)
     {
         typedef kodo::test_nonsystematic_stack<fifi::binary>::factory
             encoder_factory;
-        typedef kodo::test_nonsystematic_stack<fifi::binary>::pointer
-            encoder_pointer;
 
         encoder_factory factory(symbols, symbol_size);
-        encoder_pointer ptr = factory.build(symbols, symbol_size);
+        auto ptr = factory.build();
 
         EXPECT_FALSE(kodo::is_systematic_encoder(ptr));
     }
 
     {
         typedef kodo::full_rlnc_encoder<fifi::binary>::factory encoder_factory;
-        typedef kodo::full_rlnc_encoder<fifi::binary>::pointer encoder_pointer;
 
         encoder_factory factory(symbols, symbol_size);
-        encoder_pointer ptr = factory.build(symbols, symbol_size);
+        auto ptr = factory.build();
 
         EXPECT_TRUE(kodo::is_systematic_encoder(ptr));
         EXPECT_TRUE(kodo::is_systematic_on(ptr));

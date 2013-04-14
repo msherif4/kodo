@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ALIGNED_COEFFICIENTS_BUFFER_HPP
-#define KODO_ALIGNED_COEFFICIENTS_BUFFER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -30,53 +29,17 @@ namespace kodo
         typedef boost::shared_ptr<
             aligned_coefficients_buffer<SuperCoder> > this_pointer;
 
+        /// The factory type
+        typedef typename SuperCoder::factory factory;
+
     public:
 
-        /// @ingroup factory_layers
-        /// The factory layer associated with this coder.
-        class factory : public SuperCoder::factory
+        /// @copydoc layer::construct(factory &)
+        void construct(factory &the_factory)
         {
-        public:
-
-            /// @copydoc layer::factory::factory(uint32_t,uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size)
-                : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
-
-            /// @copydoc layer::factory::build(uint32_t,uint32_t)
-            pointer build(uint32_t symbols, uint32_t symbol_size)
-                {
-                    pointer coder =
-                        SuperCoder::factory::build(symbols, symbol_size);
-
-                    // Make sure we call the correct initialize_storage
-                    // function, if there are several such function in
-                    // the stack. First getting a pointer directly to this
-                    // layer removes ambiguity.
-                    this_pointer this_coder = coder;
-
-                    this_coder->initialize_storage(
-                        SuperCoder::factory::max_coefficients_size());
-
-                    return coder;
-                }
-        };
-
-    private:
-
-        /// Initialize the coefficient storage
-        /// @param max_coefficients_size The maximum size of the coding
-        ///        coefficients in bytes
-        void initialize_storage(uint32_t max_coefficients_size)
-            {
-                assert(max_coefficients_size > 0);
-
-                // Note, that resize will not re-allocate anything
-                // as long as the sizes are not larger than
-                // previously. So this call should only have an
-                // effect the first time this function is called.
-                m_coefficients.resize(max_coefficients_size);
-            }
+            SuperCoder::construct(the_factory);
+            m_coefficients.resize(the_factory.max_coefficients_size());
+        }
 
     protected:
 
@@ -90,5 +53,4 @@ namespace kodo
     };
 }
 
-#endif
 

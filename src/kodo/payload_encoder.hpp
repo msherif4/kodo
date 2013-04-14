@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PAYLOAD_ENCODER_HPP
-#define KODO_PAYLOAD_ENCODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -29,14 +28,14 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::factory::max_payload_size() const
             uint32_t max_payload_size() const
-                {
-                    return SuperCoder::factory::max_symbol_size() +
-                        SuperCoder::factory::max_header_size();
-                }
+            {
+                return SuperCoder::factory::max_symbol_size() +
+                    SuperCoder::factory::max_header_size();
+            }
         };
 
     public:
@@ -59,26 +58,25 @@ namespace kodo
         ///
         /// @copydoc layer::encode(uint8_t*)
         uint32_t encode(uint8_t *payload)
-            {
-                assert(payload != 0);
+        {
+            assert(payload != 0);
 
-                uint8_t *symbol_data = payload;
-                uint8_t *symbol_id = payload + SuperCoder::symbol_size();
+            uint8_t *symbol_data = payload;
+            uint8_t *symbol_id = payload + SuperCoder::symbol_size();
 
-                // The non-payload layers only return the number of bytes
-                // use for the symbol_id here we return _all_ the bytes used.
-                return SuperCoder::encode(symbol_data, symbol_id)
-                    + SuperCoder::symbol_size();
-            }
+            // The non-payload layers only return the number of bytes
+            // use for the symbol_id here we return _all_ the bytes used.
+            return SuperCoder::encode(symbol_data, symbol_id)
+                + SuperCoder::symbol_size();
+        }
 
         /// @copydoc layer::payload_size() const
         uint32_t payload_size() const
-            {
-                return SuperCoder::symbol_size() +
-                    SuperCoder::header_size();
-            }
+        {
+            return SuperCoder::symbol_size() +
+                SuperCoder::header_size();
+        }
     };
 }
 
-#endif
 

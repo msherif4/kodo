@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_TRANSPOSE_VANDERMONDE_MATRIX_HPP
-#define KODO_RS_TRANSPOSE_VANDERMONDE_MATRIX_HPP
+#pragma once
 
 #include <boost/make_shared.hpp>
 
@@ -35,26 +34,25 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t, uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// Transposes the constructed Vandermonde matrix
             /// @param symbols The number of source symbols to encode
             /// @return The Vandermonde matrix
             boost::shared_ptr<generator_matrix> construct_matrix(
                 uint32_t symbols)
-                {
-                    auto matrix =
-                        SuperCoder::factory::construct_matrix(symbols);
+            {
+                auto matrix =
+                    SuperCoder::factory::construct_matrix(symbols);
 
-                    return boost::make_shared<generator_matrix>(
-                        matrix->transpose());
+                return boost::make_shared<generator_matrix>(
+                    matrix->transpose());
 
-                }
+            }
 
         };
 
     };
 }
 
-#endif
 

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_ZERO_SYMBOL_ENCODER_HPP
-#define KODO_ZERO_SYMBOL_ENCODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -23,13 +22,13 @@ namespace kodo
         ///
         /// @copydoc layer::encode_symbol(uint8_t*, uint8_t*)
         void encode_symbol(uint8_t *symbol_data, uint8_t *coefficients)
-            {
-                assert(symbol_data != 0);
-                assert(coefficients != 0);
+        {
+            assert(symbol_data != 0);
+            assert(coefficients != 0);
 
-                std::fill_n(symbol_data, SuperCoder::symbol_size(), 0);
-                SuperCoder::encode_symbol(symbol_data, coefficients);
-            }
+            std::fill_n(symbol_data, SuperCoder::symbol_size(), 0);
+            SuperCoder::encode_symbol(symbol_data, coefficients);
+        }
 
         /// Not implemented in this layer - the systematic encode will
         /// typically copy directly into symbol_data buffer. Therefore
@@ -38,13 +37,12 @@ namespace kodo
         ///
         /// @copydoc layer::encode_symbol(uint8_t*,uint8_t*)
         void encode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
-            {
-                SuperCoder::encode_symbol(symbol_data, symbol_index);
-            }
+        {
+            SuperCoder::encode_symbol(symbol_data, symbol_index);
+        }
 
     };
 
 }
 
-#endif
 

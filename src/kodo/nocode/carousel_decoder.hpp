@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_NOCODE_CAROUSEL_DECODER_HPP
-#define KODO_NOCODE_CAROUSEL_DECODER_HPP
+#pragma once
 
 #include <sak/convert_endian.hpp>
 
@@ -36,39 +35,39 @@ namespace kodo
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size)
-                { }
+            { }
 
             /// @copydoc layer::max_header_size() const
             uint32_t max_header_size() const
-                {
-                    return sizeof(id_type);
-                }
+            {
+                return sizeof(id_type);
+            }
         };
 
     public:
 
         /// @copydoc layer::decode(uint8_t*,uint8_t*)
         void decode(uint8_t *symbol_data, uint8_t *symbol_header)
-            {
-                assert(symbol_data != 0);
-                assert(symbol_header != 0);
+        {
+            assert(symbol_data != 0);
+            assert(symbol_header != 0);
 
-                id_type id = sak::big_endian::get<id_type>(symbol_header);
+            id_type id = sak::big_endian::get<id_type>(symbol_header);
 
-                assert(id < SuperCoder::symbols());
+            assert(id < SuperCoder::symbols());
 
-                SuperCoder::decode_symbol(symbol_data, id);
-            }
+            SuperCoder::decode_symbol(symbol_data, id);
+        }
 
         /// @copydoc layer::header_size() const
         uint32_t header_size() const
-            {
-                return sizeof(id_type);
-            }
+        {
+            return sizeof(id_type);
+        }
 
     };
 
 }
 
-#endif
+
 

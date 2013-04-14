@@ -62,12 +62,23 @@ namespace kodo
     {
     public:
 
-        /// Reset rank changed callback function
-        /// @copydoc layer::initialize()
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        struct factory
+        {
+            factory(uint32_t max_symbols, uint32_t max_symbol_size)
+                : m_max_symbols(max_symbols),
+                  m_max_symbol_size(max_symbol_size)
             {
-                (void)symbol_size;
-                m_symbols = symbols;
+            }
+
+            uint32_t m_max_symbols;
+            uint32_t m_max_symbol_size;
+        };
+
+        /// Reset rank changed callback function
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+            {
+                m_symbols = the_factory.m_max_symbols;
                 m_rank = 0;
             }
 
@@ -126,10 +137,11 @@ void test_rank_callback_decoder_layer(uint32_t symbols, uint32_t symbol_size)
     std::vector<uint8_t> symbol_data(symbol_size, 0);
     uint32_t symbol_id = 0;
 
+    kodo::rank_coder::factory f(symbols, symbol_size);
 
     // Create and initialize coder
     kodo::rank_coder coder;
-    coder.initialize(symbols, symbol_size);
+    coder.initialize(f);
 
 
     // Expect rank initialized to zero
@@ -190,7 +202,11 @@ void test_rank_callback_decoder_stack(uint32_t symbols, uint32_t symbol_size)
     typedef kodo::rank_callback_decoder_stack<fifi::binary8> rank_coder_t;
 
     rank_coder_t::factory coder_factory(symbols, symbol_size);
-    rank_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
+
+    coder_factory.set_symbols(symbols);
+    coder_factory.set_symbol_size(symbol_size);
+
+    auto coder = coder_factory.build();
 
     coder->decode_symbol(&symbol_data[0], &symbol_coefficients[0]);
     coder->decode_symbol(&symbol_data[0], symbol_id);

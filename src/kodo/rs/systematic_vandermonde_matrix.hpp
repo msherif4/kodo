@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
-#define KODO_RS_SYSTEMATIC_VANDERMONDE_MATRIX_HPP
+#pragma once
 
 #include "systematic_vandermonde_matrix_base.hpp"
 #include "vandermonde_matrix_base.hpp"
@@ -23,5 +22,4 @@ namespace kodo
 
 }
 
-#endif
 

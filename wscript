@@ -42,13 +42,13 @@ def options(opt):
         resolve.ResolveGitMajorVersion(
             name = 'sak',
             git_repository = 'git://github.com/steinwurf/sak.git',
-            major_version = 9))
+            major_version = 10))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
             git_repository = 'git://github.com/steinwurf/fifi.git',
-            major_version = 8))
+            major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
@@ -70,6 +70,7 @@ def configure(conf):
         conf.load_external_tool('mkspec', 'wurf_cxx_mkspec_tool')
         conf.load_external_tool('runners', 'wurf_runner')
         conf.load_external_tool('install_path', 'wurf_install_path')
+        conf.load_external_tool('project_gen', 'wurf_project_generator')
 
         recurse_helper(conf, 'boost')
         recurse_helper(conf, 'gtest')
@@ -96,8 +97,10 @@ def build(bld):
         bld.recurse('test')
         bld.recurse('examples/encode_decode_simple')
         bld.recurse('examples/encode_decode_file')
+        bld.recurse('examples/encode_decode_storage')
         bld.recurse('examples/encode_recode_decode_simple')
         bld.recurse('examples/decode_simple')
+        bld.recurse('examples/encode_on_the_fly')
         bld.recurse('examples/rank_callback')
 
         bld.recurse('benchmark/throughput')

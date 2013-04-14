@@ -70,11 +70,29 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(uint32_t symbols, uint32_t symbol_size)
+        struct factory
+        {
+
+            /// @copydoc layer::factory::symbol_size() const;
+            uint32_t symbol_size() const
             {
-                (void)symbols;
+                return m_symbol_size;
+            }
+
+            /// @copydoc layer::factory::set_symbol_size(uint32_t)
+            void set_symbol_size(uint32_t symbol_size)
+            {
                 m_symbol_size = symbol_size;
+            }
+
+            uint32_t m_symbol_size;
+
+        };
+
+        /// @copydoc layer::initialize(factory&)
+        void initialize(factory& the_factory)
+            {
+                m_symbol_size = the_factory.symbol_size();
             }
 
         /// @copydoc layer::decode(uint8_t*)
@@ -103,11 +121,13 @@ namespace kodo
 }
 
 // Test the layer itself - confirms that it acts as expected
-void test_layer(uint32_t symbols, uint32_t symbol_size)
+void test_layer(uint32_t /*symbols*/, uint32_t symbol_size)
 {
     // Create and initialize coder
     kodo::copy_payload_coder coder;
-    coder.initialize(symbols, symbol_size);
+    kodo::copy_payload_coder::factory the_factory;
+    the_factory.set_symbol_size(symbol_size);
+    coder.initialize(the_factory);
 
     std::vector<uint8_t> payload(coder.payload_size(), 'a');
     std::vector<uint8_t> payload_copy(payload);
@@ -130,10 +150,14 @@ void test_layer(uint32_t symbols, uint32_t symbol_size)
 void test_stack(uint32_t symbols, uint32_t symbol_size)
 {
     typedef kodo::copy_payload_decoder_stack<fifi::binary8>
-        copy_paylaod_coder_t;
+        copy_payload_coder_t;
 
-    copy_paylaod_coder_t::factory coder_factory(symbols, symbol_size);
-    copy_paylaod_coder_t::pointer coder = coder_factory.build(symbols, symbol_size);
+    copy_payload_coder_t::factory coder_factory(symbols, symbol_size);
+
+    coder_factory.set_symbols(symbols);
+    coder_factory.set_symbol_size(symbol_size);
+
+    auto coder = coder_factory.build();
 
     std::vector<uint8_t> payload(coder->payload_size(), 'a');
 

@@ -159,7 +159,10 @@ struct set_partial_data
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
         {
-            pointer_type coder = m_factory.build(symbols, symbol_size);
+            m_factory.set_symbols(symbols);
+            m_factory.set_symbol_size(symbol_size);
+
+            pointer_type coder = m_factory.build();
 
             uint32_t vector_size = rand() % coder->block_size();
 
@@ -230,9 +233,7 @@ struct api_copy_symbols
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
             auto vector_out = random_vector(coder->block_size());
@@ -272,9 +273,7 @@ struct api_copy_symbol
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -322,9 +321,7 @@ struct api_symbol_const
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             // Make sure we call the const version of the function
             const pointer_type &const_coder = coder;
@@ -372,9 +369,7 @@ struct api_symbol
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -422,9 +417,7 @@ struct api_symbol_value_const
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             // Make sure we call the const version of the function
             const pointer_type &const_coder = coder;
@@ -475,9 +468,7 @@ struct api_symbol_value
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -525,9 +516,7 @@ struct api_set_symbols_const_storage
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -576,9 +565,7 @@ struct api_set_symbols_mutable_storage
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
             auto vector_out = random_vector(coder->block_size());
@@ -629,9 +616,7 @@ struct api_set_symbol_const_storage
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -681,9 +666,7 @@ struct api_set_symbol_mutable_storage
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
 
@@ -731,9 +714,7 @@ struct api_swap_symbols_const_pointer
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
             auto vector_out = random_vector(coder->block_size());
@@ -778,9 +759,7 @@ struct api_swap_symbols_pointer
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
             auto vector_out = random_vector(coder->block_size());
@@ -825,9 +804,7 @@ struct api_swap_symbols_data
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             auto vector_in = random_vector(coder->block_size());
             auto vector_out = random_vector(coder->block_size());
@@ -949,9 +926,7 @@ struct api_symbols
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbols(), m_factory.max_symbols());
         }
@@ -979,9 +954,7 @@ struct api_symbol_size
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_size(), m_factory.max_symbol_size());
         }
@@ -1009,12 +982,10 @@ struct api_symbol_length
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             uint32_t length =
-                fifi::elements_needed<field_type>(coder->symbol_size());
+                fifi::size_to_length<field_type>(coder->symbol_size());
 
             EXPECT_EQ(coder->symbol_length(), length);
         }
@@ -1040,9 +1011,7 @@ struct api_block_size
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->block_size(),
                       m_factory.max_symbols() * m_factory.max_symbol_size());
@@ -1071,9 +1040,7 @@ struct api_bytes_used
     void run()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             uint32_t used =
                 m_factory.max_symbols() * m_factory.max_symbol_size();
@@ -1119,8 +1086,7 @@ struct api_storage_status
     void set_symbol()
         {
             // Build with the max_symbols and max_symbol_size
-            pointer_type coder =
-                m_factory_fixed.build(10, 100);
+            pointer_type coder = m_factory_fixed.build();
 
             for(uint32_t i = 0; i < coder->symbols(); ++i)
             {
@@ -1170,9 +1136,7 @@ struct api_storage_status
     ///   - layer::set_symbols(const sak::mutable_storage&)
     void set_symbols()
         {
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1187,8 +1151,7 @@ struct api_storage_status
             EXPECT_EQ(coder->symbol_count(), coder->symbols());
             EXPECT_TRUE(coder->is_storage_full());
 
-            coder = m_factory.build(m_factory.max_symbols(),
-                                    m_factory.max_symbol_size());
+            coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1232,9 +1195,7 @@ struct api_deep_swap_storage_status
     ///   - layer::swap_symbols(std::vector<uint8_t>&)
     void swap_symbols()
         {
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1252,8 +1213,7 @@ struct api_deep_swap_storage_status
                 EXPECT_TRUE(coder->symbol_exists(i));
             }
 
-            coder = m_factory.build(m_factory.max_symbols(),
-                                    m_factory.max_symbol_size());
+            coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1298,9 +1258,7 @@ struct api_const_shallow_swap_storage_status
     ///   - layer::swap_symbols(std::vector<const uint8_t*>&)
     void swap_symbols()
         {
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1319,8 +1277,7 @@ struct api_const_shallow_swap_storage_status
                 EXPECT_TRUE(coder->symbol_exists(i));
             }
 
-            coder = m_factory.build(m_factory.max_symbols(),
-                                    m_factory.max_symbol_size());
+            coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1363,9 +1320,7 @@ struct api_mutable_shallow_swap_storage_status
     ///   - layer::swap_symbols(std::vector<uint8_t*>&)
     void swap_symbols()
         {
-            pointer_type coder =
-                m_factory.build(m_factory.max_symbols(),
-                                m_factory.max_symbol_size());
+            pointer_type coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
@@ -1384,8 +1339,7 @@ struct api_mutable_shallow_swap_storage_status
                 EXPECT_TRUE(coder->symbol_exists(i));
             }
 
-            coder = m_factory.build(m_factory.max_symbols(),
-                                    m_factory.max_symbol_size());
+            coder = m_factory.build();
 
             EXPECT_EQ(coder->symbol_count(), 0U);
             EXPECT_FALSE(coder->is_storage_full());
