@@ -93,9 +93,6 @@ namespace kodo
 
             if(!m_recode_stack)
             {
-                assert(the_factory.max_payload_size() ==
-                       stack_factory.max_payload_size());
-
                 stack_factory.set_stack_proxy(this);
                 m_recode_stack = stack_factory.build();
             }
