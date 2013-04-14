@@ -150,7 +150,7 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer:.field_type
+        /// @copydoc layer::field_type
         typedef typename SuperCoder::field_type field_type;
 
         /// @copydoc layer::value_type
