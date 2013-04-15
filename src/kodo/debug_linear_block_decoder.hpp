@@ -118,18 +118,6 @@ namespace kodo
                 fifi::size_to_elements<field_type>(
                     SuperCoder::symbol_size());
 
-            print_latest_symbol(out, symbol_elements);
-        }
-
-        /// Prints the most recent symbol to enter the decoder
-        /// @param out The output stream to print to
-        /// @param symbol_elements The number of field elements in a symbol
-        void print_latest_symbol(std::ostream &out, uint32_t symbol_elements)
-        {
-            assert(symbol_elements > 0);
-            assert(symbol_elements <= fifi::size_to_elements<field_type>(
-                    SuperCoder::symbol_size()));
-
             value_type *s =
                 reinterpret_cast<value_type*>(&m_data[0]);
 
@@ -146,18 +134,6 @@ namespace kodo
         /// @param out The output stream to print to
         void print_latest_symbol_and_coefficients(std::ostream &out)
         {
-            uint32_t symbol_elements =
-                fifi::size_to_elements<field_type>(
-                    SuperCoder::symbol_size());
-
-            print_latest_symbol_and_coefficients(out, symbol_elements);
-        }
-
-        /// Prints the most recent symbol coefficients to enter the decoder
-        /// @param out The output stream to print to
-        /// @param symbol_elements The number of field elements in a symbol
-        void print_latest_symbol_and_coefficients(std::ostream &out, uint32_t symbol_elements)
-        {
             if( m_symbol_coded )
             {
                 out << "Coded:" << std::endl << "   Coef. : ";
@@ -170,7 +146,7 @@ namespace kodo
             }
 
             out << "   Symbol: ";
-            print_latest_symbol(out, symbol_elements);
+            print_latest_symbol(out);
         }
 
     private:

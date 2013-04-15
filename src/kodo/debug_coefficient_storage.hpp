@@ -33,7 +33,7 @@ namespace kodo
 
         /// Prints the decoding matrix to the output stream
         /// @param out The output stream to print to
-        void print_decoding_matrix(std::ostream& out)
+        void print_coefficients_storage(std::ostream& out)
         {
             for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {

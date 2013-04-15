@@ -266,13 +266,13 @@ int main()
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
 
-        decoder->print_latest_symbol_and_coefficients(std::cout, symbol_elements);
+        decoder->print_latest_symbol_and_coefficients(std::cout);
 
         std::cout << std::endl << "Decoding matrix:" << std::endl;
-        decoder->print_decoding_matrix(std::cout);
+        decoder->print_coefficients_storage(std::cout);
 
         std::cout << "Symbol matrix:" << std::endl;
-        decoder->print_symbol_matrix(std::cout, symbol_elements);
+        decoder->print_symbol_storage(std::cout);
         std::cout << std::endl;
     }
 

@@ -35,27 +35,11 @@ namespace kodo
 
         /// Prints the symbol matrix to the output stream
         /// @param out The output stream to print to
-        void print_symbol_matrix(std::ostream& out)
+        void print_symbol_storage(std::ostream& out)
         {
-            uint32_t symbol_elements =
-                fifi::length_to_elements<field_type>(
-                    SuperCoder::symbol_length());
-
-            print_symbol_matrix(out, symbol_elements);
-        }
-
-        /// Prints the symbol matrix to the output stream
-        /// @param out The output stream to print to
-        /// @param symbol_elements number of elements in a symbol
-        void print_symbol_matrix(std::ostream& out, uint32_t symbol_elements)
-        {
-            assert(symbol_elements <=
-                fifi::length_to_elements<field_type>(
-                    SuperCoder::symbol_length()));
-
             for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
-                print_symbol(out, symbol_elements, i);
+                print_symbol(out, i);
             }
 
             out << std::endl;
@@ -66,25 +50,11 @@ namespace kodo
         /// @param symbol_index index of symbol to print
         void print_symbol(std::ostream& out, uint32_t symbol_index)
         {
+            assert(symbol_index < SuperCoder::symbols());
+
             uint32_t symbol_elements =
                 fifi::length_to_elements<field_type>(
                     SuperCoder::symbol_length());
-
-            print_symbol(out, symbol_elements, symbol_index);
-        }
-
-        /// Print symbol on certain index
-        /// @param out The output stream to print to
-        /// @param symbol_elements number of elements in a symbol
-        /// @param symbol_index index of symbol to print
-        void print_symbol(std::ostream& out, uint32_t symbol_elements,
-                          uint32_t symbol_index)
-        {
-            assert(symbol_index < SuperCoder::symbols());
-
-            assert(symbol_elements <=
-                fifi::length_to_elements<field_type>(
-                    SuperCoder::symbol_length()));
 
             value_type* symbol =
                 SuperCoder::symbol_value(symbol_index);
@@ -99,5 +69,6 @@ namespace kodo
 
             out << std::endl;
         }
+
     };
 }
