@@ -33,7 +33,7 @@ namespace kodo
 
     public:
 
-        /// Prints the symbol matrix to the output stream
+        /// Prints the symbol storage to the output stream
         /// @param out The output stream to print to
         void print_symbol_storage(std::ostream& out)
         {

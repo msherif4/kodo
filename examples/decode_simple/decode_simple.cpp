@@ -266,7 +266,7 @@ int main()
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
 
-        decoder->print_latest_symbol_and_coefficients(std::cout);
+        decoder->print_latest_symbol(std::cout);
 
         std::cout << std::endl << "Decoding matrix:" << std::endl;
         decoder->print_coefficients_storage(std::cout);

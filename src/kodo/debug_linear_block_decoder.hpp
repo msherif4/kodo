@@ -96,7 +96,7 @@ namespace kodo
 
         /// Prints the most recent symbol coefficients to enter the decoder
         /// @param out The output stream to print to
-        void print_latest_coefficients(std::ostream &out)
+        void print_latest_coefficients_data(std::ostream &out)
         {
             value_type *c =
                 reinterpret_cast<value_type*>(&m_coefficients[0]);
@@ -112,7 +112,7 @@ namespace kodo
 
         /// Prints the most recent symbol to enter the decoder
         /// @param out The output stream to print to
-        void print_latest_symbol(std::ostream &out)
+        void print_latest_symbol_data(std::ostream &out)
         {
             uint32_t symbol_elements =
                 fifi::size_to_elements<field_type>(
@@ -132,12 +132,12 @@ namespace kodo
 
         /// Prints the most recent symbol coefficients to enter the decoder
         /// @param out The output stream to print to
-        void print_latest_symbol_and_coefficients(std::ostream &out)
+        void print_latest_symbol(std::ostream &out)
         {
             if( m_symbol_coded )
             {
                 out << "Coded:" << std::endl << "   Coef. : ";
-                print_latest_coefficients(out);
+                print_latest_coefficients_data(out);
             }
             else
             {
@@ -146,7 +146,7 @@ namespace kodo
             }
 
             out << "   Symbol: ";
-            print_latest_symbol(out);
+            print_latest_symbol_data(out);
         }
 
     private:
