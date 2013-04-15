@@ -60,9 +60,8 @@ namespace kodo
 
         /// Prints a vector of coefficients
         /// @param out The output stream to print to
-        /// @param symbol_index The index of the coefficients vector
-        ///                           to print
-        void print_coefficients(std::ostream& out, uint32_t symbol_index)
+        /// @param index The index of the coefficients vector to print
+        void print_coefficients(std::ostream& out, uint32_t index)
         {
             value_type* coefficients_i =
                 SuperCoder::coefficients_value(symbol_index);

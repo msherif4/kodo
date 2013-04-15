@@ -47,8 +47,8 @@ namespace kodo
 
         /// Print symbol on certain index
         /// @param out The output stream to print to
-        /// @param symbol_index index of symbol to print
-        void print_symbol(std::ostream& out, uint32_t symbol_index)
+        /// @param index The index of symbol to print
+        void print_symbol(std::ostream& out, uint32_t index)
         {
             assert(symbol_index < SuperCoder::symbols());
 
