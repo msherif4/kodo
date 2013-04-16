@@ -50,14 +50,14 @@ namespace kodo
         /// @param index The index of symbol to print
         void print_symbol(std::ostream& out, uint32_t index)
         {
-            assert(symbol_index < SuperCoder::symbols());
+            assert(index < SuperCoder::symbols());
 
             uint32_t symbol_elements =
                 fifi::length_to_elements<field_type>(
                     SuperCoder::symbol_length());
 
             value_type* symbol =
-                SuperCoder::symbol_value(symbol_index);
+                SuperCoder::symbol_value(index);
 
             for(uint32_t j = 0; j < symbol_elements; ++j)
             {

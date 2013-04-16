@@ -94,6 +94,27 @@ namespace kodo
             SuperCoder::decode_symbol(symbol_data, symbol_index);
         }
 
+        /// Prints the decoding matrix to the output stream
+        /// @param out The output stream to print to
+        void print_symbol_states(std::ostream &out)
+        {
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+            {
+                if( m_uncoded[i] )
+                {
+                    out << i << " U" << std::endl;
+                }
+                else if( m_coded[i] )
+                {
+                    out << i << " C" << std::endl;
+                }
+                else
+                {
+                    out << i << " ?:" << std::endl;
+                }
+            }
+        }
+
         /// Prints the most recent symbol coefficients to enter the decoder
         /// @param out The output stream to print to
         void print_latest_coefficients_data(std::ostream &out)

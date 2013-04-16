@@ -37,21 +37,6 @@ namespace kodo
         {
             for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
-                /// @todo uncomment this if API implements functions to
-                ///       access uncoded/coded coefficients
-                //if( m_uncoded[i] )
-                //{
-                //    out << i << " U:\t";
-                //}
-                //else if( m_coded[i] )
-                //{
-                //    out << i << " C:\t";
-                //}
-                //else
-                //{
-                //    out << i << " ?:\t";
-                //}
-
                 print_coefficients(out, i);
             }
 
@@ -64,7 +49,7 @@ namespace kodo
         void print_coefficients(std::ostream& out, uint32_t index)
         {
             value_type* coefficients_i =
-                SuperCoder::coefficients_value(symbol_index);
+                SuperCoder::coefficients_value(index);
 
             for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
             {
