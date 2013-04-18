@@ -33,7 +33,8 @@ namespace kodo
 
     public:
 
-        /// Prints the symbol storage to the output stream
+        /// Print finite field elements in the symbol storage to the output
+        /// stream
         /// @param out The output stream to print to
         void print_symbol_storage(std::ostream& out)
         {
@@ -45,7 +46,8 @@ namespace kodo
             out << std::endl;
         }
 
-        /// Print symbol on certain index
+        /// Print finite field elements in a symbol on a certain index to the
+        /// output stream
         /// @param out The output stream to print to
         /// @param index The index of symbol to print
         void print_symbol(std::ostream& out, uint32_t index)
