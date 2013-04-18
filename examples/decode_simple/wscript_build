@@ -1,0 +1,9 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+bld.program(features = 'cxx',
+            source   = 'decode_simple.cpp',
+            target   = 'decode_simple',
+            use      = ['kodo_includes', 'boost_includes',
+                        'fifi_includes', 'sak_includes'])
+

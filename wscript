@@ -99,6 +99,7 @@ def build(bld):
         bld.recurse('examples/encode_decode_file')
         bld.recurse('examples/encode_decode_storage')
         bld.recurse('examples/encode_recode_decode_simple')
+        bld.recurse('examples/decode_simple')
         bld.recurse('examples/encode_on_the_fly')
         bld.recurse('examples/rank_callback')
 

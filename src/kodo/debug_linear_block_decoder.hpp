@@ -6,6 +6,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 #include <fifi/fifi_utils.hpp>
 
@@ -46,43 +49,6 @@ namespace kodo
 
             m_data.resize(the_factory.max_symbol_size());
             m_coefficients.resize(the_factory.max_coefficients_size());
-        }
-
-        /// Prints the decoding matrix to the output stream
-        /// @param out The output stream to print to
-        void print_decoding_matrix(std::ostream &out)
-        {
-            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
-            {
-                if( m_uncoded[i] )
-                {
-                    out << i << " U:\t";
-                }
-                else if( m_coded[i] )
-                {
-                    out << i << " C:\t";
-                }
-                else
-                {
-                    out << i << " ?:\t";
-                }
-
-                value_type *coefficients_i =
-                    SuperCoder::coefficients_value(i);
-
-                for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
-                {
-
-                    value_type value =
-                        fifi::get_value<field_type>(coefficients_i, j );
-
-                    out << (uint32_t)value << " ";
-                }
-
-                out << std::endl;
-            }
-
-            out << std::endl;
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
@@ -128,30 +94,80 @@ namespace kodo
             SuperCoder::decode_symbol(symbol_data, symbol_index);
         }
 
+        /// Prints the decoding matrix to the output stream
+        /// @param out The output stream to print to
+        void print_symbol_states(std::ostream &out)
+        {
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+            {
+                if( m_uncoded[i] )
+                {
+                    out << i << " U" << std::endl;
+                }
+                else if( m_coded[i] )
+                {
+                    out << i << " C" << std::endl;
+                }
+                else
+                {
+                    out << i << " ?:" << std::endl;
+                }
+            }
+        }
+
         /// Prints the most recent symbol coefficients to enter the decoder
         /// @param out The output stream to print to
-        void print_decoding_symbol(std::ostream &out)
+        void print_latest_coefficients_data(std::ostream &out)
+        {
+            value_type *c =
+                reinterpret_cast<value_type*>(&m_coefficients[0]);
+
+            for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
+            {
+                value_type value = fifi::get_value<field_type>(c, j);
+                out << (uint32_t)value << " ";
+            }
+
+            out << std::endl;
+        }
+
+        /// Prints the most recent symbol to enter the decoder
+        /// @param out The output stream to print to
+        void print_latest_symbol_data(std::ostream &out)
+        {
+            uint32_t symbol_elements =
+                fifi::size_to_elements<field_type>(
+                    SuperCoder::symbol_size());
+
+            value_type *s =
+                reinterpret_cast<value_type*>(&m_data[0]);
+
+            for(uint32_t j = 0; j < symbol_elements; ++j)
+            {
+                value_type value = fifi::get_value<field_type>(s, j);
+                out << (uint32_t)value << " ";
+            }
+
+            out << std::endl;
+        }
+
+        /// Prints the most recent symbol coefficients to enter the decoder
+        /// @param out The output stream to print to
+        void print_latest_symbol(std::ostream &out)
         {
             if( m_symbol_coded )
             {
-                out << "Symbol C:" << std::endl<< "\t Coef.: ";
-
-                value_type *c =
-                    reinterpret_cast<value_type*>(&m_coefficients[0]);
-
-                for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
-                {
-                    value_type value = fifi::get_value<field_type>(c, j);
-                    out << (uint32_t)value << " ";
-                }
-
-                out << std::endl;
+                out << "Coded:" << std::endl << "   Coef. : ";
+                print_latest_coefficients_data(out);
             }
             else
             {
-                out << "Symbol U:" << std::endl;
-                out << "\tIndex: " << m_symbol_index << std::endl;
+                out << "Uncoded:" << std::endl;
+                out << "   Index: " << m_symbol_index << std::endl;
             }
+
+            out << "   Symbol: ";
+            print_latest_symbol_data(out);
         }
 
     private:
@@ -171,5 +187,4 @@ namespace kodo
     };
 
 }
-
 
