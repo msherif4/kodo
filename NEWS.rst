@@ -15,7 +15,7 @@ Latest (minor)
   folder.
 * Adding a deep storage decoder which provides the memory needed to decode
   a large object spanning several blocks.
-* Adding simple decoding example. This example shows how input symbols and
+* Adding simple decoding example. This example shows how to input symbols and
   coefficients directly into the decoder and how some of the debug layers can
   be applied to debug the decoding process.
 
