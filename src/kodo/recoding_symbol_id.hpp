@@ -96,7 +96,8 @@ namespace kodo
                 // Nothing we can do - we just return the zero'ed
                 // symbol coefficients and id
                 *coefficients = symbol_id;
-                sak::copy_storage(id_storage, sak::storage(m_recode_id));
+                sak::copy_storage(
+                    id_storage, sak::storage(&m_recode_id[0], m_id_size));
 
                 return m_id_size;
             }
@@ -147,7 +148,8 @@ namespace kodo
 
 
             *coefficients = &m_coefficients[0];
-            sak::copy_storage(id_storage, sak::storage(m_recode_id));
+            sak::copy_storage(
+                id_storage, sak::storage(&m_recode_id[0], m_id_size));
 
             return m_id_size;
         }

@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_PAYLOAD_RECODER_HPP
-#define KODO_PAYLOAD_RECODER_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -49,9 +48,18 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size),
                   m_stack_factory(max_symbols, max_symbol_size)
-                {
-                    m_stack_factory.set_factory_proxy(this);
-                }
+            {
+                m_stack_factory.set_factory_proxy(this);
+            }
+
+            /// Make sure we have enough space for both the payload
+            /// produced by the main stack and the recoding stack.
+            /// @copydoc layer::factory::max_payload_size() const
+            uint32_t max_payload_size() const
+            {
+                return std::max(SuperCoder::factory::max_payload_size(),
+                                m_stack_factory.max_payload_size());
+            }
 
         private:
 
@@ -74,55 +82,60 @@ namespace kodo
 
         /// @copydoc layer::initialize(factory&)
         void initialize(factory& the_factory)
+        {
+            SuperCoder::initialize(the_factory);
+
+            // We have to postpone building the recoding stack to the
+            // initialize function, since we have to ensure that the
+            // main stack has been constructed and initialized.
+
+            auto& stack_factory = the_factory.recode_factory();
+
+            if(!m_recode_stack)
             {
-                SuperCoder::initialize(the_factory);
-
-                // We have to postpone building the recoding stack to the
-                // initialize function, since we have to ensure that the
-                // main stack has been constructed and initialized.
-
-                auto& stack_factory = the_factory.recode_factory();
-
-                if(!m_recode_stack)
-                {
-                    assert(the_factory.max_payload_size() ==
-                           stack_factory.max_payload_size());
-
-                    stack_factory.set_stack_proxy(this);
-                    m_recode_stack = stack_factory.build();
-                }
-                else
-                {
-
-                    m_recode_stack->initialize(the_factory.recode_factory());
-                }
-
-                assert(SuperCoder::payload_size() ==
-                       m_recode_stack->payload_size());
+                stack_factory.set_stack_proxy(this);
+                m_recode_stack = stack_factory.build();
             }
+            else
+            {
+
+                m_recode_stack->initialize(the_factory.recode_factory());
+            }
+        }
 
         /// @copydoc layer::recode(uint8_t*)
         void recode(uint8_t *payload)
-            {
-                m_recode_stack->encode(payload);
-            }
+        {
+            assert(m_recode_stack);
+            m_recode_stack->encode(payload);
+        }
+
+        /// Make sure we have enough space for both the payload
+        /// produced by the main stack and the recoding stack.
+        /// @copydoc layer::payload_size() const
+        uint32_t payload_size() const
+        {
+            assert(m_recode_stack);
+            return std::max(SuperCoder::payload_size(),
+                            m_recode_stack->payload_size());
+        }
 
     private:
 
         /// Sets the recoding stack on the coder
         /// @param recoder The recoding stack.
         void set_recode_stack(const recode_pointer &recoder)
-            {
-                assert(!m_recode_stack);
-                m_recode_stack = recoder;
-            }
+        {
+            assert(!m_recode_stack);
+            m_recode_stack = recoder;
+        }
 
         /// @return True if the coder already has already been initialized
         ///         with an recoding stack
         bool has_recode_stack() const
-            {
-                return m_recode_stack.get() != 0;
-            }
+        {
+            return m_recode_stack.get() != 0;
+        }
 
     protected:
 
@@ -133,5 +146,4 @@ namespace kodo
 
 }
 
-#endif
 

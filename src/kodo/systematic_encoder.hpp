@@ -81,6 +81,7 @@ namespace kodo
 
             /// Reset the state
             m_systematic = SystematicOn;
+            m_systematic_count = 0;
         }
 
         /// @copydoc layer::encode(uint8_t*, uint8_t*)
@@ -94,8 +95,7 @@ namespace kodo
             // to the encoder
 
             bool in_systematic_phase =
-                SuperCoder::encode_symbol_count() <
-                SuperCoder::rank();
+                m_systematic_count < SuperCoder::rank();
 
             if(m_systematic && in_systematic_phase)
             {
@@ -134,6 +134,14 @@ namespace kodo
                 sizeof(flag_type) + sizeof(counter_type);
         }
 
+        /// @return The number of systematically encoded packets produced
+        ///         by this encoder
+        void systematic_count()
+        {
+            return m_systematic_count;
+        }
+
+
     protected:
 
         /// Encodes a systematic packet
@@ -144,17 +152,17 @@ namespace kodo
             assert(symbol_data != 0);
             assert(symbol_header != 0);
 
-            uint32_t count = SuperCoder::encode_symbol_count();
-
             /// Flag systematic packet
             sak::big_endian::put<flag_type>(
                 systematic_base_coder::systematic_flag, symbol_header);
 
             /// Set the symbol id
             sak::big_endian::put<counter_type>(
-                count, symbol_header + sizeof(flag_type));
+                m_systematic_count, symbol_header + sizeof(flag_type));
 
-            SuperCoder::encode_symbol(symbol_data, count);
+            SuperCoder::encode_symbol(symbol_data, m_systematic_count);
+
+            ++m_systematic_count;
 
             return sizeof(flag_type) + sizeof(counter_type);
         }
@@ -182,6 +190,9 @@ namespace kodo
 
         /// Allows the systematic mode to be disabled at run-time
         bool m_systematic;
+
+        /// Counts the number of systematic packets produced
+        uint32_t m_systematic_count;
 
     };
 
