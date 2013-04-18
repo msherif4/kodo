@@ -20,7 +20,7 @@ namespace kodo
     /// Terminates the layered coder and contains the coder allocation
     /// policy
     template<class FinalType>
-    class final_coder_factory : boost::noncopyable
+    class final_coder_factory
     {
     public:
 
@@ -107,6 +107,15 @@ namespace kodo
                 m_symbol_size = symbol_size;
             }
 
+        private: // Make non-copyable
+
+            /// Copy constructor
+            factory(const factory&);
+
+            /// Copy assignment
+            const factory& operator=(const factory&);
+
+
         private:
 
             /// The maximum number of symbols
@@ -138,6 +147,25 @@ namespace kodo
             /// This is the final factory layer so we do nothing
             (void) the_factory;
         }
+
+    protected:
+
+        /// Constructor
+        final_coder_factory()
+        { }
+
+        /// Destructor
+        ~final_coder_factory()
+        { }
+
+    private: // Make non-copyable
+
+        /// Copy constructor
+        final_coder_factory(const final_coder_factory&);
+
+        /// Copy assignment
+        const final_coder_factory& operator=(
+            const final_coder_factory&);
     };
 }
 

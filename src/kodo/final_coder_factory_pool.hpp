@@ -23,7 +23,7 @@ namespace kodo
     /// factory. The pool factory uses a memory pool to recycle
     /// encoders/decoders, and thereby minimize memory consumption.
     template<class FinalType>
-    class final_coder_factory_pool : boost::noncopyable
+    class final_coder_factory_pool
     {
     public:
 
@@ -109,6 +109,14 @@ namespace kodo
                 m_symbol_size = symbol_size;
             }
 
+        private: // Make non-copyable
+
+            /// Copy constructor
+            factory(const factory&);
+
+            /// Copy assignment
+            const factory& operator=(const factory&);
+
         private:
 
             /// Factory function used by the resource pool to
@@ -153,7 +161,6 @@ namespace kodo
 
     public:
 
-
         /// @copydoc layer::construct(factory&)
         void construct(factory& the_factory)
         {
@@ -167,6 +174,26 @@ namespace kodo
             // This is the final factory layer so we do nothing
             (void) the_factory;
         }
+
+    protected:
+
+        /// Constructor
+        final_coder_factory_pool()
+        { }
+
+        /// Destructor
+        ~final_coder_factory_pool()
+        { }
+
+    private: // Make non-copyable
+
+        /// Copy constructor
+        final_coder_factory_pool(const final_coder_factory_pool&);
+
+        /// Copy assignment
+        const final_coder_factory_pool& operator=(
+            const final_coder_factory_pool&);
+
     };
 }
 
