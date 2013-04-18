@@ -18,7 +18,8 @@ Latest (minor)
 * Adding simple decoding example. This example shows how to input symbols and
   coefficients directly into the decoder and how some of the debug layers can
   be applied to debug the decoding process.
-
+* Made all factories non-copyable by making copy constructor and copy
+  assignment constructor private.
 
 8.0.0
 -----
