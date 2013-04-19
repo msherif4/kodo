@@ -20,6 +20,8 @@ Latest (minor)
   be applied to debug the decoding process.
 * Made all factories non-copyable by making copy constructor and copy
   assignment constructor private.
+* Fix issue in recoding_symbol_id, where sak::copy_storage triggered an
+  assert when using an decoder with symbols less than max_symbols.
 
 8.0.0
 -----

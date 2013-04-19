@@ -113,18 +113,6 @@
 /// @brief Implementations of the symbol id API.
 
 //------------------------------------------------------------------
-// CODING INFO
-//------------------------------------------------------------------
-
-/// @defgroup coding_info Coding Info
-/// @ingroup api_layer
-/// @brief Information about encoders and decoders
-
-/// @defgroup coding_info_api API
-/// @ingroup coding_info
-/// @brief The coding information API.
-
-//------------------------------------------------------------------
 // SYMBOL STORAGE API LAYERS
 //------------------------------------------------------------------
 
