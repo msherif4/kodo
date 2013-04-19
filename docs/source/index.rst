@@ -41,6 +41,7 @@ Documentation
    using_kodo_in_your_application
    hacking_kodo
    howto
+   misc
    nc_glossary
 
 
