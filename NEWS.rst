@@ -4,7 +4,7 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest (minor)
+Latest (major)
 --------------
 * Adding the shallow storage decoder which allows decoding objects larger
   than a single block or generation.
@@ -22,6 +22,9 @@ Latest (minor)
   assignment constructor private.
 * Fix issue in recoding_symbol_id, where sak::copy_storage triggered an
   assert when using an decoder with symbols less than max_symbols.
+* Changed construct() and initialize() functions of a coding layer to
+  accept the factory as the only parameters. This breaks backwards
+  compatibility with Kodo version 8.0.0.
 
 8.0.0
 -----
