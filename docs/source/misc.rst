@@ -33,8 +33,7 @@ The basic rules we use are the following:
 
 Contact Us
 ----------
-There are several ways in which you may contact us. The following links to the
-typical
+There are several ways in which you may contact us:
 
  * Questions about libraries or the technology used may be redirected to our
    mailing list (the mailing list is hosted on Google Groups) you may view the
