@@ -25,6 +25,9 @@ Latest (major)
 * Changed construct() and initialize() functions of a coding layer to
   accept the factory as the only parameters. This breaks backwards
   compatibility with Kodo version 8.0.0.
+* Major: Changed the factory build() function to accept no parameters.
+  Factories are now configured e.g. using set_symbols(uint32_t) before
+  calling build() to create a new encoder / decoder.
 
 8.0.0
 -----
