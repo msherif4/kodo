@@ -31,6 +31,18 @@ The basic rules we use are the following:
  * Bug fix: Increment z when you fix something e.g. a bug (without breaking
    backward-compatibility)
 
+Contact Us
+----------
+There are several ways in which you may contact us. The following links to the
+typical
 
+ * Questions about libraries or the technology used may be redirected to our
+   mailing list (the mailing list is hosted on Google Groups) you may view the
+   archives or join the `mailing list here`_.
+ * Bugs in the software libraries should be posted to our github issue tracker.
+ * Information about licensing or similar commercial inquiries can be sent to
+   contact@steinwurf.com.
+
+.. _mailing list here: http://groups.google.com/group/steinwurf-dev
 
 
