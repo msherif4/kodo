@@ -537,20 +537,23 @@ public:
 
     /// @ingroup payload_codec_api
     /// Encodes a symbol into the provided buffer.
-    /// @param payload. The buffer which should contain the encoded
+    /// @param payload The buffer which should contain the encoded
     ///        symbol.
     /// @return the total bytes used from the payload buffer
     uint32_t encode(uint8_t *payload);
 
     /// @ingroup payload_codec_api
-    /// Decodes an encoded symbol stored in the payload buffer
-    /// @param payload. The buffer storing the payload of an encoded symbol
+    /// Decodes an encoded symbol stored in the payload buffer.
+    /// @param payload The buffer storing the payload of an encoded symbol.
+    ///        The payload buffer may be changed by the decode function,
+    ///        an cannot be reused. If the payload is needed in several places
+    ///        make sure to keep a copy of the original payload.
     void decode(uint8_t *payload);
 
     /// @ingroup payload_codec_api
     /// Recodes a symbol into the provided buffer. This function is special for
     /// network codes.
-    /// @param payload. The buffer which should contain the recoded
+    /// @param payload The buffer which should contain the recoded
     ///        symbol.
     /// @return the total bytes used from the payload buffer
     uint32_t recode(uint8_t *payload);

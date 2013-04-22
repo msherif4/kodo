@@ -6,23 +6,23 @@ of every change, see the Git log.
 
 Latest (major)
 --------------
-* Adding the shallow storage decoder which allows decoding objects larger
+* Minor: Adding the shallow storage decoder which allows decoding objects larger
   than a single block or generation.
-* Adding new example of an on-the-fly encoder. This example shows how to
+* Minor: Adding new example of an on-the-fly encoder. This example shows how to
   use an encoder before all symbols for that encoder has become available.
   This can be very useful in cases where data is produced on-the-fly, e.g.
   some form of streaming. The example can be found in the "encode_on_the_fly"
   folder.
-* Adding a deep storage decoder which provides the memory needed to decode
-  a large object spanning several blocks.
-* Adding simple decoding example. This example shows how to input symbols and
-  coefficients directly into the decoder and how some of the debug layers can
-  be applied to debug the decoding process.
-* Made all factories non-copyable by making copy constructor and copy
+* Minor: Adding a deep storage decoder which provides the memory needed to
+  decode a large object spanning several blocks.
+* Minor: Adding simple decoding example. This example shows how to input
+  symbols and coefficients directly into the decoder and how some of the
+  debug layers can be applied to debug the decoding process.
+* Bug: Made all factories non-copyable by making copy constructor and copy
   assignment constructor private.
-* Fix issue in recoding_symbol_id, where sak::copy_storage triggered an
+* Bug: Fix issue in recoding_symbol_id, where sak::copy_storage triggered an
   assert when using an decoder with symbols less than max_symbols.
-* Changed construct() and initialize() functions of a coding layer to
+* Major: Changed construct() and initialize() functions of a coding layer to
   accept the factory as the only parameters. This breaks backwards
   compatibility with Kodo version 8.0.0.
 * Major: Changed the factory build() function to accept no parameters.
