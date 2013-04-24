@@ -16,7 +16,7 @@ namespace kodo
     /// This layer "intercepts" all calls to the finite_field_math
     /// layer counting the different operations
     template<class SuperCoder>
-    class finite_field_math_counter : public SuperCoder
+    class finite_field_counter : public SuperCoder
     {
     public:
 

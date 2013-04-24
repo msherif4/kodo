@@ -15,6 +15,7 @@
 
 #include <kodo/partial_shallow_symbol_storage.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/finite_field_counter.hpp>
 
 std::vector<uint32_t> setup_symbols()
 {
@@ -62,174 +63,6 @@ std::vector<std::string> setup_types()
 
 namespace kodo
 {
-    struct operations_counter
-    {
-        operations_counter()
-            : m_multiply(0),
-              m_multiply_add(0),
-              m_add(0),
-              m_multiply_subtract(0),
-              m_subtract(0),
-              m_invert(0)
-            { }
-
-        /// Counter for dest[i] = dest[i] * constant
-        uint32_t m_multiply;
-
-        /// Counter for dest[i] = dest[i] + (constant * src[i])
-        uint32_t m_multiply_add;
-
-        /// Counter for dest[i] = dest[i] + src[i]
-        uint32_t m_add;
-
-        /// Counter for dest[i] = dest[i] - (constant * src[i])
-        uint32_t m_multiply_subtract;
-
-        /// Counter for dest[i] = dest[i] - src[i]
-        uint32_t m_subtract;
-
-        /// Counter for invert(value)
-        uint32_t m_invert;
-    };
-
-    operations_counter operator-(const operations_counter &a,
-                                 const operations_counter &b)
-    {
-        operations_counter res;
-
-        res.m_multiply = a.m_multiply - b.m_multiply;
-
-        res.m_multiply_add = a.m_multiply_add - b.m_multiply_add;
-
-        res.m_add = a.m_add - b.m_add;
-
-        res.m_multiply_subtract =
-            a.m_multiply_subtract - b.m_multiply_subtract;
-
-        res.m_subtract = a.m_subtract - b.m_subtract;
-
-        res.m_invert = a.m_invert - b.m_invert;
-        return res;
-    }
-
-    bool operator>=(const operations_counter &a,
-                    const operations_counter &b)
-    {
-        if(a.m_multiply >= b.m_multiply)
-            return true;
-        if(a.m_multiply < b.m_multiply)
-            return false;
-        if(a.m_multiply_add >= b.m_multiply_add)
-            return true;
-        if(a.m_multiply_add < b.m_multiply_add)
-            return false;
-        if(a.m_add >= b.m_add)
-            return true;
-        if(a.m_add < b.m_add)
-            return false;
-        if(a.m_multiply_subtract >= b.m_multiply_subtract)
-            return true;
-        if(a.m_multiply_subtract < b.m_multiply_subtract)
-            return false;
-        if(a.m_subtract >= b.m_subtract)
-            return true;
-        if(a.m_subtract < b.m_subtract)
-            return false;
-        if(a.m_invert >= b.m_invert)
-            return true;
-        if(a.m_invert < b.m_invert)
-            return false;
-
-        return false;
-    }
-
-    /// This layer "intercepts" all calls to the finite_field_math
-    /// layer counting the different operations
-    template<class SuperCoder>
-    class finite_field_math_counter : public SuperCoder
-    {
-    public:
-
-        /// @copydoc layer::field_type
-        typedef typename SuperCoder::field_type field_type;
-
-        /// @copydoc layer::value_type
-        typedef typename SuperCoder::value_type value_type;
-
-        /// @copydoc layer::factory
-        typedef typename SuperCoder::factory factory;
-
-    public:
-
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
-            {
-                SuperCoder::initialize(the_factory);
-
-                // Reset the counter
-                m_counter = operations_counter();
-            }
-
-        /// @see finite_field_math::multiply(...)
-        void multiply(value_type *symbol_dest, value_type coefficient,
-                      uint32_t symbol_length)
-            {
-                ++m_counter.m_multiply;
-                SuperCoder::multiply(symbol_dest, coefficient, symbol_length);
-            }
-
-        void multiply_add(value_type *symbol_dest,
-                          const value_type *symbol_src,
-                          value_type coefficient, uint32_t symbol_length)
-            {
-                ++m_counter.m_multiply_add;
-                SuperCoder::multiply_add(symbol_dest, symbol_src,
-                                        coefficient,
-                                        symbol_length);
-            }
-
-        void add(value_type *symbol_dest, const value_type *symbol_src,
-                 uint32_t symbol_length)
-            {
-                ++m_counter.m_add;
-                SuperCoder::add(symbol_dest, symbol_src, symbol_length);
-            }
-
-        void multiply_subtract(value_type *symbol_dest,
-                               const value_type *symbol_src,
-                               value_type coefficient,
-                               uint32_t symbol_length)
-            {
-                ++m_counter.m_multiply_subtract;
-                SuperCoder::multiply_subtract(symbol_dest, symbol_src,
-                                              coefficient, symbol_length);
-            }
-
-        void subtract(value_type *symbol_dest, const value_type *symbol_src,
-                      uint32_t symbol_length)
-            {
-                ++m_counter.m_subtract;
-                SuperCoder::subtract(symbol_dest, symbol_src,
-                                     symbol_length);
-            }
-
-        value_type invert(value_type value)
-            {
-                ++m_counter.m_invert;
-                return SuperCoder::invert(value);
-            }
-
-        operations_counter get_operations_counter() const
-            {
-                return m_counter;
-            }
-
-    private:
-
-        /// Operations counter
-        operations_counter m_counter;
-
-    };
 
     template<class Field>
     class full_rlnc_encoder_count
@@ -255,7 +88,7 @@ namespace kodo
           storage_bytes_used<
           storage_block_info<
           // Finite Field API
-          finite_field_math_counter<
+          finite_field_counter<
           finite_field_math<typename fifi::default_field<Field>::type,
           finite_field_info<Field,
           // Factory API
@@ -286,7 +119,7 @@ namespace kodo
           storage_bytes_used<
           storage_block_info<
           // Finite Field API
-          finite_field_math_counter<
+          finite_field_counter<
           finite_field_math<typename fifi::default_field<Field>::type,
           finite_field_info<Field,
           // Factory API
@@ -299,26 +132,42 @@ namespace kodo
 }
 
 
-struct config_less_than
-    : public std::binary_function<gauge::config_set, gauge::config_set, bool>
+struct config_less_than :
+    public std::binary_function<gauge::config_set, gauge::config_set, bool>
 {
-    bool operator()(const gauge::config_set &n1, const gauge::config_set &n2) const
+    bool operator()(const gauge::config_set &n1,
+                    const gauge::config_set &n2) const
     {
-        if(n1.get_value<uint32_t>("symbols") < n2.get_value<uint32_t>("symbols"))
+        if(n1.get_value<uint32_t>("symbols") <
+           n2.get_value<uint32_t>("symbols"))
             return true;
-        if(n1.get_value<uint32_t>("symbols") > n2.get_value<uint32_t>("symbols"))
+
+        if(n1.get_value<uint32_t>("symbols") >
+           n2.get_value<uint32_t>("symbols"))
             return false;
-        if(n1.get_value<uint32_t>("symbol_size") < n2.get_value<uint32_t>("symbol_size"))
+
+        if(n1.get_value<uint32_t>("symbol_size") <
+           n2.get_value<uint32_t>("symbol_size"))
             return true;
-        if(n1.get_value<uint32_t>("symbol_size") > n2.get_value<uint32_t>("symbol_size"))
+
+        if(n1.get_value<uint32_t>("symbol_size") >
+           n2.get_value<uint32_t>("symbol_size"))
             return false;
-        if(n1.get_value<std::string>("operation") < n2.get_value<std::string>("operation"))
+
+        if(n1.get_value<std::string>("operation") <
+           n2.get_value<std::string>("operation"))
             return true;
-        if(n1.get_value<std::string>("operation") > n2.get_value<std::string>("operation"))
+
+        if(n1.get_value<std::string>("operation") >
+           n2.get_value<std::string>("operation"))
             return false;
-        if(n1.get_value<std::string>("type") < n2.get_value<std::string>("type"))
+
+        if(n1.get_value<std::string>("type") <
+           n2.get_value<std::string>("type"))
             return true;
-        if(n1.get_value<std::string>("type") > n2.get_value<std::string>("type"))
+
+        if(n1.get_value<std::string>("type") >
+           n2.get_value<std::string>("type"))
             return false;
 
         return false;
@@ -335,7 +184,8 @@ class result_memory
 {
 public:
     typedef std::stack<double> result_stack;
-    typedef std::map<gauge::config_set, result_stack, config_less_than> result_map;
+    typedef std::map<gauge::config_set, result_stack, config_less_than>
+        result_map;
 
     void store_result(uint32_t symbols,
                       uint32_t symbol_size,

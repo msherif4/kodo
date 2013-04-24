@@ -28,6 +28,9 @@ Latest (major)
 * Major: Changed the factory build() function to accept no parameters.
   Factories are now configured e.g. using set_symbols(uint32_t) before
   calling build() to create a new encoder / decoder.
+* Minor: Moved finite_field_counter layer from the benchmarks to the
+  library source folder. This makes it possible to add it to any codec
+  stack where the number of finite field operations should be monitored.
 
 8.0.0
 -----

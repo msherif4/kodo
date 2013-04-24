@@ -49,8 +49,8 @@ namespace kodo
     /// Subtract two operations counters ala. a - b
     /// @param a The operations counter to be reduced
     /// @param b The operations counter subtracted from a
-    operations_counter operator-(const operations_counter &a,
-                                 const operations_counter &b)
+    inline operations_counter operator-(const operations_counter &a,
+                                        const operations_counter &b)
     {
         operations_counter res;
 
@@ -80,8 +80,8 @@ namespace kodo
     /// Subtract two operations counters ala. a + b
     /// @param a The operations counter to be reduced
     /// @param b The operations counter subtracted from a
-    operations_counter operator+(const operations_counter &a,
-                                 const operations_counter &b)
+    inline operations_counter operator+(const operations_counter &a,
+                                        const operations_counter &b)
     {
         operations_counter res;
 
@@ -112,8 +112,8 @@ namespace kodo
     /// Implement the greater than or equal operator such as a >= b
     /// @param a The first operations counter
     /// @param b The second operations counter
-    bool operator>=(const operations_counter &a,
-                    const operations_counter &b)
+    inline bool operator>=(const operations_counter &a,
+                           const operations_counter &b)
     {
         if(a.m_multiply >= b.m_multiply)
             return true;
