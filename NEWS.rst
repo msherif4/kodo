@@ -6,13 +6,13 @@ of every change, see the Git log.
 
 Latest (major)
 --------------
-* Minor: Adding the shallow storage decoder which allows decoding objects larger
-  than a single block or generation.
-* Minor: Adding new example of an on-the-fly encoder. This example shows how to
-  use an encoder before all symbols for that encoder has become available.
-  This can be very useful in cases where data is produced on-the-fly, e.g.
-  some form of streaming. The example can be found in the "encode_on_the_fly"
-  folder.
+* Minor: Adding the shallow storage decoder which allows decoding objects
+  larger than a single block or generation.
+* Minor: Adding new example of an on-the-fly encoder. This example shows
+  how to use an encoder before all symbols for that encoder has become
+  available. This can be very useful in cases where data is produced
+  on-the-fly, e.g. some form of streaming. The example can be found in the
+  "examples/encode_on_the_fly" folder.
 * Minor: Adding a deep storage decoder which provides the memory needed to
   decode a large object spanning several blocks.
 * Minor: Adding simple decoding example. This example shows how to input
