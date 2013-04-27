@@ -20,6 +20,7 @@ Latest (minor)
   be applied to debug the decoding process.
 * Made all factories non-copyable by making copy constructor and copy
   assignment constructor private.
+* Minor: Updated to waf-tools 2
 
 8.0.0
 -----
