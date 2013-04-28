@@ -49,13 +49,19 @@ namespace kodo
         {
             assert(coefficients != 0);
 
+            // Since we will not set all coefficients we should ensure
+            // that the non specified ones are zero
+            std::fill_n( coefficients, SuperCoder::coefficients_size(), 0);
+
+            value_type* c = reinterpret_cast<value_type*>(coefficients);
+
             for (uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
                 if (m_bernoulli(m_random_generator))
                 {
                     if (fifi::is_binary<field_type>::value)
                     {
-                        fifi::set_value<field_type>(coefficients, i, 1);
+                        fifi::set_value<field_type>(c, i, 1);
                     }
                     else
                     {
@@ -63,7 +69,7 @@ namespace kodo
                             m_value_distribution(m_random_generator);
 
                         fifi::set_value<field_type>(
-                            coefficients, i, coefficient);
+                            c, i, coefficient);
                     }
                 }
             }
@@ -76,8 +82,9 @@ namespace kodo
 
             // Since we will not set all coefficients we should ensure
             // that the non specified ones are zero
-            std::fill_n(
-                coefficients, SuperCoder::coefficients_size(), 0);
+            std::fill_n( coefficients, SuperCoder::coefficients_size(), 0);
+
+            value_type* c = reinterpret_cast<value_type*>(coefficients);
 
             uint32_t symbols = SuperCoder::rank();
 
@@ -92,14 +99,14 @@ namespace kodo
                 {
                     if (fifi::is_binary<field_type>::value)
                     {
-                        fifi::set_value<field_type>(coefficients, i, 1);
+                        fifi::set_value<field_type>(c, i, 1);
                     }
                     else
                     {
                         value_type coefficient =
                             m_value_distribution(m_random_generator);
 
-                        fifi::set_value<field_type>(coefficients, i, coefficient);
+                        fifi::set_value<field_type>(c, i, coefficient);
                     }
                 }
 
