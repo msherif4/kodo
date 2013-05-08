@@ -22,7 +22,7 @@ def options(opt):
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
-            name='waf-tools',
+            name = 'waf-tools',
             git_repository = 'git://github.com/steinwurf/external-waf-tools.git',
             major_version = 2))
 
@@ -35,8 +35,8 @@ def options(opt):
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'boost',
-            git_repository = 'git://github.com/steinwurf/external-boost.git',
-            major_version = 4))
+            git_repository = 'git://github.com/steinwurf/external-boost-light.git',
+            major_version = 1))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
