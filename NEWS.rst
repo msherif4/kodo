@@ -31,6 +31,7 @@ Latest (major)
 * Minor: Moved finite_field_counter layer from the benchmarks to the
   library source folder. This makes it possible to add it to any codec
   stack where the number of finite field operations should be monitored.
+* Minor: Updated to waf-tools version 2.x.y
 
 8.0.0
 -----

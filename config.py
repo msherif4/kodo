@@ -3,6 +3,17 @@
 
 import os, sys, urllib2, traceback
 
+project_name = 'kodo'
+project_dependencies = \
+[
+    'waf-tools',
+    'gtest',
+    'boost',
+    'sak',
+    'fifi',
+    'gauge',
+]
+
 # Importing a dynamically generated module
 # Python recipe from http://code.activestate.com/recipes/82234
 def importCode(code,name,add_to_sys_modules=0):
@@ -52,7 +63,7 @@ if __name__ == '__main__':
             # Import the code string as a module
             mod = importCode(code,"config_helper")
             # Run the actual config tool from the dynamic module
-            mod.config_tool()
+            mod.config_tool(project_dependencies)
         except:
             print("Unexpected error:")
             print traceback.format_exc()
