@@ -22,38 +22,38 @@ def options(opt):
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
-            name='waf-tools',
-            git_repository = 'git://github.com/steinwurf/external-waf-tools.git',
+            name = 'waf-tools',
+            git_repository = 'github.com/steinwurf/external-waf-tools.git',
             major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gtest',
-            git_repository = 'git://github.com/steinwurf/external-gtest.git',
+            git_repository = 'github.com/steinwurf/external-gtest.git',
             major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'boost',
-            git_repository = 'git://github.com/steinwurf/external-boost.git',
-            major_version = 4))
+            git_repository = 'github.com/steinwurf/external-boost-light.git',
+            major_version = 1))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'sak',
-            git_repository = 'git://github.com/steinwurf/sak.git',
+            git_repository = 'github.com/steinwurf/sak.git',
             major_version = 10))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
-            git_repository = 'git://github.com/steinwurf/fifi.git',
+            git_repository = 'github.com/steinwurf/fifi.git',
             major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gauge',
-            git_repository = 'git://github.com/steinwurf/cxx-gauge.git',
+            git_repository = 'github.com/steinwurf/cxx-gauge.git',
             major_version = 4))
 
     opt.load('wurf_dependency_bundle')
