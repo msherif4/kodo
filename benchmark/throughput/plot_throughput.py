@@ -48,12 +48,21 @@ def plot_group(testcase, symbol_size, dataframe):
     encoder = encoder.set_index(['benchmark','symbols'])
     decoder = decoder.set_index(['benchmark','symbols'])
 
-    f, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2, 2)
-    encoder['mean'].unstack(level=0).plot(kind='bar', ax = ax1, title='Encoder Mean')
-    encoder['std'].unstack(level=0).plot(kind='bar', ax = ax2)
-    decoder['mean'].unstack(level=0).plot(kind='bar', ax = ax3)
-    decoder['std'].unstack(level=0).plot(kind='bar', ax = ax4)
+    f, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2, 2, sharex=True)
+    l1 = encoder['mean'].unstack(level=0).plot(kind='bar', ax = ax1, title='Encoder Mean', legend=False)
+    l2 = encoder['std'].unstack(level=0).plot(kind='bar', ax = ax3, title='Encoder Std dev.', legend=False)
+    l3 = decoder['mean'].unstack(level=0).plot(kind='bar', ax = ax2, title='Decoder Mean', legend=False, sharey=ax1)
+    l4 = decoder['std'].unstack(level=0).plot(kind='bar', ax = ax4, title='Decoder Std dev.', legend=False,sharey=ax3)
 
+    handles, labels = ax1.get_legend_handles_labels()
+    #ax1.legend(bbox_to_anchor=(1.1, 1.05))
+    t = f.legend(handles, labels,ncol=4, mode='expand')
+    #t.set_y(1.09)
+
+    f.tight_layout()
+    plt.subplots_adjust(top=0.86)
+    #f.legend((l3, l4), ('Line 3', 'Line 4'), 'upper right')
+    #f.legend(loc="best")
     plt.show()
 
     print encoder
