@@ -1,5 +1,10 @@
 # This simple script plots the csv file produced by the throughput
-# benchmark, if you make some cool visualizations please send a patch
+# benchmark, if you make some cool visualizations please send a patch.
+#
+# To ensure the plots look right you need to use pandas version >= 0.11.0.
+# You can check which version you are on by running:
+# >>> import pandas
+# >>> pandas.__version__
 
 import argparse
 import pandas as pd
