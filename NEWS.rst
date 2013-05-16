@@ -32,6 +32,7 @@ Latest (major)
   library source folder. This makes it possible to add it to any codec
   stack where the number of finite field operations should be monitored.
 * Minor: Updated to waf-tools version 2.x.y
+* Major: Updating dependency to gauge version 5.x.y
 
 8.0.0
 -----
