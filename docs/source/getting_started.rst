@@ -68,9 +68,24 @@ Download tools (Windows)
 Download tools (Mac OSX)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **C++11 compliant compiler:** You need a working C++ compiler. We have
-   tested using `XCode 4.6.2 and the Apple LLVM 4.2`_ compiler which is free of
-   charge. Newer versions should also be fine.
+**C++11 compliant compiler:** You need a working C++ compiler. We have
+tested using `XCode`_ 4.6.2 and the Apple LLVM 4.2 compiler which is free of
+charge. Newer versions should also be fine.
+
+Option A:
+   1. Download and install `XCode`_ from the Mac App Store
+   2. Open XCode Preferences/Downloads and install **Command Line Tools**
+   
+Option B:
+   1. Install **Command Line Tools** without XCode from the `Apple Open Source download page`_
+ 
+ 
+.. _`Apple Open Source download page`:
+   https://developer.apple.com/opensource/
+   
+.. _`XCode`:
+   https://developer.apple.com/xcode/
+
 
 
 Download the Kodo source code
@@ -81,17 +96,17 @@ easily get new updates whenever the library is updated. In addition to
 this it is also possible to download the library as either zip or tar.gz
 archive. We will describe both approaches in the following:
 
-Recommended: Clone the git repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Recommended: Clone the git repository (Linux and Mac OSX)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Create a suitable directory for the projects (optional)
+1. (Optional) Create a suitable directory (e.g. 'dev') for the projects using the terminal
 
    ::
 
      mkdir dev
      cd dev
 
-2. Clone and download the Kodo libraries by running:
+2. Clone and download the Kodo libraries by running (this will create a new directory called 'kodo'):
 
    ::
 
