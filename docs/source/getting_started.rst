@@ -26,7 +26,7 @@ that you also install the following:
 In the following we will provide the links for installing the tools on
 a number of different platforms.
 
-Download tools (Ubuntu or other Debian based distributions)
+Download tools (Ubuntu or other Debian-based distributions)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Get the dependencies using the following command:
 
@@ -37,7 +37,7 @@ Get the dependencies using the following command:
 Download tools (Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **C++11 compliant compiler:** You need a working C++ compiler we have
+1. **C++11 compliant compiler:** You need a working C++ compiler. We have
    tested using `Visual Studio Express 2012`_ compiler which is free of
    charge. Newer versions should also be fine.
 
@@ -64,6 +64,13 @@ Download tools (Windows)
 
 .. _`msysgit downloads`:
    https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
+
+Download tools (Mac OSX)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. **C++11 compliant compiler:** You need a working C++ compiler. We have
+   tested using `XCode 4.6.2 and the Apple LLVM 4.2`_ compiler which is free of
+   charge. Newer versions should also be fine.
 
 
 Download the Kodo source code
