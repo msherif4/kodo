@@ -16,6 +16,8 @@
 #include <kodo/rlnc/seed_codes.hpp>
 #include <kodo/rs/reed_solomon_codes.hpp>
 
+#include "delayed_rlnc_decoder.hpp"
+
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
 struct throughput_benchmark : public gauge::time_benchmark
@@ -151,6 +153,11 @@ struct throughput_benchmark : public gauge::time_benchmark
 
         m_encoder = m_encoder_factory->build();
         m_decoder = m_decoder_factory->build();
+
+        // In case the decoder fails to decode, this function is called again,
+        // so we have to set the seed randomly to prevent the encoder from
+        // always being initialized with the same seed.
+        m_encoder->seed(rand());
 
         // Prepare the data to be encoded
         m_encoded_data.resize(m_encoder->block_size());
@@ -394,6 +401,46 @@ typedef throughput_benchmark<
 BENCHMARK_F(setup_rlnc_throughput2325, FullRLNC, Prime2325, 5)
 {
     run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary> >
+   setup_delayed_rlnc_throughput;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput, FullDelayedRLNC, Binary, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary8>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary8> >
+   setup_delayed_rlnc_throughput8;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput8, FullDelayedRLNC, Binary8, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary16>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary16> >
+   setup_delayed_rlnc_throughput16;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput16, FullDelayedRLNC, Binary16, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::prime2325>,
+   kodo::full_delayed_rlnc_decoder<fifi::prime2325> >
+   setup_delayed_rlnc_throughput2325;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput2325, FullDelayedRLNC, Prime2325, 5)
+{
+   run_benchmark();
 }
 
 

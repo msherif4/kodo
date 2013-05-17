@@ -14,9 +14,7 @@
 #include <gauge/python_printer.hpp>
 #include <gauge/csv_printer.hpp>
 
-#include <kodo/partial_shallow_symbol_storage.hpp>
-#include <kodo/rlnc/full_vector_codes.hpp>
-#include <kodo/finite_field_counter.hpp>
+#include "codes.hpp"
 
 std::vector<uint32_t> setup_symbols()
 {
@@ -59,77 +57,6 @@ std::vector<std::string> setup_types()
     types.push_back("decoder");
 
     return types;
-}
-
-
-namespace kodo
-{
-
-    template<class Field>
-    class full_rlnc_encoder_count
-        : public
-    // Payload Codec API
-    payload_encoder<
-        // Codec Header API
-        systematic_encoder<
-            symbol_id_encoder<
-                // Symbol ID API
-                plain_symbol_id_writer<
-                    // Coefficient Generator API
-                    uniform_generator<
-                        // Codec API
-                        storage_aware_encoder<
-                            encode_symbol_tracker<
-                                zero_symbol_encoder<
-                                    linear_block_encoder<
-                                        // Coefficient Storage API
-                                        coefficient_info<
-                                            // Symbol Storage API
-                                            partial_shallow_symbol_storage<
-                                                storage_bytes_used<
-                                                    storage_block_info<
-                                                        // Finite Field API
-                                                        finite_field_counter<
-                                                            finite_field_math<typename fifi::default_field<Field>::type,
-                                                                finite_field_info<Field,
-                                                                    // Factory API
-                                                                    final_coder_factory_pool<
-                                                                        // Final type
-                                                                        full_rlnc_encoder_count<Field>
-                                                                        > > > > > > > > > > > > > > > > >
-    { };
-
-    template<class Field>
-    class full_rlnc_decoder_count
-        : public
-    // Payload API
-    payload_decoder<
-        // Codec Header API
-        systematic_decoder<
-            symbol_id_decoder<
-                // Symbol ID API
-                plain_symbol_id_reader<
-                    // Codec API
-                    aligned_coefficients_decoder<
-                        linear_block_decoder<
-                            // Coefficient Storage API
-                            coefficient_storage<
-                                coefficient_info<
-                                    // Storage API
-                                    deep_symbol_storage<
-                                        storage_bytes_used<
-                                            storage_block_info<
-                                                // Finite Field API
-                                                finite_field_counter<
-                                                    finite_field_math<typename fifi::default_field<Field>::type,
-                                                        finite_field_info<Field,
-                                                            // Factory API
-                                                            final_coder_factory_pool<
-                                                                // Final type
-                                                                full_rlnc_decoder_count<Field>
-                                                                > > > > > > > > > > > > > > >
-    { };
-
 }
 
 
@@ -476,6 +403,36 @@ typedef operations_benchmark<
 BENCHMARK_F(setup_rlnc_count16, RLNC, Binary16, 5)
 {
     run();
+}
+
+typedef operations_benchmark<
+    kodo::full_rlnc_encoder_count<fifi::binary>,
+    kodo::full_delayed_rlnc_decoder_count<fifi::binary> >
+    setup_delayed_rlnc_count;
+
+BENCHMARK_F(setup_delayed_rlnc_count, DelayedRLNC, Binary, 5)
+{
+    run();
+}
+
+typedef operations_benchmark<
+   kodo::full_rlnc_encoder_count<fifi::binary8>,
+   kodo::full_delayed_rlnc_decoder_count<fifi::binary8> >
+   setup_delayed_rlnc_count8;
+
+BENCHMARK_F(setup_delayed_rlnc_count8, DelayedRLNC, Binary8, 5)
+{
+   run();
+}
+
+typedef operations_benchmark<
+   kodo::full_rlnc_encoder_count<fifi::binary16>,
+   kodo::full_delayed_rlnc_decoder_count<fifi::binary16> >
+   setup_delayed_rlnc_count16;
+
+BENCHMARK_F(setup_delayed_rlnc_count16, DelayedRLNC, Binary16, 5)
+{
+   run();
 }
 
 
