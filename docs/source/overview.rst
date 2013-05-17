@@ -1,70 +1,63 @@
-Kodo Organization
-=================
+Overview
+========
 
-This page describes how the Kodo library is organized and how the FEC codes
-are constructed.
+.. _overview:
 
-Background
-----------
-Kodo utilizes a C++ design technique called mixin-layers. Mixin-layers are
-different from traditional C++ Mixins and
+In this document we will try to give a quick overview of Kodo to new users.
 
-You may find more information about mixin-layers in the following papers:
+Features
+--------
 
+Kodo provides several different codes, primarily the basic Random Linear
+Network Code and multiple variants.
 
-Kodo Layers
-===========
+Random Linear Network Coding (RLNC)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One of the parameters we may tweak using Kodo is how the encoding vectors
+are constructed and represented. The encoding vectors describe which symbols
+are combined within a generation (a generation consists of a number of
+data packets also refereed to as symbols).
 
+Kodo allows the density / distribution of the encoding vectors to be change.
+Some of the supported variants are:
 
+* Dense variant (purely uniform).
+* Sparse variant with fixed density
+* Sparse variant with uniform density
+* Systematic variants
 
-..
-   +--+-------------------------------+-----------------------------------+
-   | 6| Encoder interface             | Decoder interface                 |
-   +--+-------------------+-----------+-----------+-----------------------+
-   | 5| Linear encoder    | Generator             | Decoder               |
-   +--+-------------------+-----------+-----------+-----------------------+
+The representation of the encoding vector affects the overhead on the wire
+i.e. the number of bytes per coded packet containing meta data instead of
+application data. Here some of the variants supported are:
 
+* Variants where the coding vector is included (for recoding)
+* Variants where a seed is included
 
-+--+-------------------------------------------------------------------+
-| 6| Coder interface                                                   |
-+--+-------------------------------------------------------------------+
-| 5| Code specialization and overlays                                  |
-+--+-------------------------------------------------------------------+
-| 4| Codes                                                             |
-+--+-------------------------------------------------------------------+
-| 3| Finite fields                                                     |
-+--+-------------------------------------------------------------------+
-| 2| Symbol and symbol id storage                                      |
-+--+-------------------------------------------------------------------+
-| 1| Utilities                                                         |
-+--+-------------------------------------------------------------------+
+Other codes and approaches
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+We also support some other coding types:
 
-Coder interface
- Provides a convinient interface to application developers. It allows for encoding over an object with a specified code and build and hold all needed encoders. Similar decoding and recoding over an object.
+* Random Annex overlay code
+* Reed-Solomon code
+* Carousel code (round robin scheduling of symbols)
 
-Code specialization
- Provides multiple specializations for the *basic* code. **Systematic** specialization where all data is first send uncoded. Cached specialiatation where coding vectors are reused between generations. **Random Annex** specilatation where a random annex partitioning scheme is overlayed on the code.
+Platforms
+---------
+Kodo is a plain C++ library so it is portable to a wide range of platforms.
+To ensure that we do not break compatibility with a supported platform we
+have a buildbot instance building the Kodo libraries. You can check the
+status on the `Steinwurf Buildbot`_ page.
 
+.. _Steinwurf Buildbot: http://176.28.49.184:12344
 
-Code implementation
- Implement multiple codes, such as **Random Linear Netork Coding** (RLNC), Sparse RLNC (S-RLNC), and **Reed-Solomon** (RS). Each code uses a generator to generate symbol id's (called coding vectors, for NC codes), an encoder to encode data, a decoder to decode data, and if a NC code a recode that can recode data based on data in a decoder.
+.. note:: The buildbot is used for several different projects you will find the
+  Kodo project in the overview on the main page.
 
+The buildbot pages will also provide you with up-to-date information on which
+platforms and compilers we are currently testing. If you have a specific
+platform or compiler which you would like to see Kodo support, `drop us a line`_.
 
-Finite fields
- Implement multiple Finite Fields, each field provide the basic operations (+ - % \*). Currently there is support for **binary extensition fields** (of the commonly used sizes 2, 2^8, 2^16, 2^32) and a couple of large **prime fields**. To ensure high performance on all platforms for all fields, most of the fields are implemented using multiple techniques.
-
-
-Memory management
- Provides convinient and reusable **storage** for symbols and symbol id's.
-
-
-Utilities
- Remove ?
-
-
-
-
-
+.. _drop us a line: http://steinwurf.com/contact-us/
 
 
 
