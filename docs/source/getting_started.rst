@@ -20,6 +20,8 @@ that you also install the following:
    build system.
 
 .. _waf: https://code.google.com/p/waf/
+.. _Steinwurf Buildbot: http://176.28.49.184:12344
+
 
 In the following we will provide the links for installing the tools on
 a number of different platforms.
@@ -65,7 +67,7 @@ Download tools (Windows)
 
 
 Download the Kodo source code
-----------------------------
+-----------------------------
 
 We recommend downloading the library using git, this will allow you to
 easily get new updates whenever the library is updated. In addition to
@@ -73,7 +75,7 @@ this it is also possible to download the library as either zip or tar.gz
 archive. We will describe both approaches in the following:
 
 Recommended: Clone the git repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. Create a suitable directory for the projects (optional)
 
