@@ -13,8 +13,6 @@
 namespace kodo
 {
 
-    /// @ingroup fec_stacks
-    /// @brief Implementation of a complete delayed RLNC decoder
     template<class Field>
     class full_delayed_rlnc_decoder
         : public // Payload API
