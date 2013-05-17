@@ -16,7 +16,7 @@
 #include <kodo/rlnc/seed_codes.hpp>
 #include <kodo/rs/reed_solomon_codes.hpp>
 
-#include "delayed_rlnc_decoder.hpp"
+#include "codes.hpp"
 
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
