@@ -33,6 +33,7 @@ struct throughput_benchmark : public gauge::time_benchmark
     {
         m_encoded_symbols = 0;
         m_decoded_symbols = 0;
+        m_factor = 2;
         gauge::time_benchmark::start();
     }
 
@@ -90,6 +91,10 @@ struct throughput_benchmark : public gauge::time_benchmark
             // the measurement if the decoding was successful
             if(!m_decoder->is_complete())
             {
+                // We did not generate enough payloads to decode successfully,
+                // so we will generate more payloads for next run
+                m_factor++;
+
                 return false;
             }
         }
@@ -154,11 +159,6 @@ struct throughput_benchmark : public gauge::time_benchmark
         m_encoder = m_encoder_factory->build();
         m_decoder = m_decoder_factory->build();
 
-        // In case the decoder fails to decode, this function is called again,
-        // so we have to set the seed randomly to prevent the encoder from
-        // always being initialized with the same seed.
-        m_encoder->seed(rand());
-
         // Prepare the data to be encoded
         m_encoded_data.resize(m_encoder->block_size());
 
@@ -170,7 +170,7 @@ struct throughput_benchmark : public gauge::time_benchmark
         m_encoder->set_symbols(sak::storage(m_encoded_data));
 
         // Prepare storage to the encoded payloads
-        uint32_t payload_count = symbols * 2;
+        uint32_t payload_count = symbols * m_factor;
 
         m_payloads.resize(payload_count);
         for(uint32_t i = 0; i < payload_count; ++i)
@@ -180,7 +180,6 @@ struct throughput_benchmark : public gauge::time_benchmark
 
         m_temp_payload.resize( m_encoder->payload_size() );
     }
-
 
     void encode_payloads()
     {
@@ -319,6 +318,9 @@ protected:
 
     /// Storage for encoded symbols
     std::vector< std::vector<uint8_t> > m_payloads;
+
+    /// Multiplication factor for payload_count
+    uint32_t m_factor;
 
 };
 
