@@ -133,8 +133,8 @@ You can also customize the target directory if you wish. By default, a new folde
 when the progress bar reaches the end.
 
 
-Alternative: Download the source code as archives
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Alternative: Download a release of the source code as an archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download the zip or tar.gz archive from the following location and
 extract it to a desired location.
@@ -160,7 +160,7 @@ A Waf project typically contains two types of files:
    of ``makefile`` written in Python.
 
 .. note:: See the ``waf`` build options by running ``python waf -h``
-          in your favorite command-line shell.
+          in your terminal.
 
 In the following we will look at how you can build Kodo's examples, benchmarks
 and unit tests using the Waf build system.
@@ -171,10 +171,10 @@ Quick Start (building Kodo examples and unit tests)
 .. _quick-start:
 
 If you are primarily interested in quickly trying some Kodo examples
-or building the unit-tests, we have tried to make that as easy as possible.
+or building the unit tests, we have tried to make that as easy as possible.
 Provided that you have the `Tools Needed`_ installed.
 
-.. note:: We recommend trying to build and run the unit-tests, before
+.. note:: We recommend trying to build and run the unit tests before
           using Kodo in your own project. However, if you want to skip
           this step you may jump directly to :ref:`using-kodo-in-your-application`
 
@@ -201,8 +201,9 @@ Provided that you have the `Tools Needed`_ installed.
    local directory in the Kodo folder called  ``bundle_dependencies`` and
    store the libraries there.
 
-   .. note:: The ``waf configure`` step might take a while, so now would be a
-             good time to grap a coffee or similar while it downloads.
+   .. note:: The ``waf configure`` step might take several minutes depending on
+             the speed of your Internet connection. This would be a
+             good time to grab a coffee or similar while the dependencies are downloaded.
 
 3. Invoke ``waf`` to build the unit-tests and examples.
 
