@@ -16,6 +16,8 @@
 #include <kodo/rlnc/seed_codes.hpp>
 #include <kodo/rs/reed_solomon_codes.hpp>
 
+#include "codes.hpp"
+
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
 struct throughput_benchmark : public gauge::time_benchmark
@@ -26,6 +28,12 @@ struct throughput_benchmark : public gauge::time_benchmark
 
     typedef typename Decoder::factory decoder_factory;
     typedef typename Decoder::pointer decoder_ptr;
+
+    void init()
+    {
+        m_factor = 2;
+        gauge::time_benchmark::init();
+    }
 
     void start()
     {
@@ -88,6 +96,10 @@ struct throughput_benchmark : public gauge::time_benchmark
             // the measurement if the decoding was successful
             if(!m_decoder->is_complete())
             {
+                // We did not generate enough payloads to decode successfully,
+                // so we will generate more payloads for next run
+                m_factor++;
+
                 return false;
             }
         }
@@ -163,7 +175,7 @@ struct throughput_benchmark : public gauge::time_benchmark
         m_encoder->set_symbols(sak::storage(m_encoded_data));
 
         // Prepare storage to the encoded payloads
-        uint32_t payload_count = symbols * 2;
+        uint32_t payload_count = symbols * m_factor;
 
         m_payloads.resize(payload_count);
         for(uint32_t i = 0; i < payload_count; ++i)
@@ -173,7 +185,6 @@ struct throughput_benchmark : public gauge::time_benchmark
 
         m_temp_payload.resize( m_encoder->payload_size() );
     }
-
 
     void encode_payloads()
     {
@@ -313,6 +324,9 @@ protected:
     /// Storage for encoded symbols
     std::vector< std::vector<uint8_t> > m_payloads;
 
+    /// Multiplication factor for payload_count
+    uint32_t m_factor;
+
 };
 
 /// Using this macro we may specify options. For specifying options
@@ -394,6 +408,46 @@ typedef throughput_benchmark<
 BENCHMARK_F(setup_rlnc_throughput2325, FullRLNC, Prime2325, 5)
 {
     run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary> >
+   setup_delayed_rlnc_throughput;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput, FullDelayedRLNC, Binary, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary8>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary8> >
+   setup_delayed_rlnc_throughput8;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput8, FullDelayedRLNC, Binary8, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::binary16>,
+   kodo::full_delayed_rlnc_decoder<fifi::binary16> >
+   setup_delayed_rlnc_throughput16;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput16, FullDelayedRLNC, Binary16, 5)
+{
+   run_benchmark();
+}
+
+typedef throughput_benchmark<
+   kodo::full_rlnc_encoder<fifi::prime2325>,
+   kodo::full_delayed_rlnc_decoder<fifi::prime2325> >
+   setup_delayed_rlnc_throughput2325;
+
+BENCHMARK_F(setup_delayed_rlnc_throughput2325, FullDelayedRLNC, Prime2325, 5)
+{
+   run_benchmark();
 }
 
 
