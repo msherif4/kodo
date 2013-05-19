@@ -628,7 +628,63 @@ TEST(TestRlncFullVectorCodes, set_symbol)
 }
 
 
+template<template <class> class Encoder,
+         template <class> class Decoder>
+void test_reuse(uint32_t symbols, uint32_t symbol_size)
+{
+    invoke_reuse
+        <
+            Encoder<fifi::binary>,
+            Decoder<fifi::binary>
+            >(symbols, symbol_size);
 
+    invoke_reuse
+        <
+            Encoder<fifi::binary8>,
+            Decoder<fifi::binary8>
+            >(symbols, symbol_size);
+
+    invoke_reuse
+        <
+            Encoder<fifi::binary16>,
+            Decoder<fifi::binary16>
+            >(symbols, symbol_size);
+
+}
+
+
+void test_reuse(uint32_t symbols, uint32_t symbol_size)
+{
+
+    test_reuse<
+        kodo::full_rlnc_encoder_shallow,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    test_reuse<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    // The delayed decoders
+    test_reuse<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
+}
+
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
+TEST(TestRlncFullVectorCodes, test_reuse)
+{
+    test_reuse(32, 1600);
+    test_reuse(1, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_reuse(symbols, symbol_size);
+}
 
 
 

@@ -109,6 +109,19 @@ namespace kodo
                 m_symbol_size = symbol_size;
             }
 
+            /// @return A reference to the internal resource pool
+            const sak::resource_pool<FinalType>& pool() const
+            {
+                return m_pool;
+            }
+
+            /// @return A reference to the internal resource pool
+            sak::resource_pool<FinalType>& pool()
+            {
+                return m_pool;
+            }
+
+
         private: // Make non-copyable
 
             /// Copy constructor
