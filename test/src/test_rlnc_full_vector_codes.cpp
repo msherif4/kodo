@@ -21,6 +21,7 @@
 #include <kodo/shallow_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
+#include "test_reuse.hpp"
 
 namespace kodo
 {
@@ -625,31 +626,6 @@ TEST(TestRlncFullVectorCodes, set_symbol)
     uint32_t symbol_size = rand_symbol_size();
 
     test_set_symbol(symbols, symbol_size);
-}
-
-
-template<template <class> class Encoder,
-         template <class> class Decoder>
-void test_reuse(uint32_t symbols, uint32_t symbol_size)
-{
-    invoke_reuse
-        <
-            Encoder<fifi::binary>,
-            Decoder<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_reuse
-        <
-            Encoder<fifi::binary8>,
-            Decoder<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_reuse
-        <
-            Encoder<fifi::binary16>,
-            Decoder<fifi::binary16>
-            >(symbols, symbol_size);
-
 }
 
 
