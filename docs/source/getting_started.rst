@@ -47,8 +47,12 @@ Download tools (Windows)
 
 3. **Git:** There are several ways to get git on Windows. If you plan to use
    the waf build-scripts to build the Kodo examples and unit-tests, you should
-   install the msysgit_ tool. If you do not know which version to install you
-   may select the latest version from the `msysgit downloads`_ page.
+   install the msysgit_ tool. If you do not know which version to install, you
+   may select the latest version from the `msysgit downloads`_ page (version 1.8.x and above).
+   
+4. **TortoiseGit (Optional):**
+   You can also install the latest version of TortoiseGit_ if you prefer to use a GUI instead of the 
+   command-line git tools. Version 1.8.1 and later should work fine.
 
 .. _`Visual Studio Express 2012`:
    http://www.microsoft.com/visualstudio/eng/downloads
@@ -64,12 +68,15 @@ Download tools (Windows)
 
 .. _`msysgit downloads`:
    https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
+   
+.. _`TortoiseGit`:
+   https://code.google.com/p/tortoisegit/
 
 Download tools (Mac OSX)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 **C++11 compliant compiler:** You need a working C++ compiler. We have
-tested using `XCode`_ 4.6.2 and the Apple LLVM 4.2 compiler which is free of
+tested using `XCode`_ 4.6.2 and the Apple LLVM 4.2 compiler which can downloaded free of
 charge. Newer versions should also be fine.
 
 Option A:
@@ -96,8 +103,8 @@ easily get new updates whenever the library is updated. In addition to
 this it is also possible to download the library as either zip or tar.gz
 archive. We will describe both approaches in the following:
 
-Recommended: Clone the git repository (Linux and Mac OSX)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Recommended: Clone the git repository using the terminal (Linux and Mac OSX)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. (Optional) Create a suitable directory (e.g. 'dev') for the projects using the terminal
 
@@ -111,6 +118,20 @@ Recommended: Clone the git repository (Linux and Mac OSX)
    ::
 
      git clone git://github.com/steinwurf/kodo.git
+     
+Recommended: Clone the git repository using TortoiseGit (Windows)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Open the directory where you want to clone the project, right-click on empty space and select 
+**Git Clone...** from the context menu. The TortoiseGit clone dialog will appear, copy this to the URL field:
+
+::
+
+   https://github.com/steinwurf/kodo.git
+      
+You can also customize the target directory if you wish. By default, a new folder called 'kodo' will be created
+when the progress bar reaches the end.
+
 
 Alternative: Download the source code as archives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
