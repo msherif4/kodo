@@ -29,11 +29,16 @@ struct throughput_benchmark : public gauge::time_benchmark
     typedef typename Decoder::factory decoder_factory;
     typedef typename Decoder::pointer decoder_ptr;
 
+    void init()
+    {
+        m_factor = 2;
+        gauge::time_benchmark::init();
+    }
+
     void start()
     {
         m_encoded_symbols = 0;
         m_decoded_symbols = 0;
-        m_factor = 2;
         gauge::time_benchmark::start();
     }
 
