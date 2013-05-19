@@ -4,8 +4,12 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest (major)
---------------
+Latest
+------
+* tbd
+
+9.0.0
+-----
 * Minor: Adding the shallow storage decoder which allows decoding objects
   larger than a single block or generation.
 * Minor: Adding new example of an on-the-fly encoder. This example shows
