@@ -72,6 +72,7 @@ namespace kodo
 
                 // Did you forget to set the data on the encoder?
                 assert(symbol_i != 0);
+                assert(SuperCoder::symbol_exists(i));
 
                 if(fifi::is_binary<field_type>::value)
                 {
