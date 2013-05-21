@@ -57,6 +57,9 @@ namespace kodo
         {
             SuperCoder::initialize(the_factory);
 
+            /// @todo This should not be necessary - we should not
+            ///       use data which has not been initialized yet
+            ///       anyway
             std::fill(m_data.begin(), m_data.end(), 0);
             std::fill(m_symbols.begin(), m_symbols.end(), false);
 
@@ -107,19 +110,14 @@ namespace kodo
             assert(symbol_storage.m_size <=
                    SuperCoder::symbols() * SuperCoder::symbol_size());
 
-            /// Use the copy function
+            // Use the copy function
             copy_storage(sak::storage(m_data), symbol_storage);
 
-            // ceil(x/y) = ((x - 1) / y) + 1
-            m_symbols_count = ((symbol_storage.m_size - 1) /
-                               SuperCoder::symbol_size()) + 1;
-
-            for(uint32_t i = 0; i < m_symbols.size(); ++i)
-            {
-                // Set true if less than then symbol count
-                m_symbols[i] = (i < m_symbols_count);
-            }
-
+            // This will specify all symbols, also in the case
+            // of partial data. If this is not desired then the
+            // symbols need to be set individually.
+            m_symbols_count = SuperCoder::symbols();
+            std::fill(m_symbols.begin(), m_symbols.end(), true);
         }
 
         /// @copydoc layer::set_symbol(uint32_t, const sak::const_storage&)

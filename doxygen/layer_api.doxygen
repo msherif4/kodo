@@ -450,13 +450,17 @@ public:
     const value_type* symbol_value(uint32_t index) const;
 
     /// @ingroup storage_api
-    /// Sets the storage for the source symbols
+    /// Sets the storage for the source symbols. This will specify all
+    /// symbols also in the case of partial data. If this is not desired
+    /// then the symbols should be specified individually.
     /// @param symbol_storage A sak::const_storage container initialized
     ///        with the buffer to be use as encoding buffer.
     void set_symbols(const sak::const_storage &symbol_storage);
 
     /// @ingroup storage_api
-    /// Sets the storage for the source symbols
+    /// Sets the storage for the source symbols. This will specify all
+    /// symbols also in the case of partial data. If this is not desired
+    /// then the symbols should be specified individually.
     /// @param symbol_storage A sak::mutable_storage container initialized
     ///        with the buffer to be use as encoding / decoding buffer.
     void set_symbols(const sak::mutable_storage &symbol_storage);
