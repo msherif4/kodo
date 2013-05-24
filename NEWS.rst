@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+9.0.1
+-----
 * Bug: Fix behavior or deep_symbol_storage::set_symbols() to set all
   symbols.
 * Bug: When reusing decoders contaning the linear_block_decoder layer
