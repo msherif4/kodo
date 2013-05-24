@@ -6,8 +6,12 @@ of every change, see the Git log.
 
 Latest
 ------
-* Bug: Fix behavior or deep_symbol_storage::set_symbols() to set all 
-  symbols. 
+* Bug: Fix behavior or deep_symbol_storage::set_symbols() to set all
+  symbols.
+* Bug: When reusing decoders contaning the linear_block_decoder layer
+  systematic symbols where not correctly initialized. A fix was added
+  to the linear_block_decoder and the unit test test_reuse_incomplete
+  now checks for this issue.
 
 9.0.0
 -----
