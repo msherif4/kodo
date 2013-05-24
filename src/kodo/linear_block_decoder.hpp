@@ -536,6 +536,9 @@ namespace kodo
             value_type *vector_dest =
                 SuperCoder::coefficients_value( pivot_index );
 
+            // Zero out the memory first
+            std::fill_n(vector_dest, SuperCoder::coefficients_length(), 0);
+
             fifi::set_value<field_type>(vector_dest, pivot_index, 1U);
 
             // Copy it into the symbol storage
