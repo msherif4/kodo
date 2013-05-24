@@ -6,7 +6,8 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Bug: Fix behavior or deep_symbol_storage::set_symbols() to set all 
+  symbols. 
 
 9.0.0
 -----
