@@ -273,8 +273,9 @@ public:
 
     /// @ingroup codec_api
     /// The rank of a decoder states how many symbols have been decoded
-    /// or partially decoded.
-    /// @return the rank of the decoder
+    /// or partially decoded. The rank of an encoder states how many symbols
+    /// are available for encoding.
+    /// @return the rank of the decoder or encoder
     uint32_t rank() const;
 
     /// @ingroup codec_api
@@ -408,14 +409,14 @@ public:
     //------------------------------------------------------------------
 
     /// @ingroup storage_api
-    /// Copies the encoded / decoded symbols.
+    /// Copies the encoded / decoded symbols to the dest buffer.
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy block_size() bytes or until
     ///        the dest buffer is full.
     void copy_symbols(const sak::mutable_storage &dest) const;
 
     /// @ingroup storage_api
-    /// Copies an encoded / decoded symbols.
+    /// Copies an encoded / decoded symbols to the dest buffer.
     /// @param index The index of the symbol to be copied
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy symbol_size() bytes or until

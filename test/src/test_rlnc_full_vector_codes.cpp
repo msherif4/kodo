@@ -19,6 +19,7 @@
 #include <kodo/linear_block_decoder_delayed.hpp>
 #include <kodo/storage_aware_generator.hpp>
 #include <kodo/shallow_symbol_storage.hpp>
+#include <kodo/has_shallow_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
 #include "test_reuse.hpp"
@@ -107,10 +108,10 @@ namespace kodo
                  storage_aware_generator<
                  uniform_generator<
                  // Codec API
-                 storage_aware_encoder<
                  encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
+                 storage_aware_encoder<
                  // Coefficient Storage API
                  coefficient_info<
                  // Symbol Storage API
@@ -438,13 +439,15 @@ inline void invoke_recoding(recoding_parameters param)
     auto decoder_two = decoder_factory.build();
 
     // If tested with a shallow decoder we have to remember to set the
-    // buffers to use for the decoding (for simplicity we always do this
-    // whether or not it is actually needed)
+    // buffers to use for the decoding
     std::vector<uint8_t> buffer_decoder_one(decoder_one->block_size(), '\0');
     std::vector<uint8_t> buffer_decoder_two(decoder_two->block_size(), '\0');
 
-    decoder_one->set_symbols(sak::storage(buffer_decoder_one));
-    decoder_two->set_symbols(sak::storage(buffer_decoder_two));
+    if(kodo::has_shallow_symbol_storage<Decoder>::value)
+    {
+        decoder_one->set_symbols(sak::storage(buffer_decoder_one));
+        decoder_two->set_symbols(sak::storage(buffer_decoder_two));
+    }
 
     EXPECT_EQ(encoder->payload_size(), decoder_one->payload_size());
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());

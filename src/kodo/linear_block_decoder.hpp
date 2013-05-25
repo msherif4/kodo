@@ -510,7 +510,6 @@ namespace kodo
             SuperCoder::set_coefficients(
                 pivot_index, coefficient_storage);
 
-
             // Copy it into the symbol storage
             sak::mutable_storage dest =
                 sak::storage(SuperCoder::symbol(pivot_index),
