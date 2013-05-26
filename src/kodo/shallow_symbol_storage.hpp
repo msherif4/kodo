@@ -13,6 +13,14 @@
 namespace kodo
 {
 
+    enum class symbol_status : uint8_t
+    {
+        null = 0,
+        memory_unset = 1,
+        memory_set = 2
+    };
+
+
     /// @ingroup symbol_storage_layers
     /// @brief The shallow storage implementation. In this context shallow
     /// means that the symbol storage only contains pointers to some
