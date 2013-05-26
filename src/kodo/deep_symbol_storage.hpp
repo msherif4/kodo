@@ -198,6 +198,51 @@ namespace kodo
             return m_symbols_count == SuperCoder::symbols();
         }
 
+        uint32_t symbols_null() const
+        {
+            return 0;
+        }
+
+        uint32_t symbols_available() const
+        {
+            return SuperCoder::symbols();
+        }
+
+        uint32_t symbols_initialized() const
+        {
+            return m_symbols_count;
+        }
+
+        bool is_storage_null() const
+        {
+            return false;
+        }
+
+        bool is_storage_available() const
+        {
+            return true;
+        }
+
+        bool is_storage_initialized() const
+        {
+            return m_symbols_count == SuperCoder::symbols();
+        }
+
+        bool is_symbol_null(uint32_t /*symbol_index*/) const
+        {
+            return false;
+        }
+
+        bool is_symbol_available(uint32_t /*symbol_index*/) const
+        {
+            return true;
+        }
+
+        bool is_symbol_initialized(uint32_t symbol_index) const
+        {
+            return m_symbols[symbol_index];
+        }
+
     private:
 
         /// Storage for the symbol data

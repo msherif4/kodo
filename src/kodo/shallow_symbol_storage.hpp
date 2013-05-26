@@ -13,14 +13,6 @@
 namespace kodo
 {
 
-    enum class symbol_status : uint8_t
-    {
-        null = 0,
-        memory_unset = 1,
-        memory_set = 2
-    };
-
-
     /// @ingroup symbol_storage_layers
     /// @brief The shallow storage implementation. In this context shallow
     /// means that the symbol storage only contains pointers to some
@@ -38,20 +30,20 @@ namespace kodo
         /// IsConst = true -> const uint8_t*
         /// IsConst = false -> uint8_t*
         typedef typename std::conditional<IsConst,
-                // If const
-                typename std::add_pointer<
-                typename std::add_const<uint8_t>::type >::type,
-                // Else
-                typename std::add_pointer<uint8_t>::type >::type data_ptr;
+            // If const
+            typename std::add_pointer<
+            typename std::add_const<uint8_t>::type >::type,
+            // Else
+            typename std::add_pointer<uint8_t>::type >::type data_ptr;
 
         /// The storage type used will be either:
         /// IsConst = true -> sak::const_storage
         /// IsConst = false -> sak::mutable_storage
         typedef typename std::conditional<IsConst,
-                // If const
-                sak::const_storage,
-                // Else
-                sak::mutable_storage>::type storage_type;
+            // If const
+            sak::const_storage,
+            // Else
+            sak::mutable_storage>::type storage_type;
 
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
@@ -211,6 +203,52 @@ namespace kodo
         bool is_storage_full() const
         {
             return m_symbols_count == SuperCoder::symbols();
+        }
+
+        uint32_t symbols_null() const
+        {
+            return SuperCoder::symbols() - m_symbols_count;
+        }
+
+        uint32_t symbols_available() const
+        {
+            return m_symbols_count;
+        }
+
+        uint32_t symbols_initialized() const
+        {
+            return m_symbols_count;
+        }
+
+        bool is_storage_null() const
+        {
+            return m_symbols_count == 0;
+        }
+
+        bool is_storage_available() const
+        {
+            return m_symbols_count == SuperCoder::symbols();
+        }
+
+        bool is_storage_initialized() const
+        {
+            return m_symbols_count == SuperCoder::symbols();
+        }
+
+        bool is_symbol_null(uint32_t symbol_index) const
+        {
+            return m_data[symbol_index] == 0;
+        }
+
+        bool is_symbol_available(uint32_t symbol_index) const
+        {
+            return m_data[symbol_index] != 0;
+        }
+
+        /// initialized
+        bool is_symbol_initialized(uint32_t symbol_index) const
+        {
+            return m_data[symbol_index] != 0;
         }
 
     protected:
