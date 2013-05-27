@@ -527,18 +527,32 @@ public:
     uint32_t bytes_used() const;
 
     /// @ingroup storage_api
-    /// @param index The index of the symbol to check.
-    /// @return true if the symbol has been initialized
-    bool symbol_exists(uint32_t index) const;
+    /// @return The number of symbols that are available (i.e. where the
+    ///         memory is available, but not set)
+    uint32_t symbols_available() const;
 
     /// @ingroup storage_api
-    /// @return The number of symbols which have been specified so far
-    uint32_t symbol_count() const;
+    /// @return The number of symbols that are null (i.e. where the
+    ///         memory is available and set)
+    uint32_t symbols_initialized() const;
 
     /// @ingroup storage_api
-    /// @return true if the all symbols have been specified in the
-    ///         symbol storage, otherwise false
-    bool is_storage_full() const;
+    /// @return True if all symbols in the storage layer are available
+    bool is_symbols_available() const;
+
+    /// @ingroup storage_api
+    /// @return True if all symbols in the storage layer is initialized
+    bool is_symbols_initialized() const;
+
+    /// @ingroup storage_api
+    /// @param symbol_index The index of the symbol to check
+    /// @return True if the specific symbol is available
+    bool is_symbol_available(uint32_t symbol_index) const;
+
+    /// @ingroup storage_api
+    /// @param symbol_index The index of the symbol to check
+    /// @return True if the specific symbol is initialized
+    bool is_symbol_initialized(uint32_t symbol_index) const;
 
     //------------------------------------------------------------------
     // PAYLOAD API

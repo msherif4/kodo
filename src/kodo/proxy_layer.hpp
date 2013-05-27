@@ -49,7 +49,8 @@ namespace kodo
             }
 
             /// Sets the pointer to the proxy stack
-            /// @param factory_proxy The stack where calls should be forwarded.
+            /// @param factory_proxy The stack where calls should be
+            ///        forwarded.
             void set_factory_proxy(typename MainStack::factory* factory_proxy)
             {
                 assert(factory_proxy != 0);
@@ -259,25 +260,46 @@ namespace kodo
             return m_proxy->block_size();
         }
 
-        /// @copydoc layer::symbol_exists(uint32_t) const
-        bool symbol_exists(uint32_t index) const
+        /// @copydoc layer::symbols_available() const
+        uint32_t symbols_available() const
         {
             assert(m_proxy);
-            return m_proxy->symbol_exists(index);
+            return m_proxy->symbols_available();
         }
 
-        /// @copydoc layer::symbol_count() const
-        uint32_t symbol_count() const
+        /// @copydoc layer::symbols_initialized() const
+        uint32_t symbols_initialized() const
         {
             assert(m_proxy);
-            return m_proxy->symbol_count();
+            return m_proxy->symbols_initialized();
         }
 
-        /// @copydoc layer::is_storage_full() const
-        bool is_storage_full() const
+        /// @copydoc layer::is_symbols_available() const
+        bool is_symbols_available() const
         {
             assert(m_proxy);
-            return m_proxy->is_storage_full();
+            return m_proxy->is_symbols_available();
+        }
+
+        /// @copydoc layer::is_symbols_initialized() const
+        bool is_symbols_initialized() const
+        {
+            assert(m_proxy);
+            return m_proxy->is_symbols_initialized();
+        }
+
+        /// @copydoc layer::is_symbol_available(uint32_t) const
+        bool is_symbol_available(uint32_t symbol_index) const
+        {
+            assert(m_proxy);
+            return m_proxy->is_symbol_available(symbol_index);
+        }
+
+        /// @copydoc layer::is_symbol_initialized(uint32_t) const
+        bool is_symbol_initialized(uint32_t symbol_index) const
+        {
+            assert(m_proxy);
+            return m_proxy->is_symbol_initialized(symbol_index);
         }
 
         //------------------------------------------------------------------

@@ -186,66 +186,37 @@ namespace kodo
             sak::copy_storage(storage, src);
         }
 
-        /// @copydoc layer::symbol_exists(uint32_t) const
-        bool symbol_exists(uint32_t index) const
-        {
-            assert(index < SuperCoder::symbols());
-            return m_data[index] != 0;
-        }
-
-        /// @copydoc layer::symbol_count() const
-        uint32_t symbol_count() const
-        {
-            return m_symbols_count;
-        }
-
-        /// @copydoc layer::is_storage_full() const
-        bool is_storage_full() const
-        {
-            return m_symbols_count == SuperCoder::symbols();
-        }
-
-        uint32_t symbols_null() const
-        {
-            return SuperCoder::symbols() - m_symbols_count;
-        }
-
+        /// @copydoc layer::symbols_available() const
         uint32_t symbols_available() const
         {
             return m_symbols_count;
         }
 
+        /// @copydoc layer::symbols_initialized() const
         uint32_t symbols_initialized() const
         {
             return m_symbols_count;
         }
 
-        bool is_storage_null() const
-        {
-            return m_symbols_count == 0;
-        }
-
-        bool is_storage_available() const
+        /// @copydoc layer::is_symbols_available() const
+        bool is_symbols_available() const
         {
             return m_symbols_count == SuperCoder::symbols();
         }
 
-        bool is_storage_initialized() const
+        /// @copydoc layer::is_symbols_initialized() const
+        bool is_symbols_initialized() const
         {
             return m_symbols_count == SuperCoder::symbols();
         }
 
-        bool is_symbol_null(uint32_t symbol_index) const
-        {
-            return m_data[symbol_index] == 0;
-        }
-
+        /// @copydoc layer::is_symbol_available(uint32_t) const
         bool is_symbol_available(uint32_t symbol_index) const
         {
             return m_data[symbol_index] != 0;
         }
 
-        /// initialized
+        /// @copydoc layer::is_symbol_initialized(uint32_t) const
         bool is_symbol_initialized(uint32_t symbol_index) const
         {
             return m_data[symbol_index] != 0;
@@ -262,8 +233,8 @@ namespace kodo
     };
 
     /// @ingroup symbol_storage_layers
-    /// @brief Defines a coding layer for 'const' symbol storage. Only useful
-    /// for encoders since these to modify the buffers / data they
+    /// @brief Defines a coding layer for 'const' symbol storage. Only
+    /// useful for encoders since these to modify the buffers / data they
     /// operate on.
     template<class SuperCoder>
     class const_shallow_symbol_storage : public

@@ -502,6 +502,7 @@ namespace kodo
             assert(m_coded[pivot_index] == false);
             assert(symbol_coefficients != 0);
             assert(symbol_data != 0);
+            assert(SuperCoder::is_symbol_available(pivot_index));
 
             auto coefficient_storage =
                 sak::storage(symbol_coefficients,
@@ -530,6 +531,7 @@ namespace kodo
             assert(symbol_data != 0);
             assert(m_uncoded[pivot_index] == false);
             assert(m_coded[pivot_index] == false);
+            assert(SuperCoder::is_symbol_available(pivot_index));
 
             // Update the corresponding vector
             value_type *vector_dest =

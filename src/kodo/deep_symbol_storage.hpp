@@ -179,65 +179,37 @@ namespace kodo
             sak::copy_storage(dest, src);
         }
 
-        /// @copydoc layer::symbol_exists(uint32_t) const
-        bool symbol_exists(uint32_t index) const
-        {
-            assert(index < SuperCoder::symbols());
-            return m_symbols[index];
-        }
-
-        /// @copydoc layer::symbol_count() const
-        uint32_t symbol_count() const
-        {
-            return m_symbols_count;
-        }
-
-        /// @copydoc layer::is_storage_full() const
-        bool is_storage_full() const
-        {
-            return m_symbols_count == SuperCoder::symbols();
-        }
-
-        uint32_t symbols_null() const
-        {
-            return 0;
-        }
-
+        /// @copydoc layer::symbols_available() const
         uint32_t symbols_available() const
         {
             return SuperCoder::symbols();
         }
 
+        /// @copydoc layer::symbols_initialized() const
         uint32_t symbols_initialized() const
         {
             return m_symbols_count;
         }
 
-        bool is_storage_null() const
-        {
-            return false;
-        }
-
-        bool is_storage_available() const
+        /// @copydoc layer::is_symbols_available() const
+        bool is_symbols_available() const
         {
             return true;
         }
 
-        bool is_storage_initialized() const
+        /// @copydoc layer::is_symbols_initialized() const
+        bool is_symbols_initialized() const
         {
             return m_symbols_count == SuperCoder::symbols();
         }
 
-        bool is_symbol_null(uint32_t /*symbol_index*/) const
-        {
-            return false;
-        }
-
+        /// @copydoc layer::is_symbol_available(uint32_t) const
         bool is_symbol_available(uint32_t /*symbol_index*/) const
         {
             return true;
         }
 
+        /// @copydoc layer::is_symbol_initialized(uint32_t) const
         bool is_symbol_initialized(uint32_t symbol_index) const
         {
             return m_symbols[symbol_index];
