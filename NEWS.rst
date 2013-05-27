@@ -6,7 +6,18 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Bug: Fixed incorrectly failing assert in the linear_block_encoder. The assert
+  was triggered during recoding when a storage for a specific symbol was not
+  explicitly set by the layer::set_symbol() or layer::set_symbols() functions.
+  The bug was introduced in version 9.0.1, the unit test has been updated to
+  correctly detect this issue in the future.
+* Major: All codec stacks using the linear_block_encoder, should now add the
+  storage_aware_encoder layer below the linear_block_encoder. This is to ensure
+  that the encoder is reusable for RLNC recoding.
+* Major: Re-factor symbol storage API to avoid confusion about which symbols has
+  been explicitly specified by the user and which have not. This information is
+  now available through the symbols_available(), symbols_initialized() family
+  of functions.
 
 9.0.1
 -----

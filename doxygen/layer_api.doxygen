@@ -527,31 +527,54 @@ public:
     uint32_t bytes_used() const;
 
     /// @ingroup storage_api
-    /// @return The number of symbols that are available (i.e. where the
-    ///         memory is available, but not set)
+    /// @return The number of symbols that are available. Available
+    ///         means where the memory is available, but which may not
+    ///         have been initialized through a layer::set_symbol() or
+    ///         layer::set_symbols() by the user.
     uint32_t symbols_available() const;
 
     /// @ingroup storage_api
-    /// @return The number of symbols that are null (i.e. where the
-    ///         memory is available and set)
+    /// @return The number of symbols that are initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
     uint32_t symbols_initialized() const;
 
     /// @ingroup storage_api
-    /// @return True if all symbols in the storage layer are available
+    /// @return True if all symbols in the storage layer are available.
+    ///         Available means where the memory is available, but which
+    ///         may not have been initialized through a layer::set_symbol()
+    ///         or layer::set_symbols() by the user.
+    ///         Available means where the memory is available, but not
+    ///         by the user.
     bool is_symbols_available() const;
 
     /// @ingroup storage_api
-    /// @return True if all symbols in the storage layer is initialized
+    /// @return True if all symbols in the storage layer is initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
     bool is_symbols_initialized() const;
 
     /// @ingroup storage_api
     /// @param symbol_index The index of the symbol to check
-    /// @return True if the specific symbol is available
+    /// @return True if the specific symbol is available.
+    ///         Available means where the memory is available, but which
+    ///         may not have been initialized through a layer::set_symbol()
+    ///         or layer::set_symbols() by the user.
+    ///         Available means where the memory is available, but not
+    ///         by the user.
     bool is_symbol_available(uint32_t symbol_index) const;
 
     /// @ingroup storage_api
     /// @param symbol_index The index of the symbol to check
-    /// @return True if the specific symbol is initialized
+    /// @return True if the specific symbol is initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
     bool is_symbol_initialized(uint32_t symbol_index) const;
 
     //------------------------------------------------------------------
