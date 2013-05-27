@@ -249,11 +249,6 @@ struct api_coder
 
     void run_decoder_api()
     {
-        // Temp change the symbols so we know below how many we have
-        // we revert this at the end of this function
-        uint32_t symbols = m_coder_factory.symbols();
-        m_coder_factory.set_symbols(16);
-
         auto coder = m_coder_factory.build();
         m_proxy_factory.set_stack_proxy(coder.get());
 
@@ -290,8 +285,6 @@ struct api_coder
         {
             EXPECT_EQ(coder->symbol_pivot(i), proxy->symbol_pivot(i));
         }
-
-        m_coder_factory.set_symbols(symbols);
     }
 
 
@@ -350,7 +343,9 @@ TEST(TestProxyLayer, encoder)
 /// Run the tests typical coefficients stack
 TEST(TestProxyLayer, decoder)
 {
-    uint32_t symbols = rand_symbols();
+    // Should be at least 4, since we assume this in the
+    // run_decoder_api() function
+    uint32_t symbols = std::max(4U, rand_symbols());
     uint32_t symbol_size = rand_symbol_size();
 
     // The codec stack
