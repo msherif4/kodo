@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+10.0.0
+------
 * Bug: Fixed incorrectly failing assert in the linear_block_encoder. The assert
   was triggered during recoding when a storage for a specific symbol was not
   explicitly set by the layer::set_symbol() or layer::set_symbols() functions.
