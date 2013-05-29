@@ -64,6 +64,21 @@ struct throughput_benchmark : public gauge::benchmark
         assert(symbols.size() > 0);
         assert(symbol_size.size() > 0);
 
+        m_max_symbols = *std::max_element(symbols.begin(),
+                                          symbols.end());
+
+        m_max_symbol_size = *std::max_element(symbol_size.begin(),
+                                              symbol_size.end());
+
+        // Make the factories fit perfectly otherwise there seems to
+        // be problems with memory access i.e. when using a factory
+        // with max symbols 1024 with a symbols 16
+        m_decoder_factory = std::make_shared<decoder_factory>(
+            m_max_symbols, m_max_symbol_size);
+
+        m_encoder_factory = std::make_shared<encoder_factory>(
+            m_max_symbols, m_max_symbol_size);
+
         for(uint32_t i = 0; i < symbols.size(); ++i)
         {
             for(uint32_t j = 0; j < symbol_size.size(); ++j)
@@ -82,15 +97,6 @@ struct throughput_benchmark : public gauge::benchmark
 
         uint32_t symbols = cs.get_value<uint32_t>("symbols");
         uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
-
-        // Make the factories fit perfectly otherwise there seems to
-        // be problems with memory access i.e. when using a factory
-        // with max symbols 1024 with a symbols 16
-        m_decoder_factory = std::make_shared<decoder_factory>(
-            symbols, symbol_size);
-
-        m_encoder_factory = std::make_shared<encoder_factory>(
-            symbols, symbol_size);
 
         m_decoder_factory->set_symbols(symbols);
         m_decoder_factory->set_symbol_size(symbol_size);
@@ -136,6 +142,12 @@ struct throughput_benchmark : public gauge::benchmark
 
 protected:
 
+    /// The maximum number of symbols
+    uint32_t m_max_symbols;
+
+    /// The maximum symbol size
+    uint32_t m_max_symbol_size;
+
     /// The decoder factory
     std::shared_ptr<decoder_factory> m_decoder_factory;
 
@@ -180,11 +192,22 @@ BENCHMARK_OPTION(overhead_options)
         gauge::po::value<std::vector<uint32_t> >()->default_value(
             symbol_size, "")->multitoken();
 
+    std::vector<double> erasure;
+    erasure.push_back(0.5);
+
+    auto default_erasure =
+        gauge::po::value<std::vector<double> >()->default_value(
+            erasure, "")->multitoken();
+
     options.add_options()
         ("symbols", default_symbols, "Set the number of symbols");
 
     options.add_options()
         ("symbol_size", default_symbol_size, "Set the symbol size in bytes");
+
+    options.add_options()
+        ("symbol erasure probability", default_erasure,
+         "Set the symbol erasure probability");
 
     gauge::runner::instance().register_options(options);
 }
