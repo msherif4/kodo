@@ -104,6 +104,7 @@ def build(bld):
 
         bld.recurse('benchmark/throughput')
         bld.recurse('benchmark/count_operations')
+        bld.recurse('benchmark/overhead')
 
     # Export own includes
     bld(includes = './src',
