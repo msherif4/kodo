@@ -6,7 +6,9 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Adding new overhead benchmark. The overhead benchmark profiles the
+  total overhead in bytes transmitted on the wire for different code
+  configurations.
 
 10.0.0
 ------
