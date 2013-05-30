@@ -21,7 +21,7 @@
 
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
-struct throughput_benchmark : public gauge::benchmark
+struct overhead_benchmark : public gauge::benchmark
 {
 
     typedef typename Encoder::factory encoder_factory;
@@ -213,59 +213,59 @@ BENCHMARK_OPTION(overhead_options)
 }
 
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
     kodo::full_rlnc_encoder<fifi::binary>,
-    kodo::full_rlnc_decoder<fifi::binary> > setup_rlnc_throughput;
+    kodo::full_rlnc_decoder<fifi::binary> > setup_rlnc_overhead;
 
-BENCHMARK_F(setup_rlnc_throughput, FullRLNC, Binary, 5)
+BENCHMARK_F(setup_rlnc_overhead, FullRLNC, Binary, 5)
 {
     run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
     kodo::full_rlnc_encoder<fifi::binary8>,
-    kodo::full_rlnc_decoder<fifi::binary8> > setup_rlnc_throughput8;
+    kodo::full_rlnc_decoder<fifi::binary8> > setup_rlnc_overhead8;
 
-BENCHMARK_F(setup_rlnc_throughput8, FullRLNC, Binary8, 5)
+BENCHMARK_F(setup_rlnc_overhead8, FullRLNC, Binary8, 5)
 {
     run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
     kodo::full_rlnc_encoder<fifi::binary16>,
-    kodo::full_rlnc_decoder<fifi::binary16> > setup_rlnc_throughput16;
+    kodo::full_rlnc_decoder<fifi::binary16> > setup_rlnc_overhead16;
 
-BENCHMARK_F(setup_rlnc_throughput16, FullRLNC, Binary16, 5)
+BENCHMARK_F(setup_rlnc_overhead16, FullRLNC, Binary16, 5)
 {
     run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder<fifi::binary>,
    kodo::full_delayed_rlnc_decoder<fifi::binary> >
-   setup_delayed_rlnc_throughput;
+   setup_delayed_rlnc_overhead;
 
-BENCHMARK_F(setup_delayed_rlnc_throughput, FullDelayedRLNC, Binary, 5)
+BENCHMARK_F(setup_delayed_rlnc_overhead, FullDelayedRLNC, Binary, 5)
 {
    run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder<fifi::binary8>,
    kodo::full_delayed_rlnc_decoder<fifi::binary8> >
-   setup_delayed_rlnc_throughput8;
+   setup_delayed_rlnc_overhead8;
 
-BENCHMARK_F(setup_delayed_rlnc_throughput8, FullDelayedRLNC, Binary8, 5)
+BENCHMARK_F(setup_delayed_rlnc_overhead8, FullDelayedRLNC, Binary8, 5)
 {
    run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder<fifi::binary16>,
    kodo::full_delayed_rlnc_decoder<fifi::binary16> >
-   setup_delayed_rlnc_throughput16;
+   setup_delayed_rlnc_overhead16;
 
-BENCHMARK_F(setup_delayed_rlnc_throughput16, FullDelayedRLNC, Binary16, 5)
+BENCHMARK_F(setup_delayed_rlnc_overhead16, FullDelayedRLNC, Binary16, 5)
 {
    run_benchmark();
 }
@@ -275,7 +275,7 @@ BENCHMARK_F(setup_delayed_rlnc_throughput16, FullDelayedRLNC, Binary16, 5)
 //------------------------------------------------------------------
 
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder_unsystematic<fifi::binary>,
    kodo::full_rlnc_decoder_unsystematic<fifi::binary> >
    setup_full_rlnc_unsystematic;
@@ -285,7 +285,7 @@ BENCHMARK_F(setup_full_rlnc_unsystematic, FullRLNCUnsystematic, Binary, 5)
    run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder_unsystematic<fifi::binary8>,
    kodo::full_rlnc_decoder_unsystematic<fifi::binary8> >
    setup_full_rlnc_unsystematic8;
@@ -295,7 +295,7 @@ BENCHMARK_F(setup_full_rlnc_unsystematic8, FullRLNCUnsystematic, Binary8, 5)
    run_benchmark();
 }
 
-typedef throughput_benchmark<
+typedef overhead_benchmark<
    kodo::full_rlnc_encoder_unsystematic<fifi::binary16>,
    kodo::full_rlnc_decoder_unsystematic<fifi::binary16> >
    setup_full_rlnc_unsystematic16;
