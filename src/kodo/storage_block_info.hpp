@@ -37,10 +37,14 @@ namespace kodo
             factory(uint32_t max_symbols, uint32_t max_symbol_size)
                 : SuperCoder::factory(max_symbols, max_symbol_size),
                   m_max_symbols(max_symbols),
-                  m_max_symbol_size(max_symbol_size)
+                  m_max_symbol_size(max_symbol_size),
+                  m_symbols(max_symbols),
+                  m_symbol_size(max_symbol_size)
             {
                 assert(m_max_symbols > 0);
                 assert(m_max_symbol_size > 0);
+                assert(m_symbols > 0);
+                assert(m_symbol_size > 0);
             }
 
             /// @copydoc layer::factory::max_symbols() const
@@ -61,6 +65,36 @@ namespace kodo
                 return m_max_symbols*m_max_symbol_size;
             }
 
+            /// @copydoc layer::factory::symbols() const;
+            uint32_t symbols() const
+            {
+                return m_symbols;
+            }
+
+            /// @copydoc layer::factory::symbol_size() const;
+            uint32_t symbol_size() const
+            {
+                return m_symbol_size;
+            }
+
+            /// @copydoc layer::factory::set_symbols(uint32_t)
+            void set_symbols(uint32_t symbols)
+            {
+                assert(symbols > 0);
+                assert(symbols <= m_max_symbols);
+
+                m_symbols = symbols;
+            }
+
+            /// @copydoc layer::factory::set_symbol_size(uint32_t)
+            void set_symbol_size(uint32_t symbol_size)
+            {
+                assert(symbol_size > 0);
+                assert(symbol_size <= m_max_symbol_size);
+
+                m_symbol_size = symbol_size;
+            }
+
         private:
 
             /// The maximum number of symbols
@@ -68,6 +102,12 @@ namespace kodo
 
             /// The maximum symbol size
             uint32_t m_max_symbol_size;
+
+            /// The number of symbols used
+            uint32_t m_symbols;
+
+            /// The symbol size used
+            uint32_t m_symbol_size;
 
         };
 

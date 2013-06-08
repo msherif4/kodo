@@ -77,35 +77,35 @@ namespace kodo
                 return m_max_symbol_size;
             }
 
-            /// @copydoc layer::factory::symbols() const;
-            uint32_t symbols() const
-            {
-                return m_symbols;
-            }
+            // /// @copydoc layer::factory::symbols() const;
+            // uint32_t symbols() const
+            // {
+            //     return m_symbols;
+            // }
 
-            /// @copydoc layer::factory::symbol_size() const;
-            uint32_t symbol_size() const
-            {
-                return m_symbol_size;
-            }
+            // /// @copydoc layer::factory::symbol_size() const;
+            // uint32_t symbol_size() const
+            // {
+            //     return m_symbol_size;
+            // }
 
-            /// @copydoc layer::factory::set_symbols(uint32_t)
-            void set_symbols(uint32_t symbols)
-            {
-                assert(symbols > 0);
-                assert(symbols <= m_max_symbols);
+            // /// @copydoc layer::factory::set_symbols(uint32_t)
+            // void set_symbols(uint32_t symbols)
+            // {
+            //     assert(symbols > 0);
+            //     assert(symbols <= m_max_symbols);
 
-                m_symbols = symbols;
-            }
+            //     m_symbols = symbols;
+            // }
 
-            /// @copydoc layer::factory::set_symbol_size(uint32_t)
-            void set_symbol_size(uint32_t symbol_size)
-            {
-                assert(symbol_size > 0);
-                assert(symbol_size <= m_max_symbol_size);
+            // /// @copydoc layer::factory::set_symbol_size(uint32_t)
+            // void set_symbol_size(uint32_t symbol_size)
+            // {
+            //     assert(symbol_size > 0);
+            //     assert(symbol_size <= m_max_symbol_size);
 
-                m_symbol_size = symbol_size;
-            }
+            //     m_symbol_size = symbol_size;
+            // }
 
         private: // Make non-copyable
 
