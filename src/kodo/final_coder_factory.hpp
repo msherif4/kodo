@@ -7,11 +7,8 @@
 
 #include <cstdint>
 
-#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-
-#include <fifi/fifi_utils.hpp>
 
 namespace kodo
 {
@@ -41,16 +38,10 @@ namespace kodo
         public:
 
             /// @copydoc layer::factory::factory(uint32_t,uint32_t)
-            factory(uint32_t max_symbols, uint32_t max_symbol_size) :
-                m_max_symbols(max_symbols),
-                m_max_symbol_size(max_symbol_size),
-                m_symbols(max_symbols),
-                m_symbol_size(max_symbol_size)
+            factory(uint32_t max_symbols, uint32_t max_symbol_size)
             {
-                assert(m_max_symbols > 0);
-                assert(m_max_symbol_size > 0);
-                assert(m_symbols > 0);
-                assert(m_symbol_size > 0);
+                (void) max_symbols;
+                (void) max_symbol_size;
             }
 
             /// @copydoc layer::factory::build()
@@ -67,48 +58,6 @@ namespace kodo
                 return coder;
             }
 
-            /// @copydoc layer::factory::max_symbols() const;
-            uint32_t max_symbols() const
-            {
-                return m_max_symbols;
-            }
-
-            /// @copydoc layer::factory::max_symbol_size() const;
-            uint32_t max_symbol_size() const
-            {
-                return m_max_symbol_size;
-            }
-
-            /// @copydoc layer::factory::symbols() const;
-            uint32_t symbols() const
-            {
-                return m_symbols;
-            }
-
-            /// @copydoc layer::factory::symbol_size() const;
-            uint32_t symbol_size() const
-            {
-                return m_symbol_size;
-            }
-
-            /// @copydoc layer::factory::set_symbols(uint32_t)
-            void set_symbols(uint32_t symbols)
-            {
-                assert(symbols > 0);
-                assert(symbols <= m_max_symbols);
-
-                m_symbols = symbols;
-            }
-
-            /// @copydoc layer::factory::set_symbol_size(uint32_t)
-            void set_symbol_size(uint32_t symbol_size)
-            {
-                assert(symbol_size > 0);
-                assert(symbol_size <= m_max_symbol_size);
-
-                m_symbol_size = symbol_size;
-            }
-
         private: // Make non-copyable
 
             /// Copy constructor
@@ -116,21 +65,6 @@ namespace kodo
 
             /// Copy assignment
             const factory& operator=(const factory&);
-
-
-        private:
-
-            /// The maximum number of symbols
-            uint32_t m_max_symbols;
-
-            /// The maximum symbol size
-            uint32_t m_max_symbol_size;
-
-            /// The number of symbols used
-            uint32_t m_symbols;
-
-            /// The symbol size used
-            uint32_t m_symbol_size;
 
         };
 
