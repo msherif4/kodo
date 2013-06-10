@@ -90,7 +90,8 @@ namespace kodo
         };
 
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        template<class Factory>
+        void initialize(Factory& the_factory)
             {
                 m_symbol_size = the_factory.symbol_size();
             }

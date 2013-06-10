@@ -110,12 +110,14 @@ public:
     ///        many times.
     /// @param the_factory The factory used to build the codec layer. Provides
     ///        access to cached data and factory functions.
-    void construct(factory &the_factory);
+    template<class Factory>
+    void construct(Factory &the_factory);
 
     /// @ingroup factory_api
     /// @brief Initializes the coder
     /// @param the_factory The factory used to build the codec layer. Provides
     ///        access to cached data and factory functions.
+    template<class Factory>
     void initialize(factory &the_factory);
 
     //------------------------------------------------------------------

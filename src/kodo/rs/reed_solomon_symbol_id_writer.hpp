@@ -38,13 +38,11 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename Super::value_type value_type;
 
-        /// @copydoc layer::factory
-        typedef typename Super::factory factory;
-
     public:
 
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
 

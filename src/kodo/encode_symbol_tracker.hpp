@@ -17,18 +17,14 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer::factory
-        typedef typename SuperCoder::factory factory;
-
-    public:
-
         /// Constructor
         encode_symbol_tracker() :
             m_counter(0)
         { }
 
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
             m_counter = 0;

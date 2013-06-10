@@ -28,9 +28,6 @@ namespace kodo
         /// uint32_t
         typedef std::function<void (uint32_t)> rank_changed_callback;
 
-        /// @copydoc layer::factory
-        typedef typename SuperCoder::factory factory;
-
     public:
 
         /// Constructor
@@ -40,7 +37,8 @@ namespace kodo
 
         /// Reset rank callback function
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
 

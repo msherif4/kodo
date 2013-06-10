@@ -32,7 +32,8 @@ namespace kodo
     public:
 
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
 

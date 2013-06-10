@@ -53,7 +53,8 @@ namespace kodo
     public:
 
         /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
 
@@ -62,7 +63,8 @@ namespace kodo
         }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(factory &the_factory)
+        template<class Factory>
+        void initialize(Factory &the_factory)
         {
             SuperCoder::initialize(the_factory);
 

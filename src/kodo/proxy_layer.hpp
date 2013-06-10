@@ -173,13 +173,15 @@ namespace kodo
         }
 
         /// @copydoc layer::construct(factory&)
-        void construct(factory &the_factory)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             (void) the_factory;
         }
 
         /// @copydoc layer::initialize(factory&)
-        void initialize(factory &the_factory)
+        template<class Factory>
+        void initialize(Factory &the_factory)
         {
             (void) the_factory;
         }
