@@ -6,6 +6,14 @@ of every change, see the Git log.
 
 Latest
 ------
+* Major: Refactored the factory layers so that the layer::construct() and
+  layer::initialize() functions are now template functions. The motivation for
+  this is that it relaxes the layer ordering since all layers will now have
+  access to the full factory type. I.e. layers lower in the stack can call
+  functions on the factory defined higher in the stack. This was previously
+  not possible.
+* Minor: Moved the symbols and symbol_size related functions from the factory
+  layers.
 * Minor: Adding new overhead benchmark. The overhead benchmark profiles the
   total overhead in bytes transmitted on the wire for different code
   configurations.
