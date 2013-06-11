@@ -118,7 +118,7 @@ public:
     /// @param the_factory The factory used to build the codec layer. Provides
     ///        access to cached data and factory functions.
     template<class Factory>
-    void initialize(factory &the_factory);
+    void initialize(Factory &the_factory);
 
     //------------------------------------------------------------------
     // CODEC HEADER API

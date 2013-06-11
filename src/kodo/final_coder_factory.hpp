@@ -70,7 +70,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory&)
+        /// @copydoc layer::construct(Factory&)
         template<class Factory>
         void construct(Factory &the_factory)
         {
@@ -78,7 +78,7 @@ namespace kodo
             (void) the_factory;
         }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory &the_factory)
         {
