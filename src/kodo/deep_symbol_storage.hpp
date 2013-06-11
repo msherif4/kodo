@@ -31,7 +31,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory&)
+        /// @copydoc layer::construct(Factory&)
         template<class Factory>
         void construct(Factory& the_factory)
         {
@@ -50,7 +50,7 @@ namespace kodo
             m_symbols.resize(the_factory.max_symbols(), false);
         }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory& the_factory)
         {

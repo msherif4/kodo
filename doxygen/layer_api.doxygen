@@ -41,6 +41,11 @@ public:
         /// @return pointer to an instantiation of an encoder or decoder
         pointer build()
 
+        //------------------------------------------------------------------
+        // Functions belonging to other APIs but placed required in the
+        // factory in order to correctly build the different layers.
+        //------------------------------------------------------------------
+
         /// @ingroup factory_api
         /// @return the maximum number of symbols in a block
         uint32_t max_symbols() const;
@@ -48,11 +53,6 @@ public:
         /// @ingroup factory_api
         /// @return the maximum symbol size in bytes
         uint32_t max_symbol_size() const;
-
-        //------------------------------------------------------------------
-        // Functions belonging to other APIs but placed required in the
-        // factory in order to correctly build the different layers.
-        //------------------------------------------------------------------
 
         /// @ingroup storage_api
         /// @return The maximum amount of data encoded / decoded in bytes.

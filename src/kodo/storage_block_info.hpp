@@ -120,7 +120,7 @@ namespace kodo
               m_symbol_length(0)
         { }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory &the_factory)
         {

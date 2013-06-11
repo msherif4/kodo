@@ -55,7 +55,7 @@ namespace kodo
               m_coefficients_size(0)
         { }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory& the_factory)
         {

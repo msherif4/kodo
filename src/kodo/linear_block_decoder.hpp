@@ -49,7 +49,7 @@ namespace kodo
               m_maximum_pivot(0)
         { }
 
-        /// @copydoc layer::construct(factory&)
+        /// @copydoc layer::construct(Factory&)
         template<class Factory>
         void construct(Factory &the_factory)
         {
@@ -59,7 +59,7 @@ namespace kodo
             m_coded.resize(the_factory.max_symbols(), false);
         }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory& the_factory)
         {

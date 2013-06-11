@@ -172,14 +172,14 @@ namespace kodo
             m_proxy = proxy;
         }
 
-        /// @copydoc layer::construct(factory&)
+        /// @copydoc layer::construct(Factory&)
         template<class Factory>
         void construct(Factory &the_factory)
         {
             (void) the_factory;
         }
 
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory &the_factory)
         {

@@ -34,7 +34,7 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory &)
+        /// @copydoc layer::construct(Factory&)
         template<class Factory>
         void construct(Factory &the_factory)
         {

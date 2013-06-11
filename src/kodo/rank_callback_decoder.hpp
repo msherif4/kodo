@@ -36,7 +36,7 @@ namespace kodo
         { }
 
         /// Reset rank callback function
-        /// @copydoc layer::initialize(factory&)
+        /// @copydoc layer::initialize(Factory&)
         template<class Factory>
         void initialize(Factory& the_factory)
         {
