@@ -9,35 +9,63 @@
 import argparse
 import pandas as pd
 import pylab as plt
+import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 
 def plot_overhead(csvfile):
 
     df = pd.read_csv(csvfile)
 
-    df = df[df['testcase'] == 'FullRLNCUnsystematic']
-    df = df[df['symbol_size'] == 1500]
+    # Combine the testcase and benchmark columns into one (used for labels)
+    df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
+    df = df.drop(['testcase','benchmark'], axis = 1)
 
-    df = df.drop(['symbol_size','testcase'], axis = 1)
+    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'])
 
-    grouped = df.groupby(by=['benchmark','symbols'])
+    def compute_cdf(group):
 
-    def compute_overhead(group):
+        # Get the extra symbols needed for decoding
+        coded = group['used'] - group['symbols']
 
-        coded = float(group['coded'].sum())
-        used = float(group['used'].sum())
+        # Count how many runs needed how many extra symbols
+        counts = coded.value_counts()
+        counts.order(ascending=False)
 
-        s = pd.Series([((used/coded) - 1.0)*100], ['overhead'])
+        # Re-index so we have a linear index with counts for
+        # every index value
+        values = range(10)
+        counts = counts.reindex(index = values, fill_value = 0)
+
+        # Compute the decoding probability
+        prob = counts / float(counts.sum())
+
+        # cdf
+        cdf = list(prob.cumsum())
+
+        s = pd.Series(cdf, range(len(cdf)))
         return s
 
-    results = grouped.apply(compute_overhead)
+    # Compute the cdf for each of the groups
+    results = grouped.apply(compute_cdf)
     results = results.reset_index()
-    results = results.set_index(['benchmark','symbols'])
 
-    o = results['overhead'].unstack(level=0)
+    # Group the plots
+    plot_groups = list(results.groupby(by=['symbol_size','symbols','erasure']))
 
-    ax = o.plot(title='overhead', logy=True)
-    ax.yaxis.set_major_formatter(FormatStrFormatter('%.01f'))
+    for (symbol_size, symbols, erasure), dataframe in plot_groups:
+
+        # Just discard the not needed columns
+        dataframe = dataframe.drop(['symbol_size','symbols','erasure'], axis = 1)
+
+        # Fix the index to the tests
+        dataframe = dataframe.set_index(['test'])
+
+        # Transpose the rows and columns so that the extra packet columns
+        # becomes rows
+        dataframe = dataframe.transpose()
+        dataframe.reset_index()
+        dataframe.plot(title="symbols={}, symbol size={}, erasures={}".format(
+            symbol_size, symbols, erasure))
 
     plt.show()
 
