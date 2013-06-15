@@ -20,20 +20,23 @@ def plot_overhead(csvfile):
     df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
     df = df.drop(['testcase','benchmark'], axis = 1)
 
-    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'])
+    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'], axis=0)
 
     def compute_cdf(group):
 
         # Get the extra symbols needed for decoding
         coded = group['used'] - group['symbols']
 
+        # Change to float
+        coded = coded.astype(float)
+
         # Count how many runs needed how many extra symbols
         counts = coded.value_counts()
-        counts.order(ascending=False)
+        counts = counts.order(ascending=False)
 
         # Re-index so we have a linear index with counts for
         # every index value
-        values = range(10)
+        values = range(15)
         counts = counts.reindex(index = values, fill_value = 0)
 
         # Compute the decoding probability
