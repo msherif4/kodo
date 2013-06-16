@@ -68,7 +68,7 @@ def plot_overhead(csvfile, saveas):
         dataframe = dataframe.transpose()
         dataframe.reset_index()
         fig = dataframe.plot(title="symbols={}, symbol size={}, erasures={}".format(
-            symbol_size, symbols, erasure))
+            symbol_size, symbols, erasure), style=['s--','o-','^-.','+:','p:','x-.','h:','D--', '*--'])
 
         if saveas:
             filename = "decoding_cdf_{}_{}_{}.{}".format(
@@ -77,6 +77,8 @@ def plot_overhead(csvfile, saveas):
             print("Saving", filename)
             plt.savefig(filename)
 
+        plt.xlabel('Extra symbols received')
+        plt.ylabel('Decoding probability')
 
     if not saveas:
         plt.show()
