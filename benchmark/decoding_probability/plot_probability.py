@@ -12,7 +12,7 @@ import pylab as plt
 import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 
-def plot_overhead(csvfile):
+def plot_overhead(csvfile, saveas):
 
     df = pd.read_csv(csvfile)
 
@@ -67,10 +67,19 @@ def plot_overhead(csvfile):
         # becomes rows
         dataframe = dataframe.transpose()
         dataframe.reset_index()
-        dataframe.plot(title="symbols={}, symbol size={}, erasures={}".format(
+        fig = dataframe.plot(title="symbols={}, symbol size={}, erasures={}".format(
             symbol_size, symbols, erasure))
 
-    plt.show()
+        if saveas:
+            filename = "decoding_cdf_{}_{}_{}.{}".format(
+                symbols, symbol_size, str(erasure).replace('.',''), saveas)
+
+            print("Saving", filename)
+            plt.savefig(filename)
+
+
+    if not saveas:
+        plt.show()
 
 if __name__ == '__main__':
 
@@ -81,6 +90,12 @@ if __name__ == '__main__':
         help='the .csv file written by gauge benchmark',
         default='out.csv')
 
+    parser.add_argument(
+        '--saveas', dest='saveas', action='store',
+        help='Figures will be saved as the specified type e.g. --saveas=pdf',
+        default=None)
+
+
     args = parser.parse_args()
 
-    plot_overhead(args.csvfile)
+    plot_overhead(args.csvfile, args.saveas)
