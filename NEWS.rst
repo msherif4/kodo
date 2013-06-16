@@ -7,7 +7,8 @@ of every change, see the Git log.
 Latest
 ------
 * Minor: Added decoding probability benchmark. The benchmark measures the
-  decoding probability as a function of the amount of symbols received.
+  the number of symbols needed to decode from which the decoding probability
+  can be derived.
 * Major: Refactored the factory layers so that the layer::construct() and
   layer::initialize() functions are now template functions. The motivation for
   this is that it relaxes the layer ordering since all layers will now have
