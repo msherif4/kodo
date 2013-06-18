@@ -25,6 +25,7 @@
 template<class Encoder, class Decoder>
 struct decoding_probability_benchmark : public gauge::benchmark
 {
+public:
 
     typedef typename Encoder::factory encoder_factory;
     typedef typename Encoder::pointer encoder_ptr;
@@ -34,6 +35,12 @@ struct decoding_probability_benchmark : public gauge::benchmark
 
     static_assert(kodo::has_deep_symbol_storage<Decoder>::value,
                   "The decoder should bring its own memory");
+
+    decoding_probability_benchmark()
+    {
+        // Seed the random generator controlling the erasures
+        m_random_generator.seed((uint64_t)time(0));
+    }
 
     void start()
     { }
