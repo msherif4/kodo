@@ -41,7 +41,8 @@ namespace kodo
 
         /// Constructor
         sparse_uniform_generator()
-            : m_value_distribution(1, field_type::max_value)
+            : m_bernoulli(0.5),
+              m_value_distribution(1, field_type::max_value)
         { }
 
         /// @copydoc layer::generate(uint8_t*)

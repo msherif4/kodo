@@ -3,7 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_coefficient_generator.cpp Unit tests for the coefficient
+/// @file test_coefficient_generator.hpp Unit tests for the coefficient
 ///       generators
 
 #include <cstdint>
@@ -18,6 +18,7 @@
 #include <kodo/coefficient_info.hpp>
 #include <kodo/storage_block_info.hpp>
 #include <kodo/uniform_generator.hpp>
+#include <kodo/sparse_uniform_generator.hpp>
 #include <kodo/fake_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
@@ -31,6 +32,9 @@
 namespace kodo
 {
 
+    /// Fake codec layer is a helper call for unit-testing code
+    /// for the coefficient generator layers. The fake layer will
+    /// generate a certain number pivot
     template<class SuperCoder>
     class fake_codec_layer : public SuperCoder
     {
@@ -75,33 +79,6 @@ namespace kodo
         uint32_t m_pivots;
 
     };
-
-    // Uniform generator
-    template<class Field>
-    class uniform_generator_stack
-        : public uniform_generator<
-        fake_codec_layer<
-            coefficient_info<
-                fake_symbol_storage<
-                    storage_block_info<
-                        finite_field_info<Field,
-                            final_coder_factory<
-                                uniform_generator_stack<Field>
-                                > > > > > > >
-    { };
-
-    template<class Field>
-    class uniform_generator_stack_pool
-        : public uniform_generator<
-        fake_codec_layer<
-            coefficient_info<
-                fake_symbol_storage<
-                    storage_block_info<
-                        finite_field_info<Field,
-                            final_coder_factory_pool<
-                                uniform_generator_stack_pool<Field>
-                                > > > > > > >
-    { };
 
 }
 
@@ -165,25 +142,15 @@ struct api_generate
 
         coder->seed(0);
         coder->generate(&vector_a[0]);
-        coder->generate(&vector_b[0]);
 
         coder->seed(0);
-        coder->generate(&vector_c[0]);
-
-        coder->seed(1);
-        coder->generate(&vector_d[0]);
+        coder->generate(&vector_b[0]);
 
         auto storage_a = sak::storage(vector_a);
         auto storage_b = sak::storage(vector_b);
-        auto storage_c = sak::storage(vector_c);
-        auto storage_d = sak::storage(vector_d);
 
-        EXPECT_FALSE(sak::equal(storage_a,storage_b));
-        EXPECT_TRUE(sak::equal(storage_a,storage_c));
-        EXPECT_FALSE(sak::equal(storage_a,storage_d));
-        EXPECT_FALSE(sak::equal(storage_b,storage_c));
-        EXPECT_FALSE(sak::equal(storage_b,storage_d));
-        EXPECT_FALSE(sak::equal(storage_c,storage_d));
+
+        EXPECT_TRUE(sak::equal(storage_a,storage_b));
     }
 
 
@@ -267,20 +234,4 @@ private:
     factory_type m_factory;
 
 };
-
-/// Run the tests typical coefficients stack
-TEST(TestCoefficientGenerator, test_uniform_generator_stack)
-{
-    uint32_t symbols = rand_symbols();
-    uint32_t symbol_size = rand_symbol_size();
-
-    // API tests:
-    run_test<
-        kodo::uniform_generator_stack,
-        api_generate>(symbols, symbol_size);
-
-    run_test<
-        kodo::uniform_generator_stack_pool,
-        api_generate>(symbols, symbol_size);
-}
 
