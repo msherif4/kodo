@@ -66,10 +66,10 @@ namespace kodo
                // Coefficient Generator API
                uniform_generator<
                // Codec API
-               storage_aware_encoder<
                encode_symbol_tracker<
                zero_symbol_encoder<
                linear_block_encoder<
+               storage_aware_encoder<
                // Coefficient Storage API
                coefficient_info<
                // Symbol Storage API

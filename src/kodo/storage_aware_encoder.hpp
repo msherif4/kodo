@@ -26,14 +26,14 @@ namespace kodo
         /// @copydoc layer::rank() const
         uint32_t rank() const
         {
-            return SuperCoder::symbol_count();
+            return SuperCoder::symbols_initialized();
         }
 
         /// @copydoc layer::symbol_pivot(uint32_t) const
         bool symbol_pivot(uint32_t index) const
         {
             assert(index < SuperCoder::symbols());
-            return SuperCoder::symbol_exists(index);
+            return SuperCoder::is_symbol_initialized(index);
         }
 
     };

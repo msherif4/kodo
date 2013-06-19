@@ -29,13 +29,11 @@ namespace kodo
         typedef boost::shared_ptr<
             aligned_coefficients_buffer<SuperCoder> > this_pointer;
 
-        /// The factory type
-        typedef typename SuperCoder::factory factory;
-
     public:
 
-        /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
             m_coefficients.resize(the_factory.max_coefficients_size());

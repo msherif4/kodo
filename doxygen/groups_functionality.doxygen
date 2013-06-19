@@ -1,12 +1,13 @@
 
 /// @defgroup fec_stacks FEC Stacks
-/// @brief The ready assembled stacks the functionality in a stack is typically some
-///        type of FEC code e.g. Network Code or Reed-Solomon code.
+/// @brief The ready assembled stacks the functionality in a stack is
+///        typically some type of FEC code e.g. Network Code or
+///        Reed-Solomon code.
 
 /// @defgroup debug Debug Functionality
-/// @brief Layers / stacks that implements various debugging functionalities. Typically
-///        useful when implementing new codes or when monitoring the performance of the
-///        coding algorithms.
+/// @brief Layers / stacks that implements various debugging functionalities.
+///        Typically useful when implementing new codes or when monitoring
+///        the performance of the coding algorithms.
 
 
 

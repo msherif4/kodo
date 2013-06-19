@@ -4,7 +4,7 @@
 bld.program(
     features = 'cxx',
     source   = ['main.cpp'],
-    target   = 'kodo_generators',
+    target   = 'kodo_decoding_probability',
     use = ['kodo_includes', 'fifi_includes', 'sak_includes',
            'gtest', 'boost_includes', 'boost_system', 'boost_timer',
            'boost_chrono', 'gauge'])

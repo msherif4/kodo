@@ -17,6 +17,8 @@
 /// "Modules" section available from either the lefthand side navigation pane
 /// or the top navigation pane.
 ///
+/// - @ref api_layer
+///
 /// @subsection building_docs Building the Documentation
 /// The Doxygen documentation for Kodo is located in the "doxygen" folder of
 /// the Kodo project. The API documentation can be built by running the

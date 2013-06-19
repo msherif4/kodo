@@ -32,10 +32,10 @@ namespace kodo
                  storage_aware_generator<       // <--- New layer
                  uniform_generator<
                  // Codec API
-                 storage_aware_encoder<         // <--- New layer
                  encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
+                 storage_aware_encoder<         // <--- New layer
                  // Coefficient Storage API
                  coefficient_info<
                  // Symbol Storage API

@@ -34,8 +34,9 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
 

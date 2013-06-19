@@ -52,8 +52,9 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory& the_factory)
         {
             SuperCoder::construct(the_factory);
 
@@ -61,8 +62,9 @@ namespace kodo
             m_recode_id.resize(the_factory.max_coefficients_size());
         }
 
-        /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(factory &the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
 

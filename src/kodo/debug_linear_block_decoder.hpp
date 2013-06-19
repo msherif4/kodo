@@ -29,9 +29,6 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
-        /// @copydoc layer::factory factory
-        typedef typename SuperCoder::factory factory;
-
         /// Access to status about uncoded symbols in the linear block
         /// decoder.
         using SuperCoder::m_uncoded;
@@ -42,8 +39,9 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory&)
-        void construct(factory& the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory& the_factory)
         {
             SuperCoder::construct(the_factory);
 

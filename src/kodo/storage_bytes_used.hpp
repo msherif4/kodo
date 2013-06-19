@@ -19,18 +19,14 @@ namespace kodo
     {
     public:
 
-        /// The factory type
-        typedef typename SuperCoder::factory factory;
-
-    public:
-
         /// Constructor
         storage_bytes_used()
             : m_bytes_used(0)
         {}
 
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
             m_bytes_used = 0;

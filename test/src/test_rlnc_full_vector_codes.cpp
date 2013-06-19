@@ -19,8 +19,10 @@
 #include <kodo/linear_block_decoder_delayed.hpp>
 #include <kodo/storage_aware_generator.hpp>
 #include <kodo/shallow_symbol_storage.hpp>
+#include <kodo/has_shallow_symbol_storage.hpp>
 
 #include "basic_api_test_helper.hpp"
+#include "test_reuse.hpp"
 
 namespace kodo
 {
@@ -106,10 +108,10 @@ namespace kodo
                  storage_aware_generator<
                  uniform_generator<
                  // Codec API
-                 storage_aware_encoder<
                  encode_symbol_tracker<
                  zero_symbol_encoder<
                  linear_block_encoder<
+                 storage_aware_encoder<
                  // Coefficient Storage API
                  coefficient_info<
                  // Symbol Storage API
@@ -401,31 +403,51 @@ TEST(TestRlncFullVectorCodes, raw)
     test_coders_raw(symbols, symbol_size);
 }
 
+// Small helper structure holding the parameters needed for the
+// recoding tests.
+struct recoding_parameters
+{
+    uint32_t m_max_symbols;
+    uint32_t m_max_symbol_size;
+    uint32_t m_symbols;
+    uint32_t m_symbol_size;
+};
+
 //
 // Testing recoding
 //
 template<class Encoder, class Decoder>
-inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
+inline void invoke_recoding(recoding_parameters param)
 {
 
     // Common setting
-    typename Encoder::factory encoder_factory(symbols, symbol_size);
+    typename Encoder::factory encoder_factory(
+        param.m_max_symbols, param.m_max_symbol_size);
+
+    encoder_factory.set_symbols(param.m_symbols);
+    encoder_factory.set_symbol_size(param.m_symbol_size);
 
     auto encoder = encoder_factory.build();
 
-    typename Decoder::factory decoder_factory(symbols, symbol_size);
+    typename Decoder::factory decoder_factory(
+        param.m_max_symbols, param.m_max_symbol_size);
+
+    decoder_factory.set_symbols(param.m_symbols);
+    decoder_factory.set_symbol_size(param.m_symbol_size);
 
     auto decoder_one = decoder_factory.build();
     auto decoder_two = decoder_factory.build();
 
     // If tested with a shallow decoder we have to remember to set the
-    // buffers to use for the decoding (for simplicity we always do this
-    // whether or not it is actually needed)
+    // buffers to use for the decoding
     std::vector<uint8_t> buffer_decoder_one(decoder_one->block_size(), '\0');
     std::vector<uint8_t> buffer_decoder_two(decoder_two->block_size(), '\0');
 
-    decoder_one->set_symbols(sak::storage(buffer_decoder_one));
-    decoder_two->set_symbols(sak::storage(buffer_decoder_two));
+    if(kodo::has_shallow_symbol_storage<Decoder>::value)
+    {
+        decoder_one->set_symbols(sak::storage(buffer_decoder_one));
+        decoder_two->set_symbols(sak::storage(buffer_decoder_two));
+    }
 
     EXPECT_EQ(encoder->payload_size(), decoder_one->payload_size());
     EXPECT_EQ(encoder->payload_size(), decoder_two->payload_size());
@@ -444,18 +466,8 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
         encoder->encode( &payload[0] );
         decoder_one->decode( &payload[0] );
 
-        // std::cout << "Matrix 1" << std::endl;
-        // decoder_one->print_decoding_matrix(std::cout);
-
         decoder_one->recode( &payload[0] );
         decoder_two->decode( &payload[0] );
-        // decoder_two->print_decoding_symbol(std::cout);
-
-        // std::cout << "Matrix 2" << std::endl;
-        // decoder_two->print_decoding_matrix(std::cout);
-
-        // std::cout << "one rank: " << decoder_one->rank() << std::endl;
-        // std::cout << "two rank: " << decoder_two->rank() << std::endl;
     }
 
     std::vector<uint8_t> data_out_one(decoder_one->block_size(), '\0');
@@ -471,25 +483,6 @@ inline void invoke_recoding(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(std::equal(data_out_two.begin(),
                            data_out_two.end(),
                            data_in.begin()));
-
-    // for(uint32_t i = 0; i < data_in.size(); ++i)
-    // {
-    //     std::cout << (uint32_t) data_in[i] << " ";
-    // }
-    // std::cout << std::endl;
-
-    // for(uint32_t i = 0; i < data_out_one.size(); ++i)
-    // {
-    //     std::cout << (uint32_t) data_out_one[i] << " ";
-    // }
-    // std::cout << std::endl;
-
-    // for(uint32_t i = 0; i < data_out_two.size(); ++i)
-    // {
-    //     std::cout << (uint32_t) data_out_two[i] << " ";
-    // }
-    // std::cout << std::endl;
-
 }
 
 
@@ -498,22 +491,19 @@ template
     template <class> class Encoder,
     template <class> class Decoder
     >
-void test_recoders(uint32_t symbols, uint32_t symbol_size)
+void test_recoders(recoding_parameters param)
 {
     invoke_recoding<
         Encoder<fifi::binary>,
-        Decoder<fifi::binary> >(
-        symbols, symbol_size);
+        Decoder<fifi::binary> >(param);
 
     invoke_recoding<
         Encoder<fifi::binary8>,
-        Decoder<fifi::binary8> >(
-        symbols, symbol_size);
+        Decoder<fifi::binary8> >(param);
 
     invoke_recoding<
         Encoder<fifi::binary16>,
-        Decoder<fifi::binary16> >(
-        symbols, symbol_size);
+        Decoder<fifi::binary16> >(param);
 
     // invoke_recoding<
     //     Encoder<fifi::prime2325>,
@@ -522,21 +512,21 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 
 }
 
-void test_recoders(uint32_t symbols, uint32_t symbol_size)
+void test_recoders(recoding_parameters param)
 {
 
     test_recoders
         <
         kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder>(symbols, symbol_size);
+        kodo::full_rlnc_decoder>(param);
 
     test_recoders<
         kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed>(symbols, symbol_size);
+        kodo::full_rlnc_decoder_delayed>(param);
 
     test_recoders<
         kodo::full_rlnc_encoder,
-        kodo::full_rlnc_decoder_delayed_shallow>(symbols, symbol_size);
+        kodo::full_rlnc_decoder_delayed_shallow>(param);
 
 }
 
@@ -553,14 +543,35 @@ void test_recoders(uint32_t symbols, uint32_t symbol_size)
 ///
 TEST(TestRlncFullVectorCodes, recoding_simple)
 {
-    test_recoders(32, 1600);
-    test_recoders(1, 1600);
-    test_recoders(8, 8);
+    recoding_parameters param;
+    param.m_max_symbols = 32;
+    param.m_max_symbol_size = 1600;
+    param.m_symbols = param.m_max_symbols;
+    param.m_symbol_size = param.m_max_symbol_size;
 
-   uint32_t symbols = rand_symbols();
-   uint32_t symbol_size = rand_symbol_size();
+    test_recoders(param);
 
-   test_recoders(symbols, symbol_size);
+    param.m_max_symbols = 1;
+    param.m_max_symbol_size = 1600;
+    param.m_symbols = param.m_max_symbols;
+    param.m_symbol_size = param.m_max_symbol_size;
+
+
+    test_recoders(param);
+
+    param.m_max_symbols = 8;
+    param.m_max_symbol_size = 8;
+    param.m_symbols = param.m_max_symbols;
+    param.m_symbol_size = param.m_max_symbol_size;
+
+    test_recoders(param);
+
+    param.m_max_symbols = rand_symbols();
+    param.m_max_symbol_size = rand_symbol_size();
+    param.m_symbols = rand_symbols(param.m_max_symbols);
+    param.m_symbol_size = rand_symbol_size(param.m_max_symbol_size);
+
+    test_recoders(param);
 }
 
 
@@ -621,7 +632,72 @@ TEST(TestRlncFullVectorCodes, set_symbol)
 }
 
 
+void test_reuse(uint32_t symbols, uint32_t symbol_size)
+{
 
+    test_reuse<
+        kodo::full_rlnc_encoder_shallow,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    test_reuse<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    // The delayed decoders
+    test_reuse<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
+}
+
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
+TEST(TestRlncFullVectorCodes, test_reuse)
+{
+    test_reuse(32, 1600);
+    test_reuse(1, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_reuse(symbols, symbol_size);
+}
+
+void test_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
+{
+
+    test_reuse_incomplete<
+        kodo::full_rlnc_encoder_shallow,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    test_reuse_incomplete<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder
+        >(symbols, symbol_size);
+
+    // The delayed decoders
+    test_reuse_incomplete<
+        kodo::full_rlnc_encoder,
+        kodo::full_rlnc_decoder_delayed
+        >(symbols, symbol_size);
+}
+
+
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
+TEST(TestRlncFullVectorCodes, test_reuse_incomplete)
+{
+    test_reuse(32, 1600);
+    test_reuse(1, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_reuse_incomplete(symbols, symbol_size);
+}
 
 
 

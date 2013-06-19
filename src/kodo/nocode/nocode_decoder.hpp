@@ -25,20 +25,17 @@ namespace kodo
     {
     public:
 
-        /// @copydoc layer::factory
-        typedef typename SuperCoder::factory factory;
-
-    public:
-
-        /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
             m_uncoded.resize(the_factory.max_symbols(), false);
         }
 
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory &the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory &the_factory)
         {
             SuperCoder::initialize(the_factory);
 

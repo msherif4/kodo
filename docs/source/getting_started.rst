@@ -1,48 +1,7 @@
-Introduction
-============
+Getting Started
+===============
 
-.. _introduction:
-
-In this document we will try to introduce new users to the Kodo library.
-
-Features
---------
-
-Kodo provides several different codes, primarily the basic Random Linear Network
-Code and multiple variants.
-
-* Random Linear Network Codeing (RLNC)
-
-  * Dense variant
-  * Sparse variant with fixed density
-  * Sparse variant with uniform density
-  * Systematic variants
-  * Variants where the coding vector is included (for recoding)
-  * Variants where a seed is included
-
-* Other codes and approaches
-
-  * Random Annex overlay code
-  * Reed-Solomon code
-  * Carousel code (round robin scheduling of symbols)
-
-Platforms
----------
-Kodo is a plain C++ library so it is portable to a wide range of platforms.
-To ensure that we do not break compatibility with a supported platform we
-have a buildbot instance building the Kodo libraries. You can check the
-status on the `Steinwurf Buildbot`_ page.
-
-.. _Steinwurf Buildbot: http://176.28.49.184:12344
-
-.. note:: The buildbot is used for several different projects you will find the
-  Kodo project in the overview on the main page.
-
-The buildbot pages will also provide you with up-to-date information on which
-platforms and compilers we are currently testing. If you have a specific
-platform or compiler which you would like to see Kodo support, `drop us a line`_.
-
-.. _drop us a line: http://steinwurf.com/contact-us/
+.. _getting_started
 
 Tools Needed
 ------------
@@ -61,11 +20,13 @@ that you also install the following:
    build system.
 
 .. _waf: https://code.google.com/p/waf/
+.. _Steinwurf Buildbot: http://176.28.49.184:12344
+
 
 In the following we will provide the links for installing the tools on
 a number of different platforms.
 
-Download tools (Ubuntu or other Debian based distributions)
+Download tools (Ubuntu or other Debian-based distributions)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Get the dependencies using the following command:
 
@@ -76,7 +37,7 @@ Get the dependencies using the following command:
 Download tools (Windows)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **C++11 compliant compiler:** You need a working C++ compiler we have
+1. **C++11 compliant compiler:** You need a working C++ compiler. We have
    tested using `Visual Studio Express 2012`_ compiler which is free of
    charge. Newer versions should also be fine.
 
@@ -86,8 +47,12 @@ Download tools (Windows)
 
 3. **Git:** There are several ways to get git on Windows. If you plan to use
    the waf build-scripts to build the Kodo examples and unit-tests, you should
-   install the msysgit_ tool. If you do not know which version to install you
-   may select the latest version from the `msysgit downloads`_ page.
+   install the msysgit_ tool. If you do not know which version to install, you
+   may select the latest version from the `msysgit downloads`_ page (version 1.8.x and above).
+
+4. **TortoiseGit (Optional):**
+   You can also install the latest version of TortoiseGit_ if you prefer to use a GUI instead of the
+   command-line git tools. Version 1.8.1 and later should work fine.
 
 .. _`Visual Studio Express 2012`:
    http://www.microsoft.com/visualstudio/eng/downloads
@@ -104,33 +69,72 @@ Download tools (Windows)
 .. _`msysgit downloads`:
    https://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git
 
+.. _`TortoiseGit`:
+   https://code.google.com/p/tortoisegit/
+
+Download tools (Mac OSX)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**C++11 compliant compiler:** You need a working C++ compiler. We have
+tested using `XCode`_ 4.6.2 and the Apple LLVM 4.2 compiler which can downloaded free of
+charge. Newer versions should also be fine.
+
+Option A:
+   1. Download and install `XCode`_ from the Mac App Store
+   2. Open XCode Preferences/Downloads and install **Command Line Tools**
+
+Option B:
+   1. Install **Command Line Tools** without XCode from the `Apple Open Source download page`_
+
+
+.. _`Apple Open Source download page`:
+   https://developer.apple.com/opensource/
+
+.. _`XCode`:
+   https://developer.apple.com/xcode/
+
+
 
 Download the Kodo source code
-----------------------------
+-----------------------------
 
 We recommend downloading the library using git, this will allow you to
 easily get new updates whenever the library is updated. In addition to
 this it is also possible to download the library as either zip or tar.gz
 archive. We will describe both approaches in the following:
 
-Recommended: Clone the git repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Recommended: Clone the git repository using the terminal (Linux and Mac OSX)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Create a suitable directory for the projects (optional)
+1. (Optional) Create a suitable directory (e.g. 'dev') for the projects using the terminal
 
    ::
 
      mkdir dev
      cd dev
 
-2. Clone and download the Kodo libraries by running:
+2. Clone and download the Kodo libraries by running (this will create a new directory called 'kodo'):
 
    ::
 
      git clone git://github.com/steinwurf/kodo.git
 
-Alternative: Download the source code as archives
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Recommended: Clone the git repository using TortoiseGit (Windows)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Open the directory where you want to clone the project, right-click on empty space and select
+**Git Clone...** from the context menu. The TortoiseGit clone dialog will appear, copy this to the URL field:
+
+::
+
+   https://github.com/steinwurf/kodo.git
+
+You can also customize the target directory if you wish. By default, a new folder called 'kodo' will be created
+when the progress bar reaches the end.
+
+
+Alternative: Download a release of the source code as an archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Download the zip or tar.gz archive from the following location and
 extract it to a desired location.
@@ -156,7 +160,7 @@ A Waf project typically contains two types of files:
    of ``makefile`` written in Python.
 
 .. note:: See the ``waf`` build options by running ``python waf -h``
-          in your favorite command-line shell.
+          in your terminal.
 
 In the following we will look at how you can build Kodo's examples, benchmarks
 and unit tests using the Waf build system.
@@ -167,10 +171,10 @@ Quick Start (building Kodo examples and unit tests)
 .. _quick-start:
 
 If you are primarily interested in quickly trying some Kodo examples
-or building the unit-tests, we have tried to make that as easy as possible.
+or building the unit tests, we have tried to make that as easy as possible.
 Provided that you have the `Tools Needed`_ installed.
 
-.. note:: We recommend trying to build and run the unit-tests, before
+.. note:: We recommend trying to build and run the unit tests before
           using Kodo in your own project. However, if you want to skip
           this step you may jump directly to :ref:`using-kodo-in-your-application`
 
@@ -181,11 +185,18 @@ Provided that you have the `Tools Needed`_ installed.
 
      cd dev/kodo/
 
-2. Invoke ``waf`` to build the Kodo unit-tests and examples.
+2. Invoke ``waf`` to build the Kodo unit-tests and examples. On Linux and
+   similar:
 
    ::
 
      python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
+
+   On Windows we need to specify the ``bundle-path`` with a drive e.g.:
+   ::
+
+     python waf configure --bundle=ALL --bundle-path=C:\dev\bundle_dependencies
+
 
    The ``waf configure`` ensures that all tools needed by Kodo are
    available and prepares to build Kodo.
@@ -197,8 +208,9 @@ Provided that you have the `Tools Needed`_ installed.
    local directory in the Kodo folder called  ``bundle_dependencies`` and
    store the libraries there.
 
-   .. note:: The ``waf configure`` step might take a while, so now would be a
-             good time to grap a coffee or similar while it downloads.
+   .. note:: The ``waf configure`` step might take several minutes depending on
+             the speed of your Internet connection. This would be a
+             good time to grab a coffee or similar while the dependencies are downloaded.
 
 3. Invoke ``waf`` to build the unit-tests and examples.
 
@@ -231,4 +243,3 @@ common changes you may want for you build.
   ::
 
     CXX=clang++ python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies
-

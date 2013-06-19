@@ -49,8 +49,9 @@ namespace kodo
               m_maximum_pivot(0)
         { }
 
-        /// @copydoc layer::construct(factory&)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
 
@@ -58,8 +59,9 @@ namespace kodo
             m_coded.resize(the_factory.max_symbols(), false);
         }
 
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
 
@@ -502,6 +504,7 @@ namespace kodo
             assert(m_coded[pivot_index] == false);
             assert(symbol_coefficients != 0);
             assert(symbol_data != 0);
+            assert(SuperCoder::is_symbol_available(pivot_index));
 
             auto coefficient_storage =
                 sak::storage(symbol_coefficients,
@@ -509,7 +512,6 @@ namespace kodo
 
             SuperCoder::set_coefficients(
                 pivot_index, coefficient_storage);
-
 
             // Copy it into the symbol storage
             sak::mutable_storage dest =
@@ -531,10 +533,14 @@ namespace kodo
             assert(symbol_data != 0);
             assert(m_uncoded[pivot_index] == false);
             assert(m_coded[pivot_index] == false);
+            assert(SuperCoder::is_symbol_available(pivot_index));
 
             // Update the corresponding vector
             value_type *vector_dest =
                 SuperCoder::coefficients_value( pivot_index );
+
+            // Zero out the memory first
+            std::fill_n(vector_dest, SuperCoder::coefficients_length(), 0);
 
             fifi::set_value<field_type>(vector_dest, pivot_index, 1U);
 

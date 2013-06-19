@@ -81,8 +81,9 @@ namespace kodo
 
     public:
 
-        /// @copydoc layer::construct(factory &)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             Super::construct(the_factory);
 
@@ -93,8 +94,9 @@ namespace kodo
             m_partial_symbol->resize(the_factory.max_symbol_size(), 0);
         }
 
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory &the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory &the_factory)
         {
             Super::initialize(the_factory);
 

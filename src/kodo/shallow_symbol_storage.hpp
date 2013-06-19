@@ -30,31 +30,29 @@ namespace kodo
         /// IsConst = true -> const uint8_t*
         /// IsConst = false -> uint8_t*
         typedef typename std::conditional<IsConst,
-                // If const
-                typename std::add_pointer<
-                typename std::add_const<uint8_t>::type >::type,
-                // Else
-                typename std::add_pointer<uint8_t>::type >::type data_ptr;
+            // If const
+            typename std::add_pointer<
+            typename std::add_const<uint8_t>::type >::type,
+            // Else
+            typename std::add_pointer<uint8_t>::type >::type data_ptr;
 
         /// The storage type used will be either:
         /// IsConst = true -> sak::const_storage
         /// IsConst = false -> sak::mutable_storage
         typedef typename std::conditional<IsConst,
-                // If const
-                sak::const_storage,
-                // Else
-                sak::mutable_storage>::type storage_type;
+            // If const
+            sak::const_storage,
+            // Else
+            sak::mutable_storage>::type storage_type;
 
         /// @copydoc layer::value_type
         typedef typename SuperCoder::value_type value_type;
 
-        /// @copydoc layer::factory
-        typedef typename SuperCoder::factory factory;
-
     public:
 
-        /// @copydoc layer::construct(factory&)
-        void construct(factory &the_factory)
+        /// @copydoc layer::construct(Factory&)
+        template<class Factory>
+        void construct(Factory &the_factory)
         {
             SuperCoder::construct(the_factory);
 
@@ -62,7 +60,8 @@ namespace kodo
         }
 
         /// @copydoc layer::initialize(uint32_t,uint32_t)
-        void initialize(factory &the_factory)
+        template<class Factory>
+        void initialize(Factory &the_factory)
         {
             SuperCoder::initialize(the_factory);
 
@@ -186,23 +185,40 @@ namespace kodo
             sak::copy_storage(storage, src);
         }
 
-        /// @copydoc layer::symbol_exists(uint32_t) const
-        bool symbol_exists(uint32_t index) const
-        {
-            assert(index < SuperCoder::symbols());
-            return m_data[index] != 0;
-        }
-
-        /// @copydoc layer::symbol_count() const
-        uint32_t symbol_count() const
+        /// @copydoc layer::symbols_available() const
+        uint32_t symbols_available() const
         {
             return m_symbols_count;
         }
 
-        /// @copydoc layer::is_storage_full() const
-        bool is_storage_full() const
+        /// @copydoc layer::symbols_initialized() const
+        uint32_t symbols_initialized() const
+        {
+            return m_symbols_count;
+        }
+
+        /// @copydoc layer::is_symbols_available() const
+        bool is_symbols_available() const
         {
             return m_symbols_count == SuperCoder::symbols();
+        }
+
+        /// @copydoc layer::is_symbols_initialized() const
+        bool is_symbols_initialized() const
+        {
+            return m_symbols_count == SuperCoder::symbols();
+        }
+
+        /// @copydoc layer::is_symbol_available(uint32_t) const
+        bool is_symbol_available(uint32_t symbol_index) const
+        {
+            return m_data[symbol_index] != 0;
+        }
+
+        /// @copydoc layer::is_symbol_initialized(uint32_t) const
+        bool is_symbol_initialized(uint32_t symbol_index) const
+        {
+            return m_data[symbol_index] != 0;
         }
 
     protected:
@@ -216,8 +232,8 @@ namespace kodo
     };
 
     /// @ingroup symbol_storage_layers
-    /// @brief Defines a coding layer for 'const' symbol storage. Only useful
-    /// for encoders since these to modify the buffers / data they
+    /// @brief Defines a coding layer for 'const' symbol storage. Only
+    /// useful for encoders since these to modify the buffers / data they
     /// operate on.
     template<class SuperCoder>
     class const_shallow_symbol_storage : public

@@ -4,7 +4,7 @@
 import os
 
 APPNAME = 'kodo'
-VERSION = '8.0.0'
+VERSION = '10.0.0'
 
 def recurse_helper(ctx, name):
     if not ctx.has_dependency_path(name):
@@ -12,7 +12,6 @@ def recurse_helper(ctx, name):
     else:
         p = ctx.dependency_path(name)
         ctx.recurse(p)
-
 
 def options(opt):
 
@@ -22,39 +21,39 @@ def options(opt):
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
-            name='waf-tools',
-            git_repository = 'git://github.com/steinwurf/external-waf-tools.git',
-            major_version = 1))
+            name = 'waf-tools',
+            git_repository = 'github.com/steinwurf/external-waf-tools.git',
+            major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gtest',
-            git_repository = 'git://github.com/steinwurf/external-gtest.git',
+            git_repository = 'github.com/steinwurf/external-gtest.git',
             major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'boost',
-            git_repository = 'git://github.com/steinwurf/external-boost.git',
-            major_version = 4))
+            git_repository = 'github.com/steinwurf/external-boost-light.git',
+            major_version = 1))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'sak',
-            git_repository = 'git://github.com/steinwurf/sak.git',
+            git_repository = 'github.com/steinwurf/sak.git',
             major_version = 10))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'fifi',
-            git_repository = 'git://github.com/steinwurf/fifi.git',
+            git_repository = 'github.com/steinwurf/fifi.git',
             major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gauge',
-            git_repository = 'git://github.com/steinwurf/cxx-gauge.git',
-            major_version = 4))
+            git_repository = 'github.com/steinwurf/cxx-gauge.git',
+            major_version = 5))
 
     opt.load('wurf_dependency_bundle')
     opt.load('wurf_tools')
@@ -105,6 +104,9 @@ def build(bld):
 
         bld.recurse('benchmark/throughput')
         bld.recurse('benchmark/count_operations')
+        bld.recurse('benchmark/overhead')
+        bld.recurse('benchmark/decoding_probability')
+
 
     # Export own includes
     bld(includes = './src',

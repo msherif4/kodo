@@ -75,8 +75,9 @@ namespace kodo
         };
 
         /// Reset rank changed callback function
-        /// @copydoc layer::initialize(factory&)
-        void initialize(factory& the_factory)
+        /// @copydoc layer::initialize(Factory&)
+        template<class Factory>
+        void initialize(Factory& the_factory)
             {
                 m_symbols = the_factory.m_max_symbols;
                 m_rank = 0;

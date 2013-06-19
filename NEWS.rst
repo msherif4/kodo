@@ -4,22 +4,76 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest (minor)
---------------
-* Adding the shallow storage decoder which allows decoding objects larger
-  than a single block or generation.
-* Adding new example of an on-the-fly encoder. This example shows how to
-  use an encoder before all symbols for that encoder has become available.
-  This can be very useful in cases where data is produced on-the-fly, e.g.
-  some form of streaming. The example can be found in the "encode_on_the_fly"
-  folder.
-* Adding a deep storage decoder which provides the memory needed to decode
-  a large object spanning several blocks.
-* Adding simple decoding example. This example shows how to input symbols and
-  coefficients directly into the decoder and how some of the debug layers can
-  be applied to debug the decoding process.
-* Made all factories non-copyable by making copy constructor and copy
+Latest
+------
+* Minor: Added decoding probability benchmark. The benchmark measures the
+  the number of symbols needed to decode from which the decoding probability
+  can be derived.
+* Major: Refactored the factory layers so that the layer::construct() and
+  layer::initialize() functions are now template functions. The motivation for
+  this is that it relaxes the layer ordering since all layers will now have
+  access to the full factory type. I.e. layers lower in the stack can call
+  functions on the factory defined higher in the stack. This was previously
+  not possible.
+* Minor: Moved the symbols and symbol_size related functions from the factory
+  layers.
+* Minor: Adding new overhead benchmark. The overhead benchmark profiles the
+  total overhead in bytes transmitted on the wire for different code
+  configurations.
+
+10.0.0
+------
+* Bug: Fixed incorrectly failing assert in the linear_block_encoder. The assert
+  was triggered during recoding when a storage for a specific symbol was not
+  explicitly set by the layer::set_symbol() or layer::set_symbols() functions.
+  The bug was introduced in version 9.0.1, the unit test has been updated to
+  correctly detect this issue in the future.
+* Major: All codec stacks using the linear_block_encoder, should now add the
+  storage_aware_encoder layer below the linear_block_encoder. This is to ensure
+  that the encoder is reusable for RLNC recoding.
+* Major: Re-factor symbol storage API to avoid confusion about which symbols has
+  been explicitly specified by the user and which have not. This information is
+  now available through the symbols_available(), symbols_initialized() family
+  of functions.
+
+9.0.1
+-----
+* Bug: Fix behavior or deep_symbol_storage::set_symbols() to set all
+  symbols.
+* Bug: When reusing decoders contaning the linear_block_decoder layer
+  systematic symbols where not correctly initialized. A fix was added
+  to the linear_block_decoder and the unit test test_reuse_incomplete
+  now checks for this issue.
+
+9.0.0
+-----
+* Minor: Adding the shallow storage decoder which allows decoding objects
+  larger than a single block or generation.
+* Minor: Adding new example of an on-the-fly encoder. This example shows
+  how to use an encoder before all symbols for that encoder has become
+  available. This can be very useful in cases where data is produced
+  on-the-fly, e.g. some form of streaming. The example can be found in the
+  "examples/encode_on_the_fly" folder.
+* Minor: Adding a deep storage decoder which provides the memory needed to
+  decode a large object spanning several blocks.
+* Minor: Adding simple decoding example. This example shows how to input
+  symbols and coefficients directly into the decoder and how some of the
+  debug layers can be applied to debug the decoding process.
+* Bug: Made all factories non-copyable by making copy constructor and copy
   assignment constructor private.
+* Bug: Fix issue in recoding_symbol_id, where sak::copy_storage triggered an
+  assert when using an decoder with symbols less than max_symbols.
+* Major: Changed construct() and initialize() functions of a coding layer to
+  accept the factory as the only parameters. This breaks backwards
+  compatibility with Kodo version 8.0.0.
+* Major: Changed the factory build() function to accept no parameters.
+  Factories are now configured e.g. using set_symbols(uint32_t) before
+  calling build() to create a new encoder / decoder.
+* Minor: Moved finite_field_counter layer from the benchmarks to the
+  library source folder. This makes it possible to add it to any codec
+  stack where the number of finite field operations should be monitored.
+* Minor: Updated to waf-tools version 2.x.y
+* Major: Updating dependency to gauge version 5.x.y
 
 8.0.0
 -----

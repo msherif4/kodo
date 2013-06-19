@@ -41,6 +41,11 @@ public:
         /// @return pointer to an instantiation of an encoder or decoder
         pointer build()
 
+        //------------------------------------------------------------------
+        // Functions belonging to other APIs but placed required in the
+        // factory in order to correctly build the different layers.
+        //------------------------------------------------------------------
+
         /// @ingroup factory_api
         /// @return the maximum number of symbols in a block
         uint32_t max_symbols() const;
@@ -48,11 +53,6 @@ public:
         /// @ingroup factory_api
         /// @return the maximum symbol size in bytes
         uint32_t max_symbol_size() const;
-
-        //------------------------------------------------------------------
-        // Functions belonging to other APIs but placed required in the
-        // factory in order to correctly build the different layers.
-        //------------------------------------------------------------------
 
         /// @ingroup storage_api
         /// @return The maximum amount of data encoded / decoded in bytes.
@@ -110,13 +110,15 @@ public:
     ///        many times.
     /// @param the_factory The factory used to build the codec layer. Provides
     ///        access to cached data and factory functions.
-    void construct(factory &the_factory);
+    template<class Factory>
+    void construct(Factory &the_factory);
 
     /// @ingroup factory_api
     /// @brief Initializes the coder
     /// @param the_factory The factory used to build the codec layer. Provides
     ///        access to cached data and factory functions.
-    void initialize(factory &the_factory);
+    template<class Factory>
+    void initialize(Factory &the_factory);
 
     //------------------------------------------------------------------
     // CODEC HEADER API
@@ -273,8 +275,9 @@ public:
 
     /// @ingroup codec_api
     /// The rank of a decoder states how many symbols have been decoded
-    /// or partially decoded.
-    /// @return the rank of the decoder
+    /// or partially decoded. The rank of an encoder states how many symbols
+    /// are available for encoding.
+    /// @return the rank of the decoder or encoder
     uint32_t rank() const;
 
     /// @ingroup codec_api
@@ -408,14 +411,14 @@ public:
     //------------------------------------------------------------------
 
     /// @ingroup storage_api
-    /// Copies the encoded / decoded symbols.
+    /// Copies the encoded / decoded symbols to the dest buffer.
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy block_size() bytes or until
     ///        the dest buffer is full.
     void copy_symbols(const sak::mutable_storage &dest) const;
 
     /// @ingroup storage_api
-    /// Copies an encoded / decoded symbols.
+    /// Copies an encoded / decoded symbols to the dest buffer.
     /// @param index The index of the symbol to be copied
     /// @param dest The destination buffer where the symbols should be
     ///        copied. The function will copy symbol_size() bytes or until
@@ -450,13 +453,21 @@ public:
     const value_type* symbol_value(uint32_t index) const;
 
     /// @ingroup storage_api
-    /// Sets the storage for the source symbols
+    /// Sets the storage for the source symbols. This will specify all
+    /// symbols also in the case of partial data. If this is not desired
+    /// then the symbols should be specified individually. This also
+    /// means that it is the responsibility of the user to communicate
+    /// how many of the bytes transmitted are application data.
     /// @param symbol_storage A sak::const_storage container initialized
     ///        with the buffer to be use as encoding buffer.
     void set_symbols(const sak::const_storage &symbol_storage);
 
     /// @ingroup storage_api
-    /// Sets the storage for the source symbols
+    /// Sets the storage for the source symbols. This will specify all
+    /// symbols also in the case of partial data. If this is not desired
+    /// then the symbols should be specified individually. This also
+    /// means that it is the responsibility of the user to communicate
+    /// how many of the bytes transmitted are application data.
     /// @param symbol_storage A sak::mutable_storage container initialized
     ///        with the buffer to be use as encoding / decoding buffer.
     void set_symbols(const sak::mutable_storage &symbol_storage);
@@ -518,18 +529,55 @@ public:
     uint32_t bytes_used() const;
 
     /// @ingroup storage_api
-    /// @param index The index of the symbol to check.
-    /// @return true if the symbol has been initialized
-    bool symbol_exists(uint32_t index) const;
+    /// @return The number of symbols that are available. Available
+    ///         means where the memory is available, but which may not
+    ///         have been initialized through a layer::set_symbol() or
+    ///         layer::set_symbols() by the user.
+    uint32_t symbols_available() const;
 
     /// @ingroup storage_api
-    /// @return The number of symbols which have been specified so far
-    uint32_t symbol_count() const;
+    /// @return The number of symbols that are initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
+    uint32_t symbols_initialized() const;
 
     /// @ingroup storage_api
-    /// @return true if the all symbols have been specified in the
-    ///         symbol storage, otherwise false
-    bool is_storage_full() const;
+    /// @return True if all symbols in the storage layer are available.
+    ///         Available means where the memory is available, but which
+    ///         may not have been initialized through a layer::set_symbol()
+    ///         or layer::set_symbols() by the user.
+    ///         Available means where the memory is available, but not
+    ///         by the user.
+    bool is_symbols_available() const;
+
+    /// @ingroup storage_api
+    /// @return True if all symbols in the storage layer is initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
+    bool is_symbols_initialized() const;
+
+    /// @ingroup storage_api
+    /// @param symbol_index The index of the symbol to check
+    /// @return True if the specific symbol is available.
+    ///         Available means where the memory is available, but which
+    ///         may not have been initialized through a layer::set_symbol()
+    ///         or layer::set_symbols() by the user.
+    ///         Available means where the memory is available, but not
+    ///         by the user.
+    bool is_symbol_available(uint32_t symbol_index) const;
+
+    /// @ingroup storage_api
+    /// @param symbol_index The index of the symbol to check
+    /// @return True if the specific symbol is initialized.
+    ///         Initialized means that a symbols memory is available and
+    ///         has been explicitly set by the user through a
+    ///         layer::set_symbol() or layer::set_symbols() call.
+    ///         Any symbol which is initialized is also available.
+    bool is_symbol_initialized(uint32_t symbol_index) const;
 
     //------------------------------------------------------------------
     // PAYLOAD API
@@ -537,20 +585,23 @@ public:
 
     /// @ingroup payload_codec_api
     /// Encodes a symbol into the provided buffer.
-    /// @param payload. The buffer which should contain the encoded
+    /// @param payload The buffer which should contain the encoded
     ///        symbol.
     /// @return the total bytes used from the payload buffer
     uint32_t encode(uint8_t *payload);
 
     /// @ingroup payload_codec_api
-    /// Decodes an encoded symbol stored in the payload buffer
-    /// @param payload. The buffer storing the payload of an encoded symbol
+    /// Decodes an encoded symbol stored in the payload buffer.
+    /// @param payload The buffer storing the payload of an encoded symbol.
+    ///        The payload buffer may be changed by the decode function,
+    ///        an cannot be reused. If the payload is needed in several places
+    ///        make sure to keep a copy of the original payload.
     void decode(uint8_t *payload);
 
     /// @ingroup payload_codec_api
     /// Recodes a symbol into the provided buffer. This function is special for
     /// network codes.
-    /// @param payload. The buffer which should contain the recoded
+    /// @param payload The buffer which should contain the recoded
     ///        symbol.
     /// @return the total bytes used from the payload buffer
     uint32_t recode(uint8_t *payload);
