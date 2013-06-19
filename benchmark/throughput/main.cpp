@@ -332,7 +332,7 @@ protected:
 
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
-struct density_throughput_benchmark :
+struct sparse_throughput_benchmark :
     public throughput_benchmark<Encoder,Decoder>
 {
 public:
@@ -381,7 +381,7 @@ public:
 
         gauge::config_set cs = Super::get_current_configuration();
 
-        double density = cs.get_value<uint32_t>("density");
+        double density = cs.get_value<double>("density");
         m_encoder->set_density(density);
     }
 
@@ -529,6 +529,35 @@ typedef throughput_benchmark<
 BENCHMARK_F(setup_delayed_rlnc_throughput2325, FullDelayedRLNC, Prime2325, 5)
 {
    run_benchmark();
+}
+
+/// Sparse
+
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary>,
+    kodo::full_rlnc_decoder<fifi::binary> > setup_sparse_rlnc_throughput;
+
+BENCHMARK_F(setup_sparse_rlnc_throughput, SparseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary8>,
+    kodo::full_rlnc_decoder<fifi::binary8> > setup_sparse_rlnc_throughput8;
+
+BENCHMARK_F(setup_sparse_rlnc_throughput8, SparseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary16>,
+    kodo::full_rlnc_decoder<fifi::binary16> > setup_sparse_rlnc_throughput16;
+
+BENCHMARK_F(setup_sparse_rlnc_throughput16, SparseFullRLNC, Binary16, 5)
+{
+    run_benchmark();
 }
 
 

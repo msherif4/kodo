@@ -9,65 +9,48 @@
 import argparse
 import pandas as pd
 import pylab as plt
-
-def group_testcase(dataframe):
-    groups = list(dataframe.groupby(by='testcase'))
-
-    for name, g in groups:
-        group_symbol_size(name, g)
-
-def group_symbol_size(testcase, dataframe):
-    groups = list(dataframe.groupby(by='symbol_size'))
-
-    for name, g in groups:
-        plot_group(testcase, name, g)
+import numpy as np
 
 def plot_throughput(csvfile):
 
     df = pd.read_csv(csvfile)
-    group_testcase(df)
 
-def plot_group(testcase, symbol_size, dataframe):
+    def density_to_string(density):
+        if not np.isnan(density):
+            return " density {}".format(density)
+        else:
+            return ""
 
-    # We don't need the symbol_size,testcase columns anymore
-    # since we already grouped on these
-    dataframe = dataframe.drop(['symbol_size','testcase'], axis = 1)
+    # df['density'] = df['density'].map(density_to_string)
+    # df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] + df['density']
 
-    grouped = dataframe.groupby(by=['benchmark','symbols', 'type'])
+    plot_groups = list(df.groupby(by=['testcase', 'symbol_size', 'type']))
 
-    def compute_throughput(group):
-        s = group['throughput']
-        s = pd.Series([s.mean(), s.std()], ['mean','std'])
-        return s
+    # Group the plots
+    for (test, symbol_size, type), df in plot_groups:
 
-    results = grouped.apply(compute_throughput)
-    results = results.reset_index()
+        def density_to_string(density):
+            if not np.isnan(density):
+                return "density {}".format(density)
+            else:
+                return ""
 
-    encoder = results[(results['type'] == 'encoder')]
-    decoder = results[(results['type'] == 'decoder')]
+        df['benchmark'] = df['benchmark'] + ' ' + df['density'].map(density_to_string)
 
-    # We don't need the type,symbol_size,testcase columns anymore
-    encoder = encoder.drop(['type'], axis = 1)
-    decoder = decoder.drop(['type'], axis = 1)
+        group = df.groupby(by = ['benchmark', 'symbols'])
 
-    encoder = encoder.set_index(['benchmark','symbols'])
-    decoder = decoder.set_index(['benchmark','symbols'])
+        def compute_throughput(group):
+            s = group['throughput']
+            s = pd.Series([s.mean(), s.std()], ['mean','std'])
+            return s
 
-    f, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2, 2, sharex=True)
-    l1 = encoder['mean'].unstack(level=0).plot(kind='bar', ax = ax1, title='Encoder Mean', legend=False)
-    l2 = encoder['std'].unstack(level=0).plot(kind='bar', ax = ax3, title='Encoder Std dev.', legend=False)
-    l3 = decoder['mean'].unstack(level=0).plot(kind='bar', ax = ax2, title='Decoder Mean', legend=False, sharey=ax1)
-    l4 = decoder['std'].unstack(level=0).plot(kind='bar', ax = ax4, title='Decoder Std dev.', legend=False,sharey=ax3)
+        df = group.apply(compute_throughput)
+        df = df.unstack(level=0)
 
-    handles, labels = ax1.get_legend_handles_labels()
-    #ax1.legend(bbox_to_anchor=(1.1, 1.05))
-    t = f.legend(handles, labels,ncol=4, mode='expand')
-    #t.set_y(1.09)
+        df['mean'].plot(title="Throughput {} {} p={}B".format(test, type, symbol_size),
+                        kind='bar')
 
-    f.tight_layout()
-    plt.subplots_adjust(top=0.86)
-    #f.legend((l3, l4), ('Line 3', 'Line 4'), 'upper right')
-    #f.legend(loc="best")
+
     plt.show()
 
     print encoder
