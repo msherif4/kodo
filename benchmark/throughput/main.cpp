@@ -186,7 +186,7 @@ struct throughput_benchmark : public gauge::time_benchmark
         m_temp_payload.resize( m_encoder->payload_size() );
     }
 
-    void encode_payloads()
+    virtual void encode_payloads()
     {
         m_encoder->set_symbols(sak::storage(m_encoded_data));
 
@@ -206,7 +206,7 @@ struct throughput_benchmark : public gauge::time_benchmark
         }
     }
 
-    void decode_payloads()
+    virtual void decode_payloads()
     {
         uint32_t payload_count = m_payloads.size();
 
@@ -228,7 +228,7 @@ struct throughput_benchmark : public gauge::time_benchmark
     }
 
     /// Run the encoder
-    void run_encode()
+    virtual void run_encode()
     {
         gauge::config_set cs = get_current_configuration();
 
@@ -248,7 +248,7 @@ struct throughput_benchmark : public gauge::time_benchmark
     }
 
     /// Run the decoder
-    void run_decode()
+    virtual void run_decode()
     {
         // Encode some data
         encode_payloads();
@@ -387,6 +387,79 @@ public:
         double density = cs.get_value<double>("density");
         m_encoder->set_density(density);
     }
+
+};
+
+void dummy_callback()
+{
+}
+
+/// A test block represents an encoder and decoder pair
+template<class Encoder, class Decoder>
+struct sparse_staircase_throughput_benchmark :
+    public throughput_benchmark<Encoder,Decoder>
+{
+public:
+
+    /// The type of the base benchmark
+    typedef throughput_benchmark<Encoder,Decoder> Super;
+
+    typedef typename Decoder::pointer decoder_ptr;
+
+
+    /// We need access to the encoder built to adjust the density
+    using Super::m_encoder;
+    using Super::m_decoder;
+    using Super::m_decoder_factory;
+    using Super::m_encoded_data;
+    using Super::m_payloads;
+    using Super::m_encoded_symbols;
+
+public:
+
+    virtual void encode_payloads()
+    {
+        m_encoder->set_symbols(sak::storage(m_encoded_data));
+
+        // We switch any systematic operations off so we code
+        // symbols from the beginning
+        if(kodo::is_systematic_encoder(m_encoder))
+            kodo::set_systematic_off(m_encoder);
+
+        uint32_t payload_count = m_payloads.size();
+
+        for(uint32_t i = 0; i < payload_count; ++i)
+        {
+            std::vector<uint8_t> &payload = m_payloads[i];
+            m_encoder->encode(&payload[0]);
+            m_test_decoder->decode(&payload[0]);
+            ++m_encoded_symbols;
+        }
+    }
+
+
+    void setup()
+    {
+        Super::setup();
+        m_test_decoder = m_decoder_factory->build();
+
+        assert(m_encoder);
+        assert(m_decoder);
+        assert(m_test_decoder);
+
+        m_test_decoder->set_feedback_callback(
+            std::bind(&Encoder::handle_feedback, m_encoder.get()));
+
+        m_decoder->set_feedback_callback(std::bind(dummy_callback));
+
+    }
+
+
+
+protected:
+
+    /// The encoder to use
+    decoder_ptr m_test_decoder;
 
 };
 
@@ -563,6 +636,26 @@ BENCHMARK_F(setup_sparse_rlnc_throughput16, SparseFullRLNC, Binary16, 5)
     run_benchmark();
 }
 
+
+/// Sparse
+
+typedef sparse_staircase_throughput_benchmark<
+    kodo::sparse_staircase_full_rlnc_encoder<fifi::binary>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary> > setup_sparse_staircase_rlnc_throughput;
+
+BENCHMARK_F(setup_sparse_staircase_rlnc_throughput, SparseStaircaseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_staircase_throughput_benchmark<
+    kodo::sparse_staircase_full_rlnc_encoder<fifi::binary8>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary8> > setup_sparse_staircase_rlnc_throughput8;
+
+BENCHMARK_F(setup_sparse_staircase_rlnc_throughput8, SparseStaircaseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
 
 
 

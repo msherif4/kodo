@@ -282,6 +282,37 @@ public:
 };
 
 
+template<class Encoder, class Decoder>
+struct sparse_staircase_decoding_probability_benchmark :
+    public decoding_probability_benchmark<Encoder,Decoder>
+{
+public:
+
+    /// The type of the base benchmark
+    typedef decoding_probability_benchmark<Encoder,Decoder> Super;
+
+    /// We need to access a couple of member variables from the
+    /// base benchmark to setup the benchmark correctly
+    using Super::m_encoder;
+    using Super::m_decoder;
+
+public:
+
+    void setup()
+    {
+        Super::setup();
+
+        assert(m_encoder);
+        assert(m_decoder);
+
+        m_decoder->set_feedback_callback(
+            std::bind(&Encoder::handle_feedback, m_encoder.get()));
+    }
+
+};
+
+
+
 /// Using this macro we may specify options. For specifying options
 /// we use the boost program options library. So you may additional
 /// details on how to do it in the manual for that library.
@@ -468,6 +499,25 @@ BENCHMARK_F(setup_sparse_rlnc_decoding_probability16, SparseFullRLNC, Binary16, 
     run_benchmark();
 }
 
+/// Sparse
+
+typedef sparse_staircase_decoding_probability_benchmark<
+    kodo::sparse_staircase_full_rlnc_encoder<fifi::binary>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary> > setup_sparse_staircase_rlnc_decoding_probability;
+
+BENCHMARK_F(setup_sparse_staircase_rlnc_decoding_probability, SparseStaircaseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_staircase_decoding_probability_benchmark<
+    kodo::sparse_staircase_full_rlnc_encoder<fifi::binary8>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary8> > setup_sparse_staircase_rlnc_decoding_probability8;
+
+BENCHMARK_F(setup_sparse_staircase_rlnc_decoding_probability8, SparseStaircaseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
 
 
 int main(int argc, const char* argv[])
