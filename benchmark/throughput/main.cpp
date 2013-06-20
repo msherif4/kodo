@@ -337,10 +337,13 @@ struct sparse_throughput_benchmark :
 {
 public:
 
+    /// The type of the base benchmark
     typedef throughput_benchmark<Encoder,Decoder> Super;
 
+    /// We need access to the encoder built to adjust the density
     using Super::m_encoder;
 
+public:
 
     void get_options(gauge::po::variables_map& options)
     {
@@ -354,18 +357,18 @@ public:
         assert(types.size() > 0);
         assert(density.size() > 0);
 
-        for(uint32_t i = 0; i < symbols.size(); ++i)
+        for(const auto& s : symbols)
         {
-            for(uint32_t j = 0; j < symbol_size.size(); ++j)
+            for(const auto& p : symbol_size)
             {
-                for(uint32_t u = 0; u < types.size(); ++u)
+                for(const auto& t : types)
                 {
-                    for(auto& d: density)
+                    for(const auto& d: density)
                     {
                         gauge::config_set cs;
-                        cs.set_value<uint32_t>("symbols", symbols[i]);
-                        cs.set_value<uint32_t>("symbol_size", symbol_size[j]);
-                        cs.set_value<std::string>("type", types[u]);
+                        cs.set_value<uint32_t>("symbols", s);
+                        cs.set_value<uint32_t>("symbol_size", p);
+                        cs.set_value<std::string>("type", t);
                         cs.set_value<double>("density", d);
 
                         Super::add_configuration(cs);
@@ -433,7 +436,7 @@ BENCHMARK_OPTION(throughput_options)
     gauge::runner::instance().register_options(options);
 }
 
-BENCHMARK_OPTION(density_options)
+BENCHMARK_OPTION(throughput_density_options)
 {
     gauge::po::options_description options;
 

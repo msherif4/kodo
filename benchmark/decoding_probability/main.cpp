@@ -197,6 +197,91 @@ protected:
 
 };
 
+template<class Encoder, class Decoder>
+struct sparse_decoding_probability_benchmark :
+    public decoding_probability_benchmark<Encoder,Decoder>
+{
+public:
+
+    /// The encoder and decoder factories
+    typedef typename Encoder::factory encoder_factory;
+    typedef typename Decoder::factory decoder_factory;
+
+    /// The type of the base benchmark
+    typedef decoding_probability_benchmark<Encoder,Decoder> Super;
+
+    /// We need to access a couple of member variables from the
+    /// base benchmark to setup the benchmark correctly
+    using Super::m_encoder;
+    using Super::m_decoder_factory;
+    using Super::m_encoder_factory;
+    using Super::m_max_symbols;
+    using Super::m_max_symbol_size;
+
+public:
+
+    void get_options(gauge::po::variables_map& options)
+    {
+        auto symbols = options["symbols"].as<std::vector<uint32_t> >();
+        auto symbol_size = options["symbol_size"].as<std::vector<uint32_t> >();
+        auto erasure = options["erasure"].as<std::vector<double> >();
+        auto density = options["density"].as<std::vector<double> >();
+
+        assert(symbols.size() > 0);
+        assert(symbol_size.size() > 0);
+        assert(erasure.size() > 0);
+        assert(density.size() > 0);
+
+        m_max_symbols = *std::max_element(symbols.begin(),
+                                          symbols.end());
+
+        m_max_symbol_size = *std::max_element(symbol_size.begin(),
+                                              symbol_size.end());
+
+        // Make the factories fit perfectly otherwise there seems to
+        // be problems with memory access i.e. when using a factory
+        // with max symbols 1024 with a symbols 16
+        m_decoder_factory = std::make_shared<decoder_factory>(
+            m_max_symbols, m_max_symbol_size);
+
+        m_encoder_factory = std::make_shared<encoder_factory>(
+            m_max_symbols, m_max_symbol_size);
+
+        for(const auto& s : symbols)
+        {
+            for(const auto& p : symbol_size)
+            {
+                for(const auto& e : erasure)
+                {
+                    for(const auto& d: density)
+                    {
+                        gauge::config_set cs;
+                        cs.set_value<uint32_t>("symbols", s);
+                        cs.set_value<uint32_t>("symbol_size", p);
+                        cs.set_value<double>("erasure", e);
+                        cs.set_value<double>("density", d);
+                        Super::add_configuration(cs);
+                    }
+                }
+            }
+        }
+    }
+
+    void setup()
+    {
+        Super::setup();
+
+        gauge::config_set cs = Super::get_current_configuration();
+
+        double density = cs.get_value<double>("density");
+
+        assert(m_encoder);
+        m_encoder->set_density(density);
+    }
+
+};
+
+
 /// Using this macro we may specify options. For specifying options
 /// we use the boost program options library. So you may additional
 /// details on how to do it in the manual for that library.
@@ -241,6 +326,26 @@ BENCHMARK_OPTION(overhead_options)
     gauge::runner::instance().register_options(options);
 }
 
+BENCHMARK_OPTION(overhead_density_options)
+{
+    gauge::po::options_description options;
+
+    std::vector<double> density;
+    density.push_back(0.1);
+    density.push_back(0.2);
+    density.push_back(0.3);
+    density.push_back(0.4);
+    density.push_back(0.5);
+
+    auto default_density =
+        gauge::po::value<std::vector<double> >()->default_value(
+            density, "")->multitoken();
+
+    options.add_options()
+        ("density", default_density, "Set the density of the sparse codes");
+
+    gauge::runner::instance().register_options(options);
+}
 
 typedef decoding_probability_benchmark<
     kodo::full_rlnc_encoder<fifi::binary>,
@@ -333,6 +438,37 @@ BENCHMARK_F(setup_full_rlnc_unsystematic16, FullRLNCUnsystematic, Binary16, 5)
 {
    run_benchmark();
 }
+
+/// Sparse
+
+typedef sparse_decoding_probability_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary>,
+    kodo::full_rlnc_decoder<fifi::binary> > setup_sparse_rlnc_decoding_probability;
+
+BENCHMARK_F(setup_sparse_rlnc_decoding_probability, SparseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_decoding_probability_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary8>,
+    kodo::full_rlnc_decoder<fifi::binary8> > setup_sparse_rlnc_decoding_probability8;
+
+BENCHMARK_F(setup_sparse_rlnc_decoding_probability8, SparseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_decoding_probability_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary16>,
+    kodo::full_rlnc_decoder<fifi::binary16> > setup_sparse_rlnc_decoding_probability16;
+
+BENCHMARK_F(setup_sparse_rlnc_decoding_probability16, SparseFullRLNC, Binary16, 5)
+{
+    run_benchmark();
+}
+
+
 
 int main(int argc, const char* argv[])
 {

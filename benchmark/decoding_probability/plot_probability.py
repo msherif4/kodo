@@ -16,9 +16,16 @@ def plot_overhead(csvfile, saveas):
 
     df = pd.read_csv(csvfile)
 
+    def density_to_string(density):
+        if not np.isnan(density):
+            return " density {}".format(density)
+        else:
+            return ""
+
+
     # Combine the testcase and benchmark columns into one (used for labels)
-    df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
-    df = df.drop(['testcase','benchmark'], axis = 1)
+    df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] + ' ' + df['density'].map(density_to_string)
+    df = df.drop(['testcase','benchmark', 'density'], axis = 1)
 
     grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'], axis=0)
 
