@@ -4,7 +4,7 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest
+11.0.0
 ------
 * Minor: Added decoding probability benchmark. The benchmark measures the
   the number of symbols needed to decode from which the decoding probability
