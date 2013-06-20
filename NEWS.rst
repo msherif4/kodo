@@ -20,6 +20,7 @@ Latest
 * Minor: Adding new overhead benchmark. The overhead benchmark profiles the
   total overhead in bytes transmitted on the wire for different code
   configurations.
+* Minor: Adding support for git protocol option in the wscript
 
 10.0.0
 ------
