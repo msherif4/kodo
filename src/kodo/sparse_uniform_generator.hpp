@@ -87,7 +87,7 @@ namespace kodo
 
             value_type* c = reinterpret_cast<value_type*>(coefficients);
 
-            uint32_t symbols = SuperCoder::rank();
+            uint32_t symbols = SuperCoder::symbols();
 
             for (uint32_t i = 0; i < symbols; ++i)
             {
