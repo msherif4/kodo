@@ -22,6 +22,7 @@ Latest
   configurations.
 * Minor: Added sparse_uniform_generator, which can we used to control the
   amount of non-zero vs zero elements generated in e.g. a RLNC encoding vector.
+* Minor: Adding support for git protocol option in the wscript
 
 10.0.0
 ------
