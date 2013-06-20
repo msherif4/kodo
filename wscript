@@ -55,6 +55,7 @@ def options(opt):
             git_repository = 'github.com/steinwurf/cxx-gauge.git',
             major_version = 5))
 
+    opt.load('wurf_dependency_resolve')
     opt.load('wurf_dependency_bundle')
     opt.load('wurf_tools')
 
