@@ -20,6 +20,9 @@ Latest
 * Minor: Adding new overhead benchmark. The overhead benchmark profiles the
   total overhead in bytes transmitted on the wire for different code
   configurations.
+* Minor: Added sparse_uniform_generator, which can we used to control the
+  amount of non-zero vs zero elements generated in e.g. a RLNC encoding vector.
+* Minor: Adding support for git protocol option in the wscript
 
 10.0.0
 ------

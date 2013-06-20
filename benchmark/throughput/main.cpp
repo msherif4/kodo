@@ -329,6 +329,69 @@ protected:
 
 };
 
+
+/// A test block represents an encoder and decoder pair
+template<class Encoder, class Decoder>
+struct sparse_throughput_benchmark :
+    public throughput_benchmark<Encoder,Decoder>
+{
+public:
+
+    /// The type of the base benchmark
+    typedef throughput_benchmark<Encoder,Decoder> Super;
+
+    /// We need access to the encoder built to adjust the density
+    using Super::m_encoder;
+
+public:
+
+    void get_options(gauge::po::variables_map& options)
+    {
+        auto symbols = options["symbols"].as<std::vector<uint32_t> >();
+        auto symbol_size = options["symbol_size"].as<std::vector<uint32_t> >();
+        auto types = options["type"].as<std::vector<std::string> >();
+        auto density = options["density"].as<std::vector<double> >();
+
+        assert(symbols.size() > 0);
+        assert(symbol_size.size() > 0);
+        assert(types.size() > 0);
+        assert(density.size() > 0);
+
+        for(const auto& s : symbols)
+        {
+            for(const auto& p : symbol_size)
+            {
+                for(const auto& t : types)
+                {
+                    for(const auto& d: density)
+                    {
+                        gauge::config_set cs;
+                        cs.set_value<uint32_t>("symbols", s);
+                        cs.set_value<uint32_t>("symbol_size", p);
+                        cs.set_value<std::string>("type", t);
+                        cs.set_value<double>("density", d);
+
+                        Super::add_configuration(cs);
+                    }
+                }
+            }
+        }
+    }
+
+    void setup()
+    {
+        Super::setup();
+
+        gauge::config_set cs = Super::get_current_configuration();
+
+        double density = cs.get_value<double>("density");
+        m_encoder->set_density(density);
+    }
+
+};
+
+
+
 /// Using this macro we may specify options. For specifying options
 /// we use the boost program options library. So you may additional
 /// details on how to do it in the manual for that library.
@@ -369,6 +432,27 @@ BENCHMARK_OPTION(throughput_options)
 
     options.add_options()
         ("type", default_types, "Set type [encoder|decoder]");
+
+    gauge::runner::instance().register_options(options);
+}
+
+BENCHMARK_OPTION(throughput_density_options)
+{
+    gauge::po::options_description options;
+
+    std::vector<double> density;
+    density.push_back(0.1);
+    density.push_back(0.2);
+    density.push_back(0.3);
+    density.push_back(0.4);
+    density.push_back(0.5);
+
+    auto default_density =
+        gauge::po::value<std::vector<double> >()->default_value(
+            density, "")->multitoken();
+
+    options.add_options()
+        ("density", default_density, "Set the density of the sparse codes");
 
     gauge::runner::instance().register_options(options);
 }
@@ -450,36 +534,36 @@ BENCHMARK_F(setup_delayed_rlnc_throughput2325, FullDelayedRLNC, Prime2325, 5)
    run_benchmark();
 }
 
+/// Sparse
 
-//     run("seed_rlnc_2",
-//         make_block<
-//         kodo::seed_rlnc_encoder<fifi::binary>,
-//         kodo::seed_rlnc_decoder<fifi::binary> >(setup));
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary>,
+    kodo::full_rlnc_decoder<fifi::binary> > setup_sparse_rlnc_throughput;
 
-//     run("seed_rlnc_8",
-//         make_block<
-//         kodo::seed_rlnc_encoder<fifi::binary8>,
-//         kodo::seed_rlnc_decoder<fifi::binary8> >(setup));
+BENCHMARK_F(setup_sparse_rlnc_throughput, SparseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
 
-//     run("seed_rlnc_16",
-//         make_block<
-//         kodo::seed_rlnc_encoder<fifi::binary16>,
-//         kodo::seed_rlnc_decoder<fifi::binary16> >(setup));
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary8>,
+    kodo::full_rlnc_decoder<fifi::binary8> > setup_sparse_rlnc_throughput8;
 
-// //    run("rs_2",
-// //        make_block<
-// //        kodo::rs_encoder<fifi::binary>,
-// //        kodo::rs_decoder<fifi::binary> >(setup));
+BENCHMARK_F(setup_sparse_rlnc_throughput8, SparseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
 
-// //    run("rs_8",
-// //        make_block<
-// //        kodo::rs_encoder<fifi::binary8>,
-// //        kodo::rs_decoder<fifi::binary8> >(setup));
+typedef sparse_throughput_benchmark<
+    kodo::sparse_full_rlnc_encoder<fifi::binary16>,
+    kodo::full_rlnc_decoder<fifi::binary16> > setup_sparse_rlnc_throughput16;
 
-// //    run("rs_16",
-// //        make_block<
-// //        kodo::rs_encoder<fifi::binary16>,
-// //        kodo::rs_decoder<fifi::binary16> >(setup));
+BENCHMARK_F(setup_sparse_rlnc_throughput16, SparseFullRLNC, Binary16, 5)
+{
+    run_benchmark();
+}
+
+
 
 
 int main(int argc, const char* argv[])
