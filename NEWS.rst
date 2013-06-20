@@ -23,6 +23,9 @@ Latest
 * Minor: Added sparse_uniform_generator, which can we used to control the
   amount of non-zero vs zero elements generated in e.g. a RLNC encoding vector.
 * Minor: Adding support for git protocol option in the wscript
+* Bug: The uniform_generator and sparse_uniform_generators contained a bug which
+  meant that not all symbols were considered for recoding, when rank of a
+  recoder was not full.
 
 10.0.0
 ------
