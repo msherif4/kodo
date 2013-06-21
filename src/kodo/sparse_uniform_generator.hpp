@@ -50,6 +50,8 @@ namespace kodo
         {
             assert(coefficients != 0);
 
+            m_non_zero_count = 0;
+
             // Since we will not set all coefficients we should ensure
             // that the non specified ones are zero
             std::fill_n( coefficients, SuperCoder::coefficients_size(), 0);
@@ -60,6 +62,8 @@ namespace kodo
             {
                 if (m_bernoulli(m_random_generator))
                 {
+                    ++m_non_zero_count;
+
                     if (fifi::is_binary<field_type>::value)
                     {
                         fifi::set_value<field_type>(c, i, 1);
@@ -81,6 +85,8 @@ namespace kodo
         {
             assert(coefficients != 0);
 
+            m_non_zero_count = 0;
+
             // Since we will not set all coefficients we should ensure
             // that the non specified ones are zero
             std::fill_n( coefficients, SuperCoder::coefficients_size(), 0);
@@ -98,6 +104,8 @@ namespace kodo
 
                 if (m_bernoulli(m_random_generator))
                 {
+                    ++m_non_zero_count;
+
                     if (fifi::is_binary<field_type>::value)
                     {
                         fifi::set_value<field_type>(c, i, 1);
@@ -136,6 +144,12 @@ namespace kodo
             return m_bernoulli.p();
         }
 
+        /// @return The number of nonzero coefficient generated
+        uint32_t nonzeros_generated() const
+        {
+            return m_non_zero_count;
+        }
+
     private:
 
         /// The distribution controlling the density of the coefficients
@@ -151,6 +165,9 @@ namespace kodo
         /// The random generator
         boost::random::mt19937 m_random_generator;
 
+        /// Non-zero counter - i.e. the number of non zero coefficients
+        /// generated
+        uint32_t m_non_zero_count;
     };
 }
 

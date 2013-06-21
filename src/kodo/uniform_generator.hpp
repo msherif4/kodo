@@ -92,14 +92,14 @@ namespace kodo
 
         /// The type of the uint8_t distribution
         typedef boost::random::uniform_int_distribution<uint8_t>
-        uint8_t_distribution;
+            uint8_t_distribution;
 
         /// Distribution that generates random bytes
         uint8_t_distribution m_distribution;
 
         /// The type of the value_type distribution
         typedef boost::random::uniform_int_distribution<value_type>
-        value_type_distribution;
+            value_type_distribution;
 
         /// Distribution that generates random values from a finite field
         value_type_distribution m_value_distribution;

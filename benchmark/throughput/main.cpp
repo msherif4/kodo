@@ -637,7 +637,7 @@ BENCHMARK_F(setup_sparse_rlnc_throughput16, SparseFullRLNC, Binary16, 5)
 }
 
 
-/// Sparse
+/// Sparse staircase
 
 typedef sparse_staircase_throughput_benchmark<
     kodo::sparse_staircase_full_rlnc_encoder<fifi::binary>,
@@ -653,6 +653,26 @@ typedef sparse_staircase_throughput_benchmark<
     kodo::sparse_staircase_full_rlnc_decoder<fifi::binary8> > setup_sparse_staircase_rlnc_throughput8;
 
 BENCHMARK_F(setup_sparse_staircase_rlnc_throughput8, SparseStaircaseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
+
+/// Sparse nonzero staircase
+
+typedef sparse_staircase_throughput_benchmark<
+    kodo::sparse_nonzero_staircase_full_rlnc_encoder<fifi::binary>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary> > setup_sparse_nonzero_staircase_rlnc_throughput;
+
+BENCHMARK_F(setup_sparse_nonzero_staircase_rlnc_throughput, SparseNonzeroStaircaseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_staircase_throughput_benchmark<
+    kodo::sparse_nonzero_staircase_full_rlnc_encoder<fifi::binary8>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary8> > setup_sparse_nonzero_staircase_rlnc_throughput8;
+
+BENCHMARK_F(setup_sparse_nonzero_staircase_rlnc_throughput8, SparseNonzeroStaircaseFullRLNC, Binary8, 5)
 {
     run_benchmark();
 }

@@ -24,7 +24,7 @@ namespace kodo
         void initialize(Factory& factory)
         {
             SuperCoder::initialize(factory);
-            m_feedback_threshold = (uint32_t)std::ceil(SuperCoder::symbols() * 0.05);
+            m_feedback_threshold = (uint32_t)std::ceil(SuperCoder::symbols() * 0.65);
             m_feedback_sent = false;
 
             assert(SuperCoder::symbols() > m_feedback_threshold);
@@ -37,7 +37,7 @@ namespace kodo
             if(m_feedback_sent)
                 return;
 
-            if(SuperCoder::rank() > SuperCoder::symbols() - m_feedback_threshold)
+            if(SuperCoder::rank() > m_feedback_threshold)
             {
                 m_feedback_sent = true;
 

@@ -519,6 +519,27 @@ BENCHMARK_F(setup_sparse_staircase_rlnc_decoding_probability8, SparseStaircaseFu
     run_benchmark();
 }
 
+/// Sparse nonzero staircase
+
+typedef sparse_staircase_decoding_probability_benchmark<
+    kodo::sparse_nonzero_staircase_full_rlnc_encoder<fifi::binary>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary> > setup_sparse_nonzero_staircase_rlnc_decoding_probability;
+
+BENCHMARK_F(setup_sparse_nonzero_staircase_rlnc_decoding_probability, SparseNonzeroStaircaseFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef sparse_staircase_decoding_probability_benchmark<
+    kodo::sparse_nonzero_staircase_full_rlnc_encoder<fifi::binary8>,
+    kodo::sparse_staircase_full_rlnc_decoder<fifi::binary8> > setup_sparse_nonzero_staircase_rlnc_decoding_probability8;
+
+BENCHMARK_F(setup_sparse_nonzero_staircase_rlnc_decoding_probability8, SparseNonzeroStaircaseFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
+
+
 
 int main(int argc, const char* argv[])
 {

@@ -58,7 +58,7 @@ namespace kodo
             }
             else
             {
-                SuperCoder::set_density(0.03);
+                SuperCoder::set_density(0.05);
             }
         }
 
@@ -81,7 +81,7 @@ namespace kodo
             {
             case 1U: { return 2.0 / symbols; }
             case 2U: { return 3.0 / symbols; }
-            default:  { return 10.0 / symbols; }
+            default:  { return 1.0 / symbols; }
             };
 
         }
