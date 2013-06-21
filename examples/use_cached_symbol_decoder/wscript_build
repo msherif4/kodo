@@ -1,0 +1,9 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+bld.program(features = 'cxx',
+            source   = 'use_cached_symbol_decoder.cpp',
+            target   = 'use_cached_symbol_decoder',
+            use      = ['kodo_includes', 'boost_includes',
+                        'fifi_includes', 'sak_includes'])
+

@@ -102,6 +102,7 @@ def build(bld):
         bld.recurse('examples/decode_simple')
         bld.recurse('examples/encode_on_the_fly')
         bld.recurse('examples/rank_callback')
+        bld.recurse('examples/use_cached_symbol_decoder')
 
         bld.recurse('benchmark/throughput')
         bld.recurse('benchmark/count_operations')
