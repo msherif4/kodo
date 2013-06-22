@@ -17,9 +17,26 @@ namespace kodo
 
     /// @todo docs
     ///
-    /// This layer extracts the symbol coefficients and symbol data and makes
+    /// @brief This layer extracts the symbol coefficients and symbol data and makes
     /// it available for use. It does not perform any decoding on the
     /// coefficients or the symbol.
+    ///
+    /// An encoder may produce either systematic (i.e. uncoded) or coded
+    /// symbols. The cached_symbol_decoder provides the cached_symbol_coded()
+    /// function to differentiate between the two.
+    /// If a symbol is systematic the cached_symbol_coded() will return false
+    /// and you may use the cached_symbol_index() to determine which uncoded
+    /// original symbol it corresponds to.
+    /// On the other hand if cached_symbol_coded() returns true the symbol is
+    /// some linear combination of the original symbols. The coefficients use
+    /// to create the linear combination may be retrieved through the
+    /// cached_symbol_coefficients() function.
+    ///
+    /// Finally the data of the symbol may be retried using the
+    /// cached_symbol_data() function.
+    ///
+    /// You can check the example in use_cached_symbol_decoder.cpp to see an
+    /// example of how to the use cached_symbol_decoder.
     ///
     template<class SuperCoder>
     class cached_symbol_decoder : public SuperCoder
@@ -96,26 +113,34 @@ namespace kodo
             return m_symbol_coded;
         }
 
+        /// @return The index of the uncoded symbol
         uint32_t cached_symbol_index() const
         {
             return m_symbol_index;
         }
 
+        /// @return The data of the symbol. The size of the symbol in
+        ///         bytes can be retried by calling layer::symbol_size()
         const uint8_t* cached_symbol_data() const
         {
             return &m_data[0];
         }
 
-        const uint8_t* cached_symbol_coefficients() const
-        {
-            return &m_coefficients[0];
-        }
-
+        /// @copydoc cached_symbol_data() const
         uint8_t* cached_symbol_data()
         {
             return &m_data[0];
         }
 
+        /// @return The coding coefficients used to encode the symbol.
+        ///         The size of the coefficients buffer in bytes can be
+        ///         retried by calling the layer::coefficients_size()
+        const uint8_t* cached_symbol_coefficients() const
+        {
+            return &m_coefficients[0];
+        }
+
+        /// @copydoc cached_symbol_coefficients() const
         uint8_t* cached_symbol_coefficients()
         {
             return &m_coefficients[0];

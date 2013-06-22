@@ -7,11 +7,12 @@
 #include <kodo/cached_symbol_decoder.hpp>
 #include <kodo/nada_decoder.hpp>
 
-/// Cached symbol decoder just splits the encoded symbol into
-/// symbol coefficients and symbol data
 namespace kodo
 {
 
+    /// @brief The symbol info stack can be used to split an
+    ///        incoming encoded payload into the encoded
+    ///        symbol data and symbol id (in RLNC encoding vector).
     template<class Field>
     class symbol_info_decoder
         : public // Payload API
@@ -37,26 +38,33 @@ namespace kodo
                  symbol_info_decoder<Field>
                      > > > > > > > > > > >
     { };
+
 }
 
-
-/// @example encode_decode_simple.cpp
+/// @example use_cached_symbol_decoder.cpp
 ///
-/// Simple example showing how to encode and decode a block
-/// of memory.
+/// This example shows how to use the cached symbol decoder to "extract"
+/// the symbol coding coefficients and the encoded symbol data from an
+/// encoded symbol.
+
 
 int main()
 {
+    // The finite field we will use in the example. You can try
+    // with other fields by specifying e.g. fifi::binary8 for the
+    // extension field 2^8
+    typedef fifi::binary finite_field;
+
     // Set the number of symbols (i.e. the generation size in RLNC
     // terminology) and the size of a symbol in bytes
     uint32_t symbols = 8;
     uint32_t symbol_size = 160;
 
     // Typdefs for the encoder/decoder type we wish to use
-    typedef kodo::full_rlnc_encoder<fifi::binary> rlnc_encoder;
-    typedef kodo::full_rlnc_decoder<fifi::binary> rlnc_decoder;
+    typedef kodo::full_rlnc_encoder<finite_field> rlnc_encoder;
+    typedef kodo::full_rlnc_decoder<finite_field> rlnc_decoder;
 
-    typedef kodo::symbol_info_decoder<fifi::binary> rlnc_info_decoder;
+    typedef kodo::symbol_info_decoder<finite_field> rlnc_info_decoder;
 
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
@@ -115,7 +123,7 @@ int main()
 
             for(uint32_t i = 0; i < decoder_info->symbols(); ++i)
             {
-                std::cout << (uint32_t) fifi::get_value<fifi::binary>(coefficients, i)
+                std::cout << (uint32_t) fifi::get_value<finite_field>(coefficients, i)
                           << " ";
             }
 
