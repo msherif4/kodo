@@ -61,7 +61,11 @@ void test_cached_symbol_decoder(uint32_t symbols, uint32_t symbol_size)
     EXPECT_TRUE(sak::equal(coeff_storage_in, coeff_storage_out));
 
     data_in = random_vector(symbol_size);
-    uint32_t random_index = rand_nonzero(symbols);
+
+    // The maximum index is symbols - 1 e.g. if we have 5 symbols
+    // the indicies are {0,1,2,3,4} i.e. the maximum is 4
+    assert(symbols > 0);
+    uint32_t random_index = rand_nonzero(symbols-1);
 
     stack->decode_symbol(&data_in[0], random_index);
 

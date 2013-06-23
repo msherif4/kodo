@@ -4,6 +4,13 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
+Latest
+------
+* Minor: Added new cached_symbol_decoder layer, this layer does not perform
+  any decoding on the incoming symbol, but provides access to the encoded
+  symbol's coefficients and data. An example use_cached_symbol_decoder was
+  added to show a possible use case for this layer.
+
 11.0.0
 ------
 * Minor: Added decoding probability benchmark. The benchmark measures the
