@@ -13,6 +13,16 @@ namespace kodo
     /// @brief The symbol info stack can be used to split an
     ///        incoming encoded payload into the encoded
     ///        symbol data and symbol id (in RLNC encoding vector).
+    ///
+    ///        You can check the API of the cached_symbol_decoder to
+    ///        see how to access information about the coded symbol.
+    ///
+    ///        The stack info stack is created in such a way that it
+    ///        is compatible and can decode symbols produced by a
+    ///        full_rlnc_encoder. In case you wish to a similar approach
+    ///        for a different codec stack you should ensure that the
+    ///        layers in the two stacks are compatible (i.e. "Payload API"
+    ///        to "Codec API" are the same).
     template<class Field>
     class symbol_info_decoder
         : public // Payload API
@@ -23,7 +33,7 @@ namespace kodo
                  // Symbol ID API
                  plain_symbol_id_reader<
                  // Codec API
-                 cached_symbol_decoder<
+                 cached_symbol_decoder<  // <-- Cached symbol decoder
                  nada_decoder<
                  // Coefficient Storage API
                  coefficient_info<
@@ -45,9 +55,7 @@ namespace kodo
 ///
 /// This example shows how to use the cached symbol decoder to "extract"
 /// the symbol coding coefficients and the encoded symbol data from an
-/// encoded symbol.
-
-
+/// incoming symbol.
 int main()
 {
     // The finite field we will use in the example. You can try
@@ -67,15 +75,16 @@ int main()
     typedef kodo::symbol_info_decoder<finite_field> rlnc_info_decoder;
 
     // In the following we will make an encoder/decoder factory.
-    // The factories are used to build actual encoders/decoders
+    // The factories are used to build actual encoders/decoders.
+    // Each stack we use have their own factories.
     rlnc_encoder::factory encoder_factory(symbols, symbol_size);
     auto encoder = encoder_factory.build();
 
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     auto decoder = decoder_factory.build();
 
-    rlnc_info_decoder::factory decoder_info_factory(symbols, symbol_size);
-    auto decoder_info = decoder_info_factory.build();
+    rlnc_info_decoder::factory info_decoder_factory(symbols, symbol_size);
+    auto info_decoder = info_decoder_factory.build();
 
     // Allocate some storage for a "payload" the payload is what we would
     // eventually send over a network
@@ -99,39 +108,58 @@ int main()
         // Encode a packet into the payload buffer
         encoder->encode( &payload[0] );
 
+        // Here we "simulate" a packet loss of approximately 50%
+        // by dropping half of the encoded packets.
+        // When running this example you will notice that the initial
+        // symbols are received systematically (i.e. uncoded). After
+        // sending all symbols once uncoded, the encoder will switch
+        // to full coding, in which case you will see the full encoding
+        // vectors being sent and received.
         if((rand() % 2) == 0)
             continue;
 
-        decoder_info->decode( &payload[0] );
+        // Pass the encoded packet to the info decoder. After this
+        // information about the coded symbol can be fetched using the
+        // cached_symbol_decoder API
+        info_decoder->decode( &payload[0] );
 
-        if(!decoder_info->cached_symbol_coded())
+        if(!info_decoder->cached_symbol_coded())
         {
-            std::cout << "Symbol was uncoded, index = "
-                      << decoder_info->cached_symbol_index() << std::endl;
+            // The symbol was uncoded so we may ask the cache which of the
+            // original symbols we have received.
 
-            // Pass that packet to the decoder
-            decoder->decode_symbol( decoder_info->cached_symbol_data(),
-                                    decoder_info->cached_symbol_index());
+            std::cout << "Symbol was uncoded, index = "
+                      << info_decoder->cached_symbol_index() << std::endl;
+
+            // Now we pass the data directly into our actual decoder. This is
+            // done using the "Codec API" directly, and not through the "Payload
+            // API" as we would typically do.
+            decoder->decode_symbol( info_decoder->cached_symbol_data(),
+                                    info_decoder->cached_symbol_index());
 
         }
         else
         {
+            // The symbol was coded so we may ask the cache to return
+            // the coding coefficients used to create the encoded symbol.
+
             std::cout << "Symbol was coded, encoding vector = ";
 
-            const uint8_t* coefficients =
-                decoder_info->cached_symbol_coefficients();
+            const uint8_t* c = info_decoder->cached_symbol_coefficients();
 
-            for(uint32_t i = 0; i < decoder_info->symbols(); ++i)
+            // We loop through the coefficient buffer and print the coefficients
+            for(uint32_t i = 0; i < info_decoder->symbols(); ++i)
             {
-                std::cout << (uint32_t) fifi::get_value<finite_field>(coefficients, i)
+                std::cout << (uint32_t) fifi::get_value<finite_field>(c, i)
                           << " ";
             }
 
             std::cout << std::endl;
 
-            // Pass that packet to the decoder
-            decoder->decode_symbol( decoder_info->cached_symbol_data(),
-                                    decoder_info->cached_symbol_coefficients());
+            // Pass that packet to the decoder, as with the uncoded symbols
+            // above we pass it directly to the "Coded API"
+            decoder->decode_symbol(info_decoder->cached_symbol_data(),
+                                   info_decoder->cached_symbol_coefficients());
 
         }
     }

@@ -17,8 +17,8 @@ namespace kodo
 
     /// @todo docs
     ///
-    /// @brief This layer extracts the symbol coefficients and symbol data and makes
-    /// it available for use. It does not perform any decoding on the
+    /// @brief This layer extracts the symbol coefficients and symbol data
+    /// and makes it available for use. It does not perform any decoding on the
     /// coefficients or the symbol.
     ///
     /// An encoder may produce either systematic (i.e. uncoded) or coded
@@ -28,7 +28,7 @@ namespace kodo
     /// and you may use the cached_symbol_index() to determine which uncoded
     /// original symbol it corresponds to.
     /// On the other hand if cached_symbol_coded() returns true the symbol is
-    /// some linear combination of the original symbols. The coefficients use
+    /// some linear combination of the original symbols. The coefficients used
     /// to create the linear combination may be retrieved through the
     /// cached_symbol_coefficients() function.
     ///
@@ -41,14 +41,6 @@ namespace kodo
     template<class SuperCoder>
     class cached_symbol_decoder : public SuperCoder
     {
-    public:
-
-        /// @copydoc layer::field_type
-        typedef typename SuperCoder::field_type field_type;
-
-        /// @copydoc layer::value_type
-        typedef typename field_type::value_type value_type;
-
     public:
 
         /// @copydoc layer::construct(Factory&)
