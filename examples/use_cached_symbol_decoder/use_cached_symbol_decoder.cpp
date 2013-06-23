@@ -10,19 +10,19 @@
 namespace kodo
 {
 
-    /// @brief The symbol info stack can be used to split an
+    /// @brief The symbol info stack defined below can be used to split an
     ///        incoming encoded payload into the encoded
-    ///        symbol data and symbol id (in RLNC encoding vector).
+    ///        symbol data and symbol id (the RLNC encoding vector).
     ///
     ///        You can check the API of the cached_symbol_decoder to
     ///        see how to access information about the coded symbol.
     ///
-    ///        The stack info stack is created in such a way that it
+    ///        The info stack is created in such a way that it
     ///        is compatible and can decode symbols produced by a
-    ///        full_rlnc_encoder. In case you wish to a similar approach
+    ///        full_rlnc_encoder. In case you wish to use a similar approach
     ///        for a different codec stack you should ensure that the
-    ///        layers in the two stacks are compatible (i.e. "Payload API"
-    ///        to "Codec API" are the same).
+    ///        layers in the two stacks are compatible (i.e. at least "Payload
+    ///        API" to "Codec API" are the same).
     template<class Field>
     class symbol_info_decoder
         : public // Payload API
@@ -157,7 +157,7 @@ int main()
             std::cout << std::endl;
 
             // Pass that packet to the decoder, as with the uncoded symbols
-            // above we pass it directly to the "Coded API"
+            // above we pass it directly to the "Codec API"
             decoder->decode_symbol(info_decoder->cached_symbol_data(),
                                    info_decoder->cached_symbol_coefficients());
 
