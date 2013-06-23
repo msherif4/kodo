@@ -6,20 +6,16 @@
 #pragma once
 
 #include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <vector>
-
-#include <fifi/fifi_utils.hpp>
 
 namespace kodo
 {
 
-    /// @ingroup debug
-    /// @brief Debug layer which allows inspecting the state of a
-    ///        linear block decoder.
+    /// @ingroup codec_layers
+    /// @ingroup empty
+    /// @brief Empty implementation of the decode_symbol(uint8_t*,uint8_t*) and
+    ///        decode_symbol(uint8_t*, uint32_t) functions.
     template<class SuperCoder>
-    class nada_decoder : public SuperCoder
+    class empty_decoder : public SuperCoder
     {
     public:
 

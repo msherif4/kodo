@@ -5,7 +5,7 @@
 
 #include <kodo/rlnc/full_vector_codes.hpp>
 #include <kodo/cached_symbol_decoder.hpp>
-#include <kodo/nada_decoder.hpp>
+#include <kodo/empty_decoder.hpp>
 
 namespace kodo
 {
@@ -34,7 +34,7 @@ namespace kodo
                  plain_symbol_id_reader<
                  // Codec API
                  cached_symbol_decoder<  // <-- Cached symbol decoder
-                 nada_decoder<
+                 empty_decoder<
                  // Coefficient Storage API
                  coefficient_info<
                  // Storage API

@@ -12,10 +12,12 @@
 
 #include <fifi/fifi_utils.hpp>
 
+#include <sak/storage.hpp>
+
 namespace kodo
 {
 
-    /// @todo docs
+    /// @ingroup codec_layers
     ///
     /// @brief This layer extracts the symbol coefficients and symbol data
     /// and makes it available for use. It does not perform any decoding on the
@@ -108,6 +110,7 @@ namespace kodo
         /// @return The index of the uncoded symbol
         uint32_t cached_symbol_index() const
         {
+            assert(!m_symbol_coded);
             return m_symbol_index;
         }
 
@@ -129,12 +132,14 @@ namespace kodo
         ///         retried by calling the layer::coefficients_size()
         const uint8_t* cached_symbol_coefficients() const
         {
+            assert(m_symbol_coded);
             return &m_coefficients[0];
         }
 
         /// @copydoc cached_symbol_coefficients() const
         uint8_t* cached_symbol_coefficients()
         {
+            assert(m_symbol_coded);
             return &m_coefficients[0];
         }
 

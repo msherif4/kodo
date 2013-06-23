@@ -9,6 +9,12 @@
 ///        Typically useful when implementing new codes or when monitoring
 ///        the performance of the coding algorithms.
 
+/// @defgroup empty Empty Implementations
+/// @brief Layers that provide an empty implementation of a specific API. This
+///        is useful when writing unit-test, but can also be used if a specific
+///        API must be provided but remains unused by the implementation.
+
+
 
 
 
