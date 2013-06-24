@@ -21,6 +21,16 @@
 
 #include "codes.hpp"
 
+// Helper function to convert to string
+template<class T>
+inline std::string to_string(T t)
+{
+    std::stringstream ss;
+    ss << t;
+    return ss.str();
+}
+
+
 /// A test block represents an encoder and decoder pair
 template<class Encoder, class Decoder>
 struct decoding_probability_benchmark : public gauge::benchmark
@@ -57,6 +67,12 @@ public:
         assert(m_symbols_used >= m_encoder->symbols());
 
         results.set_value("used", m_symbols_used);
+
+        for(uint32_t i = 0; i < m_rank_used.size(); ++i)
+        {
+            results.set_value("rank " + to_string(i), m_rank_used[i]);
+        }
+
     }
 
     std::string unit_text() const
@@ -69,6 +85,7 @@ public:
         auto symbols = options["symbols"].as<std::vector<uint32_t> >();
         auto symbol_size = options["symbol_size"].as<std::vector<uint32_t> >();
         auto erasure = options["erasure"].as<std::vector<double> >();
+        auto systematic = options["systematic"].as<bool>();
 
         assert(symbols.size() > 0);
         assert(symbol_size.size() > 0);
@@ -99,6 +116,7 @@ public:
                     cs.set_value<uint32_t>("symbols", symbols[i]);
                     cs.set_value<uint32_t>("symbol_size", symbol_size[j]);
                     cs.set_value<double>("erasure", e);
+                    cs.set_value<bool>("systematic", systematic);
                     add_configuration(cs);
                 }
             }
@@ -111,6 +129,7 @@ public:
 
         uint32_t symbols = cs.get_value<uint32_t>("symbols");
         uint32_t symbol_size = cs.get_value<uint32_t>("symbol_size");
+        bool systematic = cs.get_value<bool>("systematic");
 
         m_decoder_factory->set_symbols(symbols);
         m_decoder_factory->set_symbol_size(symbol_size);
@@ -120,6 +139,21 @@ public:
 
         m_encoder = m_encoder_factory->build();
         m_decoder = m_decoder_factory->build();
+
+        // We switch any systematic operations off so we code
+        // symbols from the beginning
+        if(kodo::is_systematic_encoder(m_encoder))
+        {
+            if(systematic)
+            {
+                kodo::set_systematic_on(m_encoder);
+            }
+            else
+            {
+                kodo::set_systematic_off(m_encoder);
+            }
+        }
+
 
         // Prepare the data to be encoded
         m_encoded_data.resize(m_encoder->block_size());
@@ -132,6 +166,8 @@ public:
         m_encoder->set_symbols(sak::storage(m_encoded_data));
 
         m_symbols_used = 0;
+        m_rank_used.resize(symbols);
+        std::fill(m_rank_used.begin(), m_rank_used.end(), 0);
 
         double erasure = cs.get_value<double>("erasure");
         m_distribution = boost::random::bernoulli_distribution<>(erasure);
@@ -146,6 +182,8 @@ public:
 
         std::vector<uint8_t> payload(m_encoder->payload_size());
 
+        m_encoder->seed((uint32_t)time(0));
+
         // The clock is running
         RUN{
 
@@ -157,6 +195,7 @@ public:
                     continue;
 
                 ++m_symbols_used;
+                ++m_rank_used[m_decoder->rank()];
                 m_decoder->decode(&payload[0]);
             }
         }
@@ -187,6 +226,10 @@ protected:
 
     /// The number of symbols used to decode
     uint32_t m_symbols_used;
+
+    /// The number of symbols used to decoder indexed by the rank of the
+    /// decoder
+    std::vector<uint32_t> m_rank_used;
 
     // The random generator
     boost::random::mt19937 m_random_generator;
@@ -226,6 +269,7 @@ public:
         auto symbol_size = options["symbol_size"].as<std::vector<uint32_t> >();
         auto erasure = options["erasure"].as<std::vector<double> >();
         auto density = options["density"].as<std::vector<double> >();
+        auto systematic = options["systematic"].as<bool>();
 
         assert(symbols.size() > 0);
         assert(symbol_size.size() > 0);
@@ -260,6 +304,7 @@ public:
                         cs.set_value<uint32_t>("symbol_size", p);
                         cs.set_value<double>("erasure", e);
                         cs.set_value<double>("density", d);
+                        cs.set_value<bool>("systematic", systematic);
                         Super::add_configuration(cs);
                     }
                 }
@@ -326,33 +371,27 @@ BENCHMARK_OPTION(overhead_options)
     symbols.push_back(64);
     symbols.push_back(128);
 
-    auto default_symbols =
-        gauge::po::value<std::vector<uint32_t> >()->default_value(
-            symbols, "")->multitoken();
+    options.add_options()
+        ("symbols", gauge::po::value<std::vector<uint32_t> >()->default_value(
+            symbols, "")->multitoken(), "Set the number of symbols");
 
     std::vector<uint32_t> symbol_size;
     symbol_size.push_back(1500);
 
-    auto default_symbol_size =
-        gauge::po::value<std::vector<uint32_t> >()->default_value(
-            symbol_size, "")->multitoken();
+    options.add_options()
+        ("symbol_size", gauge::po::value<std::vector<uint32_t> >()->default_value(
+            symbol_size, "")->multitoken(), "Set the symbol size in bytes");
 
     std::vector<double> erasure;
     erasure.push_back(0.5);
 
-    auto default_erasure =
-        gauge::po::value<std::vector<double> >()->default_value(
-            erasure, "")->multitoken();
+    options.add_options()
+        ("erasure", gauge::po::value<std::vector<double> >()->default_value(
+            erasure, "")->multitoken(), "Set the symbol erasure probability");
 
     options.add_options()
-        ("symbols", default_symbols, "Set the number of symbols");
-
-    options.add_options()
-        ("symbol_size", default_symbol_size, "Set the symbol size in bytes");
-
-    options.add_options()
-        ("erasure", default_erasure,
-         "Set the symbol erasure probability");
+        ("systematic", gauge::po::value<bool>()->default_value(
+            true, ""), "Set the encoder systematic");
 
     gauge::runner::instance().register_options(options);
 }

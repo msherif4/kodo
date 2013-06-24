@@ -22,12 +22,17 @@ def plot_overhead(csvfile, saveas):
         else:
             return ""
 
-
     # Combine the testcase and benchmark columns into one (used for labels)
-    df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] + ' ' + df['density'].map(density_to_string)
-    df = df.drop(['testcase','benchmark', 'density'], axis = 1)
+    if not 'density' in df:
+        df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
 
-    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'], axis=0)
+        df = df.drop(['testcase','benchmark'], axis = 1)
+    else:
+        df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] +\
+                     ' ' + df['density'].map(density_to_string)
+        df = df.drop(['testcase','benchmark', 'density'], axis = 1)
+
+    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'])
 
     def compute_cdf(group):
 
@@ -51,8 +56,8 @@ def plot_overhead(csvfile, saveas):
 
         # cdf
         cdf = list(prob.cumsum())
+        s = pd.Series(cdf)
 
-        s = pd.Series(cdf, range(len(cdf)))
         return s
 
     # Compute the cdf for each of the groups

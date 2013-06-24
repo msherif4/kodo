@@ -12,13 +12,52 @@ import pylab as plt
 import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 
-def plot_symbols_needed(csvfile, saveas):
+def plot(csvfile, saveas):
 
     df = pd.read_csv(csvfile)
 
+    def density_to_string(density):
+        if not np.isnan(density):
+            return " density {}".format(density)
+        else:
+            return ""
+
     # Combine the testcase and benchmark columns into one (used for labels)
-    #df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
-    #df = df.drop(['testcase','benchmark', 'unit', 'iterations'], axis = 1)
+    if not 'density' in df:
+        df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
+
+        df = df.drop(['testcase','benchmark'], axis = 1)
+    else:
+        df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] +\
+                     ' ' + df['density'].map(density_to_string)
+        df = df.drop(['testcase','benchmark', 'density'], axis = 1)
+
+    grouped = df.groupby(by=['test','symbols', 'symbol_size', 'erasure'])
+
+    def compute_rank_cdf(group):
+        symbols = group['symbols'].unique()
+
+        # We group by symbols so there should only be one value
+        assert(len(symbols) == 1)
+        symbols = symbols[0]
+
+        labels = ['rank {}'.format(i) for i in range(symbols)]
+        values = []
+
+        for l in labels:
+            values.append(group[l].mean() - 1.0)
+
+        return pd.Series(values, range(symbols), name = 'linear dept')
+
+
+    df = grouped.apply(compute_rank_cdf).head()
+    df = df.transpose()
+
+    df.plot()
+    plt.show()
+
+    exit(0)
+
     df = df.drop(['unit', 'iterations'], axis = 1)
 
     df['extra'] = df['used'] - df['symbols']
@@ -64,4 +103,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    plot_symbols_needed(args.csvfile, args.saveas)
+    plot(args.csvfile, args.saveas)

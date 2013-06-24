@@ -210,7 +210,27 @@ Provided that you have the `Tools Needed`_ installed.
 
    .. note:: The ``waf configure`` step might take several minutes depending on
              the speed of your Internet connection. This would be a
-             good time to grab a coffee or similar while the dependencies are downloaded.
+             good time to grab a coffee or similar while the dependencies are
+             downloaded.
+
+   .. note:: If you downloaded the library as a zip archive and you have not
+             setup git to automatically authenticate against github.com you
+             might see an error similar to the following:
+
+             ::
+
+               Resolve dependency sak: Command ['C:\\Program Files (x86)\\Gi
+               t\\bin\\git.exe', 'clone', 'git@github.com:steinwurf/sak.git', 'C:\\dev\\bundle_
+               dependencies\\sak-2baed8\\master'] returned 128
+
+             In that case you can instruct the waf tools to use the ``https``
+             protocol for downloading the dependencies by adding the following
+             option ``--git-protocol=https://`` to the ``configure`` command:
+
+             ::
+
+               python waf configure --bundle=ALL --bundle-path=~/dev/bundle_dependencies --git-protocol=https://
+
 
 3. Invoke ``waf`` to build the unit-tests and examples.
 
