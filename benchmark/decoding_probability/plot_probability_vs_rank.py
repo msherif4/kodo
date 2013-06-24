@@ -10,6 +10,7 @@ import argparse
 import pandas as pd
 import pylab as plt
 import numpy as np
+import re
 from matplotlib.ticker import FormatStrFormatter
 
 def plot(csvfile, saveas):
@@ -53,38 +54,31 @@ def plot(csvfile, saveas):
     df = grouped.apply(compute_rank_cdf).head()
     df = df.transpose()
 
-    df.plot()
-    plt.show()
+    for t in df:
+        p = df[t]
+        plt.figure()
+        p.plot(style='-x', title="{}".format(t))
 
-    exit(0)
-
-    df = df.drop(['unit', 'iterations'], axis = 1)
-
-    df['extra'] = df['used'] - df['symbols']
-
-    # Group the plots
-    plot_groups = list(df.groupby(by=['testcase', 'symbol_size','symbols','erasure']))
-
-    for (testcase, symbol_size, symbols, erasure), df in plot_groups:
-
-        df = df.pivot(index='run_number', columns='benchmark', values='extra')
-
-        df.plot(title="Extra symbols needed for decoding {}".format(testcase),
-                style = ['+','o','^','s','p','x','h','D', '*'], alpha=0.75)
+        plt.xlabel('Rank of decoder')
+        plt.ylabel('Linear dependent packets')
 
         if saveas:
-            filename = "decoding_scatter_{}_{}_{}_{}.{}".format(
-                testcase.lower(), symbols, symbol_size,
-                str(erasure).replace('.',''), saveas)
+
+            setup = "{}".format(t)
+            setup = re.sub('[^0-9a-zA-Z ]+', '', setup).lower().replace(' ','_')
+
+            filename = "linear_dependency_vs_rank_{}.{}".format(
+                setup, saveas)
 
             print("Saving", filename)
             plt.savefig(filename)
 
-        plt.xlabel('Test run')
-        plt.ylabel('Extra symbols needed for decoding')
 
     if not saveas:
         plt.show()
+
+    return
+
 
 if __name__ == '__main__':
 
