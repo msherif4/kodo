@@ -24,6 +24,8 @@
 #include <vector>
 
 #include <kodo/rlnc/full_vector_codes.hpp>
+#include <kodo/cached_symbol_decoder.hpp>
+#include <kodo/debug_cached_symbol_decoder.hpp>
 #include <kodo/debug_linear_block_decoder.hpp>
 #include <kodo/debug_coefficient_storage.hpp>
 #include <kodo/debug_symbol_storage.hpp>
@@ -36,6 +38,8 @@ namespace kodo
     template<class Field>
     class rlnc_decoder
         : public // Codec API
+                 debug_cached_symbol_decoder<
+                 cached_symbol_decoder<
                  debug_linear_block_decoder<
                  linear_block_decoder<
                  // Coefficient Storage API
@@ -54,7 +58,7 @@ namespace kodo
                  final_coder_factory_pool<
                  // Final type
                  rlnc_decoder<Field>
-                     > > > > > > > > > > > >
+                     > > > > > > > > > > > > > >
     {};
 }
 
@@ -152,7 +156,11 @@ int main()
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
 
-        //decoder->print_latest_symbol(std::cout);
+        std::cout << "Coded symbol data:" << std::endl;
+        decoder->print_cached_symbol_data(std::cout);
+
+        std::cout << "Coded symbol coefficients:" << std::endl;
+        decoder->print_cached_symbol_coefficients(std::cout);
 
         std::cout << std::endl << "Decoding matrix:" << std::endl;
         //decoder->print_coefficients_storage(std::cout);

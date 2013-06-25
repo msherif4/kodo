@@ -63,36 +63,36 @@ namespace kodo
 
         /// Prints the decoder's state to the output stream
         /// @param out, the output stream
-        void print_decoder_state(std::ostream &out)
+        void print_decoder_state(std::ostream &out) const
+        {
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
-                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+                if (!SuperCoder::symbol_pivot(i))
                 {
-                    if (!SuperCoder::symbol_pivot(i))
-                    {
-                        out << i << " ?:  ";
-                    }
-                    else if (SuperCoder::symbol_coded(i))
-                    {
-                        out << i << " C:  ";
-                    }
-                    else
-                    {
-                        out << i << " U:  ";
-                    }
+                    out << i << " ?:  ";
+                }
+                else if (SuperCoder::symbol_coded(i))
+                {
+                    out << i << " C:  ";
+                }
+                else
+                {
+                    out << i << " U:  ";
+                }
 
-                    value_type* c = SuperCoder::coefficients(i);
+                const value_type* c = SuperCoder::coefficients(i);
 
-                    for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
-                    {
-                        value_type value = fifi::get_value<field_type>(c, j);
-                        out << (uint32_t)value << " ";
-                    }
-
-                    std::cout << std::endl;
+                for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
+                {
+                    value_type value = fifi::get_value<field_type>(c, j);
+                    out << (uint32_t)value << " ";
                 }
 
                 std::cout << std::endl;
             }
+
+            std::cout << std::endl;
+        }
 
     };
 
