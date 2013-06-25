@@ -69,7 +69,7 @@ int main()
     const uint32_t symbols = 3;
 
     // 1 byte can store 8 finite field elements per symbol
-    const uint32_t symbol_size = 1; 
+    const uint32_t symbol_size = 1;
 
     // Get the size, in bytes, of a coefficient vector
     const uint32_t coefficients_size =
@@ -82,7 +82,7 @@ int main()
     // The factory is used to build actual decoders
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     rlnc_decoder::pointer decoder = decoder_factory.build();
-    
+
 
     // To illustrate decoding, random data has been filled into the
     // matrices below. It is crucial that the equation below is correct
@@ -152,13 +152,14 @@ int main()
         decoder->decode_symbol(&encoded_symbols[i*symbol_size],
                 &symbol_coefficients[i*coefficients_size]);
 
-        decoder->print_latest_symbol(std::cout);
+        //decoder->print_latest_symbol(std::cout);
 
         std::cout << std::endl << "Decoding matrix:" << std::endl;
-        decoder->print_coefficients_storage(std::cout);
+        //decoder->print_coefficients_storage(std::cout);
+        decoder->print_decoder_state(std::cout);
 
         std::cout << "Symbol matrix:" << std::endl;
-        decoder->print_symbol_storage(std::cout);
+        //decoder->print_symbol_storage(std::cout);
         std::cout << std::endl;
     }
 
@@ -169,7 +170,7 @@ int main()
     }
     else
     {
-        std::cout << 
+        std::cout <<
             "Decoding incomplete - not all encoding vectors are independent" <<
             std::endl;
     }

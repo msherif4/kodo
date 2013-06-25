@@ -18,6 +18,36 @@ namespace kodo
     /// @ingroup debug
     /// @brief Debug layer which allows inspecting the state of a
     ///        linear block decoder.
+    ///
+    /// The debug layer will print out the coding coefficients used by
+    /// the decoder, when the print_decoder_state() function is called.
+    ///
+    /// This will print a matrix like the following (in the following
+    /// case we have 3 symbols):
+    ///
+    /// 0 U:  1 0 0
+    /// 1 C:  0 1 1
+    /// 2 ?:  0 0 0
+    ///
+    /// The first line should be interpret as follows:
+    ///
+    ///   0 U:  1 0 0
+    ///   ^ ^   ^ ^ ^
+    ///   | |   | | +-----+  3rd coding coefficient
+    ///   | |   | +-------+  2nd coding coefficient
+    ///   | |   +---------+  1st coding coefficient
+    ///   | +-------------+  The symbol state
+    ///   +---------------+  The symbol's pivot position
+    ///
+    /// A symbol can be in 3 states:
+    ///
+    /// U: The symbol is uncoded (i.e. only one non zero coefficient should
+    ///    be in the coding coefficients.
+    /// C: The symbol is coded
+    /// ?: No symbol for this position in the decoder has been see yet.
+    ///
+    /// The coding coefficient values will depend on the chosen finite
+    /// field
     template<class SuperCoder>
     class debug_linear_block_decoder : public SuperCoder
     {
@@ -29,158 +59,40 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
-        /// Access to status about uncoded symbols in the linear block
-        /// decoder.
-        using SuperCoder::m_uncoded;
-
-        /// Access to status about the coded symbols in the linear block
-        /// decoder.
-        using SuperCoder::m_coded;
-
     public:
 
-        /// @copydoc layer::construct(Factory&)
-        template<class Factory>
-        void construct(Factory& the_factory)
-        {
-            SuperCoder::construct(the_factory);
-
-            m_data.resize(the_factory.max_symbol_size());
-            m_coefficients.resize(the_factory.max_coefficients_size());
-        }
-
-        /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
-        void decode_symbol(uint8_t *symbol_data,
-                           uint8_t *symbol_coefficients)
-        {
-            assert(symbol_data != 0);
-            assert(symbol_coefficients != 0);
-
-            uint32_t symbol_size = SuperCoder::symbol_size();
-            uint32_t coef_size = SuperCoder::coefficients_size();
-
-            auto data_dest = sak::storage(m_data);
-            auto coef_dest = sak::storage(m_coefficients);
-
-            auto data_src = sak::storage(symbol_data, symbol_size);
-            auto coef_src = sak::storage(symbol_coefficients, coef_size);
-
-            sak::copy_storage(data_dest, data_src);
-            sak::copy_storage(coef_dest, coef_src);
-
-            m_symbol_coded = true;
-
-            SuperCoder::decode_symbol(symbol_data, symbol_coefficients);
-        }
-
-        /// @copydoc layer::decode_symbol(uint8_t*,uint32_t)
-        void decode_symbol(uint8_t *symbol_data, uint32_t symbol_index)
-        {
-            assert(symbol_data != 0);
-            assert(symbol_index < SuperCoder::symbols());
-
-            uint32_t symbol_size = SuperCoder::symbol_size();
-
-            auto data_dest = sak::storage(m_data);
-            auto data_src = sak::storage(symbol_data, symbol_size);
-
-            sak::copy_storage(data_dest, data_src);
-
-            m_symbol_index = symbol_index;
-            m_symbol_coded =  false;
-
-            SuperCoder::decode_symbol(symbol_data, symbol_index);
-        }
-
-        /// Prints the decoding matrix to the output stream
-        /// @param out The output stream to print to
-        void print_symbol_states(std::ostream &out)
-        {
-            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+        /// Prints the decoder's state to the output stream
+        /// @param out, the output stream
+        void print_decoder_state(std::ostream &out)
             {
-                if( m_uncoded[i] )
+                for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
                 {
-                    out << i << " U" << std::endl;
+                    if (!SuperCoder::symbol_pivot(i))
+                    {
+                        out << i << " ?:  ";
+                    }
+                    else if (SuperCoder::symbol_coded(i))
+                    {
+                        out << i << " C:  ";
+                    }
+                    else
+                    {
+                        out << i << " U:  ";
+                    }
+
+                    value_type* c = SuperCoder::coefficients(i);
+
+                    for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
+                    {
+                        value_type value = fifi::get_value<field_type>(c, j);
+                        out << (uint32_t)value << " ";
+                    }
+
+                    std::cout << std::endl;
                 }
-                else if( m_coded[i] )
-                {
-                    out << i << " C" << std::endl;
-                }
-                else
-                {
-                    out << i << " ?:" << std::endl;
-                }
+
+                std::cout << std::endl;
             }
-        }
-
-        /// Prints the most recent symbol coefficients to enter the decoder
-        /// @param out The output stream to print to
-        void print_latest_coefficients_data(std::ostream &out)
-        {
-            value_type *c =
-                reinterpret_cast<value_type*>(&m_coefficients[0]);
-
-            for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
-            {
-                value_type value = fifi::get_value<field_type>(c, j);
-                out << (uint32_t)value << " ";
-            }
-
-            out << std::endl;
-        }
-
-        /// Prints the most recent symbol to enter the decoder
-        /// @param out The output stream to print to
-        void print_latest_symbol_data(std::ostream &out)
-        {
-            uint32_t symbol_elements =
-                fifi::size_to_elements<field_type>(
-                    SuperCoder::symbol_size());
-
-            value_type *s =
-                reinterpret_cast<value_type*>(&m_data[0]);
-
-            for(uint32_t j = 0; j < symbol_elements; ++j)
-            {
-                value_type value = fifi::get_value<field_type>(s, j);
-                out << (uint32_t)value << " ";
-            }
-
-            out << std::endl;
-        }
-
-        /// Prints the most recent symbol coefficients to enter the decoder
-        /// @param out The output stream to print to
-        void print_latest_symbol(std::ostream &out)
-        {
-            if( m_symbol_coded )
-            {
-                out << "Coded:" << std::endl << "   Coef. : ";
-                print_latest_coefficients_data(out);
-            }
-            else
-            {
-                out << "Uncoded:" << std::endl;
-                out << "   Index: " << m_symbol_index << std::endl;
-            }
-
-            out << "   Symbol: ";
-            print_latest_symbol_data(out);
-        }
-
-    private:
-
-        /// Tracks whether the recent decoding symbol was coded
-        bool m_symbol_coded;
-
-        /// If the symbol what uncoded what was the symbol index
-        uint32_t m_symbol_index;
-
-        /// Stores the data of the decoding symbol
-        std::vector<uint8_t> m_data;
-
-        /// If coded stores the coefficients of the decoding symbol
-        std::vector<uint8_t> m_coefficients;
 
     };
 

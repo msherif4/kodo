@@ -152,6 +152,14 @@ namespace kodo
             return m_coded[index] || m_uncoded[index];
         }
 
+        /// @todo Add unit test
+        /// @copydoc layer::symbol_pivot(uint32_t) const
+        bool symbol_coded(uint32_t index) const
+        {
+            assert(symbol_pivot(index));
+            return m_coded[index];
+        }
+
     protected:
 
         /// Decodes a symbol based on the coefficients

@@ -287,6 +287,21 @@ public:
     /// @return True if the symbol is available.
     bool symbol_pivot(uint32_t index) const;
 
+    /// @ingroup codec_api
+    /// Inspect the state of a stored symbol, namely whether it is coded or
+    /// uncoded (i.e. representing an original source symbol). It is important
+    /// to note that for efficiency reasons the decoding algorithms are not
+    /// required to keep track of which previously coded symbols have
+    /// during the decoding become uncoded. This means we have two cases:
+    /// 1) Coded symbols - these symbols may or may not have been fully decoded
+    /// 2) Uncoded symbols - these are guaranteed to have been fully decoded.
+    ///
+    /// @param index The index of the symbol which state we wish to know
+    /// @return This function returns true if the symbol with the specified
+    ///         index is coded. If the symbol is known to be uncoded the
+    ///         the function will return false.
+    bool symbol_coded(uint32_t index) const;
+
     //------------------------------------------------------------------
     // COEFFICIENT STORAGE API
     //------------------------------------------------------------------
