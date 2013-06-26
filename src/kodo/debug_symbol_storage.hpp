@@ -32,6 +32,24 @@ namespace kodo
     /// 1 A:  33 22 19 01 10 15
     /// 2 ?:  -
     ///
+    /// The lines should be interpret as in the following example:
+    ///
+    ///   1 A:  33 22 19 01 10 15
+    ///   ^ ^   ^
+    ///   | |   |
+    ///   | |   |
+    ///   | |   +--+  The values of the symbol storage (format depends on
+    ///   | |          the print function used either bytes or finite field)
+    ///   | +------+  The symbol state
+    ///   +--------+  The symbol's pivot position
+    ///
+    /// A symbol's storage can be in 3 states:
+    ///
+    /// A: The storage is available, but has not necessarily been initialized.
+    /// I: The storage is available and has been explicitly been initialized
+    ///    by the user through a set_symbol() or set_symbols() call.
+    /// ?: No storage is available for this symbol.
+    ///
     template<class SuperCoder>
     class debug_symbol_storage : public SuperCoder
     {
@@ -45,7 +63,8 @@ namespace kodo
 
     public:
 
-        /// Print all symbols stored in the storage
+        /// Print all symbols stored in the storage where the symbol data
+        /// is shown in bytes.
         /// @param out The output stream to print to
         void print_storage(std::ostream& out) const
         {
@@ -55,6 +74,9 @@ namespace kodo
             }
         }
 
+        /// Print all symbols stored in the storage where the symbol data
+        /// is shown in bytes.
+        /// @param out The output stream to print to
         void print_storage_value(std::ostream& out) const
         {
             for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
@@ -62,7 +84,8 @@ namespace kodo
                 print_symbol_value(out, i);
             }
         }
-        /// Print finite field elements in a symbol on a certain index to the
+
+        /// Print the bytes of a symbol at a specific index to the
         /// output stream
         /// @param out The output stream to print to
         /// @param index The index of symbol to print
@@ -70,9 +93,72 @@ namespace kodo
         {
             assert(index < SuperCoder::symbols());
 
-            if(is_symbol_available(index))
+            print_symbol_info(out, index);
+
+            if(SuperCoder::is_symbol_available(index))
             {
-                if(is_symbol_initialized(index))
+                const uint8_t* symbol = SuperCoder::symbol(index);
+
+                for(uint32_t j = 0; j < SuperCoder::symbol_size(); ++j)
+                {
+                    out << (uint32_t) symbol[j] << " ";
+                }
+            }
+
+            out << std::endl;
+        }
+
+        /// Print finite field elements of a specific symbol's data to the
+        /// output stream
+        /// @param out The output stream to print to
+        /// @param index The index of symbol to print
+        void print_symbol_value(std::ostream& out, uint32_t index) const
+        {
+            assert(index < SuperCoder::symbols());
+
+            print_symbol_info(out, index);
+
+            if(SuperCoder::is_symbol_available(index))
+            {
+
+                // We calculate the number of finite field elements that are
+                // stored in the symbols' data. In this case
+                // layer::symbol_length() does not yield the correct result
+                // for fields where multiple field elements are packed into
+                // the same value_type
+                uint32_t symbol_elements =
+                    fifi::size_to_elements<field_type>(
+                        SuperCoder::symbol_size());
+
+                const value_type* symbol = SuperCoder::symbol_value(index);
+
+                for(uint32_t j = 0; j < symbol_elements; ++j)
+                {
+                    value_type value = fifi::get_value<field_type>(symbol, j);
+
+                    static_assert(sizeof(uint32_t) >= sizeof(value_type),
+                                  "value_type will overflow in this print");
+
+                    out << (uint32_t) value << " ";
+                }
+            }
+
+            out << std::endl;
+        }
+
+    protected:
+
+        /// Print the bytes of a symbol at a specific index to the
+        /// output stream
+        /// @param out The output stream to print to
+        /// @param index The index of symbol to print
+        void print_symbol_info(std::ostream& out, uint32_t index) const
+        {
+            assert(index < SuperCoder::symbols());
+
+            if(SuperCoder::is_symbol_available(index))
+            {
+                if(SuperCoder::is_symbol_initialized(index))
                 {
                     out << index << " I:  ";
                 }
@@ -80,53 +166,14 @@ namespace kodo
                 {
                     out << index << " A:  ";
                 }
+
             }
             else
             {
                 out << index << " ?:  -";
             }
-
-
-            const uint8_t* symbol = SuperCoder::symbol(index);
-
-            for(uint32_t j = 0; j < SuperCoder::symbol_size(); ++j)
-            {
-                out << (uint32_t) symbol[j] << " ";
-            }
-
-            out << std::endl;
         }
 
-        /// Print finite field elements in a symbol on a certain index to the
-        /// output stream
-        /// @param out The output stream to print to
-        /// @param index The index of symbol to print
-        void print_symbol_value(std::ostream& out, uint32_t index)
-        {
-            assert(index < SuperCoder::symbols());
-
-            // We calculate the number of finite field elements that are
-            // stored in the symbols' data. In this case layer::symbol_length()
-            // does not yield the correct result for fields where multiple
-            // field elements are packed into the same value_type
-            uint32_t symbol_elements =
-                fifi::size_to_elements<field_type>(
-                    SuperCoder::symbol_size());
-
-            const value_type* symbol = SuperCoder::symbol_value(index);
-
-            for(uint32_t j = 0; j < symbol_elements; ++j)
-            {
-                value_type value = fifi::get_value<field_type>(symbol, j);
-
-                static_assert(sizeof(uint32_t) >= sizeof(value_type),
-                              "value_type will overflow in this print");
-
-                out << (uint32_t) value << " ";
-            }
-
-            out << std::endl;
-        }
 
     };
 }

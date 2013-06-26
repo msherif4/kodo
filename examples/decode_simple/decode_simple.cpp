@@ -163,11 +163,10 @@ int main()
         decoder->print_cached_symbol_coefficients(std::cout);
 
         std::cout << std::endl << "Decoding matrix:" << std::endl;
-        //decoder->print_coefficients_storage(std::cout);
         decoder->print_decoder_state(std::cout);
 
         std::cout << "Symbol matrix:" << std::endl;
-        //decoder->print_symbol_storage(std::cout);
+        decoder->print_storage_value(std::cout);
         std::cout << std::endl;
     }
 
