@@ -10,6 +10,9 @@ Latest
   any decoding on the incoming symbol, but provides access to the encoded
   symbol's coefficients and data. An example use_cached_symbol_decoder was
   added to show a possible use case for this layer.
+* Minor: Added new example showing some one way to use some of the debug
+  layers in kodo. The example is in the examples folder called
+  use_debug_layers
 
 11.0.0
 ------
