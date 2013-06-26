@@ -3,6 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
+#include <ctime>
+
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 #include <kodo/cached_symbol_decoder.hpp>
