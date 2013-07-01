@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+11.1.0
+------
 * Minor: Added new cached_symbol_decoder layer, this layer does not perform
   any decoding on the incoming symbol, but provides access to the encoded
   symbol's coefficients and data. An example use_cached_symbol_decoder was
