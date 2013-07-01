@@ -463,10 +463,16 @@ inline void invoke_recoding(recoding_parameters param)
 
     while( !decoder_two->is_complete() )
     {
-        encoder->encode( &payload[0] );
+        uint32_t encode_size = encoder->encode( &payload[0] );
+        EXPECT_TRUE(encode_size <= payload.size());
+        EXPECT_TRUE(encode_size > 0);
+
         decoder_one->decode( &payload[0] );
 
-        decoder_one->recode( &payload[0] );
+        uint32_t recode_size = decoder_one->recode( &payload[0] );
+        EXPECT_TRUE(recode_size <= payload.size());
+        EXPECT_TRUE(recode_size > 0);
+
         decoder_two->decode( &payload[0] );
     }
 
