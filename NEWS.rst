@@ -13,6 +13,7 @@ Latest
 * Minor: Added new example showing some one way to use some of the debug
   layers in kodo. The example is in the examples folder called
   use_debug_layers
+* Bug: Fix missing return in the payload_recoder recode() function.
 
 11.0.0
 ------
