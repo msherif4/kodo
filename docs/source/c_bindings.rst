@@ -45,7 +45,7 @@ the dependencies of Kodo. Kodo's dependencies are specified on the
 find the description of how to build Kodo with manually downloaded
 dependencies. This procedure is the same for the Kodo C-bindings.
 
-Be sure to read the `Selecting the correct versions`_ section to see
+Be sure to read the :ref:`Selecting the correct versions` section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
