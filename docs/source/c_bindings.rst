@@ -19,7 +19,7 @@ To obtain the source code you can either clone the repository with
 git or download a released version.
 
 To build the library you need the tools described on the Kodo
-`getting_started`_ page.
+:ref:`getting_started` page.
 
 Building
 --------
@@ -41,15 +41,15 @@ Build (manually downloaded dependencies)
 ----------------------------------------
 The dependencies required to build the Kodo C bindings are Kodo itself +
 the dependencies of Kodo. Kodo's dependencies are specified on the
-`using-kodo-in-your-application`_ page. On that page you will also find the
-description of how to build Kodo with manually downloaded dependencies. This
-procedure is the same for the Kodo C-bindings.
+:ref:`using-kodo-in-your-application` page. On that page you will also
+find the description of how to build Kodo with manually downloaded
+dependencies. This procedure is the same for the Kodo C-bindings.
 
 Be sure to read the `Selecting the correct versions`_ section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
-Following the instructions on the `using-kodo-in-your-application`_ page
+Following the instructions on the :ref:`using-kodo-in-your-application` page
 you should have downloaded the following dependencies: Fifi, Sak, Boost,
 Waf-tools, Gtest, Gauge and Kodo.
 
