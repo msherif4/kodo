@@ -248,6 +248,8 @@ in the ``examples/sample_makefile`` folder in the `Kodo repository`_.
 
 .. _`Kodo repository`: https://github.com/steinwurf/kodo
 
+In this case it only requires that you have Fifi, Sak and Boost downloaded.
+
 
 
 ..
