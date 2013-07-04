@@ -92,7 +92,7 @@ following way:
             major_version = 9))
 
 The above command sets up a dependency for the Fifi library. The version
-is specified in the ``major_version = 9`` line. This means that Kodo
+required is specified in the ``major_version = 9`` line. This means that Kodo
 requires version ``9.x.y`` of the Fifi library, where ``x.y`` should be
 selected to pick the newest available version. Visiting the download page
 at github.com for the Fifi library:
@@ -178,6 +178,7 @@ Using the information from the ``wscript`` (described in
 `Selecting the correct versions`_) we can checkout a tagged version:
 
 ::
+
   git checkout 9.1.0
 
 We now do this for all the downloaded repositories.
@@ -201,6 +202,38 @@ versions`_):
    https://github.com/steinwurf/external-gtest/releases
 6. Gauge:
    https://github.com/steinwurf/cxx-gauge/releases
+
+Configure Kodo to use the manual dependencies
+.............................................
+
+After downloading all the dependencies manually we have to inform the
+Kodo build scripts to use those instead of trying to automatically
+downloading them. This is done using the following command:
+
+::
+
+  python waf configure --bundle=NONE --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak/ --boost-path=insert-path-to/external-boost-light/ --waf-tools-path=insert-path-to/external-waf-tools/ --gtest-path=insert-path-to/external-gtest/ --gauge-path=insert-path-to/cxx-gauge/
+
+The bundle options supports a number of different use-cases:
+
+The following will bundle all dependencies but the Fifi library which we
+have to manually specify a path for:
+::
+
+  --bundle=ALL,-fifi --fifi-path=insert-path-to/fifi
+
+Or we may bundle only Fifi:
+::
+
+  python waf configure --bundle=NONE,fifi --sak-path=insert-path-to/sak/ --boost-path=insert-path-to/external-boost-light/ --waf-tools-path=insert-path-to/external-waf-tools/ --gtest-path=insert-path-to/external-gtest/ --gauge-path=insert-path-to/cxx-gauge/
+
+More libraries may be added to the ``--bundle=`` option using commas e.g.
+bundle all but Fifi and Sak
+::
+
+    --bundle=ALL,-fifi,-sak --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak
+
+
 
 Example application using makefile
 -------------------------------------
