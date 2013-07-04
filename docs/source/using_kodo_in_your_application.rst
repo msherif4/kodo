@@ -214,13 +214,12 @@ downloading them. This is done using the following command:
 
   python waf configure --bundle=NONE --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak/ --boost-path=insert-path-to/external-boost-light/ --waf-tools-path=insert-path-to/external-waf-tools/ --gtest-path=insert-path-to/external-gtest/ --gauge-path=insert-path-to/cxx-gauge/
 
-The bundle options supports a number of different use-cases:
-
-The following will bundle all dependencies but the Fifi library which we
-have to manually specify a path for:
+The bundle options supports a number of different use-cases. The following
+will bundle all dependencies but the Fifi library which we have to
+manually specify a path for:
 ::
 
-  --bundle=ALL,-fifi --fifi-path=insert-path-to/fifi
+  python waf configure --bundle=ALL,-fifi --fifi-path=insert-path-to/fifi
 
 Or we may bundle only Fifi:
 ::
@@ -231,7 +230,7 @@ More libraries may be added to the ``--bundle=`` option using commas e.g.
 bundle all but Fifi and Sak
 ::
 
-    --bundle=ALL,-fifi,-sak --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak
+    python waf configure --bundle=ALL,-fifi,-sak --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak
 
 
 
