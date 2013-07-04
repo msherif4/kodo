@@ -85,6 +85,8 @@ We get a list of available versions. At the time of writing this would be
 version ``9.1.0``. These version numbers are available as ``git tags`` if you
 choose to manually checkout the git repositories.
 
+.. _download-kodo-dependencies:
+
 Download Kodo Dependencies
 --------------------------
 

@@ -49,7 +49,7 @@ Be sure to read the :ref:`selecting-the-correct-versions` section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
-Following the instructions on the :ref:`using-kodo-in-your-application` page
+Following the instructions on the :ref:`download-kodo-dependencies` page
 you should have downloaded the following dependencies: Fifi, Sak, Boost,
 Waf-tools, Gtest, Gauge and Kodo.
 
