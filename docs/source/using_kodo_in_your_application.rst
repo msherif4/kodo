@@ -103,9 +103,6 @@ use-case for Kodo.
 3. You can also download the Kodo dependencies as zip or tar.gz archives
    from the dependencies corresponding github.com page.
 
-
-Configuring Kodo with manually downloaded dependencies
-------------------------------------------------------
 Before moving on it is important to stress that downloading all
 dependencies is only necessary if you wish to build the Kodo unit tests
 and benchmarks using the Kodo build system. If you simply want to use Kodo
@@ -115,8 +112,6 @@ header-only).
 If that is your goal you can skip to the `Example application using
 makefile`_ section after downloading the three required libraries..
 
-Here we will show how to configure Kodo to use the manually downloaded
-dependencies:
 
 Download using Git
 ..................
@@ -207,8 +202,9 @@ versions`_):
 6. Gauge:
    https://github.com/steinwurf/cxx-gauge/releases
 
-Configure Kodo to use the manual dependencies
-.............................................
+
+Configuring Kodo with manually downloaded dependencies
+------------------------------------------------------
 
 After downloading all the dependencies manually we have to inform the
 Kodo build scripts to use those instead of trying to automatically
