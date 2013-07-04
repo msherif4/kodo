@@ -40,7 +40,7 @@ the `Build (manually downloaded dependencies)`_ section.
 Build (manually downloaded dependencies)
 ........................................
 The dependencies required to build the Kodo C bindings are Kodo itself +
-the dependencies of Kodo. Kodo's dependencies are specified on the
+the dependencies of Kodo. Kodo's dependencies are specified in the
 :ref:`kodo-dependencies` section. On that page you will also
 find the description of how to build Kodo with manually downloaded
 dependencies. This procedure is the same for the Kodo C-bindings.
@@ -49,9 +49,10 @@ Be sure to read the :ref:`selecting-the-correct-versions` section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
-Following the instructions on the :ref:`download-kodo-dependencies` page
+Following the instructions in the :ref:`download-kodo-dependencies` section
 you should have downloaded the following dependencies: Fifi, Sak, Boost,
-Waf-tools, Gtest, Gauge and Kodo.
+Waf-tools, Gtest and Gauge. You should download Kodo in the same way. After
+this we are ready to build.
 
 To configure the project run:
 ::
