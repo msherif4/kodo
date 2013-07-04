@@ -43,6 +43,7 @@ Documentation
    hacking_kodo
    howto
    misc
+   c_bindings
    nc_glossary
 
 
