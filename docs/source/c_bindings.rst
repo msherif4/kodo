@@ -38,7 +38,7 @@ the `Build (manually downloaded dependencies)`_ section.
 
 
 Build (manually downloaded dependencies)
-----------------------------------------
+........................................
 The dependencies required to build the Kodo C bindings are Kodo itself +
 the dependencies of Kodo. Kodo's dependencies are specified on the
 :ref:`kodo-dependencies` section. On that page you will also
@@ -64,7 +64,7 @@ After configure run the following command to build the static library:
   python waf build
 
 Build (automatically downloading dependencies)
-----------------------------------------------
+..............................................
 If you wish to let the waf build scripts automatically download the
 source code you can use the steps outline here:
 
