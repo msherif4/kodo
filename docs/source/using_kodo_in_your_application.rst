@@ -6,6 +6,7 @@ In the following we will describe what you need to do to use Kodo in your
 application / project.
 
 .. _kodo-dependencies:
+
 Kodo dependencies
 -----------------
 In Kodo we rely on a number of external libraries, these must be available

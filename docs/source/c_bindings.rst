@@ -30,10 +30,10 @@ dependencies. There are two ways of getting the dependencies:
    dependencies via git (this requires an Internet connection).
 2. Downloading the dependencies manually.
 
-For step 1 you may proceed directly to the `Build (automatically
+For option 1 you may proceed directly to the `Build (automatically
 downloading dependencies)`_ section which will do the automatic download.
 
-For step 2 we have to first download the dependencies needed described in
+For option 2 we have to first download the dependencies needed described in
 the `Build (manually downloaded dependencies)`_ section.
 
 
