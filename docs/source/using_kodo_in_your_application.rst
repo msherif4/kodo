@@ -29,32 +29,90 @@ them. The libraries are:
    of C++ utilities. We use only a subset of these functionalities such as
    smart-pointers.
 
-   * http://boost.org
+   * http://github.com/steinwurf/external-boost-light
 
 If you have tried to use the Kodo build scripts you will notice that these
 download a number of additional libraries. These libraries are
 only needed when/if you want to compile the Kodo unit-tests, examples or
 benchmarks.
 
+4. **waf-tools**: This repository contains additional tools used by
+   out build system. These tools adds functionality to waf which are
+   used e.g. by our continuous-integration build system.
+
+   * http://github.com/steinwurf/external-waf-tools
+
+5. **gtest**: The Google C++ Unit Testing Framework is used by all the
+   Kodo unit tests to ensure the library functions correctly.
+
+   * http://github.com/steinwurf/external-gtest
+
+6. **gauge**: Gauge is a C++ benchmarking tool which we use in Kodo to
+   profile the implemented algorithms.
+
+   * http://github.com/steinwurf/cxx-gauge
+
 Download Kodo Dependencies
 --------------------------
 
-All dependencies required by Kodo are hosted on github.com and may be found at
-github.com/steinwurf.
+All dependencies required by Kodo are hosted on github.com and may be found
+at http://github.com/steinwurf.
 
 There are several ways in which you may get the Kodo library and its
 dependencies. Which approach you prefer might depend on your intended
 use-case for Kodo.
 
-1. As shown in :ref:`quick-start` the Kodo build scripts supports downloading
-   the dependency repositories. The build script with do a git clone and
-   checkout the latest compatible tagged version of the dependency.
+1. As shown in :ref:`getting_started` the Kodo build scripts supports
+   downloading the dependency repositories automatically. The build
+   script with do a git clone and checkout the latest compatible tagged
+   version of the dependency.
 
 2. You may wish to manually download Kodo's dependencies as separate git
    repositories. In the following we describe this option.
 
-Clone the git repository (recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. You can also download the Kodo dependencies as zip or tar.gz archives
+   from the dependencies corresponding github.com page.
+
+Selecting the correct versions
+------------------------------
+If you use the automatic approach by letting the build scripts download the
+dependencies, they will select the latest compatible version. If you download
+the dependencies manually you will have to select a compatible version. This
+information is stored in the ``wscript`` file found in Kodo's root folder.
+
+Within that file you will find all Kodo's dependencies specified in the
+following way:
+
+::
+
+  bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'fifi',
+            git_repository = 'github.com/steinwurf/fifi.git',
+            major_version = 9))
+
+The above command sets up a dependency for the Fifi library. The version
+is specified in the ``major_version = 9`` line. This means that Kodo
+requires version ``9.x.y`` of the Fifi library, where ``x.y`` should be
+selected to pick the newest available version. Visiting the download page
+at github.com for the Fifi library:
+
+* https://github.com/steinwurf/fifi/releases
+
+We get a list of available versions. At the time of writing this would be
+version ``9.1.0``. These version numbers are available as ``git tags`` if you
+choose to manually checkout the git repositories.
+
+Configuring Kodo with manually downloaded dependencies
+------------------------------------------------------
+Before moving on it is important to stress that this step is only
+necessary if you wish to build the Kodo unit tests and benchmarks using
+the Kodo build system. If you simply want to use Kodo in your application
+this is not necessary. If that is your goal you can skip to the
+`Example application using makefile`_ section.
+
+Here we will show how to configure Kodo to use the manually downloaded
+dependencies:
 
 1. Create a suitable directory for the projects (optional)
 
@@ -63,11 +121,14 @@ Clone the git repository (recommended)
      mkdir dev
      cd dev
 
-2. Clone and download the Fifi libraries by running:
+2. Clone or download the Fifi libraries by running:
 
    ::
 
      git clone git://github.com/steinwurf/fifi.git
+
+   or by downloading zip or tar.gz file from
+   https://github.com/steinwurf/fifi/releases
 
 3. Clone and download the Sak libraries by running:
 
@@ -87,7 +148,27 @@ Clone the git repository (recommended)
             its own version control repositories, if you
             wish, you may also use download Boost using those repositories.
 
-Example using makefile / command-line
+4. Clone and download the extra Waf tools:
+
+   ::
+
+     git clone git://github.com/steinwurf/external-waf-tools.git
+
+4. Clone and download the Gtest library.
+
+   ::
+
+     git clone git://github.com/steinwurf/external-gtest.git
+
+
+4. Clone and download the Gauge library.
+
+   ::
+
+     git clone git://github.com/steinwurf/cxx-gauge.git
+
+
+Example application using makefile
 -------------------------------------
 
 If you would like to see an example of building an application with

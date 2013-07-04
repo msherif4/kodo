@@ -211,7 +211,9 @@ Provided that you have the `Tools Needed`_ installed.
    .. note:: The ``waf configure`` step might take several minutes depending on
              the speed of your Internet connection. This would be a
              good time to grab a coffee or similar while the dependencies are
-             downloaded.
+             downloaded. If you do not have an Internet connection you can see
+             the :ref:`using-kodo-in-your-application` section which shows how
+             to manually download and specify the Kodo dependencies.
 
    .. note:: If you downloaded the library as a zip archive and you have not
              setup git to automatically authenticate against github.com you
