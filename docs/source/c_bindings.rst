@@ -41,11 +41,11 @@ Build (manually downloaded dependencies)
 ----------------------------------------
 The dependencies required to build the Kodo C bindings are Kodo itself +
 the dependencies of Kodo. Kodo's dependencies are specified on the
-:ref:`using-kodo-in-your-application` page. On that page you will also
+:ref:`kodo-dependencies` section. On that page you will also
 find the description of how to build Kodo with manually downloaded
 dependencies. This procedure is the same for the Kodo C-bindings.
 
-Be sure to read the :ref:`Selecting the correct versions` section to see
+Be sure to read the :ref:`selecting-the-correct-versions` section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
