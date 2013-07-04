@@ -9,7 +9,7 @@ as encoding and decoding of data. The examples folder provides sample
 applications showing usage of the C API.
 
 Getting started
------------------------
+---------------
 The source code for the Kodo C bindings are available at our github.com
 repository:
 
@@ -21,8 +21,8 @@ git or download a released version.
 To build the library you need the tools described on the Kodo
 `getting_started`_ page.
 
-Dependencies
-------------
+Building
+--------
 To use the Kodo C bindings you first have to fetch the necessary
 dependencies. There are two ways of getting the dependencies:
 
@@ -30,13 +30,15 @@ dependencies. There are two ways of getting the dependencies:
    dependencies via git (this requires an Internet connection).
 2. Downloading the dependencies manually.
 
-For step 1 you may proceed directly to the `Build`_ section which will
-do the automatic download.
+For step 1 you may proceed directly to the `Build (automatically
+downloading dependencies)`_ section which will do the automatic download.
 
-For step 2 we have to first download the dependencies needed.
+For step 2 we have to first download the dependencies needed described in
+the `Build (manually downloaded dependencies)`_ section.
 
-Downloading the Dependencies
-----------------------------
+
+Build (manually downloaded dependencies)
+----------------------------------------
 The dependencies required to build the Kodo C bindings are Kodo itself +
 the dependencies of Kodo. Kodo's dependencies are specified on the
 `using-kodo-in-your-application`_ page. On that page you will also find the
@@ -47,8 +49,6 @@ Be sure to read the `Selecting the correct versions`_ section to see
 which versions you need to download (here you should use the ``wscript``
 in the kodo-c-bindings repository to obtain the version numbers).
 
-Build (manually downloaded dependencies)
-========================================
 Following the instructions on the `using-kodo-in-your-application`_ page
 you should have downloaded the following dependencies: Fifi, Sak, Boost,
 Waf-tools, Gtest, Gauge and Kodo.
@@ -64,7 +64,7 @@ After configure run the following command to build the static library:
   python waf build
 
 Build (automatically downloading dependencies)
-==============================================
+----------------------------------------------
 If you wish to let the waf build scripts automatically download the
 source code you can use the steps outline here:
 
@@ -84,7 +84,7 @@ After configure run the following command to build the static library:
 
 
 Linking with an application
-===========================
+---------------------------
 Running the ``waf build`` step will produce a static library in
 the ``build`` folder called ``libckodo.a`` on Linux and Mac and
 ``ckodo.lib`` on Windows. The following section will show you how to
