@@ -232,6 +232,10 @@ bundle all but Fifi and Sak
 
     python waf configure --bundle=ALL,-fifi,-sak --fifi-path=insert-path-to/fifi --sak-path=insert-path-to/sak
 
+The bundle options can be seen by running:
+::
+
+  python waf --help
 
 
 Example application using makefile
