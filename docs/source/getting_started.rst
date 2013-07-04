@@ -3,6 +3,8 @@
 Getting Started
 ===============
 
+.. _tools-needed:
+
 Tools Needed
 ------------
 In order to start developing using Kodo you need the following tools installed:
