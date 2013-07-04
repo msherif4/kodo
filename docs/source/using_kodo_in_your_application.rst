@@ -36,18 +36,18 @@ download a number of additional libraries. These libraries are
 only needed when/if you want to compile the Kodo unit-tests, examples or
 benchmarks.
 
-4. **waf-tools**: This repository contains additional tools used by
+4. **Waf-tools**: This repository contains additional tools used by
    out build system. These tools adds functionality to waf which are
    used e.g. by our continuous-integration build system.
 
    * http://github.com/steinwurf/external-waf-tools
 
-5. **gtest**: The Google C++ Unit Testing Framework is used by all the
+5. **Gtest**: The Google C++ Unit Testing Framework is used by all the
    Kodo unit tests to ensure the library functions correctly.
 
    * http://github.com/steinwurf/external-gtest
 
-6. **gauge**: Gauge is a C++ benchmarking tool which we use in Kodo to
+6. **Gauge**: Gauge is a C++ benchmarking tool which we use in Kodo to
    profile the implemented algorithms.
 
    * http://github.com/steinwurf/cxx-gauge
@@ -114,6 +114,9 @@ this is not necessary. If that is your goal you can skip to the
 Here we will show how to configure Kodo to use the manually downloaded
 dependencies:
 
+Download using Git
+..................
+
 1. Create a suitable directory for the projects (optional)
 
    ::
@@ -126,9 +129,6 @@ dependencies:
    ::
 
      git clone git://github.com/steinwurf/fifi.git
-
-   or by downloading zip or tar.gz file from
-   https://github.com/steinwurf/fifi/releases
 
 3. Clone and download the Sak libraries by running:
 
@@ -148,25 +148,53 @@ dependencies:
             its own version control repositories, if you
             wish, you may also use download Boost using those repositories.
 
-4. Clone and download the extra Waf tools:
+5. Clone and download the extra Waf-tools:
 
    ::
 
      git clone git://github.com/steinwurf/external-waf-tools.git
 
-4. Clone and download the Gtest library.
+6. Clone and download the Gtest library.
 
    ::
 
      git clone git://github.com/steinwurf/external-gtest.git
 
 
-4. Clone and download the Gauge library.
+7. Clone and download the Gauge library.
 
    ::
 
      git clone git://github.com/steinwurf/cxx-gauge.git
 
+Now we have to visit the downloaded repositories and select the correct
+versions e.g. for Fifi, first list the available tags:
+::
+
+  cd fifi
+  git tag -l
+
+Using the information from the ``wscript`` (described in
+`Selecting the correct versions`_) we can checkout a tagged version:
+
+::
+  git checkout 9.1.0
+
+We now do this for all the downloaded repositories.
+
+Download as zip/tar.gz archives
+...............................
+
+Here we have to visit the download pages of the different dependencies
+and download the correct versions (described in `Selecting the correct
+versions`_):
+
+1. Fifi: https://github.com/steinwurf/fifi/releases
+2. Sak: https://github.com/steinwurf/sak/releases
+3. Boost: https://github.com/steinwurf/external-boost-light/releases
+4. Waf-tools: https://github.com/steinwurf/external-waf-tools/releases
+5. Gtest: https://github.com/steinwurf/external-gtest/releases
+6. Gauge: https://github.com/steinwurf/cxx-gauge/releases
 
 Example application using makefile
 -------------------------------------
