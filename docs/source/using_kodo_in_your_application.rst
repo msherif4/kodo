@@ -52,27 +52,6 @@ benchmarks.
 
    * http://github.com/steinwurf/cxx-gauge
 
-Download Kodo Dependencies
---------------------------
-
-All dependencies required by Kodo are hosted on github.com and may be found
-at http://github.com/steinwurf.
-
-There are several ways in which you may get the Kodo library and its
-dependencies. Which approach you prefer might depend on your intended
-use-case for Kodo.
-
-1. As shown in :ref:`getting_started` the Kodo build scripts supports
-   downloading the dependency repositories automatically. The build
-   script with do a git clone and checkout the latest compatible tagged
-   version of the dependency.
-
-2. You may wish to manually download Kodo's dependencies as separate git
-   repositories. In the following we describe this option.
-
-3. You can also download the Kodo dependencies as zip or tar.gz archives
-   from the dependencies corresponding github.com page.
-
 Selecting the correct versions
 ------------------------------
 If you use the automatic approach by letting the build scripts download the
@@ -103,13 +82,38 @@ We get a list of available versions. At the time of writing this would be
 version ``9.1.0``. These version numbers are available as ``git tags`` if you
 choose to manually checkout the git repositories.
 
+Download Kodo Dependencies
+--------------------------
+
+All dependencies required by Kodo are hosted on github.com and may be found
+at http://github.com/steinwurf.
+
+There are several ways in which you may get the Kodo library and its
+dependencies. Which approach you prefer might depend on your intended
+use-case for Kodo.
+
+1. As shown in :ref:`getting_started` the Kodo build scripts supports
+   downloading the dependency repositories automatically. The build
+   script with do a ``git clone`` and checkout the latest compatible tagged
+   version of the dependency.
+
+2. You may wish to manually download Kodo's dependencies as separate git
+   repositories. In the following we describe this option.
+
+3. You can also download the Kodo dependencies as zip or tar.gz archives
+   from the dependencies corresponding github.com page.
+
+
 Configuring Kodo with manually downloaded dependencies
 ------------------------------------------------------
-Before moving on it is important to stress that this step is only
-necessary if you wish to build the Kodo unit tests and benchmarks using
-the Kodo build system. If you simply want to use Kodo in your application
-this is not necessary. If that is your goal you can skip to the
-`Example application using makefile`_ section.
+Before moving on it is important to stress that downloading all
+dependencies is only necessary if you wish to build the Kodo unit tests
+and benchmarks using the Kodo build system. If you simply want to use Kodo
+in your application you only need to download the Fifi, Sak and Boost
+dependencies and you do not need to build the Kodo library (since it is
+header-only).
+If that is your goal you can skip to the `Example application using
+makefile`_ section after downloading the three required libraries..
 
 Here we will show how to configure Kodo to use the manually downloaded
 dependencies:
