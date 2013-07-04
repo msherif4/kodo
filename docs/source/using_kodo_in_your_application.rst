@@ -146,7 +146,7 @@ Download using Git
             For example many Linux distributions support installing Boost
             via the package manager. Alternatively Boost also provides
             its own version control repositories, if you
-            wish, you may also use download Boost using those repositories.
+            wish, you may also download Boost using those repositories.
 
 5. Clone and download the extra Waf-tools:
 
@@ -189,12 +189,18 @@ Here we have to visit the download pages of the different dependencies
 and download the correct versions (described in `Selecting the correct
 versions`_):
 
-1. Fifi: https://github.com/steinwurf/fifi/releases
-2. Sak: https://github.com/steinwurf/sak/releases
-3. Boost: https://github.com/steinwurf/external-boost-light/releases
-4. Waf-tools: https://github.com/steinwurf/external-waf-tools/releases
-5. Gtest: https://github.com/steinwurf/external-gtest/releases
-6. Gauge: https://github.com/steinwurf/cxx-gauge/releases
+1. Fifi:
+   https://github.com/steinwurf/fifi/releases
+2. Sak:
+   https://github.com/steinwurf/sak/releases
+3. Boost:
+   https://github.com/steinwurf/external-boost-light/releases
+4. Waf-tools:
+   https://github.com/steinwurf/external-waf-tools/releases
+5. Gtest:
+   https://github.com/steinwurf/external-gtest/releases
+6. Gauge:
+   https://github.com/steinwurf/cxx-gauge/releases
 
 Example application using makefile
 -------------------------------------
