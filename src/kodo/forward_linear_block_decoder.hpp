@@ -17,68 +17,10 @@
 #include <fifi/is_binary.hpp>
 #include <fifi/fifi_utils.hpp>
 
+#include <kodo/forward_linear_block_decoder_policy.hpp>
+
 namespace kodo
 {
-
-    template<class Stack>
-    struct forward_policy
-    {
-
-        forward_policy(const Stack& stack)
-            : m_stack(stack),
-              m_index(0),
-              m_end(stack.symbols())
-        { }
-
-        forward_policy(const Stack& stack, uint32_t start)
-            : m_stack(stack),
-              m_index(start),
-              m_end(stack.symbols())
-        { }
-
-        forward_policy(const Stack& stack, uint32_t start, uint32_t end)
-            : m_stack(stack),
-              m_index(start),
-              m_end(end)
-        { }
-
-
-        bool at_end() const
-        {
-            return m_index >= m_end;
-        }
-
-        void advance()
-        {
-            ++m_index;
-        }
-
-        uint32_t index() const
-        {
-            return m_index;
-        }
-
-        static uint32_t max(uint32_t a, uint32_t b)
-        {
-            return std::max(a,b);
-        }
-
-        static uint32_t min(uint32_t a, uint32_t b)
-        {
-            return std::min(a,b);
-        }
-
-        // static uint32_t next(uint32_t value)
-        // {
-
-        // }
-
-        const Stack& m_stack;
-        uint32_t m_index;
-        uint32_t m_end;
-
-    };
-
 
     template<class Stack>
     struct backward_policy
@@ -157,8 +99,7 @@ namespace kodo
         /// @copydoc layer::factory
         typedef typename SuperCoder::factory factory;
 
-        typedef backward_policy<forward_linear_block_decoder>
-           the_policy;
+        typedef forward_linear_block_decoder_policy the_policy;
 
     public:
 
@@ -246,7 +187,9 @@ namespace kodo
                 ++m_rank;
 
                 m_uncoded[ symbol_index ] = true;
-                m_maximum_pivot = the_policy::max(symbol_index, m_maximum_pivot);
+
+                m_maximum_pivot =
+                    the_policy::max(symbol_index, m_maximum_pivot);
 
             }
         }
@@ -422,11 +365,10 @@ namespace kodo
             assert(symbol_id != 0);
             assert(symbol_data != 0);
 
-            // uint32_t from = forward_policy::from(*this);
-            // uint32_t to = forward_policy::to(*this);
+            uint32_t start = the_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t end = the_policy::max(0, SuperCoder::symbols()-1);
 
-
-            for(the_policy p(*this); !p.at_end(); p.advance())
+            for(the_policy p(start, end); !p.at_end(); p.advance())
             {
                 uint32_t i = p.index();
 
@@ -501,7 +443,10 @@ namespace kodo
             // If this pivot index was smaller than the maximum pivot
             // index we have, we might also need to backward
             // substitute the higher pivot values into the new packet
-            the_policy p(*this, pivot_index);
+            uint32_t end = the_policy::max(0, SuperCoder::symbols()-1);
+            the_policy p(pivot_index, end);
+
+            // Jump past the pivot_index position
             p.advance();
 
             for(; !p.at_end(); p.advance())
@@ -565,15 +510,13 @@ namespace kodo
 
             assert(pivot_index < SuperCoder::symbols());
 
-            uint32_t from = the_policy::min(0, SuperCoder::symbols());
+            uint32_t from = the_policy::min(0, SuperCoder::symbols()-1);
             uint32_t to = m_maximum_pivot;
-
-            the_policy p(*this, from, to);
 
             // We found a "1" that nobody else had as pivot, we now
             // substract this packet from other coded packets
             // - if they have a "1" on our pivot place
-            for(;!p.at_end(); p.advance())
+            for(the_policy p(from, to); !p.at_end(); p.advance())
             {
                 uint32_t i = p.index();
 

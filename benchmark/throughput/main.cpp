@@ -457,6 +457,9 @@ BENCHMARK_OPTION(throughput_density_options)
     gauge::runner::instance().register_options(options);
 }
 
+//------------------------------------------------------------------
+// FullRLNC
+//------------------------------------------------------------------
 
 typedef throughput_benchmark<
     kodo::full_rlnc_encoder<fifi::binary>,
@@ -493,6 +496,55 @@ BENCHMARK_F(setup_rlnc_throughput2325, FullRLNC, Prime2325, 5)
 {
     run_benchmark();
 }
+
+//------------------------------------------------------------------
+// ForwardFullRLNC
+//------------------------------------------------------------------
+
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary>,
+    kodo::forward_full_rlnc_decoder<fifi::binary> >
+    setup_forward_rlnc_throughput;
+
+BENCHMARK_F(setup_forward_rlnc_throughput, ForwardFullRLNC, Binary, 5)
+{
+    run_benchmark();
+}
+
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary8>,
+    kodo::forward_full_rlnc_decoder<fifi::binary8> >
+    setup_forward_rlnc_throughput8;
+
+BENCHMARK_F(setup_forward_rlnc_throughput8, ForwardFullRLNC, Binary8, 5)
+{
+    run_benchmark();
+}
+
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::binary16>,
+    kodo::forward_full_rlnc_decoder<fifi::binary16> >
+    setup_forward_rlnc_throughput16;
+
+BENCHMARK_F(setup_forward_rlnc_throughput16, ForwardFullRLNC, Binary16, 5)
+{
+    run_benchmark();
+}
+
+typedef throughput_benchmark<
+    kodo::full_rlnc_encoder<fifi::prime2325>,
+    kodo::forward_full_rlnc_decoder<fifi::prime2325> >
+    setup_forward_rlnc_throughput2325;
+
+BENCHMARK_F(setup_forward_rlnc_throughput2325, ForwardFullRLNC, Prime2325, 5)
+{
+    run_benchmark();
+}
+
+
+//------------------------------------------------------------------
+// FullDelayedRLNC
+//------------------------------------------------------------------
 
 typedef throughput_benchmark<
    kodo::full_rlnc_encoder<fifi::binary>,
