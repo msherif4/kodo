@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <gtest/gtest.h>
 
-#include <kodo/forward_linear_block_decoder.hpp>
+#include <kodo/backward_linear_block_decoder.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 #include <kodo/debug_linear_block_decoder.hpp>
@@ -47,7 +47,7 @@ namespace kodo
 
 
 /// Run the tests typical coefficients stack
-TEST(TestForwardLinearBlockDecoder, test_decoder)
+TEST(TestBackwardLinearBlockDecoder, test_decoder)
 {
     typedef fifi::binary field_type;
 

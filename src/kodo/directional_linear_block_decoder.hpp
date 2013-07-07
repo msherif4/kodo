@@ -29,8 +29,8 @@ namespace kodo
     /// expects that an encoded symbol is described by a vector of
     /// coefficients. Using these coefficients the block decoder subtracts
     /// incoming symbols until the original data has been recreated.
-    template<class SuperCoder>
-    class forward_linear_block_decoder : public SuperCoder
+    template<class DirectionPolicy, class SuperCoder>
+    class directional_linear_block_decoder : public SuperCoder
     {
     public:
 
@@ -43,12 +43,12 @@ namespace kodo
         /// @copydoc layer::factory
         typedef typename SuperCoder::factory factory;
 
-        typedef backward_linear_block_decoder_policy the_policy;
+        typedef DirectionPolicy direction_policy;
 
     public:
 
         /// Constructor
-        forward_linear_block_decoder()
+        directional_linear_block_decoder()
             : m_rank(0),
               m_maximum_pivot(0)
         { }
@@ -76,7 +76,7 @@ namespace kodo
 
             // Depending on the policy we either go from 0 to symbols or
             // from symbols to 0.
-            m_maximum_pivot = the_policy::min(0, the_factory.symbols()-1);
+            m_maximum_pivot = direction_policy::min(0, the_factory.symbols()-1);
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
@@ -133,7 +133,7 @@ namespace kodo
                 m_uncoded[ symbol_index ] = true;
 
                 m_maximum_pivot =
-                    the_policy::max(symbol_index, m_maximum_pivot);
+                    direction_policy::max(symbol_index, m_maximum_pivot);
 
             }
         }
@@ -208,10 +208,8 @@ namespace kodo
 
             m_coded[ *pivot_index ] = true;
 
-            if(*pivot_index > m_maximum_pivot)
-            {
-                m_maximum_pivot = *pivot_index;
-            }
+            m_maximum_pivot =
+                direction_policy::max(*pivot_index, m_maximum_pivot);
         }
 
         /// When adding a raw symbol (i.e. uncoded) with a specific
@@ -309,12 +307,12 @@ namespace kodo
             assert(symbol_id != 0);
             assert(symbol_data != 0);
 
-            uint32_t start = the_policy::min(0, SuperCoder::symbols()-1);
-            uint32_t end = the_policy::max(0, SuperCoder::symbols()-1);
+            uint32_t start = direction_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t end = direction_policy::max(0, SuperCoder::symbols()-1);
 
             // std::cout << start << " " << end << std::endl;
 
-            for(the_policy p(start, end); !p.at_end(); p.advance())
+            for(direction_policy p(start, end); !p.at_end(); p.advance())
             {
                 uint32_t i = p.index();
 
@@ -389,11 +387,11 @@ namespace kodo
             // If this pivot index was smaller than the maximum pivot
             // index we have, we might also need to backward
             // substitute the higher pivot values into the new packet
-            uint32_t end = the_policy::max(0, SuperCoder::symbols()-1);
+            uint32_t end = direction_policy::max(0, SuperCoder::symbols()-1);
 
-            // std::cout << pivot_index << " " << end << std::endl;
+            // std::cout << "Pivot " << pivot_index << " to " << end << std::endl;
 
-            the_policy p(pivot_index, end);
+            direction_policy p(pivot_index, end);
 
             // Jump past the pivot_index position
             p.advance();
@@ -459,7 +457,7 @@ namespace kodo
 
             assert(pivot_index < SuperCoder::symbols());
 
-            uint32_t from = the_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t from = direction_policy::min(0, SuperCoder::symbols()-1);
             uint32_t to = m_maximum_pivot;
 
             // std::cout << from << " " << to << std::endl;
@@ -467,7 +465,7 @@ namespace kodo
             // We found a "1" that nobody else had as pivot, we now
             // substract this packet from other coded packets
             // - if they have a "1" on our pivot place
-            for(the_policy p(from, to); !p.at_end(); p.advance())
+            for(direction_policy p(from, to); !p.at_end(); p.advance())
             {
                 uint32_t i = p.index();
 

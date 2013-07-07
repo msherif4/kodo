@@ -33,6 +33,9 @@ namespace kodo
         /// The value_type used to store the field elements
         typedef typename field_type::value_type value_type;
 
+        ///
+        typedef typename SuperCoder::direction_policy direction_policy;
+
     public:
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
@@ -77,10 +80,8 @@ namespace kodo
 
                 m_uncoded[ symbol_index ] = true;
 
-                if(symbol_index > m_maximum_pivot)
-                {
-                    m_maximum_pivot = symbol_index;
-                }
+                m_maximum_pivot =
+                    direction_policy::max(symbol_index, m_maximum_pivot);
 
             }
 
@@ -136,10 +137,8 @@ namespace kodo
 
             m_coded[ *pivot_index ] = true;
 
-            if(*pivot_index > m_maximum_pivot)
-            {
-                m_maximum_pivot = *pivot_index;
-            }
+            m_maximum_pivot =
+                direction_policy::max(*pivot_index, m_maximum_pivot);
 
             if(SuperCoder::is_complete())
             {
@@ -156,10 +155,13 @@ namespace kodo
         {
             assert(SuperCoder::is_complete());
 
-            uint32_t symbols = SuperCoder::symbols();
+            uint32_t start = direction_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t end = direction_policy::max(0, SuperCoder::symbols()-1);
 
-            for(uint32_t i = symbols; i --> 0;)
+            for(direction_policy p(start, end); !p.at_end(); p.advance())
             {
+                uint32_t i = p.index();
+
                 value_type *symbol_i =
                     SuperCoder::symbol_value(i);
 
