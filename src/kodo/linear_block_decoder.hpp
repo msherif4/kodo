@@ -46,7 +46,8 @@ namespace kodo
         /// Constructor
         linear_block_decoder()
             : m_rank(0),
-              m_maximum_pivot(0)
+              m_maximum_pivot(0),
+              m_maximum_coefficient(0)
         { }
 
         /// @copydoc layer::construct(Factory&)
@@ -70,6 +71,7 @@ namespace kodo
 
             m_rank = 0;
             m_maximum_pivot = 0;
+            m_maximum_coefficient = 0;
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
@@ -85,6 +87,14 @@ namespace kodo
             value_type *coefficients
                 = reinterpret_cast<value_type*>(symbol_coefficients);
 
+            for (size_t i = 0; i < this->symbols(); i++) {
+                value_type current_coefficient
+                    = fifi::get_value<field_type>(coefficients, i);
+
+                if (current_coefficient && i > m_maximum_coefficient)
+                    m_maximum_coefficient = i;
+            }
+
             decode_coefficients(symbol, coefficients);
         }
 
@@ -99,6 +109,9 @@ namespace kodo
             {
                 return;
             }
+
+            if (symbol_index > m_maximum_coefficient)
+                m_maximum_coefficient = symbol_index;
 
             const value_type *symbol
                 = reinterpret_cast<value_type*>( symbol_data );
@@ -139,10 +152,20 @@ namespace kodo
             return m_rank == SuperCoder::symbols();
         }
 
+        bool is_partial_complete() const
+        {
+            return m_rank == m_maximum_coefficient + 1;
+        }
+
         /// @copydoc layer::rank() const
         uint32_t rank() const
         {
             return m_rank;
+        }
+
+        uint32_t max_coefficient() const
+        {
+            return m_maximum_coefficient;
         }
 
         /// @copydoc layer::symbol_pivot(uint32_t) const
@@ -571,6 +594,8 @@ namespace kodo
 
         /// Stores the current maximum pivot index
         uint32_t m_maximum_pivot;
+
+        uint32_t m_maximum_coefficient;
 
         /// Tracks whether a symbol is contained which
         /// is fully decoded
