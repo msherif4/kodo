@@ -6,7 +6,12 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Added the partial_decoding_tracker layer which "monitors" the
+  coding vectors being passed to a decoder in order to detect early
+  decoding opportunities. This means that although not all packets have
+  yet been sent from the encoder, it might happen that we can decode
+  anyway. This kind of functionality is useful especially for applications
+  which require low delay.
 
 11.1.0
 ------
