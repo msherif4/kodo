@@ -96,6 +96,15 @@ namespace kodo
             }
 
             decode_coefficients(symbol, coefficients);
+
+            if((m_maximum_pivot + 1) == m_rank)
+            {
+                std::cout << "Rank " << m_rank << std::endl;
+                std::cout << "Max pivot " << m_maximum_pivot << std::endl;
+                std::cout << "Max coeff. " << m_maximum_coefficient << std::endl;
+
+                //assert(m_maximum_pivot == m_maximum_coefficient);
+            }
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*, uint32_t)
