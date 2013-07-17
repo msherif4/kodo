@@ -9,7 +9,7 @@
 #include <kodo/rlnc/full_vector_codes.hpp>
 #include <kodo/linear_block_decoder_delayed.hpp>
 #include <kodo/sparse_uniform_generator.hpp>
-#include <kodo/forward_linear_block_decoder.hpp>
+#include <kodo/backward_linear_block_decoder.hpp>
 
 
 namespace kodo
@@ -86,7 +86,7 @@ namespace kodo
 
     /// RLNC decoder which uses the policy based linear block decoder
     template<class Field>
-    class forward_full_rlnc_decoder
+    class backward_full_rlnc_decoder
         : public // Payload API
                  payload_recoder<recoding_stack,
                  payload_decoder<
@@ -97,7 +97,7 @@ namespace kodo
                  plain_symbol_id_reader<
                  // Codec API
                  aligned_coefficients_decoder<
-                 forward_linear_block_decoder<
+                 backward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
@@ -111,7 +111,7 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 forward_full_rlnc_decoder<Field>
+                 backward_full_rlnc_decoder<Field>
                      > > > > > > > > > > > > > > >
     { };
 

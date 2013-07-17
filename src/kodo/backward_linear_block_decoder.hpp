@@ -22,6 +22,8 @@
 
 namespace kodo
 {
+
+    /// @todo document this
     /// @ingroup codec_layers
     /// @brief Implements basic linear block decoder.
     ///
@@ -30,8 +32,9 @@ namespace kodo
     /// coefficients. Using these coefficients the block decoder subtracts
     /// incoming symbols until the original data has been recreated.
     template<class SuperCoder>
-    class backward_linear_block_decoder : public directional_linear_block_decoder<
-        backward_linear_block_decoder_policy, SuperCoder>
+    class backward_linear_block_decoder :
+        public directional_linear_block_decoder
+               <backward_linear_block_decoder_policy, SuperCoder>
     { };
 
 }
