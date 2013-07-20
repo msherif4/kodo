@@ -364,52 +364,6 @@ invoke_systematic(uint32_t symbols, uint32_t symbol_size)
 
 }
 
-/// Tests that an encoder support progressively specifying the symbols
-template<class Encoder, class Decoder>
-inline void
-invoke_set_symbol(uint32_t symbols, uint32_t symbol_size)
-{
-
-    // Common setting
-    typename Encoder::factory encoder_factory(symbols, symbol_size);
-    auto encoder = encoder_factory.build();
-
-    typename Decoder::factory decoder_factory(symbols, symbol_size);
-    auto decoder = decoder_factory.build();
-
-    std::vector<uint8_t> payload(encoder->payload_size());
-    std::vector<uint8_t> data_in = random_vector(encoder->block_size());
-
-    auto symbol_sequence = sak::split_storage(
-        sak::storage(data_in), symbol_size);
-
-    // Set the encoder non-systematic
-    if(kodo::is_systematic_encoder(encoder))
-        kodo::set_systematic_off(encoder);
-
-    EXPECT_EQ(encoder->rank(), 0U);
-    EXPECT_EQ(decoder->rank(), 0U);
-
-    while( !decoder->is_complete() )
-    {
-        encoder->encode( &payload[0] );
-        decoder->decode( &payload[0] );
-
-        if(encoder->rank() < symbols)
-        {
-            uint32_t i = rand() % symbols;
-            encoder->set_symbol(i, symbol_sequence[i]);
-        }
-    }
-
-    std::vector<uint8_t> data_out(decoder->block_size(), '\0');
-    decoder->copy_symbols(sak::storage(data_out));
-
-    EXPECT_TRUE(std::equal(data_out.begin(),
-                           data_out.end(),
-                           data_in.begin()));
-}
-
 
 
 
