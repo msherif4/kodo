@@ -12,6 +12,10 @@ Latest
   yet been sent from the encoder, it might happen that we can decode
   anyway. This kind of functionality is useful especially for applications
   which require low delay.
+* Minor: Added on-the-fly encoding and decoding stacks in
+  src/kodo/rlnc/on_he_fly_codes.hpp the on-the-fly stacks have the advantage
+  that they allow encoding and decoding to proceed even without having all
+  encoding symbols available.
 
 11.1.0
 ------
