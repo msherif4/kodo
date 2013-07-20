@@ -9,6 +9,7 @@
 
 #include "full_vector_codes.hpp"
 #include "../storage_aware_generator.hpp"
+#include "../partial_decoding_tracker.hpp"
 
 namespace kodo
 {
@@ -77,6 +78,7 @@ namespace kodo
                plain_symbol_id_reader<
                // Codec API
                aligned_coefficients_decoder<
+               partial_decoding_tracker<
                linear_block_decoder<
                // Coefficient Storage API
                coefficient_storage<
@@ -92,7 +94,7 @@ namespace kodo
                final_coder_factory_pool<
                // Final type
                on_the_fly_decoder<Field>
-                > > > > > > > > > > > > > > >
+               > > > > > > > > > > > > > > > >
     { };
 
 }
