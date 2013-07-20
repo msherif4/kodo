@@ -42,7 +42,6 @@ inline void test_reuse_helper(Encoder encoder, Decoder decoder)
 
 }
 
-
 /// Test that instantiates a number of encoders and decoders from
 /// the same factories
 template<class Encoder, class Decoder>

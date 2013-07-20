@@ -11,12 +11,12 @@
 
 #include <kodo/nocode/carousel_codes.hpp>
 
-#include "basic_api_test_helper.hpp"
+#include "helper_test_basic_api.hpp"
 
 static void test_coders(uint32_t symbols, uint32_t symbol_size)
 {
 
-    invoke_basic_api
+    test_basic_api
         <
             kodo::nocode_carousel_encoder,
             kodo::nocode_carousel_decoder

@@ -10,75 +10,58 @@
 
 #include "basic_api_test_helper.hpp"
 
-static void test_coders(uint32_t symbols, uint32_t symbol_size)
+#include "helper_test_reuse_api.hpp"
+#include "helper_test_recoding_api.hpp"
+#include "helper_test_on_the_fly_api.hpp"
+#include "helper_test_basic_api.hpp"
+#include "helper_test_initialize_api.hpp"
+#include "helper_test_systematic_api.hpp"
+#include "helper_test_mix_uncoded_api.hpp"
+
+
+/// Tests the basic API functionality this mean basic encoding
+/// and decoding
+TEST(TestSeedCodes, test_basic_api)
 {
-    invoke_basic_api
-        <
-            kodo::seed_rlnc_encoder<fifi::binary>,
-            kodo::seed_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
+    test_basic_api<kodo::seed_rlnc_encoder,kodo::seed_rlnc_decoder>();
+}
 
-    invoke_basic_api
-        <
-            kodo::seed_rlnc_encoder<fifi::binary8>,
-            kodo::seed_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
+/// Test that the encoders and decoders initialize() function can be used
+/// to reset the state of an encoder and decoder and that they therefore
+/// can be safely reused.
+TEST(TestSeedCodes, test_initialize_api)
+{
+    test_initialize<kodo::seed_rlnc_encoder,kodo::seed_rlnc_decoder>();
+}
 
-    invoke_basic_api
-        <
-            kodo::seed_rlnc_encoder<fifi::binary16>,
-            kodo::seed_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
+/// Tests that an encoder producing systematic packets is handled
+/// correctly in the decoder.
+TEST(TestSeedCodes, test_systematic_api)
+{
+    test_systematic<kodo::seed_rlnc_encoder,kodo::seed_rlnc_decoder>();
+}
+
+/// Tests whether mixed un-coded and coded packets are correctly handled
+/// in the encoder and decoder.
+TEST(TestSeedCodes, mix_uncoded_api)
+{
+    test_mix_uncoded<kodo::seed_rlnc_encoder, kodo::seed_rlnc_decoder>();
+}
+
+/// Tests that we can progressively set on symbol at-a-time on
+/// encoder
+TEST(TestSeedCodes, test_reuse_api)
+{
+    test_reuse<kodo::seed_rlnc_encoder, kodo::seed_rlnc_decoder>();
+}
+
+/// Tests that we can progressively set on symbol at-a-time on
+/// encoder
+TEST(TestSeedcodes, test_reuse_incomplete_api)
+{
+    test_reuse_incomplete<kodo::seed_rlnc_encoder, kodo::seed_rlnc_decoder>();
 }
 
 
-TEST(TestRlncSeedCodes, basic_api)
-{
-    test_coders(32, 1600);
-    test_coders(1, 1600);
 
-    srand(static_cast<uint32_t>(time(0)));
-
-    uint32_t symbols = rand_symbols();
-    uint32_t symbol_size = rand_symbol_size();
-
-    test_coders(symbols, symbol_size);
-}
-
-
-static void test_coders_systematic(uint32_t symbols, uint32_t symbol_size)
-{
-
-    invoke_systematic
-        <
-            kodo::seed_rlnc_encoder<fifi::binary>,
-            kodo::seed_rlnc_decoder<fifi::binary>
-            >(symbols, symbol_size);
-
-    invoke_systematic
-        <
-            kodo::seed_rlnc_encoder<fifi::binary8>,
-            kodo::seed_rlnc_decoder<fifi::binary8>
-            >(symbols, symbol_size);
-
-    invoke_systematic
-        <
-            kodo::seed_rlnc_encoder<fifi::binary16>,
-            kodo::seed_rlnc_decoder<fifi::binary16>
-            >(symbols, symbol_size);
-
-}
-
-TEST(TestRlncSeedCodes, systematic)
-{
-    test_coders_systematic(32, 1600);
-    test_coders_systematic(1, 1600);
-
-    srand(static_cast<uint32_t>(time(0)));
-
-    uint32_t symbols = rand_symbols();
-    uint32_t symbol_size = rand_symbol_size();
-
-    test_coders_systematic(symbols, symbol_size);
-}
 

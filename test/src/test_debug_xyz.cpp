@@ -12,7 +12,7 @@
 #include <kodo/rlnc/full_vector_codes.hpp>
 #include <kodo/debug_linear_block_decoder.hpp>
 
-#include "basic_api_test_helper.hpp"
+#include "helper_test_basic_api.hpp"
 
 /// Here we define the stacks which should be tested.
 namespace kodo
@@ -58,7 +58,7 @@ TEST(TestDebugXYZ, test_debug_linear_block_decoder)
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
 
-    invoke_basic_api
+    test_basic_api
     <
         kodo::full_rlnc_encoder<fifi::binary>,
         kodo::debug_decoder<fifi::binary>
