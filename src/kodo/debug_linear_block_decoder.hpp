@@ -9,6 +9,8 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include <iomanip>
+
 
 #include <fifi/fifi_utils.hpp>
 
@@ -69,15 +71,15 @@ namespace kodo
             {
                 if (!SuperCoder::symbol_pivot(i))
                 {
-                    out << i << " ?:  ";
+                    out << std::setw(3) << i << " ?:  ";
                 }
                 else if (SuperCoder::symbol_coded(i))
                 {
-                    out << i << " C:  ";
+                    out << std::setw(3) << i << " C:  ";
                 }
                 else
                 {
-                    out << i << " U:  ";
+                    out << std::setw(3) << i << " U:  ";
                 }
 
                 const value_type* c = SuperCoder::coefficients(i);

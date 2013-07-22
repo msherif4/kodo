@@ -123,6 +123,10 @@ namespace kodo
             assert(symbol.m_size == SuperCoder::symbol_size());
             assert(index < SuperCoder::symbols());
 
+            // Symbols should always be added in order e.g. 0,1,2,3 ..
+            // so the index specified must equal the current count
+            assert(index == m_symbols_count);
+
             if(m_data[index] == 0)
             {
                 ++m_symbols_count;

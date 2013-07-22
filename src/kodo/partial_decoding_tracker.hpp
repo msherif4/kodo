@@ -144,7 +144,7 @@ namespace kodo
             SuperCoder::decode_symbol(symbol_data, symbol_index);
         }
 
-        /// @return True if the matrix should be partially decoded.
+        /// @return True if the decoding matrix should be partially decoded.
         bool is_partial_complete() const
         {
             return SuperCoder::rank() == m_largest_nonzero_index + 1;
