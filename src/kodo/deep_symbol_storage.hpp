@@ -123,7 +123,13 @@ namespace kodo
         void set_symbol(uint32_t index, const sak::const_storage &symbol)
         {
             assert(symbol.m_data != 0);
-            assert(symbol.m_size == SuperCoder::symbol_size());
+
+            // If the user sets a specific symbol on deep storage we allow that
+            // it does not have the full size. In this cases it is the users
+            // who must ensure correct decoding
+            assert(symbol.m_size <= SuperCoder::symbol_size());
+            assert(symbol.m_size > 0);
+
             assert(index < SuperCoder::symbols());
 
             // Symbols should always be added in order e.g. 0,1,2,3 ..

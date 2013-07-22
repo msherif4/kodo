@@ -119,10 +119,6 @@ TEST(TestIsPartialComplete, check_true)
     auto symbol_sequence = sak::split_storage(
         sak::storage(data_in), symbol_size);
 
-    // Set the encoder non-systematic
-    if(kodo::is_systematic_encoder(encoder))
-        kodo::set_systematic_off(encoder);
-
 
     while( !decoder->is_complete() )
     {
@@ -137,23 +133,16 @@ TEST(TestIsPartialComplete, check_true)
         // set symbol 50% of the time ONLY if rank is not full
         if(((rand() % 2) == 0) && (encoder->rank() < symbols))
         {
-            uint32_t i = rand() % symbols;
+            uint32_t i = encoder->rank();
             encoder->set_symbol(i, symbol_sequence[i]);
         }
 
-        std::cout << "Encoder rank: " << encoder->rank() << " decoder rank " << decoder->rank() << std::endl;
-
-        // if(encoder->rank() == decoder->rank())
-        // {
-        //     EXPECT_TRUE(kodo::is_partial_complete(decoder));
-        //     decoder->print_decoder_state(std::cout);
-        // }
-        // else
-        // {
-        //     EXPECT_FALSE(kodo::is_partial_complete(decoder));
-        // }
-
+        // Check that the call works
+        bool ok = kodo::is_partial_complete(decoder);
+        (void)ok;
     }
+
+    EXPECT_TRUE(kodo::is_partial_complete(decoder));
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
     decoder->copy_symbols(sak::storage(data_out));

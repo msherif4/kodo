@@ -126,7 +126,14 @@ namespace kodo
                 storage.m_data = m_object.m_data + offset;
                 storage.m_size = size;
 
-                encoder->set_symbols(storage);
+                auto symbol_sequence = sak::split_storage(
+                    storage, encoder->symbol_size());
+
+                uint32_t sequence_size = symbol_sequence.size();
+                for(uint32_t i = 0; i < sequence_size; ++i)
+                {
+                    encoder->set_symbol(i, symbol_sequence[i]);
+                }
 
                 // We require that encoders includes the has_bytes_used
                 // layer to support partially filled encoders

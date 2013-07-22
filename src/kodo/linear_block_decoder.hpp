@@ -563,7 +563,6 @@ namespace kodo
             sak::copy_storage(dest, src);
 
         }
-
     protected:
 
         /// The current rank of the decoder
