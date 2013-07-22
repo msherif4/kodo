@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* TBD
+
+11.2.0
+------
 * Minor: Added the partial_decoding_tracker layer which "monitors" the
   coding vectors being passed to a decoder in order to detect early
   decoding opportunities. This means that although not all packets have

@@ -4,7 +4,7 @@
 import os
 
 APPNAME = 'kodo'
-VERSION = '11.1.0'
+VERSION = '11.2.0'
 
 def recurse_helper(ctx, name):
     if not ctx.has_dependency_path(name):
