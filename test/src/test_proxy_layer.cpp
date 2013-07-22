@@ -107,6 +107,16 @@ struct api_coder
         std::vector<uint8_t> data_in(coder->block_size(), 'x');
         std::vector<uint8_t> data_out(coder->block_size(), 'y');
 
+        std::vector<uint8_t> symbol_one(coder->symbol_size(), 'x');
+        std::vector<uint8_t> symbol_two(coder->symbol_size(), 'y');
+
+        uint32_t index = 0;
+        coder->set_symbol(index, sak::storage(symbol_one));
+        coder->copy_symbol(index, sak::storage(symbol_two));
+
+        EXPECT_TRUE(sak::equal(sak::storage(symbol_one),
+                               sak::storage(symbol_two)));
+
         coder->set_symbols(sak::storage(data_in));
         proxy->copy_symbols(sak::storage(data_out));
 
@@ -115,16 +125,6 @@ struct api_coder
         EXPECT_EQ(coder->symbols(), proxy->symbols());
         EXPECT_EQ(coder->symbol_size(), proxy->symbol_size());
         EXPECT_EQ(coder->symbol_length(), proxy->symbol_length());
-
-        std::vector<uint8_t> symbol_one(coder->symbol_size(), 'x');
-        std::vector<uint8_t> symbol_two(coder->symbol_size(), 'y');
-
-        uint32_t index = rand() % coder->symbols();
-        coder->set_symbol(index, sak::storage(symbol_one));
-        coder->copy_symbol(index, sak::storage(symbol_two));
-
-        EXPECT_TRUE(sak::equal(sak::storage(symbol_one),
-                               sak::storage(symbol_two)));
 
         EXPECT_EQ(coder->symbol(index), proxy->symbol(index));
         EXPECT_EQ(coder->symbol_value(index), proxy->symbol_value(index));

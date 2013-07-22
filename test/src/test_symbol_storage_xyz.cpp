@@ -1107,15 +1107,15 @@ struct api_deep_storage_status
 
         sak::mutable_storage s = sak::storage(vector_in);
 
-        coder->set_symbol(2, s);
-        coder->set_symbol(7, s);
+        coder->set_symbol(0, s);
         coder->set_symbol(1, s);
-        coder->set_symbol(8, s);
+        coder->set_symbol(2, s);
+        coder->set_symbol(3, s);
 
-        indexes.insert(2);
-        indexes.insert(7);
+        indexes.insert(0);
         indexes.insert(1);
-        indexes.insert(8);
+        indexes.insert(2);
+        indexes.insert(3);
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
@@ -1237,15 +1237,15 @@ struct api_shallow_storage_status
 
         sak::mutable_storage s = sak::storage(vector_in);
 
-        coder->set_symbol(2, s);
-        coder->set_symbol(7, s);
+        coder->set_symbol(0, s);
         coder->set_symbol(1, s);
-        coder->set_symbol(8, s);
+        coder->set_symbol(2, s);
+        coder->set_symbol(3, s);
 
-        indexes.insert(2);
-        indexes.insert(7);
+        indexes.insert(0);
         indexes.insert(1);
-        indexes.insert(8);
+        indexes.insert(2);
+        indexes.insert(3);
 
         for(uint32_t i = 0; i < coder->symbols(); ++i)
         {
