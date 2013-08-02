@@ -10,6 +10,9 @@
 #include "full_vector_codes.hpp"
 #include "../storage_aware_generator.hpp"
 #include "../partial_decoding_tracker.hpp"
+#include "../rank_info.hpp"
+#include "../payload_rank_encoder.hpp"
+#include "../payload_rank_decoder.hpp"
 
 namespace kodo
 {
@@ -29,6 +32,7 @@ namespace kodo
     template<class Field>
     class on_the_fly_encoder :
         public // Payload Codec API
+               payload_rank_encoder<
                payload_encoder<
                // Codec Header API
                systematic_encoder<
@@ -43,6 +47,7 @@ namespace kodo
                zero_symbol_encoder<
                linear_block_encoder<
                storage_aware_encoder<
+               rank_info<
                // Coefficient Storage API
                coefficient_info<
                // Symbol Storage API
@@ -56,7 +61,7 @@ namespace kodo
                final_coder_factory_pool<
                // Final type
                on_the_fly_encoder<Field>
-               > > > > > > > > > > > > > > > > >
+               > > > > > > > > > > > > > > > > > > >
     { };
 
     /// @ingroup fec_stacks
@@ -69,6 +74,8 @@ namespace kodo
     template<class Field>
     class on_the_fly_decoder :
         public // Payload API
+               partial_decoding_tracker<
+               payload_rank_decoder<
                payload_recoder<recoding_stack,
                payload_decoder<
                // Codec Header API
@@ -78,8 +85,8 @@ namespace kodo
                plain_symbol_id_reader<
                // Codec API
                aligned_coefficients_decoder<
-               partial_decoding_tracker<
                linear_block_decoder<
+               rank_info<
                // Coefficient Storage API
                coefficient_storage<
                coefficient_info<
@@ -94,7 +101,7 @@ namespace kodo
                final_coder_factory_pool<
                // Final type
                on_the_fly_decoder<Field>
-               > > > > > > > > > > > > > > > >
+               > > > > > > > > > > > > > > > > > >
     { };
 
 }

@@ -18,41 +18,6 @@
 
 #include <kodo/debug_linear_block_decoder.hpp>
 
-namespace kodo
-{
-        template<class Field>
-    class dbg_on_the_fly_decoder :
-        public // Payload API
-               payload_recoder<recoding_stack,
-               payload_decoder<
-               // Codec Header API
-               systematic_decoder<
-               symbol_id_decoder<
-               // Symbol ID API
-               plain_symbol_id_reader<
-               // Codec API
-               debug_linear_block_decoder<
-               aligned_coefficients_decoder<
-               partial_decoding_tracker<
-               linear_block_decoder<
-               // Coefficient Storage API
-               coefficient_storage<
-               coefficient_info<
-               // Storage API
-               deep_symbol_storage<
-               storage_bytes_used<
-               storage_block_info<
-               // Finite Field API
-               finite_field_math<typename fifi::default_field<Field>::type,
-               finite_field_info<Field,
-               // Factory API
-               final_coder_factory_pool<
-               // Final type
-               dbg_on_the_fly_decoder<Field>
-                   > > > > > > > > > > > > > > > > >
-    { };
-}
-
 TEST(TestIsPartialComplete, check_false)
 {
     typedef fifi::binary field_type;
@@ -83,12 +48,11 @@ TEST(TestIsPartialComplete, check_false)
     }
 }
 
-
 TEST(TestIsPartialComplete, check_true)
 {
     typedef fifi::binary field_type;
     typedef kodo::on_the_fly_encoder<field_type> encoder_type;
-    typedef kodo::dbg_on_the_fly_decoder<field_type> decoder_type;
+    typedef kodo::on_the_fly_decoder<field_type> decoder_type;
 
     uint32_t symbols = 16;
     uint32_t symbol_size = 100;
@@ -119,7 +83,6 @@ TEST(TestIsPartialComplete, check_true)
     auto symbol_sequence = sak::split_storage(
         sak::storage(data_in), symbol_size);
 
-
     while( !decoder->is_complete() )
     {
         encoder->encode( &payload[0] );
@@ -139,14 +102,36 @@ TEST(TestIsPartialComplete, check_true)
 
         // Check that the call works
         bool ok = kodo::is_partial_complete(decoder);
-        (void)ok;
+
+        if(ok)
+        {
+            std::cout << "partial complete" << std::endl;
+
+            // Check that we as many pivot elements as expected and that these
+            // are decoded
+            uint32_t pivot_count = 0;
+            for(uint32_t i = 0; i < decoder->rank(); ++i)
+            {
+                if(!decoder->symbol_pivot(i))
+                    continue;
+
+                ++pivot_count;
+
+                auto symbol_storage =
+                    sak::storage(decoder->symbol(i), decoder->symbol_size());
+
+                EXPECT_TRUE(sak::equal(symbol_storage, symbol_sequence[i]));
+            }
+
+            EXPECT_EQ(pivot_count, decoder->rank());
+
+        }
     }
 
     EXPECT_TRUE(kodo::is_partial_complete(decoder));
 
     std::vector<uint8_t> data_out(decoder->block_size(), '\0');
     decoder->copy_symbols(sak::storage(data_out));
-
 
     EXPECT_TRUE(std::equal(data_out.begin(),
                            data_out.end(),
