@@ -105,8 +105,6 @@ TEST(TestIsPartialComplete, check_true)
 
         if(ok)
         {
-            std::cout << "partial complete" << std::endl;
-
             // Check that we as many pivot elements as expected and that these
             // are decoded
             uint32_t pivot_count = 0;
