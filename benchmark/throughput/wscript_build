@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 bld.program(
-    features = 'cxx',
+    features = 'cxx benchmark',
     source   = ['main.cpp'],
     target   = 'kodo_throughput',
     use = ['kodo_includes', 'fifi_includes', 'sak_includes',
