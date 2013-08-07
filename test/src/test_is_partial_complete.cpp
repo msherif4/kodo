@@ -134,9 +134,6 @@ TEST(TestIsPartialComplete, check_true)
     EXPECT_TRUE(std::equal(data_out.begin(),
                            data_out.end(),
                            data_in.begin()));
-
-
-
 }
 
 

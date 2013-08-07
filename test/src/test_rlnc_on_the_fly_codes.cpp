@@ -69,7 +69,8 @@ TEST(TestOnTheFlyCodes, test_on_the_fly_api)
 /// encoder
 TEST(TestOnTheFlyCodes, test_on_the_fly_systematic_api)
 {
-    test_on_the_fly_systematic<kodo::on_the_fly_encoder, kodo::on_the_fly_decoder>();
+    test_on_the_fly_systematic<kodo::on_the_fly_encoder,
+        kodo::on_the_fly_decoder>();
 }
 
 /// Tests that we can progressively set on symbol at-a-time on

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint>
+#include <sak/convert_endian.hpp>
 
 namespace kodo
 {
@@ -66,9 +67,9 @@ namespace kodo
             SuperCoder::decode(payload + read);
         }
 
-        /// Unpacks the symbol data and symbol header from the payload
-        /// buffer.
-        /// @todo
+        /// Reads the rank of the encoder from the payload buffer
+        /// @param payload The payload buffer
+        /// @return The amount of bytes read
         uint32_t read_rank(uint8_t* payload)
         {
             assert(payload != 0);

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint>
+#include <sak/convert_endian.hpp>
 
 namespace kodo
 {
@@ -67,7 +68,7 @@ namespace kodo
 
             // Write the encoder rank to the payload
             uint32_t written = write_rank(payload);
-            return SuperCoder::encode(payload + written);
+            return SuperCoder::encode(payload + written) + written;
         }
 
         /// Helper function which writes the rank of the encoder into

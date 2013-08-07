@@ -64,6 +64,39 @@ namespace kodo
                > > > > > > > > > > > > > > > > > > >
     { };
 
+    /// Intermediate stack implementing the recoding functionality of a
+    /// RLNC code. As can be seen we are able to reuse a great deal of
+    /// layers from the encode stack. It is important that the symbols
+    /// produced by the recoder are compatible with the decoder. This
+    /// means we have to use compatible Payload, Codec Header Symbol ID
+    /// layers, between the encoder, recoder and decoder.
+    /// The only layer specific to recoding is the recoding_symbol_id
+    /// layer. Finally the recoder uses a proxy_layer which forwards
+    /// any calls not implemented in the recoding stack to the MainStack.
+    template<class MainStack>
+    class on_the_fly_recoding_stack
+        : public // Payload API
+                 payload_rank_encoder<
+                 payload_encoder<
+                 // Codec Header API
+                 non_systematic_encoder<
+                 symbol_id_encoder<
+                 // Symbol ID API
+                 recoding_symbol_id<
+                 // Coefficient Generator API
+                 uniform_generator<
+                 // Codec API
+                 encode_symbol_tracker<
+                 zero_symbol_encoder<
+                 linear_block_encoder<
+                 rank_info<
+                 // Proxy
+                 proxy_layer<
+                 on_the_fly_recoding_stack<MainStack>,
+                 MainStack> > > > > > > > > > >
+    { };
+
+
     /// @ingroup fec_stacks
     /// @brief Implementation of a complete RLNC decoder
     ///
@@ -75,8 +108,8 @@ namespace kodo
     class on_the_fly_decoder :
         public // Payload API
                partial_decoding_tracker<
+               payload_recoder<on_the_fly_recoding_stack,
                payload_rank_decoder<
-               payload_recoder<recoding_stack,
                payload_decoder<
                // Codec Header API
                systematic_decoder<
