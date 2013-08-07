@@ -108,7 +108,7 @@ TEST(TestIsPartialComplete, check_true)
             // Check that we as many pivot elements as expected and that these
             // are decoded
             uint32_t pivot_count = 0;
-            for(uint32_t i = 0; i < decoder->rank(); ++i)
+            for(uint32_t i = 0; i < decoder->symbols(); ++i)
             {
                 if(!decoder->symbol_pivot(i))
                     continue;
