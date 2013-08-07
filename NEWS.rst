@@ -4,7 +4,7 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest
+12.0.0
 ------
 * Major: Changed the partial_decoding_tracker to only provide the
   functionality needed to detect "early" or partial decoding. The
