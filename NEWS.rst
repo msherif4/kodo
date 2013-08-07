@@ -6,7 +6,13 @@ of every change, see the Git log.
 
 Latest
 ------
-* TBD
+* Major: Changed the partial_decoding_tracker to only provide the
+  functionality needed to detect "early" or partial decoding. The
+  monitor functionality has been moved to the largest_nonzero_index_decoder
+  layer.
+* Minor: Added the payload_rank_encoder and payload_rank_decoder layers
+  which will explicitly exchange the rank of the encoder matrix and the
+  decoder matrix to support partial decoding.
 
 11.2.0
 ------
