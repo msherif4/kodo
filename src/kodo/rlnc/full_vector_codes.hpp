@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RLNC_FULL_VECTOR_CODES_HPP
-#define KODO_RLNC_FULL_VECTOR_CODES_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -154,5 +153,4 @@ namespace kodo
 
 }
 
-#endif
 

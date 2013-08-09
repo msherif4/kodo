@@ -10,6 +10,7 @@
 
 #include "basic_api_test_helper.hpp"
 
+
 TEST(TestReedSolomonCodes, test_construct)
 {
 

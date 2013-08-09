@@ -42,7 +42,6 @@ inline void test_reuse_helper(Encoder encoder, Decoder decoder)
 
 }
 
-
 /// Test that instantiates a number of encoders and decoders from
 /// the same factories
 template<class Encoder, class Decoder>
@@ -134,12 +133,28 @@ inline void test_reuse(uint32_t symbols, uint32_t symbol_size)
         >(symbols, symbol_size);
 }
 
+template
+<
+    template <class> class Encoder,
+    template <class> class Decoder
+>
+inline void test_reuse()
+{
+    test_reuse<Encoder, Decoder>(32, 1600);
+    test_reuse<Encoder, Decoder>(32, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_reuse<Encoder, Decoder>(symbols, symbol_size);
+}
+
+
 
 /// Tests that encoders and decoders can be safely reused after incomplete
 /// encoding / decoding.
 template<class Encoder, class Decoder>
-inline void
-invoke_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
+inline void test_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
 {
 
     bool do_complete;
@@ -213,19 +228,19 @@ template
     >
 inline void test_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
 {
-    invoke_reuse_incomplete
+    test_reuse_incomplete
         <
             Encoder<fifi::binary>,
             Decoder<fifi::binary>
         >(symbols, symbol_size);
 
-    invoke_reuse_incomplete
+    test_reuse_incomplete
         <
             Encoder<fifi::binary8>,
             Decoder<fifi::binary8>
         >(symbols, symbol_size);
 
-    invoke_reuse_incomplete
+    test_reuse_incomplete
         <
             Encoder<fifi::binary16>,
             Decoder<fifi::binary16>
@@ -233,6 +248,21 @@ inline void test_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
 }
 
 
+template
+<
+    template <class> class Encoder,
+    template <class> class Decoder
+>
+inline void test_reuse_incomplete()
+{
+    test_reuse_incomplete<Encoder, Decoder>(32, 1600);
+    test_reuse_incomplete<Encoder, Decoder>(1, 1600);
+
+    uint32_t symbols = rand_symbols();
+    uint32_t symbol_size = rand_symbol_size();
+
+    test_reuse_incomplete<Encoder, Decoder>(symbols, symbol_size);
+}
 
 
 

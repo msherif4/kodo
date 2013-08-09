@@ -22,6 +22,10 @@ public:
     /// also provide this typedef.
     typedef seed_type seed_type;
 
+    /// @typedef rank_type
+    /// Specifies the data type used to store the rank
+    typedef rank_type rank_type;
+
     class factory
     {
     public:

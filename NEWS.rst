@@ -4,7 +4,17 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest
+12.0.0
+------
+* Major: Changed the partial_decoding_tracker to only provide the
+  functionality needed to detect "early" or partial decoding. The
+  monitor functionality has been moved to the largest_nonzero_index_decoder
+  layer.
+* Minor: Added the payload_rank_encoder and payload_rank_decoder layers
+  which will explicitly exchange the rank of the encoder matrix and the
+  decoder matrix to support partial decoding.
+
+11.2.0
 ------
 * Minor: Added the partial_decoding_tracker layer which "monitors" the
   coding vectors being passed to a decoder in order to detect early
@@ -12,6 +22,10 @@ Latest
   yet been sent from the encoder, it might happen that we can decode
   anyway. This kind of functionality is useful especially for applications
   which require low delay.
+* Minor: Added on-the-fly encoding and decoding stacks in
+  src/kodo/rlnc/on_he_fly_codes.hpp the on-the-fly stacks have the advantage
+  that they allow encoding and decoding to proceed even without having all
+  encoding symbols available.
 
 11.1.0
 ------

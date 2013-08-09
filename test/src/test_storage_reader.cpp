@@ -76,7 +76,7 @@ TEST(TestStorageReader, test_storage_reader)
                            sak::storage(&data[57], 101U)));
 
     // Try with some random values
-    uint32_t random_offset = rand_nonzero(data_size);
+    uint32_t random_offset = rand_nonzero(data_size - 1);
     uint32_t random_size = rand_nonzero(data_size - random_offset);
 
     reader.read(encoder, random_offset, random_size);
