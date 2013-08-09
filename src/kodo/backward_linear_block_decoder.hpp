@@ -17,7 +17,7 @@
 #include <fifi/is_binary.hpp>
 #include <fifi/fifi_utils.hpp>
 
-#include <kodo/directional_linear_block_decoder.hpp>
+#include <kodo/bidirectional_linear_block_decoder.hpp>
 #include <kodo/backward_linear_block_decoder_policy.hpp>
 
 namespace kodo
@@ -33,7 +33,7 @@ namespace kodo
     /// incoming symbols until the original data has been recreated.
     template<class SuperCoder>
     class backward_linear_block_decoder :
-        public directional_linear_block_decoder
+        public bidirectional_linear_block_decoder
                <backward_linear_block_decoder_policy, SuperCoder>
     { };
 

@@ -498,45 +498,45 @@ BENCHMARK_F(setup_rlnc_throughput2325, FullRLNC, Prime2325, 5)
 }
 
 //------------------------------------------------------------------
-// ForwardFullRLNC
+// BackwardFullRLNC
 //------------------------------------------------------------------
 
 typedef throughput_benchmark<
     kodo::full_rlnc_encoder<fifi::binary>,
-    kodo::forward_full_rlnc_decoder<fifi::binary> >
-    setup_forward_rlnc_throughput;
+    kodo::backward_full_rlnc_decoder<fifi::binary> >
+    setup_backward_rlnc_throughput;
 
-BENCHMARK_F(setup_forward_rlnc_throughput, ForwardFullRLNC, Binary, 5)
+BENCHMARK_F(setup_backward_rlnc_throughput, BackwardFullRLNC, Binary, 5)
 {
     run_benchmark();
 }
 
 typedef throughput_benchmark<
     kodo::full_rlnc_encoder<fifi::binary8>,
-    kodo::forward_full_rlnc_decoder<fifi::binary8> >
-    setup_forward_rlnc_throughput8;
+    kodo::backward_full_rlnc_decoder<fifi::binary8> >
+    setup_backward_rlnc_throughput8;
 
-BENCHMARK_F(setup_forward_rlnc_throughput8, ForwardFullRLNC, Binary8, 5)
+BENCHMARK_F(setup_backward_rlnc_throughput8, BackwardFullRLNC, Binary8, 5)
 {
     run_benchmark();
 }
 
 typedef throughput_benchmark<
     kodo::full_rlnc_encoder<fifi::binary16>,
-    kodo::forward_full_rlnc_decoder<fifi::binary16> >
-    setup_forward_rlnc_throughput16;
+    kodo::backward_full_rlnc_decoder<fifi::binary16> >
+    setup_backward_rlnc_throughput16;
 
-BENCHMARK_F(setup_forward_rlnc_throughput16, ForwardFullRLNC, Binary16, 5)
+BENCHMARK_F(setup_backward_rlnc_throughput16, BackwardFullRLNC, Binary16, 5)
 {
     run_benchmark();
 }
 
 typedef throughput_benchmark<
     kodo::full_rlnc_encoder<fifi::prime2325>,
-    kodo::forward_full_rlnc_decoder<fifi::prime2325> >
-    setup_forward_rlnc_throughput2325;
+    kodo::backward_full_rlnc_decoder<fifi::prime2325> >
+    setup_backward_rlnc_throughput2325;
 
-BENCHMARK_F(setup_forward_rlnc_throughput2325, ForwardFullRLNC, Prime2325, 5)
+BENCHMARK_F(setup_backward_rlnc_throughput2325, BackwardFullRLNC, Prime2325, 5)
 {
     run_benchmark();
 }

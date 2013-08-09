@@ -30,7 +30,7 @@ namespace kodo
     /// coefficients. Using these coefficients the block decoder subtracts
     /// incoming symbols until the original data has been recreated.
     template<class DirectionPolicy, class SuperCoder>
-    class directional_linear_block_decoder : public SuperCoder
+    class bidirectional_linear_block_decoder : public SuperCoder
     {
     public:
 
@@ -48,7 +48,7 @@ namespace kodo
     public:
 
         /// Constructor
-        directional_linear_block_decoder()
+        bidirectional_linear_block_decoder()
             : m_rank(0),
               m_maximum_pivot(0)
         { }
@@ -76,7 +76,8 @@ namespace kodo
 
             // Depending on the policy we either go from 0 to symbols or
             // from symbols to 0.
-            m_maximum_pivot = direction_policy::min(0, the_factory.symbols()-1);
+            m_maximum_pivot =
+                direction_policy::min(0, the_factory.symbols() - 1);
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
