@@ -31,8 +31,9 @@ namespace kodo
     /// coefficients. Using these coefficients the block decoder subtracts
     /// incoming symbols until the original data has been recreated.
     template<class SuperCoder>
-    class linear_block_decoder : public bidirectional_linear_block_decoder<
-        forward_linear_block_decoder_policy, SuperCoder>
+    class forward_linear_block_decoder :
+        public bidirectional_linear_block_decoder<
+            forward_linear_block_decoder_policy, SuperCoder>
     { };
 
 }

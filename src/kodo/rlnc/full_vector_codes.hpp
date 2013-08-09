@@ -36,7 +36,7 @@
 #include "../encode_symbol_tracker.hpp"
 
 #include "../linear_block_encoder.hpp"
-#include "../linear_block_decoder.hpp"
+#include "../forward_linear_block_decoder.hpp"
 #include "../linear_block_decoder_delayed.hpp"
 
 namespace kodo
@@ -133,7 +133,7 @@ namespace kodo
                  plain_symbol_id_reader<
                  // Codec API
                  aligned_coefficients_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<

@@ -33,8 +33,8 @@ namespace kodo
     /// incoming symbols until the original data has been recreated.
     template<class SuperCoder>
     class backward_linear_block_decoder :
-        public bidirectional_linear_block_decoder
-               <backward_linear_block_decoder_policy, SuperCoder>
+        public bidirectional_linear_block_decoder<
+            backward_linear_block_decoder_policy, SuperCoder>
     { };
 
 }

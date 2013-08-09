@@ -9,7 +9,7 @@
 #include "../payload_decoder.hpp"
 #include "../zero_symbol_encoder.hpp"
 #include "../linear_block_encoder.hpp"
-#include "../linear_block_decoder.hpp"
+#include "../forward_linear_block_decoder.hpp"
 #include "../deep_symbol_storage.hpp"
 #include "../final_coder_factory_pool.hpp"
 #include "../finite_field_info.hpp"

@@ -3,13 +3,13 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_linear_block_decoder.cpp Unit tests for the
-///       kodo::linear_block_decoder
+/// @file test_forward_linear_block_decoder.cpp Unit tests for the
+///       kodo::forward_linear_block_decoder
 
 #include <cstdint>
 #include <gtest/gtest.h>
 
-#include <kodo/linear_block_decoder.hpp>
+#include <kodo/forward_linear_block_decoder.hpp>
 #include <kodo/rlnc/full_vector_codes.hpp>
 
 #include <kodo/debug_linear_block_decoder.hpp>
@@ -25,7 +25,7 @@ namespace kodo
                  // Symbol ID API
                  // Codec API
                  debug_linear_block_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<

@@ -20,7 +20,7 @@
 #include <fifi/default_field.hpp>
 
 #include <kodo/rank_callback_decoder.hpp>
-#include <kodo/linear_block_decoder.hpp>
+#include <kodo/forward_linear_block_decoder.hpp>
 #include <kodo/coefficient_storage.hpp>
 #include <kodo/coefficient_info.hpp>
 #include <kodo/finite_field_math.hpp>
@@ -39,7 +39,7 @@ namespace kodo
     class rank_callback_decoder_stack
         : public // Codec API
                  rank_callback_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<

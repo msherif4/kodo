@@ -38,7 +38,7 @@ namespace kodo
                  rank_callback_decoder<
 
                  aligned_coefficients_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<

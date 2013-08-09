@@ -27,7 +27,7 @@ namespace kodo
                  // Symbol ID API
                  // Codec API
                  largest_nonzero_index_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  rank_info<
                  // Coefficient Storage API
                  coefficient_storage<

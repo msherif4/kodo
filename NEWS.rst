@@ -4,6 +4,17 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
+Latest
+------
+* Major: Replaced the linear_block_decoder with the
+  bidirectional_linear_block_decoder layer. The bidirectional linear
+  block decoder layer uses a direction policy to determine whether to
+  perform Gaussian elimination from left-to-right or
+  right-to-left. Certain newer network coding algorithms can be
+  implemented efficiently utilizing this flexibility. Based on the
+  bidirectional layer we have added the forward and backwards linear
+  block decoder.
+
 12.0.0
 ------
 * Major: Changed the partial_decoding_tracker to only provide the
