@@ -72,12 +72,10 @@ inline void test_reuse(uint32_t symbols, uint32_t symbol_size)
 
     }
 
-    return;
-
     // Test with differing symbols and symbol sizes
-    for(uint32_t i = 0; i < 4; ++i)
+    for(uint32_t i = 0; i < 2; ++i)
     {
-        uint32_t coders = rand_nonzero(10);
+        uint32_t coders = rand_nonzero(3);
 
         std::vector<typename Encoder::pointer> encoders;
         std::vector<typename Decoder::pointer> decoders;
@@ -140,7 +138,7 @@ template
 >
 inline void test_reuse()
 {
-    test_reuse<Encoder, Decoder>(32, 1600);
+    test_reuse<Encoder, Decoder>(1, 1600);
     test_reuse<Encoder, Decoder>(32, 1600);
 
     uint32_t symbols = rand_symbols();
@@ -163,7 +161,7 @@ inline void test_reuse_incomplete(uint32_t symbols, uint32_t symbol_size)
     typename Decoder::factory decoder_factory(symbols, symbol_size);
 
     // Use factory a lot of times
-    for (uint32_t i = 0; i < 100; ++i)
+    for (uint32_t i = 0; i < 20; ++i)
     {
         // Build coders
         auto encoder = encoder_factory.build();
@@ -255,8 +253,8 @@ template
 >
 inline void test_reuse_incomplete()
 {
-    test_reuse_incomplete<Encoder, Decoder>(32, 1600);
     test_reuse_incomplete<Encoder, Decoder>(1, 1600);
+    test_reuse_incomplete<Encoder, Decoder>(32, 1600);
 
     uint32_t symbols = rand_symbols();
     uint32_t symbol_size = rand_symbol_size();
