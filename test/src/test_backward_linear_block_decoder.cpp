@@ -68,7 +68,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     // Create a dummy symbol
     std::vector<uint8_t> symbol = random_vector(d->symbol_size());
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 1U);
@@ -79,7 +79,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 0, 1U);
     fifi::set_value<field_type>(coefficients, 6, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 2U);
@@ -93,7 +93,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 2, 1U);
     fifi::set_value<field_type>(coefficients, 6, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 3U);
@@ -108,7 +108,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 2, 1U);
     fifi::set_value<field_type>(coefficients, 6, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 3U);
@@ -125,7 +125,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 4, 1U);
     fifi::set_value<field_type>(coefficients, 5, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 4U);
@@ -140,7 +140,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 0, 1U);
     fifi::set_value<field_type>(coefficients, 5, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 5U);
@@ -155,7 +155,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 0, 1U);
     fifi::set_value<field_type>(coefficients, 3, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 6U);
@@ -172,7 +172,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     fifi::set_value<field_type>(coefficients, 4, 1U);
     fifi::set_value<field_type>(coefficients, 7, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 7U);
@@ -188,7 +188,7 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     coefficients[0] = 0;
     fifi::set_value<field_type>(coefficients, 0, 1U);
 
-    // d->decode_symbol(&symbol[0], coefficients);
+    d->decode_symbol(&symbol[0], coefficients);
     // d->print_decoder_state(std::cout);
 
     EXPECT_EQ(d->rank(), 8U);

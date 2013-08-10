@@ -51,9 +51,9 @@ inline void test_reuse(uint32_t symbols, uint32_t symbol_size)
     typename Encoder::factory encoder_factory(symbols, symbol_size);
     typename Decoder::factory decoder_factory(symbols, symbol_size);
 
-    for(uint32_t i = 0; i < 4; ++i)
+    for(uint32_t i = 0; i < 3; ++i)
     {
-        uint32_t coders = rand_nonzero(10);
+        uint32_t coders = rand_nonzero(5);
 
         std::vector<typename Encoder::pointer> encoders;
         std::vector<typename Decoder::pointer> decoders;

@@ -25,7 +25,7 @@ inline void test_initialize(uint32_t symbols, uint32_t symbol_size)
     auto decoder = decoder_factory.build();
 
 
-    for(uint32_t i = 0; i < 10; ++i)
+    for(uint32_t i = 0; i < 3; ++i)
     {
         encoder->initialize(encoder_factory);
         decoder->initialize(decoder_factory);
