@@ -44,15 +44,40 @@ namespace kodo
                      > > > > > > > > > >
     { };
 
+    template<class Field>
+    class test_backward_delayed_stack
+        : public // Payload API
+                 // Codec Header API
+                 // Symbol ID API
+                 // Codec API
+                 debug_linear_block_decoder<
+                 linear_block_decoder_delayed<
+                 backward_linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 test_backward_stack<Field>
+                     > > > > > > > > > > >
+    { };
+
 }
 
-
-/// Run the tests typical coefficients stack
-TEST(TestBackwardLinearBlockDecoder, test_decoder)
+template<template <class> class Stack>
+void test_backward_stack()
 {
     typedef fifi::binary field_type;
 
-    kodo::test_backward_stack<field_type>::factory f(8, 1600);
+    typename Stack<field_type>::factory f(8, 1600);
 
     auto d = f.build();
 
@@ -201,6 +226,19 @@ TEST(TestBackwardLinearBlockDecoder, test_decoder)
     EXPECT_TRUE(d->symbol_pivot(1));
     EXPECT_TRUE(d->symbol_pivot(0));
 
+}
+
+
+/// Run the tests typical coefficients stack
+TEST(TestBackwardLinearBlockDecoder, test_decoder)
+{
+    test_backward_stack<kodo::test_backward_stack>();
+}
+
+/// Run the tests typical coefficients stack
+TEST(TestBackwardLinearBlockDecoder, test_decoder_delayed)
+{
+    test_backward_stack<kodo::test_backward_delayed_stack>();
 }
 
 

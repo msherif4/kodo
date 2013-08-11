@@ -17,8 +17,8 @@ TEST(TestBackwardLinearBlockDecoderPolicy, test_functions)
 {
 
     {
-        EXPECT_EQ(kodo::backward_linear_block_decoder_policy::max(1,2), 1);
-        EXPECT_EQ(kodo::backward_linear_block_decoder_policy::min(1,2), 2);
+        EXPECT_EQ(kodo::backward_linear_block_decoder_policy::max(1,2), 1U);
+        EXPECT_EQ(kodo::backward_linear_block_decoder_policy::min(1,2), 2U);
 
         uint32_t start = kodo::backward_linear_block_decoder_policy::min(0,5);
         uint32_t stop = kodo::backward_linear_block_decoder_policy::max(0,5);

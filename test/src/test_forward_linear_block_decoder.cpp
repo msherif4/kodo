@@ -19,7 +19,7 @@
 namespace kodo
 {
     template<class Field>
-    class test_linear_stack
+    class test_forward_stack
         : public // Payload API
                  // Codec Header API
                  // Symbol ID API
@@ -39,19 +39,44 @@ namespace kodo
                  // Factory API
                  final_coder_factory_pool<
                  // Final type
-                 test_linear_stack<Field>
+                 test_forward_stack<Field>
                      > > > > > > > > > >
+    { };
+
+    template<class Field>
+    class test_forward_delayed_stack
+        : public // Payload API
+                 // Codec Header API
+                 // Symbol ID API
+                 // Codec API
+                 debug_linear_block_decoder<
+                 linear_block_decoder_delayed<
+                 forward_linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 test_forward_delayed_stack<Field>
+                     > > > > > > > > > > >
     { };
 
 }
 
-
-/// Run the tests typical coefficients stack
-TEST(TestLinearBlockDecoder, test_decoder)
+template<template <class> class Stack>
+void test_forward_stack()
 {
     typedef fifi::binary field_type;
 
-    kodo::test_linear_stack<field_type>::factory f(5, 1600);
+    typename Stack<field_type>::factory f(5, 1600);
 
     auto d = f.build();
 
@@ -185,6 +210,17 @@ TEST(TestLinearBlockDecoder, test_decoder)
 
     EXPECT_TRUE(d->is_complete());
 
+}
+
+/// Run the tests typical coefficients stack
+TEST(TestLinearBlockDecoder, test_decoder)
+{
+    test_forward_stack<kodo::test_forward_stack>();
+}
+
+TEST(TestLinearBlockDecoder, test_decoder_delayed)
+{
+    test_forward_stack<kodo::test_forward_delayed_stack>();
 }
 
 

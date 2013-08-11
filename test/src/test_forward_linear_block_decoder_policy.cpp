@@ -17,7 +17,13 @@ TEST(TestForwardLinearBlockDecoderPolicy, test_functions)
 {
 
     {
-        kodo::forward_linear_block_decoder_policy policy(0, 5);
+        EXPECT_EQ(kodo::forward_linear_block_decoder_policy::max(1,2), 2U);
+        EXPECT_EQ(kodo::forward_linear_block_decoder_policy::min(1,2), 1U);
+
+        uint32_t start = kodo::forward_linear_block_decoder_policy::min(0,5);
+        uint32_t stop = kodo::forward_linear_block_decoder_policy::max(0,5);
+
+        kodo::forward_linear_block_decoder_policy policy(start, stop);
         EXPECT_EQ(policy.at_end(), false);
         EXPECT_EQ(policy.index(), 0U);
         policy.advance();
@@ -44,8 +50,6 @@ TEST(TestForwardLinearBlockDecoderPolicy, test_functions)
 
         EXPECT_EQ(policy.at_end(), true);
 
-        EXPECT_EQ(kodo::forward_linear_block_decoder_policy::max(1,2), 2);
-        EXPECT_EQ(kodo::forward_linear_block_decoder_policy::min(1,2), 1);
     }
 }
 
