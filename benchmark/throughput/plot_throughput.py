@@ -54,7 +54,8 @@ def plot_throughput(args):
         df['mean'].plot(title="Throughput {} {} p={}B".format(
             test, type, symbol_size), kind='bar')
 
-        pdf.savefig(transparent=True)
+        if args.outfile:
+            pdf.savefig(transparent=True)
 
     if args.outfile:
         pdf.close()
