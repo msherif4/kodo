@@ -51,7 +51,8 @@ namespace kodo
 
         /// Constructor
         coefficient_info()
-            : m_coefficients_length(0),
+            : m_coeffcients_count(0),
+              m_coefficients_length(0),
               m_coefficients_size(0)
         { }
 
@@ -60,6 +61,8 @@ namespace kodo
         void initialize(Factory& the_factory)
         {
             SuperCoder::initialize(the_factory);
+
+            m_coeffcients_count = the_factory.symbols();
 
             m_coefficients_length =
                 fifi::elements_to_length<field_type>(the_factory.symbols());
@@ -85,7 +88,19 @@ namespace kodo
             return m_coefficients_size;
         }
 
+        /// @copydoc layer::coefficients_count() const
+        uint32_t coefficients_count() const
+        {
+            // We will typically have a single coefficient per coding symbol
+            // however in some cases this is not the case. In those cases
+            // we this value may be updated.
+            return m_coeffcients_count;
+        }
+
     private:
+
+        /// The coefficients count
+        uint32_t m_coeffcients_count;
 
         /// The length of coefficients in value_type elements
         uint32_t m_coefficients_length;

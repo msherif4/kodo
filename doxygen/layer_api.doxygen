@@ -325,6 +325,13 @@ public:
     uint32_t coefficients_length() const;
 
     /// @ingroup coefficient_storage_api
+    /// @return The number of coefficients stored in a coefficient vector. The
+    ///         count will say how many finite field elements will be stored
+    ///         within a coefficient vector, whereas the size and length refers
+    ///         to the space (in terms of memory) occupied by those coefficients.
+    uint32_t coefficients_count() const;
+
+    /// @ingroup coefficient_storage_api
     /// @param index the index in the vector
     /// @return the specified vector
     value_type* coefficients_value(uint32_t index);
