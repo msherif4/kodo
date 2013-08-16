@@ -4,8 +4,19 @@ Kodo Dependencies
 .. _sourcecode:
 
 
+
+Obtain a license for KODO
+-------------------------
+
+Before you download or use KODO **you MUST obtain a valid license**. 
+This can be done by filling out the license request form_.
+
+.. _form: http://steinwurf.com/license/
+
+
 Download the Kodo sourcecode
 ----------------------------
+
 There are several ways in which you may get the Kodo library and its
 dependencies. Which approach you prefer might depend on your intended
 use-case for Kodo.
