@@ -51,7 +51,7 @@ namespace kodo
 
         /// Constructor
         coefficient_info()
-            : m_coeffcients_count(0),
+            : m_coeffcients_elements(0),
               m_coefficients_length(0),
               m_coefficients_size(0)
         { }
@@ -62,7 +62,7 @@ namespace kodo
         {
             SuperCoder::initialize(the_factory);
 
-            m_coeffcients_count = the_factory.symbols();
+            m_coeffcients_elements = the_factory.symbols();
 
             m_coefficients_length =
                 fifi::elements_to_length<field_type>(the_factory.symbols());
@@ -72,6 +72,15 @@ namespace kodo
 
             assert(m_coefficients_length > 0);
             assert(m_coefficients_size > 0);
+        }
+
+        /// @copydoc layer::coefficients_elements() const
+        uint32_t coefficients_elements() const
+        {
+            // We will typically have a single coefficient per coding symbol
+            // however in some cases this is not the case. In those cases
+            // we this value may be updated.
+            return m_coeffcients_elements;
         }
 
         /// @copydoc layer::coefficients_length() const
@@ -88,19 +97,10 @@ namespace kodo
             return m_coefficients_size;
         }
 
-        /// @copydoc layer::coefficients_count() const
-        uint32_t coefficients_count() const
-        {
-            // We will typically have a single coefficient per coding symbol
-            // however in some cases this is not the case. In those cases
-            // we this value may be updated.
-            return m_coeffcients_count;
-        }
-
     private:
 
-        /// The coefficients count
-        uint32_t m_coeffcients_count;
+        /// The number of useful finite field elements in the coefficients
+        uint32_t m_coeffcients_elements;
 
         /// The length of coefficients in value_type elements
         uint32_t m_coefficients_length;
