@@ -1,7 +1,7 @@
 License
 -------
 
-To obtain a valid license **you must fil out the license request** form_.
+To obtain a valid Kodo license **you must fil out the license request** form_.
 
 Kodo is available under a research and educational friendly licensee, see the details in the LICENSE.rst file.
 
