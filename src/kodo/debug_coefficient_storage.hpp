@@ -35,6 +35,12 @@ namespace kodo
         /// @param out The output stream to print to
         void print_coefficients_value(std::ostream& out)
         {
+            out << "\t";
+            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+            {
+                out << i << "\t";
+            }
+            out << "\n";
             for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
             {
                 print_coefficients_value(out, i);
@@ -46,7 +52,7 @@ namespace kodo
         /// @param index The index of the coefficients vector to print
         void print_coefficients_value(std::ostream& out, uint32_t index)
         {
-            out << index << ": ";
+            out << index << ":\t";
 
             const value_type* c = SuperCoder::coefficients_value(index);
 
@@ -57,7 +63,7 @@ namespace kodo
                 static_assert(sizeof(uint32_t) >= sizeof(value_type),
                               "value_type will overflow in this print");
 
-                out << (uint32_t) value << " ";
+                out << (uint32_t) value << "\t";
             }
 
             out << std::endl;
