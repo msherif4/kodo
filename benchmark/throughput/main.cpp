@@ -341,7 +341,7 @@ public:
     typedef throughput_benchmark<Encoder,Decoder> Super;
 
     /// We need access to the encoder built to adjust the number of
-    /// non-zero symbols
+    /// nonzero symbols
     using Super::m_encoder;
 
 public:
@@ -456,7 +456,7 @@ BENCHMARK_OPTION(throughput_nonzero_symbols_options)
     options.add_options()
         ("nonzero_symbols",
          default_nonzero_symbols,
-         "Set the number of non-zero symbols of the sparse codes");
+         "Set the number of nonzero symbols of the sparse codes");
 
     gauge::runner::instance().register_options(options);
 }

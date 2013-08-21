@@ -131,8 +131,8 @@ namespace kodo
             m_bernoulli = boost::random::bernoulli_distribution<>(density);
         }
 
-        /// Set the number of non-zero symbols
-        /// @param symbols the number of non-zero symbols
+        /// Set the number of nonzero symbols
+        /// @param symbols the number of nonzero symbols
         void set_nonzero_symbols(uint32_t symbols)
         {
             // If binary, check that symbols are less than
