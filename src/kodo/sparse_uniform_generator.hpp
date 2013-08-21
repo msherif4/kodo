@@ -146,7 +146,7 @@ namespace kodo
                 symbols <= SuperCoder::symbols());
 
             assert(symbols > 0);
-            double new_density = ((double)symbols)/SuperCoder::symbols();
+            double new_density = (double)symbols/SuperCoder::symbols();
             set_density(new_density);
         }
 

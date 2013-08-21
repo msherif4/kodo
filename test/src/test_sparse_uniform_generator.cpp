@@ -5,11 +5,8 @@
 
 /// @file test_sparse_uniform_generator.hpp Unit tests for the sparse uniform
 ///       coefficient generators
-#include <iomanip>
-#include <cmath>
 
 #include <fifi/is_binary.hpp>
-
 #include "coefficient_generator_helper.hpp"
 
 namespace kodo
@@ -108,17 +105,16 @@ struct api_density
         {
             if (symbols > 1)
             {
-                coder->set_nonzero_symbols(std::ceil(symbols/2.0));
-                EXPECT_EQ(1.0, round(coder->get_density()+0.49));
+                uint32_t nonzero_symbols = std::ceil(symbols/2.0);
+                coder->set_nonzero_symbols(nonzero_symbols);
+                EXPECT_EQ((double)nonzero_symbols/symbols, coder->get_density());
             }
         }
         else
         {
-            coder->set_nonzero_symbols(std::ceil(symbols/2.0));
-            std::cout << std::ceil(symbols/2.0) << ":";
-            std::cout << symbols << ":";
-            std::cout << coder->get_density() << std::endl;
-            EXPECT_EQ(1.0, round(coder->get_density()+0.49));
+            uint32_t nonzero_symbols = std::ceil(symbols/2.0);
+            coder->set_nonzero_symbols(nonzero_symbols);
+            EXPECT_EQ((double)nonzero_symbols/symbols, coder->get_density());
 
             coder->set_nonzero_symbols(symbols);
             EXPECT_EQ(1.0, coder->get_density());
@@ -153,8 +149,6 @@ private:
     factory_type m_factory;
 
 };
-
-
 
 /// Run the tests typical coefficients stack
 TEST(TestCoefficientGenerator, sparse_uniform_generator_stack)
