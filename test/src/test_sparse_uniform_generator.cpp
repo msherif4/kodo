@@ -6,7 +6,10 @@
 /// @file test_sparse_uniform_generator.hpp Unit tests for the sparse uniform
 ///       coefficient generators
 #include <iomanip>
+#include <cmath>
+
 #include <fifi/is_binary.hpp>
+
 #include "coefficient_generator_helper.hpp"
 
 namespace kodo
