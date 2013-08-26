@@ -4,7 +4,7 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest
+13.0.0
 ------
 * Major: Replaced the linear_block_decoder with the
   bidirectional_linear_block_decoder layer. The bidirectional linear
