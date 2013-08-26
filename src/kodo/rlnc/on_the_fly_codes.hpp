@@ -96,7 +96,6 @@ namespace kodo
                  MainStack> > > > > > > > > > >
     { };
 
-
     /// @ingroup fec_stacks
     /// @brief Implementation of a complete RLNC decoder
     ///
@@ -135,6 +134,49 @@ namespace kodo
                // Final type
                on_the_fly_decoder<Field>
                > > > > > > > > > > > > > > > > > >
+    { };
+
+    /// @ingroup fec_stacks
+    /// @brief Implementation of a complete RLNC decoder
+    ///
+    /// This configuration adds the following features (including those
+    /// described for the encoder):
+    /// - Recoding using the recoding_stack
+    /// - Linear block decoder using Gauss-Jordan elimination.
+    template<class Field>
+    class debug_on_the_fly_decoder :
+        public // Payload API
+               partial_decoding_tracker<
+               payload_recoder<on_the_fly_recoding_stack,
+               payload_rank_decoder<
+               payload_decoder<
+               // Codec Header API
+               systematic_decoder<
+               symbol_id_decoder<
+               // Symbol ID API
+               plain_symbol_id_reader<
+               // Codec API
+               aligned_coefficients_decoder<
+               debug_linear_block_decoder<  // <-- Debug layer
+               debug_cached_symbol_decoder< // <-- Debug layer
+               cached_symbol_decoder<       // <-- Access to decoding symbols
+               forward_linear_block_decoder<
+               rank_info<
+               // Coefficient Storage API
+               coefficient_storage<
+               coefficient_info<
+               // Storage API
+               deep_symbol_storage<
+               storage_bytes_used<
+               storage_block_info<
+               // Finite Field API
+               finite_field_math<typename fifi::default_field<Field>::type,
+               finite_field_info<Field,
+               // Factory API
+               final_coder_factory_pool<
+               // Final type
+               debug_on_the_fly_decoder<Field>
+               > > > > > > > > > > > > > > > > > > > > >
     { };
 
 }
