@@ -82,7 +82,7 @@ namespace kodo
                     out << std::setfill(' ') << std::setw(3) << i << " U:  ";
                 }
 
-                const value_type* c = SuperCoder::coefficients(i);
+                const value_type* c = SuperCoder::coefficients_value(i);
 
                 for(uint32_t j = 0; j < SuperCoder::symbols(); ++j)
                 {
