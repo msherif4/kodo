@@ -6,6 +6,7 @@
 /// @file test_sparse_uniform_generator.hpp Unit tests for the sparse uniform
 ///       coefficient generators
 
+#include <fifi/is_binary.hpp>
 #include "coefficient_generator_helper.hpp"
 
 namespace kodo
@@ -59,7 +60,7 @@ struct api_density
 
     void run()
     {
-        // We invoke the test three times to ensure that if the
+        // We invoke the test multiple times to ensure that if the
         // factory recycles the objects they are safe to reuse
         run_once(m_factory.max_symbols(),
                  m_factory.max_symbol_size());
@@ -74,6 +75,11 @@ struct api_density
             rand_symbol_size(m_factory.max_symbol_size());
 
         run_once(symbols, symbol_size);
+
+        // Test lower bounds
+        run_once(1, symbol_size);
+        run_once(symbols, 4);
+        run_once(1, 4);
     }
 
     void run_once(uint32_t symbols, uint32_t symbol_size)
@@ -94,9 +100,31 @@ struct api_density
 
         std::vector<uint8_t> vector_d =
             random_vector(coder->coefficients_size());
+        
+        if (fifi::is_binary<field_type>::value)
+        {
+            if (symbols > 1)
+            {
+                uint32_t nonzero_symbols = std::ceil(symbols/2.0);
+                coder->set_nonzero_symbols(nonzero_symbols);
+                EXPECT_EQ((double)nonzero_symbols/symbols, coder->get_density());
+            }
+        }
+        else
+        {
+            uint32_t nonzero_symbols = std::ceil(symbols/2.0);
+            coder->set_nonzero_symbols(nonzero_symbols);
+            EXPECT_EQ((double)nonzero_symbols/symbols, coder->get_density());
+
+            coder->set_nonzero_symbols(symbols);
+            EXPECT_EQ(1.0, coder->get_density());
+
+            coder->set_density(1.0);
+            EXPECT_EQ(1.0, coder->get_density());
+        } 
 
         coder->set_density(0.01);
-        EXPECT_EQ(coder->get_density(), 0.01);
+        EXPECT_EQ(0.01, coder->get_density());
 
         coder->seed(0);
         coder->generate(&vector_a[0]);
@@ -110,8 +138,7 @@ struct api_density
         EXPECT_TRUE(sak::equal(storage_a,storage_b));
 
         coder->seed(0);
-        coder->set_density(1.0);
-        EXPECT_EQ(coder->get_density(), 1.0);
+
         coder->generate(&vector_c[0]);
         coder->generate(&vector_d[0]);
     }
@@ -122,8 +149,6 @@ private:
     factory_type m_factory;
 
 };
-
-
 
 /// Run the tests typical coefficients stack
 TEST(TestCoefficientGenerator, sparse_uniform_generator_stack)
