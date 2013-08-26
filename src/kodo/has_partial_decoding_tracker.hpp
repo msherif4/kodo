@@ -10,6 +10,7 @@
 namespace kodo
 {
 
+    /// @ingroup type_traits
     /// Type trait helper allows compile time detection of whether an
     /// encoder / decoder contains the partial_decoding_tracker
     ///

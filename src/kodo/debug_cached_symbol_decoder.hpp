@@ -22,8 +22,8 @@ namespace kodo
     /// @brief This layer makes it easy to print the incoming coded symbol
     ///        and coding coefficients
     ///
-    /// The debug layer supports printing both the coded symbol data through the
-    /// print_cached_symbol_data() and the coding coefficients through the
+    /// The debug layer supports printing both the coded symbol data through
+    /// the print_cached_symbol_data() and the coding coefficients through the
     /// print_cached_symbol_coefficients().
     ///
     /// For the print_cached_symbol_data() function the output will be the

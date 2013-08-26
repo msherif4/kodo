@@ -5,33 +5,37 @@
 
 #pragma once
 
-#include "debug_linear_block_decoder.hpp"
+#include <iostream>
+#include "debug_cached_symbol_decoder.hpp"
 
 namespace kodo
 {
 
     /// @ingroup type_traits
     /// Type trait helper allows compile time detection of whether a
-    /// decoder contains the debug_linear_block_decoder
+    /// decoder has the layer::print_cached_symbol_data(std::ostream&)
     ///
     /// Example:
     ///
     /// typedef kodo::full_rlnc8_decoder decoder_t;
     ///
-    /// if(kodo::has_debug_linear_block_decoder<decoder_t>::value)
+    /// if(kodo::has_print_cached_symbol_data<decoder_t>::value)
     /// {
     ///     // Do something here
     /// }
     ///
     template<class T>
-    struct has_debug_linear_block_decoder
+    struct has_print_cached_symbol_data
     {
         template<class U>
-        static uint8_t test(const kodo::debug_linear_block_decoder<U> *);
+        static uint8_t test(
+            U* data, std::ostream* out = 0,
+            typename std::enable_if<std::is_void<decltype(
+                data->print_cached_symbol_data(*out))>::value>::type* v = 0);
 
         static uint32_t test(...);
 
-        static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
+        static const bool value = sizeof(test((T*)0)) == 1;
     };
 
 }

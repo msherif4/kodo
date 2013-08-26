@@ -3,8 +3,8 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-/// @file test_has_partial_decoding_tracker.cpp Unit tests for the
-///       has_partial_decoding_tracker class
+/// @file test_print_decoder_state.cpp Unit tests for the
+///       print_decoder_state generic functions
 
 #include <cstdint>
 #include <sstream>

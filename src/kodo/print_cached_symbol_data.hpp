@@ -7,8 +7,7 @@
 
 #include <iostream>
 
-#include "debug_linear_block_decoder.hpp"
-#include "has_debug_linear_block_decoder.hpp"
+#include "has_print_cached_symbol_data.hpp"
 
 namespace kodo
 {
@@ -19,36 +18,36 @@ namespace kodo
     /// @param t The stack to query
     /// @param out The output stream where we will write the debug info
     template<class T>
-    inline void print_decoder_state(const T& t, std::ostream& out)
+    inline void print_cached_symbol_data(const T& t, std::ostream& out)
     {
-        print_decoder_state<has_debug_linear_block_decoder<T>::value>(t,out);
+        print_cached_symbol_data<has_print_cached_symbol_data<T>::value>(t,out);
     }
 
     /// @ingroup generic_api
-    /// @copydoc print_decoder_state(const T&, std::ostream&)
+    /// @copydoc print_cached_symbol_data(const T&, std::ostream&)
     template<class T>
-    inline void print_decoder_state(const boost::shared_ptr<T>& t,
+    inline void print_cached_symbol_data(const boost::shared_ptr<T>& t,
                                     std::ostream& out)
     {
-        print_decoder_state(*t, out);
+        print_cached_symbol_data(*t, out);
     }
 
     /// @ingroup generic_api
-    /// @copydoc print_decoder_state(const T&)
+    /// @copydoc print_cached_symbol_data(const T&)
     template<bool what, class T>
-    inline void print_decoder_state(const T& t, std::ostream& out,
-                                    char (*)[what] = 0)
+    inline void print_cached_symbol_data(const T& t, std::ostream& out,
+                                         char (*)[what] = 0)
     {
         // Explanation for the char (*)[what] here:
         // http://stackoverflow.com/a/6917354/1717320
-        t.print_decoder_state(out);
+        t.print_cached_symbol_data(out);
     }
 
     /// @ingroup generic_api
-    /// @copydoc print_decoder_state(const T&)
+    /// @copydoc print_cached_symbol_data(const T&)
     template<bool what, class T>
-    inline void print_decoder_state(const T& t, std::ostream& out,
-                                    char (*)[!what] = 0)
+    inline void print_cached_symbol_data(const T& t, std::ostream& out,
+                                         char (*)[!what] = 0)
     {
         (void) t;
         (void) out;

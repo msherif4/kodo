@@ -14,7 +14,11 @@ Latest
   implemented efficiently utilizing this flexibility. Based on the
   bidirectional layer we have added the forward and backwards linear
   block decoder.
-* Minor: Added support for specifying the number of nonzero symbols.
+* Minor: Added support for specifying the number of nonzero symbols in the
+  sparse codes (this extends the API which previously only supported a
+  fraction of nonzero symbols to be specified).
+* Minor: Added generic functions for printing debug information from codec
+  stacks where this functionality is supported.
 
 12.0.0
 ------
