@@ -14,8 +14,6 @@
 #include <kodo/rlnc/full_vector_codes.hpp>
 #include <kodo/rlnc/on_the_fly_codes.hpp>
 
-#include <kodo/has.hpp>
-
 TEST(TestHasPrintCachedSymbolData, detect)
 {
     EXPECT_FALSE(kodo::has_print_cached_symbol_data<
@@ -53,17 +51,6 @@ TEST(TestHasPrintCachedSymbolData, detect)
 
     EXPECT_TRUE(kodo::has_print_cached_symbol_data<
                     kodo::debug_full_rlnc_decoder<fifi::binary8> >::value);
-
-    std::cout << "OK: " << kodo::dummy_has_print_decoder_state<kodo::debug_full_rlnc_decoder<fifi::binary8> >::value << std::endl;
-
-    std::cout << "OK: " << kodo::dummy_has_print_decoder_state<kodo::full_rlnc_decoder<fifi::binary8> >::value << std::endl;
-
-
-    // EXPECT_TRUE(kodo::dummy_has_print_decoder_state<
-    //                 kodo::debug_full_rlnc_decoder<fifi::binary8>,
-    //                 const std::ostream& >::value);
-
-
 
 }
 
