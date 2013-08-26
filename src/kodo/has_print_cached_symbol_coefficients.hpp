@@ -25,7 +25,7 @@ namespace kodo
     /// }
     ///
     template<typename T>
-    class has_print_cached_symbol_data
+    class has_print_cached_symbol_coefficients
     {
         class yes { char m; };
         class no { yes m[2]; };
