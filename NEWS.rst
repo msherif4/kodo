@@ -14,6 +14,7 @@ Latest
   implemented efficiently utilizing this flexibility. Based on the
   bidirectional layer we have added the forward and backwards linear
   block decoder.
+* Minor: Added support for specifying the number of nonzero symbols.
 
 12.0.0
 ------
