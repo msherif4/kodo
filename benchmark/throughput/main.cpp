@@ -386,7 +386,7 @@ public:
 
         gauge::config_set cs = Super::get_current_configuration();
 
-        uint32_t symbols = cs.get_value<double>("nonzero_symbols");
+        uint32_t symbols = cs.get_value<uint32_t>("nonzero_symbols");
         m_encoder->set_nonzero_symbols(symbols);
     }
 
