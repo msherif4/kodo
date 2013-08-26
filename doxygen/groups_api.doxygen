@@ -261,3 +261,22 @@
 /// @ingroup block_partitioning
 /// @brief Implementations of the BlockPartitioning type.
 
+//------------------------------------------------------------------
+// TYPE TRAITS
+//------------------------------------------------------------------
+
+/// @defgroup type_traits Type traits for generic programming
+/// @brief The type traits are useful for compile time enabling or
+///        disabling a specific code paths
+
+//------------------------------------------------------------------
+// GENERIC API
+//------------------------------------------------------------------
+
+/// @defgroup generic_api Generic API functions
+/// @brief The generic API functions are functions that makes it easier to
+///        build programs that compile time can enable or disable call to
+///        various functions.
+
+
+

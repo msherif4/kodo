@@ -11,6 +11,7 @@
 namespace kodo
 {
 
+    /// @ingroup generic_api
     /// Generic function overload for cases where is_partial_complete is part
     /// of a stack. @see partial_decoding_tracker::is_partial_complete() const
     /// @param t The stack to query
@@ -20,6 +21,7 @@ namespace kodo
         return is_partial_complete<has_partial_decoding_tracker<T>::value>(t);
     }
 
+    /// @ingroup generic_api
     /// @copydoc is_partial_complete(const T&)
     template<class T>
     inline bool is_partial_complete(const boost::shared_ptr<T>& t)
@@ -27,6 +29,7 @@ namespace kodo
         return is_partial_complete(*t);
     }
 
+    /// @ingroup generic_api
     /// @copydoc is_partial_complete(const T&)
     template<bool what, class T>
     inline bool is_partial_complete(const T& t, char (*)[what] = 0)
@@ -36,6 +39,7 @@ namespace kodo
         return t.is_partial_complete();
     }
 
+    /// @ingroup generic_api
     /// @copydoc is_partial_complete(const T&)
     template<bool what, class T>
     inline bool is_partial_complete(const T& t, char (*)[!what] = 0)

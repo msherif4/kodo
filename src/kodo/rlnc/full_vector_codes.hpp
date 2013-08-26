@@ -34,6 +34,9 @@
 #include "../proxy_layer.hpp"
 #include "../storage_aware_encoder.hpp"
 #include "../encode_symbol_tracker.hpp"
+#include "../cached_symbol_decoder.hpp"
+#include "../debug_cached_symbol_decoder.hpp"
+#include "../debug_linear_block_decoder.hpp"
 
 #include "../linear_block_encoder.hpp"
 #include "../forward_linear_block_decoder.hpp"
@@ -149,6 +152,44 @@ namespace kodo
                  // Final type
                  full_rlnc_decoder<Field>
                      > > > > > > > > > > > > > > >
+    { };
+
+    /// @ingroup fec_stacks
+    /// @brief Implementation of a full_rlnc_decoder, but with the debug
+    ///        layers added.
+    ///
+    /// @copydoc full_rlnc_decoder
+    template<class Field>
+    class debug_full_rlnc_decoder
+        : public // Payload API
+                 payload_recoder<recoding_stack,
+                 payload_decoder<
+                 // Codec Header API
+                 systematic_decoder<
+                 symbol_id_decoder<
+                 // Symbol ID API
+                 plain_symbol_id_reader<
+                 // Codec API
+                 aligned_coefficients_decoder<
+                 debug_linear_block_decoder<  // <-- Debug layer
+                 debug_cached_symbol_decoder< // <-- Debug layer
+                 cached_symbol_decoder<       // <-- Access to decoding symbols
+                 forward_linear_block_decoder<
+                 // Coefficient Storage API
+                 coefficient_storage<
+                 coefficient_info<
+                 // Storage API
+                 deep_symbol_storage<
+                 storage_bytes_used<
+                 storage_block_info<
+                 // Finite Field API
+                 finite_field_math<typename fifi::default_field<Field>::type,
+                 finite_field_info<Field,
+                 // Factory API
+                 final_coder_factory_pool<
+                 // Final type
+                 debug_full_rlnc_decoder<Field>
+                     > > > > > > > > > > > > > > > > > >
     { };
 
 }

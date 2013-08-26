@@ -90,10 +90,9 @@ namespace kodo
                     out << (uint32_t)value << " ";
                 }
 
-                std::cout << std::endl;
+                out << std::endl;
             }
 
-            std::cout << std::endl;
         }
 
     };
