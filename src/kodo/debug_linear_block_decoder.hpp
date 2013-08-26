@@ -71,15 +71,15 @@ namespace kodo
             {
                 if (!SuperCoder::symbol_pivot(i))
                 {
-                    out << std::setw(3) << i << " ?:  ";
+                    out << std::setfill(' ') << std::setw(3) << i << " ?:  ";
                 }
                 else if (SuperCoder::symbol_coded(i))
                 {
-                    out << std::setw(3) << i << " C:  ";
+                    out << std::setfill(' ') << std::setw(3) << i << " C:  ";
                 }
                 else
                 {
-                    out << std::setw(3) << i << " U:  ";
+                    out << std::setfill(' ') << std::setw(3) << i << " U:  ";
                 }
 
                 const value_type* c = SuperCoder::coefficients(i);
