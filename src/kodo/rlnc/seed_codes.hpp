@@ -3,8 +3,7 @@
 // See accompanying file LICENSE.rst or
 // http://www.steinwurf.com/licensing
 
-#ifndef KODO_RLNC_SEED_CODES_HPP
-#define KODO_RLNC_SEED_CODES_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -38,7 +37,7 @@
 #include "../encode_symbol_tracker.hpp"
 
 #include "../linear_block_encoder.hpp"
-#include "../linear_block_decoder.hpp"
+#include "../forward_linear_block_decoder.hpp"
 
 namespace kodo
 {
@@ -105,7 +104,7 @@ namespace kodo
                  uniform_generator<
                  // Codec API
                  aligned_coefficients_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<
@@ -125,5 +124,4 @@ namespace kodo
 
 }
 
-#endif
 

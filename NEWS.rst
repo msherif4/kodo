@@ -4,7 +4,46 @@ News for Kodo
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
-Latest
+13.0.0
+------
+* Major: Replaced the linear_block_decoder with the
+  bidirectional_linear_block_decoder layer. The bidirectional linear
+  block decoder layer uses a direction policy to determine whether to
+  perform Gaussian elimination from left-to-right or
+  right-to-left. Certain newer network coding algorithms can be
+  implemented efficiently utilizing this flexibility. Based on the
+  bidirectional layer we have added the forward and backwards linear
+  block decoder.
+* Minor: Added support for specifying the number of nonzero symbols in the
+  sparse codes (this extends the API which previously only supported a
+  fraction of nonzero symbols to be specified).
+* Minor: Added generic functions for printing debug information from codec
+  stacks where this functionality is supported.
+
+12.0.0
+------
+* Major: Changed the partial_decoding_tracker to only provide the
+  functionality needed to detect "early" or partial decoding. The
+  monitor functionality has been moved to the largest_nonzero_index_decoder
+  layer.
+* Minor: Added the payload_rank_encoder and payload_rank_decoder layers
+  which will explicitly exchange the rank of the encoder matrix and the
+  decoder matrix to support partial decoding.
+
+11.2.0
+------
+* Minor: Added the partial_decoding_tracker layer which "monitors" the
+  coding vectors being passed to a decoder in order to detect early
+  decoding opportunities. This means that although not all packets have
+  yet been sent from the encoder, it might happen that we can decode
+  anyway. This kind of functionality is useful especially for applications
+  which require low delay.
+* Minor: Added on-the-fly encoding and decoding stacks in
+  src/kodo/rlnc/on_he_fly_codes.hpp the on-the-fly stacks have the advantage
+  that they allow encoding and decoding to proceed even without having all
+  encoding symbols available.
+
+11.1.0
 ------
 * Minor: Added new cached_symbol_decoder layer, this layer does not perform
   any decoding on the incoming symbol, but provides access to the encoded
@@ -13,6 +52,7 @@ Latest
 * Minor: Added new example showing some one way to use some of the debug
   layers in kodo. The example is in the examples folder called
   use_debug_layers
+* Bug: Fix missing return in the payload_recoder recode() function.
 
 11.0.0
 ------

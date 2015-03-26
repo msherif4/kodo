@@ -12,8 +12,7 @@
 /// Helper for the reuse test, ensures that all encoders and decoders
 /// produce valid data
 template<class Encoder, class Decoder>
-inline void
-invoke_reuse_helper(Encoder encoder, Decoder decoder)
+inline void test_reuse_helper(Encoder encoder, Decoder decoder)
 {
     std::vector<uint8_t> payload(encoder->payload_size());
 
@@ -47,8 +46,7 @@ invoke_reuse_helper(Encoder encoder, Decoder decoder)
 /// Test that instantiates a number of encoders and decoders from
 /// the same factories
 template<class Encoder, class Decoder>
-inline void
-invoke_reuse(uint32_t symbols, uint32_t symbol_size)
+inline void test_reuse(uint32_t symbols, uint32_t symbol_size)
 {
     // Common setting
     typename Encoder::factory encoder_factory(symbols, symbol_size);
@@ -70,7 +68,7 @@ invoke_reuse(uint32_t symbols, uint32_t symbol_size)
 
         for(uint32_t j = 0; j < coders; ++j)
         {
-            invoke_reuse_helper(encoders[j], decoders[j]);
+            test_reuse_helper(encoders[j], decoders[j]);
         }
 
     }
@@ -101,7 +99,7 @@ invoke_reuse(uint32_t symbols, uint32_t symbol_size)
 
         for(uint32_t j = 0; j < coders; ++j)
         {
-            invoke_reuse_helper(encoders[j], decoders[j]);
+            test_reuse_helper(encoders[j], decoders[j]);
         }
 
     }
@@ -111,25 +109,25 @@ invoke_reuse(uint32_t symbols, uint32_t symbol_size)
 /// Test reuse function which will invoke the reuse test for the common
 /// field sizes
 template
-    <
+<
     template <class> class Encoder,
     template <class> class Decoder
-    >
+>
 inline void test_reuse(uint32_t symbols, uint32_t symbol_size)
 {
-    invoke_reuse
+    test_reuse
         <
             Encoder<fifi::binary>,
             Decoder<fifi::binary>
         >(symbols, symbol_size);
 
-    invoke_reuse
+    test_reuse
         <
             Encoder<fifi::binary8>,
             Decoder<fifi::binary8>
         >(symbols, symbol_size);
 
-    invoke_reuse
+    test_reuse
         <
             Encoder<fifi::binary16>,
             Decoder<fifi::binary16>

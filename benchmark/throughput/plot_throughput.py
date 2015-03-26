@@ -10,21 +10,16 @@ import argparse
 import pandas as pd
 import pylab as plt
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages as pp
 
-def plot_throughput(csvfile):
+def plot_throughput(args):
 
-    df = pd.read_csv(csvfile)
-
-    def density_to_string(density):
-        if not np.isnan(density):
-            return " density {}".format(density)
-        else:
-            return ""
-
-    # df['density'] = df['density'].map(density_to_string)
-    # df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] + df['density']
+    df = pd.read_csv(args.csvfile)
 
     plot_groups = list(df.groupby(by=['testcase', 'symbol_size', 'type']))
+
+    if args.outfile:
+        pdf = pp(args.outfile)
 
     # Group the plots
     for (test, symbol_size, type), df in plot_groups:
@@ -35,9 +30,18 @@ def plot_throughput(csvfile):
             else:
                 return ""
 
-        df['benchmark'] = df['benchmark'] + ' ' + df['density'].map(density_to_string)
+        # Combine the testcase and benchmark columns into one (used for labels)
+        if not 'density' in df:
+            df['test'] = df['testcase'].map(str) + '.' + df['benchmark']
 
-        group = df.groupby(by = ['benchmark', 'symbols'])
+            df = df.drop(['testcase','benchmark'], axis = 1)
+        else:
+            df['test'] = df['testcase'].map(str) + '.' + df['benchmark'] +\
+                         ' ' + df['density'].map(density_to_string)
+            df = df.drop(['testcase','benchmark', 'density'], axis = 1)
+
+
+        group = df.groupby(by = ['test', 'symbols'])
 
         def compute_throughput(group):
             s = group['throughput']
@@ -47,14 +51,16 @@ def plot_throughput(csvfile):
         df = group.apply(compute_throughput)
         df = df.unstack(level=0)
 
-        df['mean'].plot(title="Throughput {} {} p={}B".format(test, type, symbol_size),
-                        kind='bar')
+        df['mean'].plot(title="Throughput {} {} p={}B".format(
+            test, type, symbol_size), kind='bar')
 
+        if args.outfile:
+            pdf.savefig(transparent=True)
 
-    plt.show()
-
-    print encoder
-    print decoder
+    if args.outfile:
+        pdf.close()
+    else:
+        plt.show()
 
 if __name__ == '__main__':
 
@@ -64,7 +70,11 @@ if __name__ == '__main__':
         '--csv_file', dest='csvfile', action='store',
         help='the .csv file written by gauge benchmark',
         default='out.csv')
+    parser.add_argument(
+        '--out_file', dest='outfile', action='store',
+        help='the pdf to save the plots to',
+        default=None)
 
     args = parser.parse_args()
 
-    plot_throughput(args.csvfile)
+    plot_throughput(args)

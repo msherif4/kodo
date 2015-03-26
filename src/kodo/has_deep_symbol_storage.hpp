@@ -9,6 +9,8 @@
 
 namespace kodo
 {
+
+    /// @ingroup type_traits
     /// Type trait helper allows compile time detection of whether an
     /// encoder / decoder contains the deep_symbol_storage layer
     ///
@@ -31,7 +33,6 @@ namespace kodo
 
         static const bool value = sizeof(test(static_cast<T*>(0))) == 1;
     };
-
 
 }
 

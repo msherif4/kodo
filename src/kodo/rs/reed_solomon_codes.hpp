@@ -27,7 +27,7 @@
 #include "../storage_aware_encoder.hpp"
 #include "../encode_symbol_tracker.hpp"
 #include "../linear_block_encoder.hpp"
-#include "../linear_block_decoder.hpp"
+#include "../forward_linear_block_decoder.hpp"
 
 #include "reed_solomon_symbol_id_writer.hpp"
 #include "reed_solomon_symbol_id_reader.hpp"
@@ -92,7 +92,7 @@ namespace kodo
                  reed_solomon_symbol_id_reader<
                  systematic_vandermonde_matrix<
                  // Codec API
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  coefficient_storage<
                  coefficient_info<

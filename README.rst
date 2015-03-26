@@ -1,3 +1,13 @@
+License
+-------
+
+To obtain a valid Kodo license **you must fil out the license request** form_.
+
+Kodo is available under a research and educational friendly licensee, see the details in the LICENSE.rst file.
+
+.. _form: http://steinwurf.com/license/
+
+
 Introduction
 ------------
 
@@ -9,11 +19,6 @@ on any platform where a C++ compiler is available. The library provide
 a multitude of build blocks and parameters that can be combined in
 order to create codes. To ensure ease of use several codes are
 predefined, and high level API's provided.
-
-License
--------
-Kodo is available under a research and educational friendly licensee,
-see the details in the LICENSE.rst file.
 
 Documentation
 -------------

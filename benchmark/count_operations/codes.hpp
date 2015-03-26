@@ -56,7 +56,7 @@ namespace kodo
                plain_symbol_id_reader<
                // Codec API
                aligned_coefficients_decoder<
-               linear_block_decoder<
+               forward_linear_block_decoder<
                // Coefficient Storage API
                coefficient_storage<
                coefficient_info<
@@ -87,7 +87,7 @@ namespace kodo
                // Codec API
                aligned_coefficients_decoder<
                linear_block_decoder_delayed<
-               linear_block_decoder<
+               forward_linear_block_decoder<
                // Coefficient Storage API
                coefficient_storage<
                coefficient_info<

@@ -105,10 +105,10 @@ namespace kodo
         }
 
         /// @copydoc layer::recode(uint8_t*)
-        void recode(uint8_t *payload)
+        uint32_t recode(uint8_t *payload)
         {
             assert(m_recode_stack);
-            m_recode_stack->encode(payload);
+            return m_recode_stack->encode(payload);
         }
 
         /// Make sure we have enough space for both the payload

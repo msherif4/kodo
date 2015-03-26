@@ -26,12 +26,6 @@ namespace kodo
         /// @copydoc layer::value_type
         typedef typename field_type::value_type value_type;
 
-        /// Pointer to coder produced by the factories
-        typedef typename SuperCoder::pointer pointer;
-
-        /// The factory type
-        typedef typename SuperCoder::factory factory;
-
     public:
 
         /// @copydoc layer::construct(Factory&)

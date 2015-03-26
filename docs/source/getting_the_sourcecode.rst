@@ -4,8 +4,19 @@ Kodo Dependencies
 .. _sourcecode:
 
 
+
+Obtain a license for KODO
+-------------------------
+
+Before you download or use KODO **you MUST obtain a valid license**. 
+This can be done by filling out the license request form_.
+
+.. _form: http://steinwurf.com/license/
+
+
 Download the Kodo sourcecode
 ----------------------------
+
 There are several ways in which you may get the Kodo library and its
 dependencies. Which approach you prefer might depend on your intended
 use-case for Kodo.
@@ -16,7 +27,7 @@ use-case for Kodo.
 2. If you wish to use Kodo in a separate project, possibly your own build
    tools. You may wish to download Kodo's dependencies as separate git
    repositories. For more information about this see the
-   section `Using Kodo in Your Application`_.
+   section :ref:`using-kodo-in-your-application`.
 
 In the following we will only describe option 1 (using the Kodo buildscripts).
 
@@ -76,11 +87,12 @@ Quick Start (building Kodo examples and unit tests)
 
 If you are primarily interested in quickly trying some Kodo examples
 or building the unit-tests, we have tried to make that really easy.
-Provided that you have the `Tools Needed`_ installed.
+Provided that you have the :ref:`tools-needed` installed.
 
 .. note:: We recommend trying to build and run the unit-tests, before
           using Kodo in your own project. However, if you want to skip
-          this step you may jump directly to :ref:include-kodo-in-project
+          this step you may jump directly to
+          :ref:`using-kodo-in-your-application`
 
 
 1. Navigate to the directory containing the Kodo sources:

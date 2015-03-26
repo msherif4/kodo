@@ -17,9 +17,11 @@
 #include <fifi/is_binary.hpp>
 #include <fifi/fifi_utils.hpp>
 
+#include <kodo/forward_linear_block_decoder_policy.hpp>
+#include <kodo/backward_linear_block_decoder_policy.hpp>
+
 namespace kodo
 {
-
     /// @ingroup codec_layers
     /// @brief Implements basic linear block decoder.
     ///
@@ -27,8 +29,8 @@ namespace kodo
     /// expects that an encoded symbol is described by a vector of
     /// coefficients. Using these coefficients the block decoder subtracts
     /// incoming symbols until the original data has been recreated.
-    template<class SuperCoder>
-    class linear_block_decoder : public SuperCoder
+    template<class DirectionPolicy, class SuperCoder>
+    class bidirectional_linear_block_decoder : public SuperCoder
     {
     public:
 
@@ -41,10 +43,12 @@ namespace kodo
         /// @copydoc layer::factory
         typedef typename SuperCoder::factory factory;
 
+        typedef DirectionPolicy direction_policy;
+
     public:
 
         /// Constructor
-        linear_block_decoder()
+        bidirectional_linear_block_decoder()
             : m_rank(0),
               m_maximum_pivot(0)
         { }
@@ -69,7 +73,11 @@ namespace kodo
             std::fill_n(m_coded.begin(), the_factory.symbols(), false);
 
             m_rank = 0;
-            m_maximum_pivot = 0;
+
+            // Depending on the policy we either go from 0 to symbols or
+            // from symbols to 0.
+            m_maximum_pivot =
+                direction_policy::min(0, the_factory.symbols() - 1);
         }
 
         /// @copydoc layer::decode_symbol(uint8_t*,uint8_t*)
@@ -125,10 +133,8 @@ namespace kodo
 
                 m_uncoded[ symbol_index ] = true;
 
-                if(symbol_index > m_maximum_pivot)
-                {
-                    m_maximum_pivot = symbol_index;
-                }
+                m_maximum_pivot =
+                    direction_policy::max(symbol_index, m_maximum_pivot);
 
             }
         }
@@ -203,10 +209,8 @@ namespace kodo
 
             m_coded[ *pivot_index ] = true;
 
-            if(*pivot_index > m_maximum_pivot)
-            {
-                m_maximum_pivot = *pivot_index;
-            }
+            m_maximum_pivot =
+                direction_policy::max(*pivot_index, m_maximum_pivot);
         }
 
         /// When adding a raw symbol (i.e. uncoded) with a specific
@@ -304,8 +308,14 @@ namespace kodo
             assert(symbol_id != 0);
             assert(symbol_data != 0);
 
-            for(uint32_t i = 0; i < SuperCoder::symbols(); ++i)
+            uint32_t start = direction_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t end = direction_policy::max(0, SuperCoder::symbols()-1);
+
+            // std::cout << start << " " << end << std::endl;
+
+            for(direction_policy p(start, end); !p.at_end(); p.advance())
             {
+                uint32_t i = p.index();
 
                 value_type current_coefficient
                     = fifi::get_value<field_type>(symbol_id, i);
@@ -378,10 +388,20 @@ namespace kodo
             // If this pivot index was smaller than the maximum pivot
             // index we have, we might also need to backward
             // substitute the higher pivot values into the new packet
-            for(uint32_t i = pivot_index + 1; i <= m_maximum_pivot; ++i)
-            {
-                // Do we have a non-zero value here?
+            uint32_t end = direction_policy::max(0, SuperCoder::symbols()-1);
 
+            // std::cout << "Pivot " << pivot_index << " to " << end << std::endl;
+
+            direction_policy p(pivot_index, end);
+
+            // Jump past the pivot_index position
+            p.advance();
+
+            for(; !p.at_end(); p.advance())
+            {
+                uint32_t i = p.index();
+
+                // Do we have a non-zero value here?
                 value_type value =
                     fifi::get_value<field_type>(symbol_id, i);
 
@@ -438,11 +458,18 @@ namespace kodo
 
             assert(pivot_index < SuperCoder::symbols());
 
+            uint32_t from = direction_policy::min(0, SuperCoder::symbols()-1);
+            uint32_t to = m_maximum_pivot;
+
+            // std::cout << from << " " << to << std::endl;
+
             // We found a "1" that nobody else had as pivot, we now
             // substract this packet from other coded packets
             // - if they have a "1" on our pivot place
-            for(uint32_t i = 0; i <= m_maximum_pivot; ++i)
+            for(direction_policy p(from, to); !p.at_end(); p.advance())
             {
+                uint32_t i = p.index();
+
                 if( m_uncoded[i] )
                 {
                     // We know that we have no non-zero elements

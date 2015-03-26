@@ -41,7 +41,7 @@ namespace kodo
                  debug_cached_symbol_decoder<
                  cached_symbol_decoder<
                  debug_linear_block_decoder<
-                 linear_block_decoder<
+                 forward_linear_block_decoder<
                  // Coefficient Storage API
                  debug_coefficient_storage<
                  coefficient_storage<

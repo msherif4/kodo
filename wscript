@@ -4,7 +4,7 @@
 import os
 
 APPNAME = 'kodo'
-VERSION = '11.0.0'
+VERSION = '13.0.0'
 
 def recurse_helper(ctx, name):
     if not ctx.has_dependency_path(name):
@@ -21,6 +21,24 @@ def options(opt):
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
+            name = 'fifi',
+            git_repository = 'github.com/steinwurf/fifi.git',
+            major_version = 9))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'sak',
+            git_repository = 'github.com/steinwurf/sak.git',
+            major_version = 10))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
+            name = 'boost',
+            git_repository = 'github.com/steinwurf/external-boost-light.git',
+            major_version = 1))
+
+    bundle.add_dependency(opt,
+        resolve.ResolveGitMajorVersion(
             name = 'waf-tools',
             git_repository = 'github.com/steinwurf/external-waf-tools.git',
             major_version = 2))
@@ -31,23 +49,6 @@ def options(opt):
             git_repository = 'github.com/steinwurf/external-gtest.git',
             major_version = 2))
 
-    bundle.add_dependency(opt,
-        resolve.ResolveGitMajorVersion(
-            name = 'boost',
-            git_repository = 'github.com/steinwurf/external-boost-light.git',
-            major_version = 1))
-
-    bundle.add_dependency(opt,
-        resolve.ResolveGitMajorVersion(
-            name = 'sak',
-            git_repository = 'github.com/steinwurf/sak.git',
-            major_version = 10))
-
-    bundle.add_dependency(opt,
-        resolve.ResolveGitMajorVersion(
-            name = 'fifi',
-            git_repository = 'github.com/steinwurf/fifi.git',
-            major_version = 9))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
